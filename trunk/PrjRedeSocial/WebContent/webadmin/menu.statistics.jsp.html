@@ -1,0 +1,265 @@
+
+<% if (mysession.get("menu").equals("statistics")) { %>
+	<br>
+	<div id="statisticsMenu" style="display: none;">
+		<ul>
+			<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_statistics"><a href="#"><%= mytext.display("menu.statistics") %></a>
+				<ul>
+	<% if (License.valid(db, myconfig, "statistics")) { %>
+
+
+<% if ((! myconfig.get(db, "statistics_reports").equals("")) || (! adminuser.getStatisticsReports().equals(""))) { %>
+					<li rel="folder" class="jstree-closed initopen" id="menuitem_statistics_reports"><a href="#"><%= mytext.display("menu.statistics.reports") %></a>
+						<ul>
+<%
+	boolean dummyreport = true;
+	String myreports = myconfig.get(db, "statistics_reports");
+	myreports += " " + adminuser.getStatisticsReports();
+	myreports = myreports.replaceAll("[\r\n]+"," ");
+	Pattern p = Pattern.compile("^([_ a-zA-Z0-9%\\w]+?)[ ]*=[ ]*\"([ a-zA-Z0-9:]*)\"");
+	Matcher m = p.matcher(myreports);
+	while (m.find()) {
+		String myreportname = "" + m.group(1);
+		String myreportdata = "" + m.group(2);
+		myreports = myreports.replaceAll("^\\Q" + myreportname + "\\E[ ]*=[ ]*\"\\Q" + myreportdata.replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$") + "\\E\"", "");
+		myreportname = myreportname.replaceAll("^ +", "").replaceAll(" +$", "");
+		myreportdata = myreportdata.replaceAll("^ +", "").replaceAll(" +$", "");
+		dummyreport = false;
+%>
+							<li rel="page" id="menuitem_statistics_reports_<%= myreportname.replaceAll(" ","_") %>"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/report.jsp")) && (myrequest.getParameter("title").equals(myreportname)) && (myrequest.getParameter("data").equals(myreportdata))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/report.jsp?title=<%= URLEncoder.encode(myreportname) %>&data=<%= URLEncoder.encode(myreportdata) %>"><%= myreportname %></a></li>
+<%
+		m.reset(myreports);
+	}
+	if (dummyreport) {
+%>
+							<li rel="page" id="menuitem_statistics_reports_dummy"><a class="<% if (myrequest.getRequestURI().equals("/" + mytext.display("adminpath") + "/usage/report.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/report.jsp">-</a></li>
+<%
+	}
+%>
+						</ul>
+					</li>
+<% } %>
+
+
+
+		<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_summary")) { %>
+					<li rel="page" id="menuitem_statistics_summary"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/index.jsp"><%= mytext.display("menu.statistics.summary") %></a></li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_what")) { %>
+					<li rel="folder" class="jstree-closed initopen" id="menuitem_statistics_what"><a href="#"><%= mytext.display("menu.statistics.what") %></a>
+						<ul>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_what_websites")) { %>
+				<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_what_websites")) { %>
+							<li rel="page" id="menuitem_statistics_what_websites"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/websites.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/websites.jsp"><%= mytext.display("menu.statistics.what.websites") %></a></li>
+				<% } %>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_what_contents")) { %>
+							<li rel="pagefolder" class="jstree-closed initopen" id="menuitem_statistics_what_content"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/contents.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/contents.jsp"><%= mytext.display("menu.statistics.what.content") %></a>
+								<ul>
+									<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_contentgroups").equals("")) || (! myconfig.get(db, "use_contenttypes").equals(""))) { %>jstree-closed<% } %>" id="menuitem_statistics_what_content_pages"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/pages.jsp")) && (myrequest.getParameter("contentclass").equals(""))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/pages.jsp"><%= mytext.display("menu.statistics.what.content.pages") %></a>
+										<ul>
+			        <% if (! myconfig.get(db, "use_contentgroups").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_content_pages_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/pagegroups.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/pagegroups.jsp"><%= mytext.display("menu.group") %></a></li>
+			        <% } %>
+			        <% if (! myconfig.get(db, "use_contenttypes").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_content_pages_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/pagetypes.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/pagetypes.jsp"><%= mytext.display("menu.type") %></a></li>
+			        <% } %>
+										</ul>
+									</li>
+									<li rel="page" id="menuitem_statistics_what_content_contact"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/contacts.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/contacts.jsp"><%= mytext.display("menu.statistics.what.content.contact") %></a></li>
+									<li rel="page" id="menuitem_statistics_what_content_post"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/posts.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/posts.jsp"><%= mytext.display("menu.statistics.what.content.post") %></a></li>
+									<li rel="page" id="menuitem_statistics_what_content_login"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/logins.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/logins.jsp"><%= mytext.display("menu.statistics.what.content.login") %></a></li>
+									<li rel="page" id="menuitem_statistics_what_content_logout"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/logouts.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/logouts.jsp"><%= mytext.display("menu.statistics.what.content.logout") %></a></li>
+									<li rel="page" id="menuitem_statistics_what_content_stylesheets"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/stylesheets.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/stylesheets.jsp"><%= mytext.display("menu.statistics.what.content.stylesheets") %></a></li>
+									<li rel="page" id="menuitem_statistics_what_content_scripts"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/scripts.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/scripts.jsp"><%= mytext.display("menu.statistics.what.content.scripts") %></a></li>
+								</ul>
+							</li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_what_library")) { %>
+							<li rel="pagefolder" class="jstree-closed initopen" id="menuitem_statistics_what_library"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/library.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/library.jsp"><%= mytext.display("menu.statistics.what.library") %></a>
+								<ul>
+									<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_imagegroups").equals("")) || (! myconfig.get(db, "use_imagetypes").equals(""))) { %>jstree-closed<% } %>" id="menuitem_statistics_what_library_images"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/images.jsp")) && (myrequest.getParameter("contentclass").equals(""))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/images.jsp"><%= mytext.display("menu.statistics.what.library.images") %></a>
+										<ul>
+			        <% if (! myconfig.get(db, "use_imagegroups").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_library_images_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/imagegroups.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/imagegroups.jsp"><%= mytext.display("menu.group") %></a></li>
+			        <% } %>
+			        <% if (! myconfig.get(db, "use_imagetypes").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_library_images_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/imagetypes.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/imagetypes.jsp"><%= mytext.display("menu.type") %></a></li>
+			        <% } %>
+										</ul>
+									</li>
+									<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_filegroups").equals("")) || (! myconfig.get(db, "use_filetypes").equals(""))) { %>jstree-closed<% } %>" id="menuitem_statistics_what_library_files"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/files.jsp")) && (myrequest.getParameter("contentclass").equals(""))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/files.jsp"><%= mytext.display("menu.statistics.what.library.files") %></a>
+										<ul>
+			        <% if (! myconfig.get(db, "use_filegroups").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_library_files_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/filegroups.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/filegroups.jsp"><%= mytext.display("menu.group") %></a></li>
+			        <% } %>
+			        <% if (! myconfig.get(db, "use_filetypes").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_library_files_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/filetypes.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/filetypes.jsp"><%= mytext.display("menu.type") %></a></li>
+			        <% } %>
+										</ul>
+									</li>
+									<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_linkgroups").equals("")) || (! myconfig.get(db, "use_linktypes").equals(""))) { %>jstree-closed<% } %>" id="menuitem_statistics_what_library_links"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/links.jsp")) && (myrequest.getParameter("contentclass").equals(""))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/links.jsp"><%= mytext.display("menu.statistics.what.library.links") %></a>
+										<ul>
+			        <% if (! myconfig.get(db, "use_linkgroups").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_library_links_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/linkgroups.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/linkgroups.jsp"><%= mytext.display("menu.group") %></a></li>
+			        <% } %>
+			        <% if (! myconfig.get(db, "use_linktypes").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_library_links_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/linktypes.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/linktypes.jsp"><%= mytext.display("menu.type") %></a></li>
+			        <% } %>
+										</ul>
+									</li>
+								</ul>
+							</li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_what_ecommerce")) { %>
+				<% if (License.valid(db, myconfig, "ecommerce")) { %>
+							<li rel="folder" class="jstree-closed initopen" id="menuitem_statistics_what_ecommerce"><a href="#"><%= mytext.display("menu.statistics.what.ecommerce") %></a>
+								<ul>
+									<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_productgroups").equals("")) || (! myconfig.get(db, "use_producttypes").equals(""))) { %>jstree-closed<% } %>" id="menuitem_statistics_what_ecommerce_products"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/products.jsp")) && (myrequest.getParameter("contentclass").equals(""))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/products.jsp"><%= mytext.display("menu.statistics.what.ecommerce.products") %></a>
+										<ul>
+				        <% if (! myconfig.get(db, "use_productgroups").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_ecommerce_products_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/productgroups.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/productgroups.jsp"><%= mytext.display("menu.group") %></a></li>
+				        <% } %>
+				        <% if (! myconfig.get(db, "use_producttypes").equals("")) { %>
+											<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_what_ecommerce_products_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/producttypes.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/producttypes.jsp"><%= mytext.display("menu.type") %></a></li>
+				        <% } %>
+										</ul>
+									</li>
+								</ul>
+							</li>
+				<% } %>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_what_databases")) { %>
+				<% if (License.valid(db, myconfig, "databases")) { %>
+							<li rel="pagefolder" class="jstree-closed initopen" id="menuitem_statistics_what_databases"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/databases.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/databases.jsp"><%= mytext.display("menu.statistics.what.databases") %></a></li>
+				<% } %>
+			<% } %>
+						</ul>
+					</li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when")) { %>
+					<li rel="folder" class="jstree-closed initopen" id="menuitem_statistics_when"><a href="#"><%= mytext.display("menu.statistics.when") %></a>
+						<ul>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_daily")) { %>
+							<li rel="page" id="menuitem_statistics_when_daily"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/daily.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/daily.jsp"><%= mytext.display("menu.statistics.when.daily") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_weekly")) { %>
+							<li rel="page" id="menuitem_statistics_when_weekly"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/weekly.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/weekly.jsp"><%= mytext.display("menu.statistics.when.weekly") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_monthly")) { %>
+							<li rel="page" id="menuitem_statistics_when_monthly"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/monthly.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/monthly.jsp"><%= mytext.display("menu.statistics.when.monthly") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_yearly")) { %>
+							<li rel="page" id="menuitem_statistics_when_yearly"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/yearly.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/yearly.jsp"><%= mytext.display("menu.statistics.when.yearly") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_hours")) { %>
+							<li rel="page" id="menuitem_statistics_when_hours"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/hours.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/hours.jsp"><%= mytext.display("menu.statistics.when.hours") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_weekdays")) { %>
+							<li rel="page" id="menuitem_statistics_when_weekdays"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/weekdays.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/weekdays.jsp"><%= mytext.display("menu.statistics.when.weekdays") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_days")) { %>
+							<li rel="page" id="menuitem_statistics_when_days"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/days.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/days.jsp"><%= mytext.display("menu.statistics.when.days") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_weeks")) { %>
+							<li rel="page" id="menuitem_statistics_when_weeks"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/weeks.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/weeks.jsp"><%= mytext.display("menu.statistics.when.weeks") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_when_months")) { %>
+							<li rel="page" id="menuitem_statistics_when_months"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/months.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/months.jsp"><%= mytext.display("menu.statistics.when.months") %></a></li>
+			<% } %>
+						</ul>
+					</li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who")) { %>
+					<li rel="folder" class="jstree-closed initopen" id="menuitem_statistics_who"><a href="#"><%= mytext.display("menu.statistics.who") %></a>
+						<ul>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who_countries")) { %>
+							<li rel="page" id="menuitem_statistics_who_countries"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/countries.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/countries.jsp"><%= mytext.display("menu.statistics.who.countries") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who_clienthosts")) { %>
+							<li rel="page" id="menuitem_statistics_who_clienthosts"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/clienthosts.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/clienthosts.jsp"><%= mytext.display("menu.statistics.who.clienthosts") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who_visitors")) { %>
+							<li rel="page" id="menuitem_statistics_who_visitors"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/visitors.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/visitors.jsp"><%= mytext.display("menu.statistics.who.visitors") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who_robots")) { %>
+							<li rel="page" id="menuitem_statistics_who_robots"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/robots.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/robots.jsp"><%= mytext.display("menu.statistics.who.robots") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who_operatingsystems")) { %>
+							<li rel="page" id="menuitem_statistics_who_operatingsystems"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/operatingsystems.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/operatingsystems.jsp"><%= mytext.display("menu.statistics.who.operatingsystems") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who_webbrowsers")) { %>
+							<li rel="page" id="menuitem_statistics_who_webbrowsers"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/webbrowsers.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/webbrowsers.jsp"><%= mytext.display("menu.statistics.who.webbrowsers") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who_devices")) { %>
+							<li rel="page" id="menuitem_statistics_who_devices"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/devices.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/devices.jsp"><%= mytext.display("menu.statistics.who.devices") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_who_users")) { %>
+							<li rel="pagefolder" id="menuitem_statistics_who_users"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/users.jsp")) && (myrequest.getParameter("userclass").equals(""))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/users.jsp"><%= mytext.display("menu.statistics.who.users") %></a>
+								<ul>
+				        <% if (! myconfig.get(db, "use_usergroups").equals("")) { %>
+									<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_who_users_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/usergroups.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/usergroups.jsp"><%= mytext.display("menu.groups") %></a></li>
+				        <% } %>
+				        <% if (! myconfig.get(db, "use_usertypes").equals("")) { %>
+									<li rel="pagefolder" class="jstree-closed" id="menuitem_statistics_who_users_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/usertypes.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/usertypes.jsp"><%= mytext.display("menu.types") %></a></li>
+				        <% } %>
+				        <% if (License.valid(db, myconfig, "experience")) { %>
+									<li rel="page" id="menuitem_statistics_who_users_segments"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/usersegments.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/usersegments.jsp"><%= mytext.display("menu.segments") %></a></li>
+									<li rel="page" id="menuitem_statistics_who_users_tests"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/usertests.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/usertests.jsp"><%= mytext.display("menu.tests") %></a></li>
+				        <% } %>
+								</ul>
+							</li>
+			<% } %>
+						</ul>
+					</li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_why")) { %>
+					<li rel="folder" class="jstree-closed initopen" id="menuitem_statistics_why"><a href="#"><%= mytext.display("menu.statistics.why") %></a>
+						<ul>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_why_referers")) { %>
+							<li rel="page" id="menuitem_statistics_why_referers"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/referers.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/referers.jsp"><%= mytext.display("menu.statistics.why.referers") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_why_searchengines")) { %>
+							<li rel="page" id="menuitem_statistics_why_searchengines"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/searchengines.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/searchengines.jsp"><%= mytext.display("menu.statistics.why.searchengines") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_why_searchqueries")) { %>
+							<li rel="page" id="menuitem_statistics_why_searchqueries"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/searchqueries.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/searchqueries.jsp"><%= mytext.display("menu.statistics.why.searchqueries") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_why_searchwords")) { %>
+							<li rel="page" id="menuitem_statistics_why_searchwords"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/searchwords.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/searchwords.jsp"><%= mytext.display("menu.statistics.why.searchwords") %></a></li>
+			<% } %>
+						</ul>
+					</li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_how")) { %>
+					<li rel="folder" class="jstree-closed initopen" id="menuitem_statistics_how"><a href="#"><%= mytext.display("menu.statistics.how") %></a>
+						<ul>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_how_entry")) { %>
+							<li rel="page" id="menuitem_statistics_how_entry"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/entry.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/entry.jsp"><%= mytext.display("menu.statistics.how.entry") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_how_paths")) { %>
+							<li rel="page" id="menuitem_statistics_how_paths"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/paths.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/paths.jsp"><%= mytext.display("menu.statistics.how.paths") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_how_exit")) { %>
+							<li rel="page" id="menuitem_statistics_how_exit"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/exit.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/exit.jsp"><%= mytext.display("menu.statistics.how.exit") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_how_duration")) { %>
+							<li rel="page" id="menuitem_statistics_how_duration"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/duration.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/duration.jsp"><%= mytext.display("menu.statistics.how.duration") %></a></li>
+			<% } %>
+			<% if (! adminuser.permission(db, "forbid", "webadmin_statistics_how_visits")) { %>
+							<li rel="page" id="menuitem_statistics_how_visits"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/visits.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usage/visits.jsp"><%= mytext.display("menu.statistics.how.visits") %></a></li>
+			<% } %>
+						</ul>
+					</li>
+		<% } %>
+	<% } %>
+				</ul>
+			</li>
+	<% for (int i=0; i<module.size(); i++) { %>
+		<% if ((moduleStatisticsMenuTitle.size()>i) && (! moduleStatisticsMenuTitle.get(i).equals(""))) { %>
+			<li rel="page" class="jstree-leaf" id="menuitem_statistics_module<%= i %>"><a href="<%= moduleStatisticsMenuLink.get(i) %>"><%= moduleStatisticsMenuTitle.get(i) %></a></li>
+		<% } %>
+	<% } %>
+		</ul>
+	</div>
+<% } %>

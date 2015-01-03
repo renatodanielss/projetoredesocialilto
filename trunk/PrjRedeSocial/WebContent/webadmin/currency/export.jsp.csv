@@ -1,0 +1,2 @@
+id,title,symbol,rate
+<% while (currencies.records(db, "")) { %><%= currencies.getId().replaceAll(",","") %>,<%= currencies.getTitle().replaceAll(",","") %>,<%= currencies.getSymbol().replaceAll(",","") %>,<%= currencies.getRate().replaceAll(",","") %><%= "\r\n" %><% } %>

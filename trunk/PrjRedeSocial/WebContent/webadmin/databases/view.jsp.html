@@ -1,0 +1,697 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("databases.view.title") %></title>
+<script type="text/javascript">
+
+$(function(){
+	initForm();
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	$('#tabs').find('[rel=Database_Content]').click();
+});
+
+</script>
+<script type="text/javascript">
+
+var columnCount = 0;
+
+function initForm() {
+	columnCount = 0;
+	var content = document.getElementById("content").value;
+	var columns = content.split(/\r?\n/);
+	var ordered = new Array();
+	for (var column in columns) if (typeof(columns[column]) != "undefined") {
+		var params = columns[column].split("|");
+		ordered[params[1]] = params;
+	}
+	for (var column=0; column<ordered.length; column++) {
+		var params = ordered[column];
+		if (params && params[0]) {
+			var options = "";
+			for (var i=7; i<params.length; i++) {
+				if (options) options += "\r\n";
+				options += params[i];
+			}
+			addColumn(params[0], params[2], params[4], params[5], params[6], params[3], params[1], options);
+		}
+	}
+}
+
+function addColumn(id, name, type, param1, param2, index, order, params) {
+	if (! name) {
+		name = document.getElementById("name").value;
+	} else {
+		document.getElementById("name").value = name;
+	}
+	if (! type) {
+		type = document.getElementById("type").value;
+	} else {
+		document.getElementById("type").value = type;
+	}
+	var typetext = document.getElementById("type").options[document.getElementById("type").selectedIndex].text;
+
+	if (name && type) {
+		if (! id) {
+			columnCount += 1;
+			id = columnCount;
+		} else {
+			if (id > columnCount) columnCount = parseInt(id);
+		}
+
+		var tr = document.createElement("tr");
+		tr.setAttribute("id", "column" + id);
+		tr.setAttribute("vAlign", "top");
+		tr.style.backgroundColor = "#eeeeee";
+		var td;
+		td = document.createElement("td");
+		td.innerHTML = '<input readonly type="text" id="name' + id + '" name="name' + id + '" value="' + name + '">';
+		tr.appendChild(td);
+		td = document.createElement("td");
+		td.innerHTML = '<input readonly type="text" id="type' + id + '"name="type' + id + '" value="' + typetext + '">';
+		tr.appendChild(td);
+
+		switch(type) {
+		case "text":
+			var cols = param1 || "";
+			var rows = param2 || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.text.cols") %> <input readonly type="text" size="3" maxlength="3" id="cols' + id + '" name="cols' + id + '" value="' + cols + '"></nobr> <nobr><%= mytext.display("databases.text.rows") %> <input readonly type="text" size="3" maxlength="3" id="rows' + id + '" name="rows' + id + '" value="' + rows + '">';
+			tr.appendChild(td);
+			break;
+		case "html":
+			var width = param1 || "";
+			var height = param2 || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.html.width") %> <input readonly type="text" size="3" maxlength="3" id="width' + id + '" name="width' + id + '" value="' + width + '"></nobr> <nobr><%= mytext.display("databases.html.height") %> <input readonly type="text" size="3" maxlength="3" id="height' + id + '" name="height' + id + '" value="' + height + '">';
+			tr.appendChild(td);
+			break;
+		case "number":
+			var digits = param1 || "";
+			var decimals = param2 || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.number.digits") %> <input readonly type="text" size="2" maxlength="2" id="digits' + id + '" name="digits' + id + '" value="' + digits + '"></nobr> <nobr><%= mytext.display("databases.number.decimals") %> <input readonly type="text" size="2" maxlength="2" id="decimals' + id + '" name="decimals' + id + '" value="' + decimals + '">';
+			tr.appendChild(td);
+			break;
+		case "select":
+			var size = param1 || "";
+			var options = params || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.select.size") %> <input readonly type="text" size="3" maxlength="3" id="size' + id + '" name="size' + id + '" value="' + size + '"></nobr><br><nobr><%= mytext.display("databases.select.options") %></nobr><br><textarea readonly cols="40" rows="5" wrap="off" id="options' + id + '" name="options' + id + '">' + options + '</textarea>';
+			tr.appendChild(td);
+			break;
+		case "selectmulti":
+			var size = param1 || "";
+			var options = params || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.select.size") %> <input readonly type="text" size="3" maxlength="3" id="size' + id + '" name="size' + id + '" value="' + size + '"></nobr><br><nobr><%= mytext.display("databases.select.options") %></nobr><br><textarea readonly cols="40" rows="5" wrap="off" id="options' + id + '" name="options' + id + '">' + options + '</textarea>';
+			tr.appendChild(td);
+			break;
+		case "radio":
+			var options = params || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.radio.options") %></nobr><br><textarea readonly cols="40" rows="5" wrap="off" id="options' + id + '" name="options' + id + '">' + options + '</textarea>';
+			tr.appendChild(td);
+			break;
+		case "checkbox":
+			var options = params || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.checkbox.options") %></nobr><br><textarea readonly cols="40" rows="5" wrap="off" id="options' + id + '" name="options' + id + '">' + options + '</textarea>';
+			tr.appendChild(td);
+			break;
+		case "datetime":
+			var format = param1 || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.datetime.format") %> </nobr><input readonly type="text" size="30" id="format' + id + '" name="format' + id + '" value="' + format + '">';
+			tr.appendChild(td);
+			break;
+		case "element":
+			var size = param1 || "";
+			var options = '<option value="'+param2+'" selected>'+param2;
+ 			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.select.size") %> <input readonly type="text" size="3" maxlength="3" id="size' + id + '" name="size' + id + '" value="' + size + '"></nobr> <nobr><%= mytext.display("databases.element.contentclass") %> <select id="contentclass' + id + '" name="contentclass' + id + '">' + options + '</select></nobr>';
+			tr.appendChild(td);
+			break;
+		case "elements":
+			var size = param1 || "";
+			var options = '<option value="'+param2+'" selected>'+param2;
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.select.size") %> <input readonly type="text" size="3" maxlength="3" id="size' + id + '" name="size' + id + '" value="' + size + '"></nobr> <nobr><%= mytext.display("databases.element.contentclass") %> <select id="contentclass' + id + '" name="contentclass' + id + '">' + options + '</select></nobr>';
+			tr.appendChild(td);
+			break;
+		case "datum":
+		case "data":
+			var size = param1 || "";
+			var database = param2 || "";
+			var data = params || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.select.size") %> <input readonly type="text" size="3" maxlength="3" id="size' + id + '" name="size' + id + '" value="' + size + '"></nobr><br><nobr><%= mytext.display("databases.data.database") %> <input readonly type="text" maxlength="255" id="database' + id + '" name="database' + id + '" value="' + database + '"></nobr><br><nobr><%= mytext.display("databases.data.column") %> <input readonly type="text" maxlength="255" id="data' + id + '" name="data' + id + '" value="' + data + '"></nobr>';
+			tr.appendChild(td);
+			break;
+		case "datumview":
+		case "dataview":
+			var size = param1 || "";
+			var database = param2 || "";
+			var data = params || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.select.size") %> <input readonly type="text" size="3" maxlength="3" id="size' + id + '" name="size' + id + '" value="' + size + '"></nobr><br><nobr><%= mytext.display("databases.data.database") %> <input readonly type="text" size="50" maxlength="255" id="database' + id + '" name="database' + id + '" value="' + database + '"></nobr><br><nobr><%= mytext.display("databases.data.column") %> <input readonly type="text" size="50" maxlength="255" id="data' + id + '" name="data' + id + '" value="' + data + '"></nobr>';
+			tr.appendChild(td);
+			break;
+		case "content":
+		case "contents":
+		case "contentclass":
+		case "contentclasses":
+		case "contentgroup":
+		case "contentgroups":
+		case "contenttype":
+		case "contenttypes":
+		case "page":
+		case "pages":
+		case "pagegroup":
+		case "pagegroups":
+		case "pagetype":
+		case "pagetypes":
+		case "image":
+		case "images":
+		case "imagegroup":
+		case "imagegroups":
+		case "imagetype":
+		case "imagetypes":
+		case "imageformat":
+		case "imageformats":
+		case "file":
+		case "files":
+		case "filegroup":
+		case "filegroups":
+		case "filetype":
+		case "filetypes":
+		case "fileformat":
+		case "fileformats":
+		case "link":
+		case "links":
+		case "linkgroup":
+		case "linkgroups":
+		case "linktype":
+		case "linktypes":
+		case "product":
+		case "products":
+		case "productgroup":
+		case "productgroups":
+		case "producttype":
+		case "producttypes":
+		case "version":
+		case "versions":
+		case "database":
+		case "databases":
+		case "username":
+		case "usernames":
+		case "useremail":
+		case "useremails":
+		case "usergroup":
+		case "usergroups":
+		case "usertype":
+		case "usertypes":
+			var size = param1 || "";
+			td = document.createElement("td");
+			td.innerHTML = '<nobr><%= mytext.display("databases.select.size") %> <input readonly type="text" size="3" maxlength="3" id="size' + id + '" name="size' + id + '" value="' + size + '"></nobr>';
+			tr.appendChild(td);
+			break;
+		default:
+			td = document.createElement("td");
+			td.innerHTML = '&nbsp;';
+			tr.appendChild(td);
+			break;
+		}
+
+		td = document.createElement("td");
+		if (index) {
+			td.innerHTML = '<input disabled type="checkbox" id="index' + id + '" name="index' + id + '" value="index" checked>';
+		} else {
+			td.innerHTML = '<input disabled type="checkbox" id="index' + id + '" name="index' + id + '" value="index">';
+		}
+		tr.appendChild(td);
+
+		var insertpoint = document.getElementById("addnew");
+		if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+
+		if (mySlideTabs) mySlideTabs.tabs_resize();
+	}
+}
+
+function deleteColumn(column) {
+	var node = document.getElementById("column" + column);
+	if (node && node.parentNode) node.parentNode.removeChild(node);
+}
+
+function moveColumnUp(column) {
+	var node = document.getElementById("column" + column);
+	var order = document.getElementById("order" + column).value;
+	if (node && node.parentNode && node.previousSibling && (order>1)) {
+		var parentnode = node.parentNode;
+		var prevnode = node.previousSibling;
+
+		var tmp = document.getElementById("order" + prevnode.id.substring(6)).value;
+		document.getElementById("order" + prevnode.id.substring(6)).value = order;
+		document.getElementById("order" + node.id.substring(6)).value = tmp;
+
+		parentnode.removeChild(node);
+		parentnode.insertBefore(node, prevnode);
+	}
+}
+
+function moveColumnDown(column) {
+	var node = document.getElementById("column" + column);
+	var order = document.getElementById("order" + column).value;
+	if (node && node.parentNode && node.previousSibling && (order<columnCount)) {
+		var parentnode = node.parentNode;
+		var nextnode = node.nextSibling;
+
+		var tmp = document.getElementById("order" + nextnode.id.substring(6)).value;
+		document.getElementById("order" + nextnode.id.substring(6)).value = order;
+		document.getElementById("order" + node.id.substring(6)).value = tmp;
+
+		parentnode.removeChild(nextnode);
+		parentnode.insertBefore(nextnode, node);
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("databases.view.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="view.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST">
+        <input type="hidden" id="content" name="content" value="<%= databases.getContent() %>">
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Database_Content" rel="Database_Content"><%= mytext.display("databases.databasecontent.tab") %></a></li>
+                <li><a href="#Access_Restrictions" rel="Access_Restrictions"><%= mytext.display("databases.accessrestrictions.tab") %></a></li>
+                <li><a href="#Special_Pages" rel="Special_Pages"><%= mytext.display("databases.specialpages.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Database_Content" class="Database_Content st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("databases.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("databases.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("databases.title") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="6" align="left"><%= databases.getTitle() %>&nbsp;</td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("databases.content") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("databases.content.name") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("databases.content.type") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("databases.content.properties") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("databases.content.index") %></th>
+          </tr>
+          <tr id="addnew" style="display: none;">
+            <td><input id="name" type="text" name="name"></td>
+            <td>
+              <select id="type" name="type">
+                <option value="">
+                <option value="text"><%= mytext.display("databases.content.type.text") %>
+                <option value="html"><%= mytext.display("databases.content.type.html") %>
+                <option value="number"><%= mytext.display("databases.content.type.number") %>
+                <option value="select"><%= mytext.display("databases.content.type.select") %>
+                <option value="selectmulti"><%= mytext.display("databases.content.type.selectmulti") %>
+                <option value="radio"><%= mytext.display("databases.content.type.radio") %>
+                <option value="checkbox"><%= mytext.display("databases.content.type.checkbox") %>
+                <option value="datetime"><%= mytext.display("databases.content.type.datetime") %>
+                <option value="created"><%= mytext.display("databases.content.type.created") %>
+                <option value="updated"><%= mytext.display("databases.content.type.updated") %>
+                <option value="createdby"><%= mytext.display("databases.content.type.createdby") %>
+                <option value="updatedby"><%= mytext.display("databases.content.type.updatedby") %>
+                <option value="content"><%= mytext.display("databases.content.type.content") %>
+                <option value="contents"><%= mytext.display("databases.content.type.contents") %>
+                <option value="contentclass"><%= mytext.display("databases.content.type.contentclass") %>
+                <option value="contentclasses"><%= mytext.display("databases.content.type.contentclasses") %>
+                <option value="contentgroup"><%= mytext.display("databases.content.type.contentgroup") %>
+                <option value="contentgroups"><%= mytext.display("databases.content.type.contentgroups") %>
+                <option value="contenttype"><%= mytext.display("databases.content.type.contenttype") %>
+                <option value="contenttypes"><%= mytext.display("databases.content.type.contenttypes") %>
+                <option value="page"><%= mytext.display("databases.content.type.page") %>
+                <option value="pages"><%= mytext.display("databases.content.type.pages") %>
+                <option value="pagegroup"><%= mytext.display("databases.content.type.pagegroup") %>
+                <option value="pagegroups"><%= mytext.display("databases.content.type.pagegroups") %>
+                <option value="pagetype"><%= mytext.display("databases.content.type.pagetype") %>
+                <option value="pagetypes"><%= mytext.display("databases.content.type.pagetypes") %>
+                <option value="image"><%= mytext.display("databases.content.type.image") %>
+                <option value="images"><%= mytext.display("databases.content.type.images") %>
+                <option value="imagegroup"><%= mytext.display("databases.content.type.imagegroup") %>
+                <option value="imagegroups"><%= mytext.display("databases.content.type.imagegroups") %>
+                <option value="imagetype"><%= mytext.display("databases.content.type.imagetype") %>
+                <option value="imagetypes"><%= mytext.display("databases.content.type.imagetypes") %>
+                <option value="imageformat"><%= mytext.display("databases.content.type.imageformat") %>
+                <option value="imageformats"><%= mytext.display("databases.content.type.imageformats") %>
+                <option value="file"><%= mytext.display("databases.content.type.file") %>
+                <option value="files"><%= mytext.display("databases.content.type.files") %>
+                <option value="filegroup"><%= mytext.display("databases.content.type.filegroup") %>
+                <option value="filegroups"><%= mytext.display("databases.content.type.filegroups") %>
+                <option value="filetype"><%= mytext.display("databases.content.type.filetype") %>
+                <option value="filetypes"><%= mytext.display("databases.content.type.filetypes") %>
+                <option value="fileformat"><%= mytext.display("databases.content.type.fileformat") %>
+                <option value="fileformats"><%= mytext.display("databases.content.type.fileformats") %>
+                <option value="link"><%= mytext.display("databases.content.type.link") %>
+                <option value="links"><%= mytext.display("databases.content.type.links") %>
+                <option value="linkgroup"><%= mytext.display("databases.content.type.linkgroup") %>
+                <option value="linkgroups"><%= mytext.display("databases.content.type.linkgroups") %>
+                <option value="linktype"><%= mytext.display("databases.content.type.linktype") %>
+                <option value="linktypes"><%= mytext.display("databases.content.type.linktypes") %>
+                <option value="product"><%= mytext.display("databases.content.type.product") %>
+                <option value="products"><%= mytext.display("databases.content.type.products") %>
+                <option value="productgroup"><%= mytext.display("databases.content.type.productgroup") %>
+                <option value="productgroups"><%= mytext.display("databases.content.type.productgroups") %>
+                <option value="producttype"><%= mytext.display("databases.content.type.producttype") %>
+                <option value="producttypes"><%= mytext.display("databases.content.type.producttypes") %>
+                <option value="element"><%= mytext.display("databases.content.type.element") %>
+                <option value="elements"><%= mytext.display("databases.content.type.elements") %>
+                <option value="version"><%= mytext.display("databases.content.type.version") %>
+                <option value="versions"><%= mytext.display("databases.content.type.versions") %>
+                <option value="database"><%= mytext.display("databases.content.type.database") %>
+                <option value="databases"><%= mytext.display("databases.content.type.databases") %>
+                <option value="datum"><%= mytext.display("databases.content.type.datum") %>
+                <option value="data"><%= mytext.display("databases.content.type.data") %>
+                <option value="datumview"><%= mytext.display("databases.content.type.datumview") %>
+                <option value="dataview"><%= mytext.display("databases.content.type.dataview") %>
+                <option value="username"><%= mytext.display("databases.content.type.username") %>
+                <option value="usernames"><%= mytext.display("databases.content.type.usernames") %>
+                <option value="useremail"><%= mytext.display("databases.content.type.useremail") %>
+                <option value="useremails"><%= mytext.display("databases.content.type.useremails") %>
+                <option value="usergroup"><%= mytext.display("databases.content.type.usergroup") %>
+                <option value="usergroups"><%= mytext.display("databases.content.type.usergroups") %>
+                <option value="usertype"><%= mytext.display("databases.content.type.usertype") %>
+                <option value="usertypes"><%= mytext.display("databases.content.type.usertypes") %>
+<!--
+                <option value="fileupload"><%= mytext.display("databases.content.type.fileupload") %>
+-->
+              </select>
+            </td>
+            <td width="100%">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
+</div></div>
+<div id="Access_Restrictions" class="Access_Restrictions st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("databases.accessrestrictions.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("databases.accessrestrictions.intro") %></td>
+          </tr>
+	<% if (! myconfig.get(db, "use_accessrestrictions").equals("none")) { %>
+		<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("databases.accessrestrictions.users") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (databases.getUsersGroup().equals("")) { %><%= mytext.display("public") %><% } else if (databases.getUsersGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (databases.getUsersGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= databases.getUsersGroup() %> &nbsp; <% } %></td>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (databases.getUsersType().equals("")) { %><%= mytext.display("public") %><% } else if (databases.getUsersType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (databases.getUsersType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= databases.getUsersType() %> &nbsp;<% } %></td>
+		<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = databases.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+		<% } %>
+          </tr>
+			<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("databases.accessrestrictions.creators") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (databases.getCreatorsGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (databases.getCreatorsGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (databases.getCreatorsGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= databases.getCreatorsGroup() %><% } %> &nbsp; </td>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (databases.getCreatorsType().equals("0")) { %><%= mytext.display("public") %><% } else if (databases.getCreatorsType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (databases.getCreatorsType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= databases.getCreatorsType() %><% } %> &nbsp; </td>
+		<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = databases.getCreatorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+		<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("databases.accessrestrictions.editors") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (databases.getEditorsGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (databases.getEditorsGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (databases.getEditorsGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= databases.getEditorsGroup() %> &nbsp; <% } %></td>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (databases.getEditorsType().equals("0")) { %><%= mytext.display("public") %><% } else if (databases.getEditorsType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (databases.getEditorsType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= databases.getEditorsType() %> &nbsp;<% } %></td>
+		<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = databases.getEditorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+		<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("databases.accessrestrictions.publishers") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (databases.getPublishersGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (databases.getPublishersGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= databases.getPublishersGroup() %> &nbsp; <% } %></td>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (databases.getPublishersType().equals("0")) { %><%= mytext.display("public") %><% } else if (databases.getPublishersType().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= databases.getPublishersType() %> &nbsp;<% } %></td>
+		<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = databases.getPublishersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+		<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("databases.accessrestrictions.administrators") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= databases.getAdministratorsGroup() %> &nbsp; </td>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= databases.getAdministratorsType() %> &nbsp; </td>
+		<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("databases.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = databases.getAdministratorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+		<% } %>
+          </tr>
+			<% } %>
+		<% } else { %>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("databases.accessrestrictions.users") %></th>
+		<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("databases.accessrestrictions.user") %></td>
+		<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (databases.getUsersType().equals("")) { %><%= mytext.display("public") %><% } else if (databases.getUsersType().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= databases.getUsersType() %> &nbsp; <% } %></td>
+		<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = databases.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+		<% } %>
+          </tr>
+		<% } %>
+	<% } else { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("databases.accessrestrictions.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("databases.accessrestrictions.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("databases.accessrestrictions.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+	<% } %>
+        </table>
+</div></div>
+<div id="Special_Pages" class="Special_Pages st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("databases.specialpages.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("databases.specialpages.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("databases.specialpages.searchresults") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select name="searchresults">
+                <option value="<%= databases.getSearchresults() %>"><%= mytext.display("pleaseselect") %> 
+                <%= mypage.select_options(db, "page", databases.getSearchresults()) %> 
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("databases.specialpages.searchresult") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select name="searchresult">
+                <option value="<%= databases.getSearchresult() %>"><%= mytext.display("pleaseselect") %> 
+                <%= mypage.select_options(db, "page", databases.getSearchresult()) %> 
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("databases.specialpages.viewpage") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select name="viewpage">
+                <option value="<%= databases.getViewPage() %>"><%= mytext.display("pleaseselect") %> 
+                <%= mypage.select_options(db, "page", databases.getViewPage()) %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("databases.index.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("databases.index.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("databases.index.adminindex") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="6" align="left"><%= databases.getAdminIndex() %>&nbsp;</td>
+          </tr>
+        </table>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

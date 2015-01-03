@@ -1,0 +1,59 @@
+<% if (! myrequest.getParameter("visitor").equals("")) { %>
+	<p><b><%= reportUsage.visitorName(myrequest.getParameter("visitor")) %></b></p>
+<% } else { %>
+	<p><b><%= reportUsage.visitName(myrequest.getParameter("visit")) %></b></p>
+<% } %>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" class="WCMstatsTableClienthosts"><%= mytext.display("usage.visit.clienthost") %></td>
+				<td align="center" class="WCMstatsTableVisitors"><%= mytext.display("usage.visit.visitor") %></td>
+				<td align="center" class="WCMstatsTableVisits"><%= mytext.display("usage.visit.visit") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.visit.user") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.visit.duration") %></td>
+				<td align="center" class="WCMstatsTablePageViews" colspan="4"><%= mytext.display("usage.visit.content") %></td>
+			</tr>
+<%
+	String previousvisit = "";
+	for (int i=0; i<((HashMap)usage.get("visit")).size(); i++) {
+		String myid = "" + i;
+%>
+<%
+		if ((! previousvisit.equals("")) && (! previousvisit.equals(reportUsage.visitName("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("sessionid"))))) {
+%>
+ 			<tr>
+				<td>&nbsp;</td>
+			</tr>
+<%
+		}
+		previousvisit = reportUsage.visitName("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("sessionid"));
+%>
+			<tr>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.clienthostName("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("clienthost")) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.visitorName("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("visitorid")) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.visitName("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("sessionid")) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.userName("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("clientusername")) %>&nbsp;</nobr></td>
+<% if ((("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("summarised")).equals("")) || (! ("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("sessionduration")).equals(""))) { %>
+				<td align="left">&nbsp;<%= Common.DateFormat("HH:mm:ss", (long)Common.number("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("sessionduration"))) %>&nbsp;</td>
+<% } else { %>
+				<td align="left">&nbsp;</td>
+<% } %>
+<% if ((! ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestclass").equals("image")) && (! ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestclass").equals("stylesheet"))) { %>
+				<td align="left"><nobr><b><%= reportUsage.pageName("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestclass") + ":::" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestdatabase") + ":::" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestid"), myconfig, db) %></b></nobr></td>
+<% } else { %>
+				<td align="left"><nobr><%= reportUsage.pageName("" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestclass") + ":::" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestdatabase") + ":::" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestid"), myconfig, db) %></nobr></td>
+<% } %>
+				<td align="left">&nbsp;<%= "" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestclass") %>&nbsp;</td>
+				<td align="right">&nbsp;<%= "" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestid") %>&nbsp;</td>
+				<td align="left">&nbsp;<%= "" + ((HashMap)((HashMap)usage.get("visit")).get(myid)).get("requestdatabase") %>&nbsp;</td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="4"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="left">&nbsp;<%= Common.DateFormat("HH:mm:ss", Math.round(reportUsage.totalValue((HashMap)usage.get("sessiondurations")))) %>&nbsp;</td>
+				<td align="right" colspan="4"><%= reportUsage.countValues((HashMap)usage.get("visit")) %></td>
+			</tr>
+		</table>
+	</div>

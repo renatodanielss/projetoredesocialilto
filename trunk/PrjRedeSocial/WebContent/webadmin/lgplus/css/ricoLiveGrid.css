@@ -1,0 +1,184 @@
+
+/* ricoLiveGrid */
+
+div.ricoLG_outerDiv {
+  position:relative;
+}
+
+div.ricoLG_innerDiv {
+  overflow:hidden;
+  position:absolute;
+  top:0px;
+  left:0px;
+}
+
+div.ricoLG_scrollDiv {
+  overflow:scroll;
+  position:relative;
+}
+
+div.ricoLG_resizeDiv {
+  position:absolute;
+  top:0px;
+  width:1px;
+}
+
+.ricoLG_table0, .ricoLG_table1 {
+}
+
+.ricoLG_table0 th, .ricoLG_table1 th, .ricoLG_table0 td, .ricoLG_table1 td {
+}
+
+.fixedTable {
+	table-layout : fixed;
+}
+
+.fixedTable td.cell {
+	white-space: nowrap;
+	overflow : hidden;
+}
+
+.fixedTable .first {
+}
+
+.fixedTable .tableCellHeader {
+	text-align : left;
+	background-color : #cc0000;
+}
+
+div.ricoLG_cell {
+  position:relative;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  height: 14pt;
+}
+
+th .ricoLG_cell {
+	font-size : 10pt;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+.ricoLG_cell .title  {
+	font-size : 10pt;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+.ricoLG_cell {
+	font-size : 8pt;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+.ricoLG_cell div {
+	font-size : 8pt;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+.ricoLG_cell input {
+	margin: 0px;
+	padding: 0px;
+}
+.ricoLG_cell a {
+	color: #cc0000;
+	font-size: 8pt;
+	text-decoration: none;
+	vertical-align: middle;
+}
+.ricoLG_cell a:visited {
+	color: #cc0000;
+	font-size: 8pt;
+	text-decoration: none;
+	vertical-align: middle;
+}
+.ricoLG_cell a:hover {
+	color: #cc0000;
+	font-size: 8pt;
+	text-decoration: underline;
+	vertical-align: middle;
+}
+.ricoLG_cell a.title {
+	color: black;
+	font-size: 10pt;
+	text-decoration: none;
+	vertical-align: middle;
+}
+.ricoLG_cell a.title:visited {
+	color: black;
+	font-size: 10pt;
+	text-decoration: none;
+	vertical-align: middle;
+}
+.ricoLG_cell a.title:hover {
+	color: #cc0000;
+	font-size: 10pt;
+	text-decoration: underline;
+	vertical-align: middle;
+}
+
+thead .ricoLG_cell, thead td, thead th {
+   background-color : #cc0000;
+   color            : #ffffff;
+   font-weight      : bold;
+}
+
+tr.ricoRowHighlight { background-color: #fcffd2; }
+tr.ricoLG_evenRow   { background-color: #eeeeee; }
+tr.ricoLG_oddRow    { background-color: #eeeeee; }
+
+div.ricoLG_frozenTabsDiv {
+  position:absolute;
+  top:0px;
+  left:0px;
+}
+
+div.ricoLG_scrollTabsDiv {
+  position:absolute;
+  top:0px;
+}
+
+div.ricoLG_Resize {
+  position:absolute;
+  width:5px;
+  height:100%;
+  top:0px;
+  right:0px;
+  cursor:e-resize;
+}
+
+img.ricoLG_MenuTarget {
+  position:absolute;
+  top:0px;
+  right:0px;
+  cursor:pointer;
+}
+
+div.ricoLG_messageDiv {
+  position:absolute;
+  z-index:200;
+  border:1px solid black;
+  background-color:white;
+  font-weight:bold;
+  color: #cc0000;
+  text-align:center;
+  padding:10px;
+}
+
+p.ricoBookmark {
+  text-align: left;
+}
+
+/* kept for compatibility with previous versions */
+
+table.ricoLiveGrid {
+   table-layout : fixed;
+   position     : relative;
+   width        : 500px;   /* required by Safari */
+}
+
+.tabHeader {
+  cursor: pointer;
+}
+
+#DrillDownDesc {
+  font-weight: bold;
+}
+

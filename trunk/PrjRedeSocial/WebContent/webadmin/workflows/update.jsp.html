@@ -1,0 +1,979 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("workflows.update.title") %></title>
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function doArchive(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'ARCHIVE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)ARCHIVE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)ARCHIVE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doCheckout(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'CHECKOUT' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)CHECKOUT([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)CHECKIN([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)CHECKOUT([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doCheckin(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'CHECKIN' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)CHECKOUT([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)CHECKIN([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)CHECKIN([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doPublish(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'PUBLISH' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNPUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)PUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)DELETE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)PUBLISH([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnpublish(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNPUBLISH' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNPUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)PUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)DELETE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNPUBLISH([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doDelete(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'DELETE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNPUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)PUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)DELETE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)DELETE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnschedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNSCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNSCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNSCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockUser(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK USER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK USER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK USER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK USER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK USER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockUser(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK USER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK USER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK USER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK USER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK USER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockEditor(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK EDITOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK EDITOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK EDITOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK EDITOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK EDITOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockEditor(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK EDITOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK EDITOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK EDITOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK EDITOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK EDITOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockDeveloper(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK DEVELOPER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK DEVELOPER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK DEVELOPER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK DEVELOPER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK DEVELOPER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockDeveloper(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK DEVELOPER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK DEVELOPER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK DEVELOPER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK DEVELOPER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK DEVELOPER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockCreator(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK CREATOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK CREATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK CREATOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK CREATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK CREATOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockCreator(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK CREATOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK CREATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK CREATOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK CREATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK CREATOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockPublisher(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK PUBLISHER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK PUBLISHER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK PUBLISHER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK PUBLISHER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK PUBLISHER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockPublisher(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK PUBLISHER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK PUBLISHER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK PUBLISHER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK PUBLISHER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK PUBLISHER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockAdministrator(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK ADMINISTRATOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockAdministrator(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK ADMINISTRATOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockSchedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK SCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK SCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK SCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK SCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK SCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockSchedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK SCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK SCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK SCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK SCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK SCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockUnschedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK UNSCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK UNSCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK UNSCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK UNSCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK UNSCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockUnschedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK UNSCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK UNSCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK UNSCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK UNSCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK UNSCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLocked(commands) {
+	doProgrammedArchive(commands);
+	doProgrammedCheckout(commands);
+	doProgrammedCheckin(commands);
+	doProgrammedPublish(commands);
+	doProgrammedUnpublish(commands);
+	doProgrammedDelete(commands);
+	doProgrammedUnschedule(commands);
+	doLockedUser(commands);
+	doLockedCreator(commands);
+	doLockedDeveloper(commands);
+	doLockedEditor(commands);
+	doLockedPublisher(commands);
+	doLockedAdministrator(commands);
+	doLockedSchedule(commands);
+	doLockedUnschedule(commands);
+}
+
+function doProgrammedArchive(commands) {
+	if (commands.match(/(^|[\r\n])ARCHIVE([\r\n]|$)/)) {
+		document.getElementById('content_archive').checked = true;
+	} else {
+		document.getElementById('content_archive').checked = false;
+	}
+}
+
+function doProgrammedCheckout(commands) {
+	if (commands.match(/(^|[\r\n])CHECKOUT([\r\n]|$)/)) {
+		document.getElementById('content_checkout').checked = true;
+	} else {
+		document.getElementById('content_checkout').checked = false;
+	}
+}
+
+function doProgrammedCheckin(commands) {
+	if (commands.match(/(^|[\r\n])CHECKIN([\r\n]|$)/)) {
+		document.getElementById('content_checkin').checked = true;
+	} else {
+		document.getElementById('content_checkin').checked = false;
+	}
+}
+
+function doProgrammedPublish(commands) {
+	if (commands.match(/(^|[\r\n])PUBLISH([\r\n]|$)/)) {
+		document.getElementById('content_publish').checked = true;
+	} else {
+		document.getElementById('content_publish').checked = false;
+	}
+}
+
+function doProgrammedUnpublish(commands) {
+	if (commands.match(/(^|[\r\n])UNPUBLISH([\r\n]|$)/)) {
+		document.getElementById('content_unpublish').checked = true;
+	} else {
+		document.getElementById('content_unpublish').checked = false;
+	}
+}
+
+function doProgrammedDelete(commands) {
+	if (commands.match(/(^|[\r\n])DELETE([\r\n]|$)/)) {
+		document.getElementById('content_delete').checked = true;
+	} else {
+		document.getElementById('content_delete').checked = false;
+	}
+}
+
+function doProgrammedUnschedule(commands) {
+	if (commands.match(/(^|[\r\n])UNSCHEDULE([\r\n]|$)/)) {
+		document.getElementById('content_unschedule').checked = true;
+	} else {
+		document.getElementById('content_unschedule').checked = false;
+	}
+}
+
+function doLockedUser(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK USER([\r\n]|$)/)) {
+		document.getElementById('locked_user_unlock').checked = true;
+		document.getElementById('locked_user_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK USER([\r\n]|$)/)) {
+		document.getElementById('locked_user_lock').checked = true;
+		document.getElementById('locked_user_unlock').checked = false;
+	} else {
+		document.getElementById('locked_user_lock').checked = false;
+		document.getElementById('locked_user_unlock').checked = false;
+	}
+}
+
+function doLockedCreator(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK CREATOR([\r\n]|$)/)) {
+		document.getElementById('locked_creator_unlock').checked = true;
+		document.getElementById('locked_creator_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK CREATOR([\r\n]|$)/)) {
+		document.getElementById('locked_creator_lock').checked = true;
+		document.getElementById('locked_creator_unlock').checked = false;
+	}
+}
+
+function doLockedDeveloper(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK DEVELOPER([\r\n]|$)/)) {
+		document.getElementById('locked_developer_unlock').checked = true;
+		document.getElementById('locked_developer_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK DEVELOPER([\r\n]|$)/)) {
+		document.getElementById('locked_developer_lock').checked = true;
+		document.getElementById('locked_developer_unlock').checked = false;
+	}
+}
+
+function doLockedEditor(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK EDITOR([\r\n]|$)/)) {
+		document.getElementById('locked_editor_unlock').checked = true;
+		document.getElementById('locked_editor_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK EDITOR([\r\n]|$)/)) {
+		document.getElementById('locked_editor_lock').checked = true;
+		document.getElementById('locked_editor_unlock').checked = false;
+	}
+}
+
+function doLockedPublisher(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK PUBLISHER([\r\n]|$)/)) {
+		document.getElementById('locked_publisher_unlock').checked = true;
+		document.getElementById('locked_publisher_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK PUBLISHER([\r\n]|$)/)) {
+		document.getElementById('locked_publisher_lock').checked = true;
+		document.getElementById('locked_publisher_unlock').checked = false;
+	}
+}
+
+function doLockedAdministrator(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK ADMINISTRATOR([\r\n]|$)/)) {
+		document.getElementById('locked_administrator_unlock').checked = true;
+		document.getElementById('locked_administrator_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK ADMINISTRATOR([\r\n]|$)/)) {
+		document.getElementById('locked_administrator_lock').checked = true;
+		document.getElementById('locked_administrator_unlock').checked = false;
+	}
+}
+
+function doLockedSchedule(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK SCHEDULE([\r\n]|$)/)) {
+		document.getElementById('locked_schedule_unlock').checked = true;
+		document.getElementById('locked_schedule_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK SCHEDULE([\r\n]|$)/)) {
+		document.getElementById('locked_schedule_lock').checked = true;
+		document.getElementById('locked_schedule_unlock').checked = false;
+	}
+}
+
+function doLockedUnschedule(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK UNSCHEDULE([\r\n]|$)/)) {
+		document.getElementById('locked_unschedule_unlock').checked = true;
+		document.getElementById('locked_unschedule_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK UNSCHEDULE([\r\n]|$)/)) {
+		document.getElementById('locked_unschedule_lock').checked = true;
+		document.getElementById('locked_unschedule_unlock').checked = false;
+	}
+}
+
+</script>
+<script type="text/javascript">
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contenttitle = inputnode.options[inputnode.selectedIndex].text;
+		var contentid = inputnode.options[inputnode.selectedIndex].value;
+		var contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		contenttitle = encodeURIComponent(contenttitle);
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		inputnode.options[0].text = contenttitle;
+		inputnode.options[0].value = contentid;
+		inputnode.selectedIndex = 0;
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("workflows.update.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="update_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&workflow=<%= html.encodeHtmlEntities(myrequest.getParameter("workflow")) %>" method="POST">
+<% if (License.valid(db, myconfig, "ecommerce") && (myrequest.getParameter("workflow").equals("-orders-"))) { %>
+          <input type="hidden" name="contentclass" value="-order-">
+<% } %>
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.heading") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.title") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2">
+<% if (License.valid(db, myconfig, "ecommerce") && (myrequest.getParameter("workflow").equals("-orders-"))) { %>
+              <input type="hidden" id="title" name="title" value="-orders-"> <%= mytext.display("workflows.title.orders") %>
+<% } else { %>
+              <input type="text" size="60" maxlength="250" id="title" name="title" value="<%= workflow.getTitle() %>" onchange="document.getElementById('select_title').selectedIndex = 0;">
+              <select id="select_title" name="select_title" onchange="document.getElementById('title').value = this.value; this.selectedIndex = 0;">
+                <option value="">&nbsp;</option>
+                <%= workflow.select_options(db, workflow.getTitle()) %>
+              </select>
+<% } %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.action") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"> 
+              <input type="text" size="60" maxlength="250" id="action" name="action" value="<%= workflow.getAction() %>" onchange="document.getElementById('select_action').selectedIndex = 0;">
+              <select id="select_action" name="select_action" onchange="document.getElementById('action').value = this.value; this.selectedIndex = 0;">
+                <option value="">&nbsp;</option>
+                <%= workflow.action_select_options(db, workflow.getAction()) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.fromstate") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"> 
+              <input type="text" size="60" maxlength="250" id="fromstate" name="fromstate" value="<%= workflow.getFromState() %>" onchange="document.getElementById('select_fromstate').selectedIndex = 0;">
+              <select id="select_fromstate" name="select_fromstate" onchange="document.getElementById('fromstate').value = this.value; this.selectedIndex = 0;">
+                <option value="">&nbsp;</option>
+                <%= workflow.state_select_options(db, workflow.getFromState()) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.tostate") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"> 
+              <input type="text" size="60" maxlength="250" id="tostate" name="tostate" value="<%= workflow.getToState() %>" onchange="document.getElementById('select_tostate').selectedIndex = 0;">
+              <select id="select_tostate" name="select_tostate" onchange="document.getElementById('tostate').value = this.value; this.selectedIndex = 0;">
+                <option value="">&nbsp;</option>
+                <%= workflow.state_select_options(db, workflow.getToState()) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2">&nbsp;</th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.content.actions") %></th>
+          </tr>
+<% if (! myrequest.getParameter("workflow").equals("-orders-")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"> 
+              <table width="100%" border="0">
+              	<tr>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_archive" name="content_archive" value="" onchange="doArchive(this);"><%= mytext.display("workflows.content.archive") %></nobr></td>
+              	  <td width="11%" valign="top">&nbsp;</td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_checkout" name="content_checkout" value="" onchange="doCheckout(this);"><%= mytext.display("workflows.content.checkout") %></nobr></td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_checkin" name="content_checkin" value="" onchange="doCheckin(this);"><%= mytext.display("workflows.content.checkin") %></nobr></td>
+              	  <td width="11%" valign="top">&nbsp;</td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_publish" name="content_publish" value="" onchange="doPublish(this);"><%= mytext.display("workflows.content.publish") %></nobr></td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_unpublish" name="content_unpublish" value="" onchange="doUnpublish(this);"><%= mytext.display("workflows.content.unpublish") %></nobr></td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_delete" name="content_delete" value="" onchange="doDelete(this);"><%= mytext.display("workflows.content.delete") %></nobr></td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_unschedule" name="content_unschedule" value="" onchange="doUnschedule(this);"><%= mytext.display("workflows.content.unschedule") %></nobr></td>
+              	</tr>
+              </table>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.locked") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"> 
+              <table width="100%" border="0">
+              	<tr>
+              	  <td width="11%" valign="top">&nbsp;</td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.user") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.editor") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.developer") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.creator") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.publisher") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.administrator") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.schedule") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.unschedule") %></td>
+              	</tr>
+              	<tr>
+              	  <th width="11%" align="left" valign="top"><%= mytext.display("workflows.locked.lock") %></td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_user_lock" name="locked_user" value="" onchange="doLockUser(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_editor_lock" name="locked_editor" value="" onchange="doLockEditor(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_developer_lock" name="locked_developer" value="" onchange="doLockDeveloper(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_creator_lock" name="locked_creator" value="" onchange="doLockCreator(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_publisher_lock" name="locked_publisher" value="" onchange="doLockPublisher(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_administrator_lock" name="locked_administrator" value="" onchange="doLockAdministrator(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_schedule_lock" name="locked_schedule" value="" onchange="doLockSchedule(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_unschedule_lock" name="locked_unschedule" value="" onchange="doLockUnschedule(this);">
+                  </td>
+                </tr>
+              	<tr>
+              	  <th width="11%" align="left" valign="top"><%= mytext.display("workflows.locked.unlock") %></td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_user_unlock" name="locked_user" value="" onchange="doUnlockUser(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_editor_unlock" name="locked_editor" value="" onchange="doUnlockEditor(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_developer_unlock" name="locked_developer" value="" onchange="doUnlockDeveloper(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_creator_unlock" name="locked_creator" value="" onchange="doUnlockCreator(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_publisher_unlock" name="locked_publisher" value="" onchange="doUnlockPublisher(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_administrator_unlock" name="locked_administrator" value="" onchange="doUnlockAdministrator(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_schedule_unlock" name="locked_schedule" value="" onchange="doUnlockSchedule(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_unschedule_unlock" name="locked_unschedule" value="" onchange="doUnlockUnschedule(this);">
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.contentchanges") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2">
+              <textarea cols="80" rows="5" id="contentchanges" name="contentchanges" onchange="doLocked(this.value)"><%= workflow.getContentChanges() %></textarea>
+            </td>
+          </tr>
+<% } %>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.workflowprogram") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2">
+              <select id="workflow_program" name="workflow_program" style="width: 400px;">
+                <option value="<%= workflow.getWorkflowProgram() %>"><%= workflow.getWorkflowProgram() %></option> &nbsp;
+                <option value="" <% if (workflow.getWorkflowProgram().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= workflow.workflowprogram_select_options(DOCUMENT_ROOT, workflow.getWorkflowProgram()) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2">&nbsp;</th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.accessrestrictions") %></th>
+          </tr>
+          <tr> 
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.usergroup") %></th>
+<% } %>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.usertype") %></th>
+<% } %>
+          </tr>
+          <tr> 
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%"> 
+              <select name="usergroup">
+                <option value="<%= workflow.getUserGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (workflow.getUserGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= mypage.usergroup_select_options(db, workflow.getUserGroup()) %>
+              </select>
+            </td>
+<% } %>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%"> 
+              <select name="usertype">
+                <option value="<%= workflow.getUserType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (workflow.getUserType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= mypage.usertype_select_options(db, workflow.getUserType()) %>
+              </select>
+            </td>
+<% } %>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2" width="50%"><%= mytext.display("workflows.userrestriction") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colSpan="2" width="50%">
+              <select name="userrestriction">
+                <option value="<%= workflow.getUserRestriction() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (workflow.getUserRestriction().equals("")) { %>selected<% } %>><%= mytext.display("workflows.userrestriction.any") %>
+                <option value="different" <% if (workflow.getUserRestriction().equals("different")) { %>selected<% } %>><%= mytext.display("workflows.userrestriction.different") %>
+                <option value="same" <% if (workflow.getUserRestriction().equals("same")) { %>selected<% } %>><%= mytext.display("workflows.userrestriction.same") %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.notification") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"> 
+              <nobr>
+              <select id="notify_email" name="notify_email" style="width: 400px;">
+                <option value="<%= workflow.getNotifyEmail() %>"><%= workflow.getNotifyEmailTitle(mysession, myconfig, db) %> &nbsp;
+                <option value=""><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('notify_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+<% if (! myrequest.getParameter("workflow").equals("-orders-")) { %>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.content") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.contentclass") %></th>
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.version") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%" valign="top"> 
+              <input type="checkbox" id="anycontentclass" name="contentclass" value="" onclick="if (this.checked) { for (var i=0; i<document.getElementsByTagName('input').length; i++) if (document.getElementsByTagName('input')[i].name == this.name) document.getElementsByTagName('input')[i].checked = false; this.checked = true; }" <% if ((workflow.getContentClass().equals("")) || (workflow.getContentClass().equals("||"))) { %> checked<% } %>> <%= mytext.display("all") %><br>
+              <input type="checkbox" name="contentclass" value="page" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" <% if (workflow.getContentClass().indexOf("|page|") > -1) { %> checked<% } %>> <%= mytext.display("content.page") %><br>
+              <input type="checkbox" name="contentclass" value="template" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" <% if (workflow.getContentClass().indexOf("|template|") > -1) { %> checked<% } %>> <%= mytext.display("content.template") %><br>
+              <input type="checkbox" name="contentclass" value="stylesheet" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" <% if (workflow.getContentClass().indexOf("|stylesheet|") > -1) { %> checked<% } %>> <%= mytext.display("content.stylesheet") %><br>
+              <input type="checkbox" name="contentclass" value="script" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" <% if (workflow.getContentClass().indexOf("|script|") > -1) { %> checked<% } %>> <%= mytext.display("content.script") %><br>
+              <input type="checkbox" name="contentclass" value="image" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" <% if (workflow.getContentClass().indexOf("|image|") > -1) { %> checked<% } %>> <%= mytext.display("content.image") %><br>
+              <input type="checkbox" name="contentclass" value="file" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" <% if (workflow.getContentClass().indexOf("|file|") > -1) { %> checked<% } %>> <%= mytext.display("content.file") %><br>
+              <input type="checkbox" name="contentclass" value="link" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" <% if (workflow.getContentClass().indexOf("|link|") > -1) { %> checked<% } %>> <%= mytext.display("content.link") %><br>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+              <input type="checkbox" name="contentclass" value="product" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" <% if (workflow.getContentClass().indexOf("|product|") > -1) { %> checked<% } %>> <%= mytext.display("content.product") %><br>
+<% } %>
+<%
+	Element mycontentclass = new Element();
+	mycontentclass.records(db, "select * from elements order by element");
+	while (mycontentclass.records(db, "")) {
+		if (workflow.getContentClass().indexOf("|" + mycontentclass.getElement() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contentclass" value="<%= mycontentclass.getElement() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= mycontentclass.getElement() %><br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contentclass" value="<%= mycontentclass.getElement() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= mycontentclass.getElement() %><br>
+<%
+		}
+	}
+%> 
+            </td>
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%" valign="top"> 
+              <input type="checkbox" id="anyversion" name="version" value="" onclick="if (this.checked) { for (var i=0; i<document.getElementsByTagName('input').length; i++) if (document.getElementsByTagName('input')[i].name == this.name) document.getElementsByTagName('input')[i].checked = false; this.checked = true; }" <% if ((workflow.getVersion().equals("")) || (workflow.getVersion().equals("||"))) { %> checked<% } %>> <%= mytext.display("all") %><br>
+<%
+	Version myversion = new Version();
+	myversion.records(db, "select * from versions order by version");
+	while (myversion.records(db, "")) {
+		if (workflow.getVersion().indexOf("|" + myversion.getVersion() + "|") > -1) {
+%> 
+              <input type="checkbox" name="version" value="<%= myversion.getVersion() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= myversion.getVersion() %><br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="version" value="<%= myversion.getVersion() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= myversion.getVersion() %><br>
+<%
+		}
+	}
+%> 
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.contentgroup") %></th>
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.contenttype") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%" valign="top"> 
+              <input type="checkbox" id="anycontentgroup" name="contentgroup" value="" onclick="if (this.checked) { for (var i=0; i<document.getElementsByTagName('input').length; i++) if (document.getElementsByTagName('input')[i].name == this.name) document.getElementsByTagName('input')[i].checked = false; this.checked = true; }" <% if ((workflow.getContentGroup().equals("")) || (workflow.getContentGroup().equals("||"))) { %> checked<% } %>> <%= mytext.display("all") %><br>
+<%
+	Contentgroup mycontentgroup = new Contentgroup();
+	mycontentgroup.records(db, "select * from contentgroups order by contentgroup");
+	while (mycontentgroup.records(db, "")) {
+		if (workflow.getContentGroup().indexOf("|" + mycontentgroup.getContentgroup() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contentgroup" value="<%= mycontentgroup.getContentgroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= mycontentgroup.getContentgroup() %> [content]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contentgroup" value="<%= mycontentgroup.getContentgroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= mycontentgroup.getContentgroup() %> [content]<br>
+<%
+		}
+	}
+%> 
+<%
+	Filegroup myfilegroup = new Filegroup();
+	myfilegroup.records(db, "select * from filegroups order by filegroup");
+	while (myfilegroup.records(db, "")) {
+		if (workflow.getContentGroup().indexOf("|" + myfilegroup.getFilegroup() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contentgroup" value="<%= myfilegroup.getFilegroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= myfilegroup.getFilegroup() %> [file]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contentgroup" value="<%= myfilegroup.getFilegroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= myfilegroup.getFilegroup() %> [file]<br>
+<%
+		}
+	}
+%> 
+<%
+	Imagegroup myimagegroup = new Imagegroup();
+	myimagegroup.records(db, "select * from imagegroups order by imagegroup");
+	while (myimagegroup.records(db, "")) {
+		if (workflow.getContentGroup().indexOf("|" + myimagegroup.getImagegroup() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contentgroup" value="<%= myimagegroup.getImagegroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= myimagegroup.getImagegroup() %> [image]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contentgroup" value="<%= myimagegroup.getImagegroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= myimagegroup.getImagegroup() %> [image]<br>
+<%
+		}
+	}
+%> 
+<%
+	Linkgroup mylinkgroup = new Linkgroup();
+	mylinkgroup.records(db, "select * from linkgroups order by linkgroup");
+	while (mylinkgroup.records(db, "")) {
+		if (workflow.getContentGroup().indexOf("|" + mylinkgroup.getLinkgroup() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contentgroup" value="<%= mylinkgroup.getLinkgroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= mylinkgroup.getLinkgroup() %> [link]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contentgroup" value="<%= mylinkgroup.getLinkgroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= mylinkgroup.getLinkgroup() %> [link]<br>
+<%
+		}
+	}
+%> 
+<%
+	Productgroup myproductgroup = new Productgroup();
+	myproductgroup.records(db, "select * from productgroups order by productgroup");
+	while (myproductgroup.records(db, "")) {
+		if (workflow.getContentGroup().indexOf("|" + myproductgroup.getProductgroup() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contentgroup" value="<%= myproductgroup.getProductgroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= myproductgroup.getProductgroup() %> [product]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contentgroup" value="<%= myproductgroup.getProductgroup() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= myproductgroup.getProductgroup() %> [product]<br>
+<%
+		}
+	}
+%> 
+            </td>
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%" valign="top"> 
+              <input type="checkbox" id="anycontenttype" name="contenttype" value="" onclick="if (this.checked) { for (var i=0; i<document.getElementsByTagName('input').length; i++) if (document.getElementsByTagName('input')[i].name == this.name) document.getElementsByTagName('input')[i].checked = false; this.checked = true; }" <% if ((workflow.getContentType().equals("")) || (workflow.getContentType().equals("||"))) { %> checked<% } %>> <%= mytext.display("all") %><br>
+<%
+	Contenttype mycontenttype = new Contenttype();
+	mycontenttype.records(db, "select * from contenttypes order by contenttype");
+	while (mycontenttype.records(db, "")) {
+		if (workflow.getContentType().indexOf("|" + mycontenttype.getContenttype() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contenttype" value="<%= mycontenttype.getContenttype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= mycontenttype.getContenttype() %> [content]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contenttype" value="<%= mycontenttype.getContenttype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= mycontenttype.getContenttype() %> [content]<br>
+<%
+		}
+	}
+%> 
+<%
+	Filetype myfiletype = new Filetype();
+	myfiletype.records(db, "select * from filetypes order by filetype");
+	while (myfiletype.records(db, "")) {
+		if (workflow.getContentType().indexOf("|" + myfiletype.getFiletype() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contenttype" value="<%= myfiletype.getFiletype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= myfiletype.getFiletype() %> [file]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contenttype" value="<%= myfiletype.getFiletype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= myfiletype.getFiletype() %> [file]<br>
+<%
+		}
+	}
+%> 
+<%
+	Imagetype myimagetype = new Imagetype();
+	myimagetype.records(db, "select * from imagetypes order by imagetype");
+	while (myimagetype.records(db, "")) {
+		if (workflow.getContentType().indexOf("|" + myimagetype.getImagetype() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contenttype" value="<%= myimagetype.getImagetype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= myimagetype.getImagetype() %> [image]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contenttype" value="<%= myimagetype.getImagetype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= myimagetype.getImagetype() %> [image]<br>
+<%
+		}
+	}
+%> 
+<%
+	Linktype mylinktype = new Linktype();
+	mylinktype.records(db, "select * from linktypes order by linktype");
+	while (mylinktype.records(db, "")) {
+		if (workflow.getContentType().indexOf("|" + mylinktype.getLinktype() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contenttype" value="<%= mylinktype.getLinktype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= mylinktype.getLinktype() %> [link]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contenttype" value="<%= mylinktype.getLinktype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= mylinktype.getLinktype() %> [link]<br>
+<%
+		}
+	}
+%> 
+<%
+	Producttype myproducttype = new Producttype();
+	myproducttype.records(db, "select * from producttypes order by producttype");
+	while (myproducttype.records(db, "")) {
+		if (workflow.getContentType().indexOf("|" + myproducttype.getProducttype() + "|") > -1) {
+%> 
+              <input type="checkbox" name="contenttype" value="<%= myproducttype.getProducttype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false" checked> <%= myproducttype.getProducttype() %> [product]<br>
+<%
+		} else {
+%>
+              <input type="checkbox" name="contenttype" value="<%= myproducttype.getProducttype() %>" onclick="if (this.checked && document.getElementById('any'+this.name)) document.getElementById('any'+this.name).checked = false"> <%= myproducttype.getProducttype() %> [product]<br>
+<%
+		}
+	}
+%> 
+            </td>
+          </tr>
+<% } %>
+        </table>
+<%@ include file="diagram.jsp.html" %>
+      </form>
+<script type="text/javascript">doLocked(document.getElementById('contentchanges').value);</script>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

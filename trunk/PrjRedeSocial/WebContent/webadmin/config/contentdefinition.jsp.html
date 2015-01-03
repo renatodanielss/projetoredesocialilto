@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.contentdefinition.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.contentdefinition.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <p> 
+      <form action="contentdefinition.jsp" method="POST">
+        <p> 
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.contentdefinition.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentdefinition" value="yes" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_contentdefinition").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentdefinition" value="" <% if (myconfig.get(db, "use_contentdefinition").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentpackages" value="yes" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contentpackages.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentpackages" value="" <% if (myconfig.get(db, "use_contentpackages").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contentpackages.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentbundles" value="yes" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contentbundles.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentbundles" value="" <% if (myconfig.get(db, "use_contentbundles").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contentbundles.disable") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.contentdefinition.content") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentclasses" value="yes" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_contentclasses").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contentclasses.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentclasses" value="" <% if (myconfig.get(db, "use_contentclasses").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contentclasses.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contenttypes" value="yes" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_contenttypes").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contenttypes.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contenttypes" value="" <% if (myconfig.get(db, "use_contenttypes").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contenttypes.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentgroups" value="yes" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_contentgroups").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contentgroups.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_contentgroups" value="" <% if (myconfig.get(db, "use_contentgroups").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.contentgroups.disable") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.contentdefinition.images") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_imagetypes" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_imagetypes").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.imagetypes.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_imagetypes" value="" <% if (myconfig.get(db, "use_imagetypes").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.imagetypes.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_imagegroups" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_imagegroups").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.imagegroups.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_imagegroups" value="" <% if (myconfig.get(db, "use_imagegroups").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.imagegroups.disable") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.contentdefinition.files") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_filetypes" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_filetypes").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.filetypes.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_filetypes" value="" <% if (myconfig.get(db, "use_filetypes").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.filetypes.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_filegroups" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_filegroups").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.filegroups.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_filegroups" value="" <% if (myconfig.get(db, "use_filegroups").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.filegroups.disable") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.contentdefinition.links") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_linktypes" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_linktypes").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.linktypes.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_linktypes" value="" <% if (myconfig.get(db, "use_linktypes").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.linktypes.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_linkgroups" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_linkgroups").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.linkgroups.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_linkgroups" value="" <% if (myconfig.get(db, "use_linkgroups").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.linkgroups.disable") %></td>
+          </tr>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.contentdefinition.products") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_producttypes" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_producttypes").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.producttypes.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_producttypes" value="" <% if (myconfig.get(db, "use_producttypes").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.producttypes.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_productgroups" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_productgroups").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.productgroups.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_productgroups" value="" <% if (myconfig.get(db, "use_productgroups").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.contentdefinition.productgroups.disable") %></td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+      </form>
+      <p>&nbsp;</p>
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

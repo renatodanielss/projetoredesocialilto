@@ -1,0 +1,70 @@
+      <form action="/<%= mytext.display("adminpath") %>/config/licenses.jsp" method="POST">
+<% if (! wizard.equals("")) { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+<% } %>
+        <p> 
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.licenses.edition") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.edition.personal") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="80" name="personal_license" value="<%= myconfig.get(db, "personal_license") %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.edition.professional") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="80" name="professional_license" value="<%= myconfig.get(db, "professional_license") %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.edition.enterprise") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="80" name="enterprise_license" value="<%= myconfig.get(db, "enterprise_license") %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.edition.hosting") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="80" name="hosting_license" value="<%= myconfig.get(db, "hosting_license") %>">
+            </td>
+          </tr>
+          <tr align="left"> 
+            <th class="WCMinnerContentHeading1" colspan="2"><%= mytext.display("config.licenses.addons") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.addons.ecommerce") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="80" name="ecommerce_license" value="<%= myconfig.get(db, "ecommerce_license") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.addons.community") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="community_license" value="<%= myconfig.get(db, "community_license") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.addons.databases") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="databases_license" value="<%= myconfig.get(db, "databases_license") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.addons.statistics") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="statistics_license" value="<%= myconfig.get(db, "statistics_license") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.licenses.addons.experience") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="experience_license" value="<%= myconfig.get(db, "experience_license") %>">
+            </td>
+          </tr>
+        </table>
+      </form>

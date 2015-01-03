@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.database.title") %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+<%@ include file="database.javascript.jsp.html" %>
+<script type="text/javascript">
+
+$(function(){
+	clearAll(document.getElementById('initializeandimport'));
+	importWebsiteAddOnModule(document.getElementById('addonmodules'));
+	restoreWebsiteBackup(document.getElementById('restorebackup'));
+
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+
+<% if (inidb.ReadINI(inifile, ini_database, "database", "", "", null, null).equals("")) { %>
+	$('#tabs').find('[rel=Database_Connection]').click();
+<% } else if (! current_database.equals(database)) { %>
+	$('#tabs').find('[rel=Database_Connection]').click();
+<% } else if (! error.equals("")) { %>
+	$('#tabs').find('[rel=Database_Connection]').click();
+<% } else if (myconfig.get(db, "database_version").equals("")) { %>
+	$('#tabs').find('[rel=Initialize_Import]').click();
+<% } else if (! myrequest.getParameter("tab").equals("")) { %>
+	$('#tabs').find('[rel='<%= html.encodeHtmlEntities(myrequest.getParameter("tab")) %>']').click();
+<% } else { %>
+	$('#tabs').find('[rel=Backup_Export]').click();
+<% } %>
+
+});
+
+</script>
+<script type="text/javascript">
+
+var tabloaded = new Array();
+function tab(name) {
+	if ((name == "Initialize_Import") && (! tabloaded[name])) {
+		document.getElementById(name).firstChild.innerHTML = GET("database.initializeandimport.jsp");
+		clearAll(document.getElementById('initializeandimport'));
+              	tabloaded[name] = true;
+	} else if ((name == "Add-On_Modules") && (! tabloaded[name])) {
+		document.getElementById(name).firstChild.innerHTML = GET("database.addonmodules.jsp");
+		importWebsiteAddOnModule(document.getElementById('addonmodules'));
+              	tabloaded[name] = true;
+	} else if ((name == "Website_Designs") && (! tabloaded[name])) {
+		document.getElementById(name).firstChild.innerHTML = GET("database.websitedesigns.jsp");
+              	tabloaded[name] = true;
+	} else if ((name == "Import_Media") && (! tabloaded[name])) {
+		document.getElementById(name).firstChild.innerHTML = GET("database.importmedia.jsp");
+		document.getElementById("titleelement").disabled = false;
+              	document.getElementById("contentelement").disabled = false;
+              	tabloaded[name] = true;
+	} else if ((name == "Backup_Export") && (! tabloaded[name])) {
+		document.getElementById(name).firstChild.innerHTML = GET("database.backupandexport.jsp");
+              	tabloaded[name] = true;
+	} else if (name == "Restore_Backup") {
+		document.getElementById(name).firstChild.innerHTML = GET("database.restorebackup.jsp");
+		restoreWebsiteBackup(document.getElementById('restorebackup'));
+              	tabloaded[name] = true;
+	} else if ((name == "Advanced") && (! tabloaded[name])) {
+		document.getElementById(name).firstChild.innerHTML = GET("database.advanced.jsp");
+		document.getElementById("advancedtitleelement").disabled = false;
+              	document.getElementById("advancedcontentelement").disabled = false;
+              	tabloaded[name] = true;
+	}
+	if (mySlideTabs) {
+		mySlideTabs.tabs_resize();
+		setTimeout(function(){
+			mySlideTabs.tabs_resize();
+		}, 1000);
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.database.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<% if ((! inidb.ReadINI(inifile, ini_database, "database", "", "", null, null).equals("")) && (! error.equals(""))) { %>
+<% } else if (! current_database.equals(database)) { %>
+<% } else if (! myrequest.getParameter("redirect").equals("")) { %>
+	<script type="text/javascript">document.location.href='<%= html.encodeHtmlEntities(Common.redirectURL(db, myconfig, myrequest.getParameter("redirect"), "/")) %>'</script>
+<% } else if ((filepost != null) && (! filepost.getParameter("redirect").equals(""))) { %>
+	<script type="text/javascript">document.location.href='<%= html.encodeHtmlEntities(Common.redirectURL(db, myconfig, filepost.getParameter("redirect"), "/")) %>'</script>
+<% } %>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Database_Connection" rel="Database_Connection"><%= mytext.display("config.database.connection.tab") %></a></li>
+                <li><a onclick="tab('Initialize_Import');showall('websites');" href="#Initialize_Import" rel="Initialize_Import"><%= mytext.display("config.database.import.tab") %></a></li>
+                <li><a onclick="tab('Add-On_Modules');showall('addons');" href="#Add-On_Modules" rel="Add-On_Modules"><%= mytext.display("config.database.addons.tab") %></a></li>
+                <li><a onclick="tab('Website_Designs');showall('designs');" href="#Website_Designs" rel="Website_Designs"><%= mytext.display("config.database.designs.tab") %></a></li>
+                <li><a onclick="tab('Import_Media');" href="#Import_Media" rel="Import_Media"><%= mytext.display("config.database.media.tab") %></a></li>
+                <li><a onclick="tab('Backup_Export');" href="#Backup_Export" rel="Backup_Export"><%= mytext.display("config.database.export.tab") %></a></li>
+                <li><a onclick="tab('Restore_Backup');showall('backups');" href="#Restore_Backup" rel="Restore_Backup"><%= mytext.display("config.database.restore.tab") %></a></li>
+                <li><a onclick="tab('Advanced');" href="#Advanced" rel="Advanced"><%= mytext.display("config.database.settings.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Database_Connection" class="Database_Connection st_view"><div class="st_view_inner">
+<%@ include file="database.connection.jsp.html" %>
+</div></div>
+<div id="Initialize_Import" class="Initialize_Import st_view"><div class="st_view_inner">
+<%= mytext.display("wait.data.loading") %>
+</div></div>
+<div id="Add-On_Modules" class="Add-On_Modules st_view"><div class="st_view_inner">
+<%= mytext.display("wait.data.loading") %>
+</div></div>
+<div id="Website_Designs" class="Website_Designs st_view"><div class="st_view_inner">
+<%= mytext.display("wait.data.loading") %>
+</div></div>
+<div id="Import_Media" class="Import_Media st_view"><div class="st_view_inner">
+<%= mytext.display("wait.data.loading") %>
+</div></div>
+<div id="Backup_Export" class="Backup_Export st_view"><div class="st_view_inner">
+<%= mytext.display("wait.data.loading") %>
+</div></div>
+<div id="Restore_Backup" class="Restore_Backup st_view"><div class="st_view_inner">
+<%= mytext.display("wait.data.loading") %>
+</div></div>
+<div id="Advanced" class="Advanced st_view"><div class="st_view_inner">
+<%= mytext.display("wait.data.loading") %>
+</div></div>
+
+    </div>
+</div>
+
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

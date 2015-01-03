@@ -1,0 +1,144 @@
+      <form id="advanced" action="database.jsp?<%= Math.random() %>" method="POST" enctype="multipart/form-data">
+<% if (! wizard.equals("")) { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+<% } %>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("config.database.advanced.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2">
+              <%= mytext.display("config.database.advanced.intro") %>
+              <p>
+                <input type="submit" value="<%= mytext.display("config.database.advanced.submit") %>" onclick="enableAll(this.form);">
+              </p>
+              <p>
+              <input type="radio" id="preselectCreateNewWebsiteFromExample" name="preselect" onclick="createNewWebsiteFromExample(this.form);"> <%= mytext.display("config.database.advanced.preselect.example") %>
+              <br>
+              <input type="radio" id="preselectCreateNewWebsiteFromScratch" name="preselect" onclick="createNewWebsiteFromScratch(this.form);"> <%= mytext.display("config.database.advanced.preselect.scratch") %>
+              <br>
+              <input type="radio" id="preselectCreateNewWebsiteFromScratchWithImagesAndFiles" name="preselect" onclick="createNewWebsiteFromScratchWithImagesAndFiles(this.form);"> <%= mytext.display("config.database.advanced.preselect.images") %>
+              <br>
+              <input type="radio" id="preselectImportWebsiteAddOnModule" name="preselect" onclick="importWebsiteAddOnModule(this.form);"> <%= mytext.display("config.database.advanced.preselect.addon") %>
+              <br>
+              <input type="radio" id="preselectRestoreWebsiteBackup" name="preselect" onclick="restoreWebsiteBackup(this.form);"> <%= mytext.display("config.database.advanced.preselect.backup") %>
+              <br>
+              <input type="radio" id="preselectClearAll" name="preselect" onclick="clearAll(this.form);" checked> <%= mytext.display("config.database.advanced.preselect.clear") %>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.database.advanced.initialize") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="drop" value="yes"><%= mytext.display("config.database.advanced.drop") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.advanced.drop.text") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="create" value="yes"><%= mytext.display("config.database.advanced.create") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.advanced.create.text") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.database.advanced.import") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="delete" value="yes"><%= mytext.display("config.database.advanced.delete") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.advanced.delete.text") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="insertwebsite" value="yes"><%= mytext.display("config.database.advanced.insertwebsite") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.advanced.insertwebsite.text") %>
+              <br><% if (db != null) { %><%= db.import_website_options(out, mytext, myconfig, DOCUMENT_ROOT, "/", "advanced") %><% } %>
+              <script>document.getElementById("advancedtitleelement").disabled = false;</script>
+              <script>document.getElementById("advancedcontentelement").disabled = false;</script>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="insertimages" value="yes"><%= mytext.display("config.database.advanced.insertimages") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.advanced.insertimages.text") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="insertfiles" value="yes"><%= mytext.display("config.database.advanced.insertfiles") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.advanced.insertfiles.text") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="insert" value="yes"><%= mytext.display("config.database.advanced.insert") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.advanced.insert.text") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.database.advanced.data") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <%= mytext.display("config.database.advanced.server") %>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <select name="importfile">
+                <option value=""><%= mytext.display("config.database.advanced.server.text") %>
+                <%= DB.import_file_select_options(mytext, DOCUMENT_ROOT, servername) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" valign="top" colspan="2">
+              <%= mytext.display("config.database.advanced.upload") %><br>
+              <input type="file" size="60" name="file" onchange="if (this.form.submitbutton) this.form.submitbutton.disabled = false;">
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.database.settings.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2">
+              <%= mytext.display("config.database.settings.intro") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top" width="50%">
+              <%= mytext.display("config.database.settings.maxtime") %>
+            </th>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <input type="text" name="maxtime" value="" disabled>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top" width="50%">
+              <%= mytext.display("config.database.settings.maxmemory") %>
+            </th>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <input type="text" name="maxmemory" value="" disabled>
+            </td>
+          </tr>
+        </table>
+        <br>
+      </form>

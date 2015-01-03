@@ -1,0 +1,187 @@
+	<% if (mypage.getContentClass().equals("product")) { %>
+
+<div id="Product Stock" class="Product_Stock st_view"><div class="st_view_inner">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("content.productstock.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="3"><%= mytext.display("content.productstock.intro") %></td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.in") %></th></tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.in.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><span id="product_stock_amount_current"><%= Common.intnumber(mypage.getProductStockAmount(db)) %></span> &nbsp;</td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="1">
+				<nobr>
+					<select id="product_stock_amount_update" name="product_stock_amount_update">
+						<option value="add"><%= mytext.display("content.productstock.stock.in.add") %></option> &nbsp;
+						<option value="subtract"><%= mytext.display("content.productstock.stock.in.subtract") %></option> &nbsp;
+						<option value="set"><%= mytext.display("content.productstock.stock.in.set") %></option> &nbsp;
+					</select>
+					<input type="input" id="product_stock_amount_input" name="product_stock_amount_input" value="0">
+					<input type="hidden" id="product_stock_amount" name="product_stock_amount" value="0">
+				</nobr>
+			</td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.in.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= Common.intnumber(mypage.getProductStockAmount(db)) %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.in.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="80" maxlength="250" name="product_stock_text" value="<%= html.encode(mypage.getProductStockText()) %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.in.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.getProductStockText() %></td>
+
+		<% } %>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.restocked") %></th></tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.restocked.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><span id="product_restocked_amount_current"><%= Common.intnumber(mypage.getProductRestockedAmount(db)) %></span> &nbsp;</td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="1">
+				<nobr>
+					<select id="product_restocked_amount_update" name="product_restocked_amount_update">
+						<option value="add"><%= mytext.display("content.productstock.stock.restocked.add") %></option> &nbsp;
+						<option value="subtract"><%= mytext.display("content.productstock.stock.restocked.subtract") %></option> &nbsp;
+						<option value="set"><%= mytext.display("content.productstock.stock.restocked.set") %></option> &nbsp;
+					</select>
+					<input type="input" id="product_restocked_amount_input" name="product_restocked_amount_input" value="0">
+					<input type="hidden" id="product_restocked_amount" name="product_restocked_amount" value="0">
+				</nobr>
+			</td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.restocked.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= Common.intnumber(mypage.getProductRestockedAmount(db)) %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.low") %></th></tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.low.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="5" maxlength="20" name="product_lowstock_amount" value="<%= Common.intnumber(mypage.getProductLowStockAmount()) %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.low.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= Common.intnumber(mypage.getProductLowStockAmount()) %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.low.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="80" maxlength="250" name="product_lowstock_text" value="<%= html.encode(mypage.getProductLowStockText()) %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.low.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.getProductLowStockText() %></td>
+
+		<% } %>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.no") %></th></tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.no.order") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<input type="radio" name="product_nostock_order" value="yes"<% if (mypage.getProductNoStockOrder().equals("yes")) { %> checked<% } %>><%= mytext.display("content.productstock.stock.no.order.enabled") %>
+				<input type="radio" name="product_nostock_order" value="no"<% if (mypage.getProductNoStockOrder().equals("no")) { %> checked<% } %>><%= mytext.display("content.productstock.stock.no.order.disabled") %>
+				<input type="radio" name="product_nostock_order" value=""<% if (mypage.getProductNoStockOrder().equals("")) { %> checked<% } %>><%= mytext.display("content.productstock.stock.no.order.unlimited") %>
+			</td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.no.order") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><% if (! mypage.getProductNoStockOrder().equals("no")) { %><%= mytext.display("content.productstock.stock.no.order.enabled") %><% } else { %><%= mytext.display("content.productstock.stock.no.order.disabled") %><% } %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.no.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="80" maxlength="250" name="product_nostock_text" value="<%= html.encode(mypage.getProductNoStockText()) %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.no.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.getProductNoStockText() %></td>
+
+		<% } %>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.location") %></th></tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.location") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="80" maxlength="250" name="product_location" value="<%= html.encode(mypage.getProductLocation()) %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.location") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.getProductLocation() %></td>
+
+		<% } %>
+
+		</tr>
+
+<!--
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<input type="radio" name="product_delivery" value="new"<% if (mypage.getProductDelivery().equals("new")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.new") %>
+				<input type="radio" name="product_delivery" value="renew"<% if (mypage.getProductDelivery().equals("renew")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.renew") %>
+				<input type="radio" name="product_delivery" value="addon"<% if (mypage.getProductDelivery().equals("addon")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.addon") %>
+			</td>
+-->
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left" colspan="3"><%= mytext.display("content.productstock.about.heading") %></th></tr>
+		<tr><td align="left" colspan="3"><%= mytext.display("content.productstock.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>
+
+	<% } %>

@@ -1,0 +1,101 @@
+<div id="Meta Information" class="Meta_Information st_view"><div class="st_view_inner">
+	<input type="hidden" id="metainfo" name="metainfo" value="<%= mypage.getMetaInfo().replaceAll("\"", "&quot;") %>">
+	<input type="hidden" id="segmentation" name="segmentation" value="<%= mypage.getSegmentation().replaceAll("\"", "&quot;") %>">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.metainformation.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left"><%= mytext.display("content.metainformation.intro") %></td></tr>
+
+	<% if (myconfig.get(db, "use_metainformation").equals("yes")) { %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.metainformation.author") %></th></tr>
+
+		<% if (update) { %>
+
+		<tr><td class="WCMinnerContentInputValue"><input type="text" size="80" maxlength="250" name="author" value="<%= mypage.getAuthor().replaceAll("\"", "&quot;") %>"></td></tr>
+
+		<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getAuthor() %>&nbsp;</td></tr>
+
+		<% } %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.metainformation.description") %></th></tr>
+
+		<% if (update) { %>
+
+		<tr><td class="WCMinnerContentInputValue"><input type="text" size="80" maxlength="250" name="description" value="<%= mypage.getDescription().replaceAll("\"", "&quot;") %>"></td></tr>
+
+		<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getDescription() %>&nbsp;</td></tr>
+
+		<% } %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.metainformation.keywords") %></th></tr>
+
+		<% if (update) { %>
+
+		<tr><td class="WCMinnerContentInputValue"><input type="text" size="80" maxlength="250" name="keywords" value="<%= mypage.getKeywords().replaceAll("\"", "&quot;") %>"></td></tr>
+
+		<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getKeywords() %>&nbsp;</td></tr>
+
+		<% } %>
+
+		<tr id="metainfoaddnew"><td>&nbsp;</td></tr>
+
+		<% if (update) { %>
+
+		<tr><td><input id="metainfoname" type="text" size="60" maxlength="255" name="metainfoname"> <input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('metainfo')"> <input type="checkbox" id="metainfointernal" name="metainfointernal" value="yes"> <%= mytext.display("content.metainformation.internal") %></td></tr>
+
+		<% } else { %>
+
+		<tr><td><input id="metainfoname" type="hidden" name="metainfoname"></td></tr>
+
+		<% } %>
+	<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue" align="left"><div><b><%= mytext.display("content.metainformation.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.metainformation.enableconfig") %><% } else { %><%= mytext.display("content.metainformation.enablesuperadmin") %><% } %></td></tr>
+
+	<% } %>
+
+	<% if ((License.valid(db, myconfig, "experience")) && ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("link")) || (mypage.getContentClass().equals("script")) || (mypage.getContentClass().equals("stylesheet")))) { %>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.segmentation.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left"><%= mytext.display("content.segmentation.intro") %></td></tr>
+
+		<tr id="segmentationaddnew"><td>&nbsp;</td></tr>
+
+		<% if (update) { %>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+				<%= mytext.display("content.segmentation.segment") %>:
+				<select id="segmentationname" name="segmentationname" style="width: 150px;">
+					<option value=""></option>
+					<%= mypage.usersegment_select_options(db, mypage.getUsersegment()) %>
+				</select>
+				&nbsp;
+				<%= mytext.display("content.segmentation.weight") %>:
+				<input id="segmentationvalue" name="segmentationvalue" type="text" size="5" maxlength="10">
+				<input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('segmentation')">
+			</td>
+		</tr>
+
+		<% } else { %>
+
+		<tr><td><input id="segmentationname" type="hidden" name="segmentationname"></td></tr>
+
+		<% } %>
+
+	<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left"><%= mytext.display("content.metainformation.about.heading") %></th></tr>
+		<tr><td align="left"><%= mytext.display("content.metainformation.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>

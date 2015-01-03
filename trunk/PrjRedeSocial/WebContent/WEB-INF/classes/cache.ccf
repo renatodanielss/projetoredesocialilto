@@ -1,0 +1,64 @@
+
+# DEFAULT CACHE REGION
+
+# DEFAULT MEMORY CACHE ONLY
+jcs.default=
+# OPTIONAL AUXILIARY DISK CACHE - requires configuration of jcs.auxiliary.DC.attributes.DiskPath below
+#jcs.default=DC
+
+jcs.default.cacheattributes=org.apache.jcs.engine.CompositeCacheAttributes
+jcs.default.cacheattributes.MaxObjects=1000
+jcs.default.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
+
+#jcs.region.cacheattributes.UseMemoryShrinker=true
+#jcs.region.cacheattributes.MaxMemoryIdleTimeSeconds=3600
+#jcs.region.cacheattributes.ShrinkerIntervalSeconds=60
+#jcs.region.cacheattributes.MaxSpoolPerRun=500
+#jcs.region.elementattributes=org.apache.jcs.engine.ElementAttributes
+#jcs.region.elementattributes.IsEternal=false
+
+
+
+# AUXILIARY DISK CACHE
+
+# DISK CACHE FILES LOCATION - WCM.data - WCM.key
+# !!!!! IMPORTANT: SHOULD BE IN A SECURE LOCATION IF ON A "PUBLIC"/"SHARED" SERVER !!!!!
+# default "." = Java application server installation folder
+#jcs.auxiliary.DC.attributes.DiskPath=.
+#jcs.auxiliary.DC.attributes.DiskPath=/tmp
+#jcs.auxiliary.DC.attributes.DiskPath=C:/Windows/Temp
+#jcs.auxiliary.DC.attributes.DiskPath=C:/TEMP
+
+jcs.auxiliary.DC=org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCacheFactory
+jcs.auxiliary.DC.attributes=org.apache.jcs.auxiliary.disk.indexed.IndexedDiskCacheAttributes
+jcs.auxiliary.DC.attributes.maxKeySize=100000
+
+#jcs.auxiliary.DC.attributes.ClearDiskOnStartup=true
+#jcs.auxiliary.DC.attributes.MaxPurgatorySize=10000
+#jcs.auxiliary.DC.attributes.MaxKeySize=10000
+#jcs.auxiliary.DC.attributes.OptimizeAtRemoveCount=300000
+#jcs.auxiliary.DC.attributes.OptimizeOnShutdown=true
+#jcs.auxiliary.DC.attributes.MaxRecycleBinSize=7500
+
+
+
+# OPTIONAL WEBSITE SPECIFIC CACHE REGIONS
+# - make additional copies for each Hosting Edition client website
+# - replace "DATABASENAME" with your configured database connection string's database name
+
+# DEFAULT MEMORY CACHE ONLY
+#jcs.region.DATABASENAME=
+# OPTIONAL AUXILIARY DISK CACHE - requires configuration of jcs.auxiliary.DC.attributes.DiskPath below
+#jcs.region.DATABASENAME=DC
+
+#jcs.region.DATABASENAME.cacheattributes=org.apache.jcs.engine.CompositeCacheAttributes
+#jcs.region.DATABASENAME.cacheattributes.MaxObjects=1000
+#jcs.region.DATABASENAME.cacheattributes.MemoryCacheName=org.apache.jcs.engine.memory.lru.LRUMemoryCache
+
+#jcs.region.DATABASENAME.cacheattributes.UseMemoryShrinker=true
+#jcs.region.DATABASENAME.cacheattributes.MaxMemoryIdleTimeSeconds=3600
+#jcs.region.DATABASENAME.cacheattributes.ShrinkerIntervalSeconds=60
+#jcs.region.DATABASENAME.cacheattributes.MaxSpoolPerRun=500
+#jcs.region.DATABASENAME.elementattributes=org.apache.jcs.engine.ElementAttributes
+#jcs.region.DATABASENAME.elementattributes.IsEternal=false
+

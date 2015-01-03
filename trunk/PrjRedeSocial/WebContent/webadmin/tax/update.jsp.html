@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("tax.update.title") %></title>
+<script type="text/javascript">
+
+$(function(){
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	$('#tabs').find('[rel=Tax_Rate]').click();
+});
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contentid = '';
+		var contenttitle = '';
+		var contenthref = '';
+		if (inputnode.type != "select-multiple") {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + encodeURIComponent(inputid) + '&section=' + encodeURIComponent(section) + '&category=' + encodeURIComponent(category) + '&title=' + encodeURIComponent(title) + '&id=' + encodeURIComponent(contentid) + '&link=' + encodeURIComponent(contenttitle) + '&href=' + encodeURIComponent(contenthref), 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		if (inputnode.type == "select-multiple") {
+			var newoption = new Option();
+			newoption.text = contenttitle;
+			newoption.value = contentid;
+			newoption.selected = true;
+			inputnode.options[inputnode.options.length] = newoption;
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+		}
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("tax.update.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="update_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Tax_Rate" rel="Tax_Rate"><%= mytext.display("tax.rate.tab") %></a></li>
+                <li><a href="#Tax" rel="Tax"><%= mytext.display("tax.tax.tab") %></a></li>
+                <li><a href="#Applies_To_Orders" rel="Applies_To_Orders"><%= mytext.display("tax.orders.tab") %></a></li>
+                <li><a href="#Applies_To_Products" rel="Applies_To_Products"><%= mytext.display("tax.products.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Tax_Rate" class="Tax_Rate st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("tax.rate.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("tax.rate.title") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="60" maxlength="250" name="title" value="<%= tax.getTitle() %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="4" align="left"><%= mytext.display("tax.rate.description") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4"> 
+              <input type="text" size="60" maxlength="250" name="tax_description" value="<%= tax.getTaxDescription() %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Tax" class="Tax st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="5" align="left"><%= mytext.display("tax.tax.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="5" align="left"></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("tax.tax.currency") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("tax.tax.perorder") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("tax.tax.peritem") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("tax.tax.percentage") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("tax.tax.total") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select name="tax_currency">
+                <option value="<%= tax.getTaxCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="" <% if (tax.getTaxCurrency().equals("")) { %>selected<% } %>><%= mytext.display("default") %> (<%= tax.currency_symbol(db, myconfig.get(db, "default_currency")) %>) 
+		<%= tax.currency_options(db, tax.getTaxCurrency()) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="10" maxlength="50" name="tax_order" value="<%= tax.getTaxOrder() %>">
+            </td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="10" maxlength="50" name="tax_item" value="<%= tax.getTaxItem() %>">
+            </td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="10" maxlength="50" name="tax_percent" value="<%= tax.getTaxPercent() %>">
+            </td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="10" maxlength="50" name="tax_total" value="<%= tax.getTaxTotal() %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Applies_To_Orders" class="Applies_To_Orders st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("tax.orders.heading") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.country") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.state") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="30" maxlength="50" name="country" value="<%= tax.getCountry() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="30" maxlength="50" name="state" value="<%= tax.getState() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.quantityfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.quantityto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="quantity_from" value="<%= tax.getQuantityFrom() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="quantity_to" value="<%= tax.getQuantityTo() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("tax.orders.currency") %></th>
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("tax.orders.totalfrom") %></th>
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("tax.orders.totalto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <select name="total_currency">
+                <option value="<%= tax.getTotalCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="" <% if (tax.getTotalCurrency().equals("")) { %>selected<% } %>><%= mytext.display("default") %> (<%= tax.currency_symbol(db, myconfig.get(db, "default_currency")) %>) 
+		<%= tax.currency_options(db, tax.getTotalCurrency()) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <input type="text" size="10" maxlength="50" name="total_from" value="<%= tax.getTotalFrom() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <input type="text" size="10" maxlength="50" name="total_to" value="<%= tax.getTotalTo() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.weightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.weightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_weight_from" value="<%= tax.getTotalWeightFrom() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_weight_to" value="<%= tax.getTotalWeightTo() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.volumefrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.volumeto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_volume_from" value="<%= tax.getTotalVolumeFrom() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_volume_to" value="<%= tax.getTotalVolumeTo() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Applies_To_Products" class="Applies_To_Products st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("tax.products.heading") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("tax.products.product") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <nobr>
+                <select id="product_id" name="product_id" style="width: 400px;">
+                  <option value="<%= tax.getProductId() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + tax.getProductId()) %><% if (! tax.getProductId().equals("")) { %> [<%= tax.getProductId() %>]<% } %></option>
+                  <option value=""<% if (tax.getProductId().equals("")) { %> selected<% } %>><%= mytext.display("any") %></option>
+                </select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('product_id', 'Products', '', 'Products', 'product');">
+              </nobr>
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "professional")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.products.group") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.products.type") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <select name="product_group"><option value=""><%= mytext.display("any") %><%= tax.productgroup_options(db, tax.getProductGroup()) %></select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <select name="product_type"><option value=""><%= mytext.display("any") %><%= tax.producttype_options(db, tax.getProductType()) %></select>
+            </td>
+          </tr>
+<% } else { %>
+          <input type="hidden" name="product_group" value="">
+          <input type="hidden" name="product_type" value="">
+<% } %>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.weightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.weightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_weight_from" value="<%= tax.getProductWeightFrom() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_weight_to" value="<%= tax.getProductWeightTo() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.volumefrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.volumeto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_volume_from" value="<%= tax.getProductVolumeFrom() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_volume_to" value="<%= tax.getProductVolumeTo() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.widthfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.widthto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_width_from" value="<%= tax.getProductWidthFrom() %>"> <%= mytext.display("content.productdetails.width.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_width_to" value="<%= tax.getProductWidthTo() %>"> <%= mytext.display("content.productdetails.width.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.heightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.heightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_height_from" value="<%= tax.getProductHeightFrom() %>"> <%= mytext.display("content.productdetails.height.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_height_to" value="<%= tax.getProductHeightTo() %>"> <%= mytext.display("content.productdetails.height.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.depthfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("tax.orders.depthto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_depth_from" value="<%= tax.getProductDepthFrom() %>"> <%= mytext.display("content.productdetails.depth.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_depth_to" value="<%= tax.getProductDepthTo() %>"> <%= mytext.display("content.productdetails.depth.unit") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

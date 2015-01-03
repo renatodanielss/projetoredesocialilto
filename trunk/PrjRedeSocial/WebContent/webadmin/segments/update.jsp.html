@@ -1,0 +1,1297 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("segments.update.title") %></title>
+<script type="text/javascript" src="../ajax.js"></script>
+<script type="text/javascript">
+
+$(function(){
+	initForm('userinfo');
+	if ((navigator.userAgent.indexOf("MSIE")>=0) || (navigator.userAgent.indexOf("Trident")>=0)) {
+		// MSIE may position tabs content incorrectly if called immediately
+		setTimeout(function(){
+			mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+			$('#tabs').find('[rel=User_Segment]').click();
+		}, 1000);
+	} else {
+		mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+		$('#tabs').find('[rel=User_Segment]').click();
+	}
+});
+
+</script>
+
+<script type="text/javascript">
+
+function doSave(form) {
+	form.submit();
+}
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contenttitle = inputnode.options[inputnode.selectedIndex].text;
+		var contentid = inputnode.options[inputnode.selectedIndex].value;
+		var contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		window.open('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		inputnode.options[0].text = contenttitle;
+		inputnode.options[0].value = contentid;
+		inputnode.selectedIndex = 0;
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<script type="text/javascript">
+
+var inputCount = new Object();
+
+function initForm(input) {
+	inputCount[input] = 0;
+	var inputfield = document.getElementById(input);
+	var inputvalues = inputfield.value.split(/\r?\n/);
+	for (var inputvalue in inputvalues) {
+		var name = inputvalues[inputvalue].replace(/^<([^<>]+)>(.*)<\/([^<>]+)>$/, "$1");
+		var value = inputvalues[inputvalue].replace(/^<([^<>]+)>(.*)<\/([^<>]+)>$/, "$2").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+		addInfo(input, false, name, value);
+	}
+}
+
+function addInfo(input, id, name, value) {
+	if (! document.getElementById(input + "name")) return;
+	if (! name) name = document.getElementById(input + "name").value;
+	if (! value) value = "";
+	document.getElementById(input + "name").value = "";
+	if (name) {
+		if (! id) {
+			if (! inputCount[input]) inputCount[input] = 0;
+			inputCount[input] += 1;
+			id = inputCount[input];
+		} else {
+			if (id > inputCount[input]) inputCount[input] = parseInt(id);
+		}
+
+		var tr = document.createElement("tr");
+		tr.setAttribute("id", input + "name" + id);
+		var th;
+		th = document.createElement("th");
+		th.setAttribute("class", "WCMinnerContentInputName");
+		th.setAttribute("align", "left");
+		th.setAttribute("colSpan", "2");
+		th.innerHTML = name;
+		tr.appendChild(th);
+		var insertpoint = document.getElementById(input + "addnew");
+		if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+
+		tr = document.createElement("tr");
+		tr.setAttribute("id", input + "value" + id);
+		var td;
+		td = document.createElement("td");
+		td.setAttribute("class", "WCMinnerContentInputValue");
+		td.setAttribute("align", "left");
+		td.setAttribute("colSpan", "3");
+		if (input == 'product_options') {
+			td.innerHTML = '<textarea cols="80" rows="5" id="' + input + id + '" name="' + input + id + '" onBlur="updateInfo(\'' + input + '\',' + id + ',\'' + name + '\',this.value)" onChange="updateInfo(\'' + input + '\',' + id + ',\'' + name + '\',this.value)">' + value.replace(/\|/g, "\r\n") + '</textarea> <input type="button" onClick="removeInfo(\'' + input + '\',' + id + ',\'' + name + '\')" value="<%= mytext.display("delete") %>">';
+		} else {
+			td.innerHTML = '<input type="text" size="80" maxlength="255" id="' + input + id + '" name="' + input + id + '" value="' + value + '" onBlur="updateInfo(\'' + input + '\',' + id + ',\'' + name + '\',this.value)" onChange="updateInfo(\'' + input + '\',' + id + ',\'' + name + '\',this.value)"> <input type="button" onClick="removeInfo(\'' + input + '\',' + id + ',\'' + name + '\')" value="<%= mytext.display("delete") %>">';
+		}
+		tr.appendChild(td);
+		insertpoint = document.getElementById(input + "addnew");
+		if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+		var inputfield = document.getElementById(input);
+		var regex = new RegExp("<" + name + ">.*</" + name + ">");
+		if (inputfield && (! inputfield.value.match(regex))) {
+			inputfield.value = inputfield.value + "\r\n<" + name + "></" + name + ">\r\n";
+			inputfield.value = inputfield.value.replace(/\r\n\r\n/g, "\r\n");
+		}
+		var inputfield = document.getElementById(input + id);
+		try {
+			if (inputfield) inputfield.focus();
+		} catch(e) {
+		}
+	}
+}
+
+function removeInfo(input, id, name) {
+	if (id && name) {
+		var tr = document.getElementById(input + "name" + id);
+		if (tr && tr.parentNode) tr.parentNode.removeChild(tr);
+		tr = document.getElementById(input + "value" + id);
+		if (tr && tr.parentNode) tr.parentNode.removeChild(tr);
+		var inputfield = document.getElementById(input);
+		if (inputfield && inputfield.value) {
+			var regex = new RegExp("<" + name + ">.*</" + name + ">");
+			inputfield.value = inputfield.value.replace(regex, "");
+			inputfield.value = inputfield.value.replace(/\r\n\r\n/g, "\r\n");
+		}
+	}
+}
+
+function updateInfo(input, id, name, value) {
+	if (id && name) {
+		var inputfield = document.getElementById(input);
+		if (inputfield && inputfield.value) {
+			var regex = new RegExp("<" + name + ">.*</" + name + ">");
+			inputfield.value = inputfield.value.replace(regex, "<" + name + ">" + value.replace(/[\r\n]+/g, "|") + "</" + name + ">");
+		}
+	}
+}
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<script type="text/javascript">
+
+$(function(){
+
+	$('#scheduled_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled').attr('value').length >= 10) ? $('#scheduled').attr('value').substring(0,10) : $('#scheduled').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled').attr('value').length >= 10) {
+					$('#scheduled_trigger').datepicker( "option", "defaultDate", $('#scheduled').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled').attr('value').length >= 10) {
+					$('#scheduled').attr('value', dateText + $('#scheduled').attr('value').substring(10));
+				} else {
+					$('#scheduled').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#unscheduled_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#unscheduled').attr('value').length >= 10) ? $('#unscheduled').attr('value').substring(0,10) : $('#unscheduled').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#unscheduled').attr('value').length >= 10) {
+					$('#unscheduled_trigger').datepicker( "option", "defaultDate", $('#unscheduled').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#unscheduled').attr('value').length >= 10) {
+					$('#unscheduled').attr('value', dateText + $('#unscheduled').attr('value').substring(10));
+				} else {
+					$('#unscheduled').attr('value', dateText + " 23:59");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+});
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("segments.create.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form id="userform" name="userform" action="update_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&redirect=<% if (! myrequest.getParameter("redirect").equals("")) { %><%= URLEncoder.encode(myrequest.getParameter("redirect")) %><% } %>" method="POST">
+        <p>
+          <input type="button" onclick="doSave(this.form)" value="<%= mytext.display("save") %>">
+        </p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#User_Segment" rel="User_Segment"><%= mytext.display("segments.segment.tab") %></a></li>
+                <li><a href="#Website_Visitor" rel="Website_Visitor"><%= mytext.display("segments.visitor.tab") %></a></li>
+                <li><a href="#User_Details" rel="User_Details"><%= mytext.display("segments.details.tab") %></a></li>
+                <li><a href="#User_Login" rel="User_Login"><%= mytext.display("segments.login.tab") %></a></li>
+                <li><a href="#User_Categories" rel="User_Categories"><%= mytext.display("segments.categories.tab") %></a></li>
+                <li><a href="#Activation" rel="Activation"><%= mytext.display("segments.activation.tab") %></a></li>
+                <li><a href="#Invoice_Details" rel="Invoice_Details"><%= mytext.display("segments.invoice.tab") %></a></li>
+                <li><a href="#Delivery_Details" rel="Delivery_Details"><%= mytext.display("segments.delivery.tab") %></a></li>
+                <li><a href="#Payment_Details" rel="Payment_Details"><%= mytext.display("segments.payment.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="User_Segment" class="User_Segment st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="3" align="left"><%= mytext.display("segments.segment.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="3" align="left"><%= mytext.display("segments.segment.intro") %></td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="3"><%= mytext.display("segments.segment.about.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("segments.segment.segmentid") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="hidden" name="segmentid" value="<%= html.encode(segment.getSegmentId()) %>">
+              <input disabled type="text" size="20" maxlength="250" name="dummy" value="<%= html.encode(segment.getSegmentId()) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("segments.segment.segment") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="text" size="50" maxlength="250" name="segment" value="<%= html.encode(segment.getSegment()) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("segments.segment.weight") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="text" size="5" maxlength="250" name="weight" value="<%= html.encode(segment.getWeight()) %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="100"><%= mytext.display("segments.segment.active") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="200"><%= mytext.display("segments.segment.scheduled") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.segment.unscheduled") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="checkbox" name="active" value="1"<% if (segment.getActive().equals("1")) { %> checked<% } %>>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled" name="scheduled" value="<%= html.encode(segment.getScheduled()) %>"><input type="button" value="..." id="scheduled_trigger">
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="unscheduled" name="unscheduled" value="<%= html.encode(segment.getUnscheduled()) %>"><input type="button" value="..." id="unscheduled_trigger">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="3"><%= mytext.display("segments.segment.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="3">
+            <%= mytext.display("segments.segment.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Website_Visitor" class="Website_Visitor st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("segments.visitor.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("segments.visitor.intro") %></td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("segments.visitor.datetime") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50">
+              <%= mytext.display("segments.visitor.datetimeyear") %>:&nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" width="50">
+              <input type="text" size="5" maxlength="9" name="datetimeyear" value="<%= html.encode(segment.getDateTimeYear()) %>">
+            </td>
+            <td>&nbsp;</td>
+            <td class="WCMinnerContentInputName" width="50">
+              <%= mytext.display("segments.visitor.datetimemonth") %>:&nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" width="50">
+              <input type="text" size="5" maxlength="5" name="datetimemonth" value="<%= html.encode(segment.getDateTimeMonth()) %>">
+            </td>
+            <td>&nbsp;</td>
+            <td class="WCMinnerContentInputName" width="50">
+              <%= mytext.display("segments.visitor.datetimeday") %>:&nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" width="50">
+              <input type="text" size="5" maxlength="5" name="datetimeday" value="<%= html.encode(segment.getDateTimeDay()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50">
+              <%= mytext.display("segments.visitor.datetimehour") %>:&nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" width="50">
+              <input type="text" size="5" maxlength="5" name="datetimehour" value="<%= html.encode(segment.getDateTimeHour()) %>">
+            </td>
+            <td>&nbsp;</td>
+            <td class="WCMinnerContentInputName" width="50">
+              <%= mytext.display("segments.visitor.datetimemin") %>:&nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="5" maxlength="5" name="datetimemin" value="<%= html.encode(segment.getDateTimeMinute()) %>">
+            </td>
+            <td>&nbsp;</td>
+            <td class="WCMinnerContentInputName" width="50">
+              <%= mytext.display("segments.visitor.datetimesec") %>:&nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" width="50">
+              <input type="text" size="5" maxlength="5" name="datetimesec" value="<%= html.encode(segment.getDateTimeSecond()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50">
+              <%= mytext.display("segments.visitor.datetimeweek") %>:&nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" width="50">
+              <input type="text" size="5" maxlength="5" name="datetimeweek" value="<%= html.encode(segment.getDateTimeWeek()) %>">
+            </td>
+            <td>&nbsp;</td>
+            <td class="WCMinnerContentInputName" width="50">
+              <%= mytext.display("segments.visitor.datetimeweekday") %>:&nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <select id="datetimeweekday" name="datetimeweekday">
+              	 <option value="">&nbsp;</option>
+              	 <option value="1"<% if (segment.getDateTimeWeekday().equals("1")) { %> selected<% } %>><%= mytext.display("segments.visitor.datetimeweekday.monday") %></option>
+              	 <option value="2"<% if (segment.getDateTimeWeekday().equals("2")) { %> selected<% } %>><%= mytext.display("segments.visitor.datetimeweekday.tuesday") %></option>
+              	 <option value="3"<% if (segment.getDateTimeWeekday().equals("3")) { %> selected<% } %>><%= mytext.display("segments.visitor.datetimeweekday.wednesday") %></option>
+              	 <option value="4"<% if (segment.getDateTimeWeekday().equals("4")) { %> selected<% } %>><%= mytext.display("segments.visitor.datetimeweekday.thursday") %></option>
+              	 <option value="5"<% if (segment.getDateTimeWeekday().equals("5")) { %> selected<% } %>><%= mytext.display("segments.visitor.datetimeweekday.friday") %></option>
+              	 <option value="6"<% if (segment.getDateTimeWeekday().equals("6")) { %> selected<% } %>><%= mytext.display("segments.visitor.datetimeweekday.saturday") %></option>
+              	 <option value="7"<% if (segment.getDateTimeWeekday().equals("7")) { %> selected<% } %>><%= mytext.display("segments.visitor.datetimeweekday.sunday") %></option>
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+        </table>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("segments.visitor.client") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientaddr") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="clientaddr" value="<%= html.encode(segment.getClientAddress()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clienthost") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="clienthost" value="<%= html.encode(segment.getClientHost()) %>">
+            </td>
+          </tr>
+<!--
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientuser") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="clientaddr" value="<%= html.encode(segment.getClientUser()) %>">
+            </td>
+          </tr>
+-->
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientuseragent") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="clientuseragent" value="<%= html.encode(segment.getClientUserAgent()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientbrowser") %></td>
+            <td class="WCMinnerContentInputValue">
+              <select name="clientbrowser" style="width: 400px;">
+                <option value="">&nbsp;</option>
+                <%= usagelog.getClientBrowserOptions(segment.getClientBrowser()) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientversion") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="clientversion" value="<%= html.encode(segment.getClientBrowserVersion()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientos") %></td>
+            <td class="WCMinnerContentInputValue">
+              <select name="clientos" style="width: 400px;">
+                <option value="">&nbsp;</option>
+                <%= usagelog.getClientOSOptions(segment.getClientOS()) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientosversion") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="clientosversion" value="<%= html.encode(segment.getClientOSVersion()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientdevice") %></td>
+            <td class="WCMinnerContentInputValue">
+              <select name="clientdevice" style="width: 400px;">
+                <option value="">&nbsp;</option>
+                <%= usagelog.getClientDeviceTypeOptions(segment.getClientDevice()) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientdeviceid") %></td>
+            <td class="WCMinnerContentInputValue">
+              <select name="clientdeviceid" style="width: 400px;">
+                <option value="">&nbsp;</option>
+                <%= usagelog.getClientDeviceIdOptions(segment.getClientDeviceId()) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.clientdeviceversion") %></td>
+            <td class="WCMinnerContentInputValue">
+              <select name="clientdeviceversion" style="width: 400px;">
+                <option value="">&nbsp;</option>
+                <%= usagelog.getClientDeviceVersionOptions(segment.getClientDeviceVersion()) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.preferredlanguage") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="5" maxlength="250" name="preferredlanguage" value="<%= html.encode(segment.getPreferredLanguage()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.acceptedlanguages") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="5" maxlength="250" name="acceptedlanguages" value="<%= html.encode(segment.getAcceptedLanguages()) %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("segments.visitor.referrer") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.refererhost") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="refererhost" value="<%= html.encode(segment.getReferrerHost()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.refererpath") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="refererpath" value="<%= html.encode(segment.getReferrerPath()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.refererquery") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="refererquery" value="<%= html.encode(segment.getReferrerQuery()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.referersearchengine") %></td>
+            <td class="WCMinnerContentInputValue">
+              <select name="referersearchengine" style="width: 400px;">
+                <option value="">&nbsp;</option>
+                <%= usagelog.getSearchEngineOptions(segment.getReferrerSearchEngine()) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.referersearchquery") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="referersearchquery" value="<%= html.encode(segment.getReferrerSearchQuery()) %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("segments.visitor.request") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requestid") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requestid" value="<%= html.encode(segment.getRequestId()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requestclass") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requestclass" value="<%= html.encode(segment.getRequestClass()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requestdatabase") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requestdatabase" value="<%= html.encode(segment.getRequestDatabase()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requesthost") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requesthost" value="<%= html.encode(segment.getRequestHost()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requestpath") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requestpath" value="<%= html.encode(segment.getRequestPath()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requestquery") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requestquery" value="<%= html.encode(segment.getRequestQuery()) %>">
+            </td>
+          </tr>
+<!--
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requestport") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requestport" value="<%= html.encode(segment.getRequestPort()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requestmethod") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requestmethod" value="<%= html.encode(segment.getRequestMethod()) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.visitor.requestprotocol") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="50" maxlength="250" name="requestprotocol" value="<%= html.encode(segment.getRequestProtocol()) %>">
+            </td>
+          </tr>
+-->
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="6"><%= mytext.display("segments.visitor.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="6">
+            <%= mytext.display("segments.visitor.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="User_Details" class="User_Details st_view"><div class="st_view_inner">
+<input type="hidden" id="userinfo" name="userinfo" value="<%= html.encode(segment.getUserinfo()) %>">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("segments.details.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("segments.details.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.details.title") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="250" name="title" value="<%= html.encode(segment.getTitle()) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.details.name") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="60" maxlength="250" name="name" value="<%= html.encode(segment.getName()) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.details.organisation") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="60" maxlength="250" name="organisation" value="<%= html.encode(segment.getOrganisation()) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.details.email") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="60" maxlength="250" name="email" value="<%= html.encode(segment.getEmail()) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.details.gender") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <select name="gender">
+              	 <option value="">&nbsp;</option>
+              	 <option value="1"<% if (segment.getGender().equals("1")) { %> selected<% } %>><%= mytext.display("segments.details.gender.male") %></option>
+              	 <option value="0"<% if (segment.getGender().equals("0")) { %> selected<% } %>><%= mytext.display("segments.details.gender.female") %></option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.details.age") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="250" name="age" value="<%= html.encode(segment.getAge()) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.details.birthdate") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input id="birthdate" type="hidden" name="birthdate" value="<%= html.encode(segment.getBirthDate()) %>">
+              <%= mytext.display("segments.details.birthdate.day") %>:
+              <select id="birthday" name="birthday" onchange="document.getElementById('birthdate').value = document.getElementById('birthyear').value + '-' + document.getElementById('birthmonth').value + '-' + document.getElementById('birthday').value">
+              	 <option value="">&nbsp;</option>
+              	 <option value="01"<% if (segment.getBirthDay().equals("01")) { %> selected<% } %>>01</option>
+              	 <option value="02"<% if (segment.getBirthDay().equals("02")) { %> selected<% } %>>02</option>
+              	 <option value="03"<% if (segment.getBirthDay().equals("03")) { %> selected<% } %>>03</option>
+              	 <option value="04"<% if (segment.getBirthDay().equals("04")) { %> selected<% } %>>04</option>
+              	 <option value="05"<% if (segment.getBirthDay().equals("05")) { %> selected<% } %>>05</option>
+              	 <option value="06"<% if (segment.getBirthDay().equals("06")) { %> selected<% } %>>06</option>
+              	 <option value="07"<% if (segment.getBirthDay().equals("07")) { %> selected<% } %>>07</option>
+              	 <option value="08"<% if (segment.getBirthDay().equals("08")) { %> selected<% } %>>08</option>
+              	 <option value="09"<% if (segment.getBirthDay().equals("09")) { %> selected<% } %>>09</option>
+              	 <option value="10"<% if (segment.getBirthDay().equals("10")) { %> selected<% } %>>10</option>
+              	 <option value="11"<% if (segment.getBirthDay().equals("11")) { %> selected<% } %>>11</option>
+              	 <option value="12"<% if (segment.getBirthDay().equals("12")) { %> selected<% } %>>12</option>
+              	 <option value="13"<% if (segment.getBirthDay().equals("13")) { %> selected<% } %>>13</option>
+              	 <option value="14"<% if (segment.getBirthDay().equals("14")) { %> selected<% } %>>14</option>
+              	 <option value="15"<% if (segment.getBirthDay().equals("15")) { %> selected<% } %>>15</option>
+              	 <option value="16"<% if (segment.getBirthDay().equals("16")) { %> selected<% } %>>16</option>
+              	 <option value="17"<% if (segment.getBirthDay().equals("17")) { %> selected<% } %>>17</option>
+              	 <option value="18"<% if (segment.getBirthDay().equals("18")) { %> selected<% } %>>18</option>
+              	 <option value="19"<% if (segment.getBirthDay().equals("19")) { %> selected<% } %>>19</option>
+              	 <option value="20"<% if (segment.getBirthDay().equals("20")) { %> selected<% } %>>20</option>
+              	 <option value="21"<% if (segment.getBirthDay().equals("21")) { %> selected<% } %>>21</option>
+              	 <option value="22"<% if (segment.getBirthDay().equals("22")) { %> selected<% } %>>22</option>
+              	 <option value="23"<% if (segment.getBirthDay().equals("23")) { %> selected<% } %>>23</option>
+              	 <option value="24"<% if (segment.getBirthDay().equals("24")) { %> selected<% } %>>24</option>
+              	 <option value="25"<% if (segment.getBirthDay().equals("25")) { %> selected<% } %>>25</option>
+              	 <option value="26"<% if (segment.getBirthDay().equals("26")) { %> selected<% } %>>26</option>
+              	 <option value="27"<% if (segment.getBirthDay().equals("27")) { %> selected<% } %>>27</option>
+              	 <option value="28"<% if (segment.getBirthDay().equals("28")) { %> selected<% } %>>28</option>
+              	 <option value="29"<% if (segment.getBirthDay().equals("29")) { %> selected<% } %>>29</option>
+              	 <option value="30"<% if (segment.getBirthDay().equals("30")) { %> selected<% } %>>30</option>
+              	 <option value="31"<% if (segment.getBirthDay().equals("31")) { %> selected<% } %>>31</option>
+              </select>
+              <%= mytext.display("segments.details.birthdate.month") %>:
+              <select id="birthmonth" name="birthmonth" onchange="document.getElementById('birthdate').value = document.getElementById('birthyear').value + '-' + document.getElementById('birthmonth').value + '-' + document.getElementById('birthday').value">
+              	 <option value="">&nbsp;</option>
+              	 <option value="01"<% if (segment.getBirthMonth().equals("01")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.january") %></option>
+              	 <option value="02"<% if (segment.getBirthMonth().equals("02")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.february") %></option>
+              	 <option value="03"<% if (segment.getBirthMonth().equals("03")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.march") %></option>
+              	 <option value="04"<% if (segment.getBirthMonth().equals("04")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.april") %></option>
+              	 <option value="05"<% if (segment.getBirthMonth().equals("05")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.may") %></option>
+              	 <option value="06"<% if (segment.getBirthMonth().equals("06")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.june") %></option>
+              	 <option value="07"<% if (segment.getBirthMonth().equals("07")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.july") %></option>
+              	 <option value="08"<% if (segment.getBirthMonth().equals("08")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.august") %></option>
+              	 <option value="09"<% if (segment.getBirthMonth().equals("09")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.september") %></option>
+              	 <option value="10"<% if (segment.getBirthMonth().equals("10")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.october") %></option>
+              	 <option value="11"<% if (segment.getBirthMonth().equals("11")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.november") %></option>
+              	 <option value="12"<% if (segment.getBirthMonth().equals("12")) { %> selected<% } %>><%= mytext.display("segments.details.birthdate.month.december") %></option>
+              </select>
+              <%= mytext.display("segments.details.birthdate.year") %>:
+              <input id="birthyear" type="text" size="4" maxlength="4" name="birthyear" value="<%= html.encode(segment.getBirthYear()) %>" onchange="document.getElementById('birthdate').value = document.getElementById('birthyear').value + '-' + document.getElementById('birthmonth').value + '-' + document.getElementById('birthday').value">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.details.notes") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="60" maxlength="250" name="notes" value="<%= html.encode(segment.getNotes()) %>">
+            </td>
+          </tr>
+          <tr id="userinfoaddnew"><td>&nbsp;</td></tr>
+          <tr><td colspan="2"><input id="userinfoname" type="text" size="60" maxlength="255" name="userinfoname"> <input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('userinfo')"></td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("segments.details.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("segments.details.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="User_Login" class="User_Login st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("segments.login.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("segments.login.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.login.username") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="username" value="<%= html.encode(segment.getUsername()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.login.password") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="password" value="<%= html.encode(segment.getPassword()) %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("segments.login.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("segments.login.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="User_Categories" class="User_Categories st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("segments.categories.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2" align="left"><%= mytext.display("segments.categories.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+	<% if (! myconfig.get(db, "use_userclasses").equals("")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("segments.categories.class") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="checkbox" name="userclass" value="administrator"<% if (segment.getUserclass().equals("administrator")) { %> checked<% } %>>
+              <%= mytext.display("segments.categories.administrator") %></td>
+          </tr>
+	<% } %>
+          <tr>
+	<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("segments.categories.group") %></th>
+	<% } %>
+	<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("segments.categories.type") %></th>
+	<% } %>
+          </tr>
+          <tr>
+	<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="usergroup">
+                <option value="<%= html.encode(segment.getUsergroup()) %>"><%= mytext.display("pleaseselect") %>
+                <option value=""><%= mytext.display("none") %>
+                <%= segment.usergroup_select_options(db, segment.getUsergroup()) %> 
+              </select>
+            </td>
+	<% } %>
+	<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="usertype">
+                <option value="<%= html.encode(segment.getUsertype()) %>"><%= mytext.display("pleaseselect") %>
+                <option value=""><%= mytext.display("none") %>
+                <%= segment.usertype_select_options(db, segment.getUsertype()) %> 
+              </select>
+            </td>
+	<% } %>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("segments.categories.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("segments.categories.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("segments.categories.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("segments.categories.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("segments.categories.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Activation" class="Activation st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("segments.activation.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("segments.activation.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_useractivation").equals("yes")) { %>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.activation.activate") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_publish" name="scheduled_publish" value="<%= html.encode(segment.getScheduledPublish()) %>">
+            </td>
+          </tr>
+<!--
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.activation.activate.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="scheduled_publish_email" name="scheduled_publish_email" style="width: 400px;">
+                <option value="<%= scheduled_publish_email.getId() %>"><%= scheduled_publish_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_publish_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_publish_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+-->
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.activation.notify") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_notify" name="scheduled_notify" value="<%= html.encode(segment.getScheduledNotify()) %>">
+            </td>
+          </tr>
+<!--
+          <tr> 
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.activation.notify.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="scheduled_notify_email" name="scheduled_notify_email" style="width: 400px;">
+                <option value="<%= scheduled_notify_email.getId() %>"><%= scheduled_notify_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_notify_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_notify_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+-->
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.activation.expire") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_unpublish" name="scheduled_unpublish" value="<%= html.encode(segment.getScheduledUnpublish()) %>">
+            </td>
+          </tr>
+<!--
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("segments.activation.expire.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="scheduled_unpublish_email" name="scheduled_unpublish_email" style="width: 400px;">
+                <option value="<%= scheduled_unpublish_email.getId() %>"><%= scheduled_unpublish_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_unpublish_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_unpublish_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+-->
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("segments.activation.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("segments.activation.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("segments.activation.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("segments.activation.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("segments.activation.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Invoice_Details" class="Invoice_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("segments.invoice.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("segments.invoice.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userdetails").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.name") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_name" value="<%= html.encode(segment.getInvoiceName()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.organisation") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_organisation" value="<%= html.encode(segment.getInvoiceOrganisation()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.address") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_address" value="<%= html.encode(segment.getInvoiceAddress()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_postalcode" value="<%= html.encode(segment.getInvoicePostalcode()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.city") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_city" value="<%= html.encode(segment.getInvoiceCity()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.state") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_state" value="<%= html.encode(segment.getInvoiceState()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.country") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_country" value="<%= html.encode(segment.getInvoiceCountry()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.phone") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_phone" value="<%= html.encode(segment.getInvoicePhone()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.fax") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_fax" value="<%= html.encode(segment.getInvoiceFax()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.email") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_email" value="<%= html.encode(segment.getInvoiceEmail()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.invoice.website") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="invoice_website" value="<%= html.encode(segment.getInvoiceWebsite()) %>">
+            </td>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("segments.invoice.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("segments.invoice.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("segments.invoice.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("segments.invoice.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("segments.invoice.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Delivery_Details" class="Delivery_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("segments.delivery.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("segments.delivery.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userdetails").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.name") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_name" value="<%= html.encode(segment.getDeliveryName()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.organisation") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_organisation" value="<%= html.encode(segment.getDeliveryOrganisation()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.address") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_address" value="<%= html.encode(segment.getDeliveryAddress()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_postalcode" value="<%= html.encode(segment.getDeliveryPostalcode()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.city") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_city" value="<%= html.encode(segment.getDeliveryCity()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.state") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_state" value="<%= html.encode(segment.getDeliveryState()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.country") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_country" value="<%= html.encode(segment.getDeliveryCountry()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.phone") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_phone" value="<%= html.encode(segment.getDeliveryPhone()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.fax") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_fax" value="<%= html.encode(segment.getDeliveryFax()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.email") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_email" value="<%= html.encode(segment.getDeliveryEmail()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.delivery.website") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="delivery_website" value="<%= html.encode(segment.getDeliveryWebsite()) %>">
+            </td>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("segments.delivery.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("segments.delivery.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("segments.delivery.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("segments.delivery.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("segments.delivery.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Payment_Details" class="Payment_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("segments.payment.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("segments.payment.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userdetails").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.payment.type") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="20" maxlength="250" name="card_type" value="<%= html.encode(segment.getCardType()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.payment.number") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="20" maxlength="250" name="card_number" value="<%= html.encode(segment.getCardNumber()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.payment.issued") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="2" maxlength="2" name="card_issuedmonth" value="<%= html.encode(segment.getCardIssuedMonth()) %>">
+              /
+              <input type="text" size="4" maxlength="4" name="card_issuedyear" value="<%= html.encode(segment.getCardIssuedYear()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.payment.expiry") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="2" maxlength="2" name="card_expirymonth" value="<%= html.encode(segment.getCardExpiryMonth()) %>">
+              /
+              <input type="text" size="4" maxlength="4" name="card_expiryyear" value="<%= html.encode(segment.getCardExpiryYear()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.payment.name") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="60" maxlength="250" name="card_name" value="<%= html.encode(segment.getCardName()) %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("segments.payment.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="20" maxlength="250" name="card_postalcode" value="<%= html.encode(segment.getCardPostalcode()) %>">
+            </td>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("segments.payment.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("segments.payment.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("segments.payment.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("segments.payment.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("segments.payment.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

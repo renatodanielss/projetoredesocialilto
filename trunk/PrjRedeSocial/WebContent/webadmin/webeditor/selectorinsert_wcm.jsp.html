@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('selectorinsert_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.webeditor && top.webeditor.window_proxy && top.webeditor.window_proxy[editor]) webeditor = top.webeditor.window_proxy[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent.webeditor && parent.webeditor.window_proxy && parent.webeditor.window_proxy[editor]) webeditor = parent.webeditor.window_proxy[editor];
+request_focus = requestParameter("focus");
+request_action = requestParameter("action");
+
+function InitForm() {
+	if (document.myform.title) document.myform.title.value = parent.tag["link"];
+	if (document.myform.contentid) document.myform.contentid.value = parent.tag["id"];
+	if (document.myform.href) document.myform.href.value = parent.tag["href"];
+	if (document.myform.target) document.myform.target.value = parent.tag["target"];
+	if (document.myform.text) document.myform.text.value = parent.tag["text"];
+	if (document.myform.htmlclass) document.myform.htmlclass.value = parent.tag["htmlclass"];
+	if (document.myform.htmlid) document.myform.htmlid.value = parent.tag["htmlid"];
+}
+
+function selectContentItem() {
+	if (webeditor.selectContentItem) {
+		webeditor.selectContentItem(parent.tag["input"], document.myform.contentid.value, document.myform.title.value, document.myform.href.value);
+	} else if (top && top.opener && top.opener.selectContentItem) {
+		top.opener.selectContentItem(parent.tag["input"], document.myform.contentid.value, document.myform.title.value, document.myform.href.value);
+	} else if (top && top.selectContentItem) {
+		top.selectContentItem(parent.tag["input"], document.myform.contentid.value, document.myform.title.value, document.myform.href.value);
+	}
+	webeditor.window_close(top);
+}
+
+</script>
+</head>
+<body onload="InitForm(); if (request_focus == 'true') self.focus();">
+
+<form id="myform" name="myform" onSubmit="javascript:selectContentItem();">
+<input type="hidden" name="text" value="">
+<input type="hidden" name="href" value="">
+<table summary="" width="100%" border="0" class="dtree">
+	<tr><th colspan="6" align="left"><script type="text/javascript">document.write(Text('selectorinsert_text'));</script></th></tr>
+	<tr>
+		<td align="left"><script type="text/javascript">document.write(Text('selectorinsert_id'));</script></td>
+		<td align="left"><script type="text/javascript">document.write(Text('selectorinsert_title'));</script></td>
+	</tr>
+	<tr>
+		<td><input readonly type="text" size="5" name="contentid" value=""></td>
+		<td><input readonly type="text" size="60" name="title" value=""></td>
+		<td align="left" width="100%">
+			<script type="text/javascript">document.write('<input type="button" name="insert_button" value="' + Text('ok') + '" onClick="javascript:selectContentItem();">');</script>
+			<script type="text/javascript">document.write('<input type="button" name="cancel_button" value="' + Text('cancel') + '" onClick="javascript:webeditor.window_close(top);">');</script>
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

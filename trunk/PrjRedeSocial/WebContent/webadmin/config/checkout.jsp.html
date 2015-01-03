@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.checkout.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.checkout.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <p> 
+      <form action="checkout.jsp" method="POST">
+        <p> 
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.checkout.checkout.heading") %></th>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.checkout.checkin.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_checkout" value="none" <% if (myconfig.get(db, "use_checkout").equals("none")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.checkout.none") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_checkin" value="auto-on-publish" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_checkin").equals("auto-on-publish")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.checkin.autoonpublish") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_checkout" value="auto-on-update" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_checkout").equals("auto-on-update")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.checkout.autoonupdate") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_checkin" value="auto-on-cancel" <% if (true || ! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_checkin").equals("auto-on-cancel")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.checkin.autooncancel") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_checkout" value="auto-on-save" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_checkout").equals("auto-on-save")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.checkout.autoonsave") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_checkin" value="auto-on-save" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_checkin").equals("auto-on-save")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.checkin.autoonsave") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_checkout" value="manual" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<%  } else if (myconfig.get(db, "use_checkout").equals("manual")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.checkout.manual") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_checkin" value="manual" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<%  } else if (myconfig.get(db, "use_checkin").equals("manual")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.checkin.manual") %></td>
+          </tr>
+          <tr> 
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.checkout.assign.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_assign" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (! myconfig.get(db, "use_assign").equals("no")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.assign.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_assign" value="no" <% if (myconfig.get(db, "use_assign").equals("no")) { %>checked<% } %> >
+              <%= mytext.display("config.checkout.assign.disable") %></td>
+          </tr>
+        </table>
+        <br>
+      </form>
+      <p>&nbsp;</p>
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

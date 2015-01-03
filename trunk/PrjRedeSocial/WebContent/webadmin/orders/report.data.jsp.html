@@ -1,0 +1,122 @@
+<% if (reportsection.startsWith("sales:")) { %>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+<%
+	String[] myparams = reportsection.split(":",4);
+	if (myparams.length >= 2) {
+		String myreport = "" + myparams[1].replaceAll("[^a-zA-Z]", "");
+		String mytitle = "" + myreport;
+		if (myreport.equals("summary")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.summary");
+		} else if (myreport.equals("websites")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.what.websites");
+		} else if (myreport.equals("products")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.what.ecommerce") + " - " + mytext.display("menu.sales.what.ecommerce.products");
+		} else if (myreport.equals("productgroups")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.what.ecommerce") + " - " + mytext.display("menu.sales.what.ecommerce.products") + " - " + mytext.display("menu.groups");
+		} else if (myreport.equals("producttypes")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.what.ecommerce") + " - " + mytext.display("menu.sales.what.ecommerce.products") + " - " + mytext.display("menu.types");
+		} else if (myreport.equals("daily")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.daily");
+		} else if (myreport.equals("weekly")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.weekly");
+		} else if (myreport.equals("monthly")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.monthly");
+		} else if (myreport.equals("yearly")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.yearly");
+		} else if (myreport.equals("hours")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.hours");
+		} else if (myreport.equals("weekdays")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.weekdays");
+		} else if (myreport.equals("days")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.days");
+		} else if (myreport.equals("weeks")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.weeks");
+		} else if (myreport.equals("months")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.when") + " - " + mytext.display("menu.sales.when.months");
+		} else if (myreport.equals("countries")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.who") + " - " + mytext.display("menu.sales.who.countries");
+		} else if (myreport.equals("visitors")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.who") + " - " + mytext.display("menu.sales.who.visitors");
+		} else if (myreport.equals("operatingsystems")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.who") + " - " + mytext.display("menu.sales.who.operatingsystems");
+		} else if (myreport.equals("webbrowsers")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.who") + " - " + mytext.display("menu.sales.who.webbrowsers");
+		} else if (myreport.equals("users")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.who") + " - " + mytext.display("menu.sales.who.users");
+		} else if (myreport.equals("usergroups")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.who") + " - " + mytext.display("menu.sales.who.users") + " - " + mytext.display("menu.groups");
+		} else if (myreport.equals("usertypes")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.who") + " - " + mytext.display("menu.sales.who.users") + " - " + mytext.display("menu.types");
+		} else if (myreport.equals("affiliates")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.why") + " - " + mytext.display("menu.sales.why.affiliates");
+		} else if (myreport.equals("referers")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.why") + " - " + mytext.display("menu.sales.why.referers");
+		} else if (myreport.equals("searchengines")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.why") + " - " + mytext.display("menu.sales.why.searchengines");
+		} else if (myreport.equals("searchqueries")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.why") + " - " + mytext.display("menu.sales.why.searchqueries");
+		} else if (myreport.equals("searchwords")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.why") + " - " + mytext.display("menu.sales.why.searchwords");
+		} else if (myreport.equals("entry")) {
+			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.how") + " - " + mytext.display("menu.sales.how.entry");
+//		} else if (myreport.equals("paths")) {
+//			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.how") + " - " + mytext.display("menu.sales.how.paths");
+//		} else if (myreport.equals("exit")) {
+//			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.how") + " - " + mytext.display("menu.sales.how.exit");
+//		} else if (myreport.equals("duration")) {
+//			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.how") + " - " + mytext.display("menu.sales.how.duration");
+//		} else if (myreport.equals("visits")) {
+//			mytitle = mytext.display("menu.sales") + " - " + mytext.display("menu.sales.how") + " - " + mytext.display("menu.sales.how.visits");
+		}
+		String myhost = "" + myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort();
+		String myscript = "/webadmin/orders/" + myreport + ".data.jsp";
+		String myquery = "username=" + mysession.get("username") + "&password=" +  mysession.get("password") + "&url=-&";
+		if (myparams.length == 2) {
+			String mylimit = "" + myrequest.getParameter("limit").replaceAll("[^0-9]","");
+			myquery += "limit=" + mylimit + "&";
+			if (! mylimit.equals("")) mytitle += " - " + mytext.display("sales.limit.top") + " " + mylimit;
+
+			if ((! myrequest.getParameter("period_start").equals("")) || (! myrequest.getParameter("period_end").equals(""))) {
+				myquery += "period_start=" + myrequest.getParameter("period_start") + "&" + "period_end=" + myrequest.getParameter("period_end") + "&";
+				mytitle += " - " + myrequest.getParameter("period_start").replaceAll("^$", ".....") + " - " + myrequest.getParameter("period_end").replaceAll("^$", ".....");
+			} else {
+				String myperiod = "" + myrequest.getParameter("period").replaceAll("[^a-zA-Z0-9]","").replaceAll("^now$", "");
+				myquery += "period=" + myperiod + "&";
+				if (! myperiod.equals("")) {
+					try {
+						mytitle += " - " + mytext.display("sales.period." + myperiod);
+					} catch (Exception e) {
+					}
+				} else {
+					mytitle += " - " + mytext.display("sales.period.now");
+				}
+			}
+		}
+		if (myparams.length >= 3) {
+			String mylimit = "" + myparams[2].replaceAll("[^0-9]","");
+			myquery += "limit=" + mylimit + "&";
+			if (! mylimit.equals("")) mytitle += " - " + mytext.display("sales.limit.top") + " " + mylimit;
+		}
+		if (myparams.length >= 4) {
+			String myperiod = "" + myparams[3].replaceAll("[^a-zA-Z0-9]","").replaceAll("^now$", "");
+			myquery += "period=" + myperiod + "&";
+			if (! myperiod.equals("")) {
+				try {
+					mytitle += " - " + mytext.display("sales.period." + myperiod);
+				} catch (Exception e) {
+				}
+			} else {
+				mytitle += " - " + mytext.display("sales.period.now");
+			}
+		}
+		String output = http.get(myhost, myscript, myquery, myrequest);
+%>
+		<table border="0" style="width: 100%;"><tr align="left" valign="top"><td class="WCMfrontpage">
+			<p><b><font color="#cc0000"><%= mytitle %></b></p>
+		</td></tr></table>
+		<%= output %>
+<%
+	}
+%>
+<% } %>
+<% } %>

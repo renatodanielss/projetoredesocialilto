@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('fileselectormanager_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+editor = requestParameter("editor");
+
+function init() {
+	if (window.fileselectorlistfilter && window.fileselectorlist && window.fileselectorpreview && window.fileselectorinsert) {
+		callback = requestParameter("callback");
+		href = requestParameter("href");
+		fileselectorlistfilter.location.href = 'fileselectorlistfilter.jsp?editor=' + editor + '&callback=' + callback;
+		fileselectorlist.location.href = 'fileselectorlist.jsp?editor=' + editor + '&callback=' + callback;
+		fileselectorpreview.location.href = 'fileselectorpreview.jsp?editor=' + editor + '&callback=' + callback + '&href=' + href;
+		fileselectorinsert.location.href = 'fileselectorinsert.jsp?editor=' + editor + '&action=server&callback=' + callback;
+	} else {
+		setTimeout("init()", 100);
+	}
+}
+setTimeout("init()", 100);
+
+</script>
+<script type="text/javascript">
+
+var ready_section = '';
+var ready_category = '';
+var ready_title = '';
+var ready_link = '';
+var ready_href = '';
+
+function fileselectorlistfilter_ready() {
+	if (fileselectorlistfilter && fileselectorlistfilter.fileselectorlistfilterMenu && fileselectorlistfilter.fileselectorlistfilterMenu.selectURL && fileselectorlistfilter.openit) {
+		fileselectorlistfilter.fileselectorlistfilterMenu.selectURL('javascript:openit(\''+ready_section+'\',\''+ready_category+'\',\''+ready_title+'\')');
+		fileselectorlistfilter.openit(ready_section,ready_category,ready_title);
+	} else {
+		setTimeout("fileselectorlistfilter_ready()", 100);
+	}
+}
+
+function fileselectorlist_ready() {
+	if (fileselectorlist && fileselectorlist.fileselectorlistMenu && fileselectorlist.fileselectorlistMenu.selectURL && fileselectorlist.openit) {
+		fileselectorlist.fileselectorlistMenu.selectURL('javascript:openit(\''+ready_link+'\',\''+ready_href+'\')');
+		fileselectorlist.openit(ready_link,ready_href);
+	} else {
+		setTimeout("medialist_ready()", 100);
+	}
+}
+
+var tag = new Array();
+tag["href"] = requestParameter("href");
+tag["target"] = requestParameter("target");
+tag["text"] = requestParameter("text");
+tag["htmlclass"] = requestParameter("htmlclass");
+tag["htmlid"] = requestParameter("htmlid");
+tag["title"] = requestParameter("title");
+tag["onclick"] = requestParameter("onclick");
+
+</script>
+</head>
+<frameset rows="*,100" border="1" bordercolor="Gray">
+	<frameset cols="200,200,200" border="1" bordercolor="Gray">
+		<frame name="fileselectorlistfilter" src="blank.html" frameborder="1">
+		<frame name="fileselectorlist" src="blank.html" frameborder="1">
+		<frame name="fileselectorpreview" src="blank.html" frameborder="1">
+	</frameset>
+	<frame name="fileselectorinsert" src="blank.html" marginwidth="2" marginheight="2" frameborder="0">
+</frameset>
+<body bgcolor="#FFFFFF" text="#000000" link="#000000" vlink="#000000" alink="#000000" onload="javascript:self.focus();">
+</body>
+</html>

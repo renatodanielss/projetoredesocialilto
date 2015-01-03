@@ -1,0 +1,718 @@
+<div id="Access Restrictions" class="Access_Restrictions st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.intro") %></td></tr>
+<% if (mypage.getAdministrator()) { %>
+	<% if (! myconfig.get(db, "use_accessrestrictions").equals("none")) { %>
+		<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.users") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="users_group">
+                <option value="<%= mypage.getUsersGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getUsersGroup().equals("")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getUsersGroup().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="=" <% if (mypage.getUsersGroup().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usergroup_select_options(db, mypage.getUsersGroup()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="users_type">
+                <option value="<%= mypage.getUsersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getUsersType().equals("")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getUsersType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="=" <% if (mypage.getUsersType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usertype_select_options(db, mypage.getUsersType()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="users_usersinput" name="users_users" value="<%= mypage.getUsersUsers() %>">
+              <select multiple id="users_users" name="selectusers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('users_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.users.text") %></th></tr>
+		<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.creators") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="creators_group">
+                <option value="<%= mypage.getCreatorsGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="0" <% if (mypage.getCreatorsGroup().equals("0")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getCreatorsGroup().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="" <% if (mypage.getCreatorsGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getCreatorsGroup().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usergroup_select_options(db, mypage.getCreatorsGroup()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="creators_type">
+                <option value="<%= mypage.getCreatorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="0" <% if (mypage.getCreatorsType().equals("0")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getCreatorsType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="" <% if (mypage.getCreatorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getCreatorsType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usertype_select_options(db, mypage.getCreatorsType()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="creators_usersinput" name="creators_users" value="<%= mypage.getCreatorsUsers() %>">
+              <select multiple id="creators_users" name="selectcreators_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getCreatorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('creators_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.creators.text") %></th></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.editors") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="editors_group">
+                <option value="<%= mypage.getEditorsGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getEditorsGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getEditorsGroup().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usergroup_select_options(db, mypage.getEditorsGroup()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="editors_type">
+                <option value="<%= mypage.getEditorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getEditorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getEditorsType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usertype_select_options(db, mypage.getEditorsType()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="editors_usersinput" name="editors_users" value="<%= mypage.getEditorsUsers() %>">
+              <select multiple id="editors_users" name="selecteditors_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getEditorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('editors_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.editors.text") %></th></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.publishers") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="publishers_group">
+                <option value="<%= mypage.getPublishersGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="0" <% if (mypage.getPublishersGroup().equals("0")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getPublishersGroup().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="" <% if (mypage.getPublishersGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getPublishersGroup().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usergroup_select_options(db, mypage.getPublishersGroup()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="publishers_type">
+                <option value="<%= mypage.getPublishersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="0" <% if (mypage.getPublishersType().equals("0")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getPublishersType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="" <% if (mypage.getPublishersType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getPublishersType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usertype_select_options(db, mypage.getPublishersType()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="publishers_usersinput" name="publishers_users" value="<%= mypage.getPublishersUsers() %>">
+              <select multiple id="publishers_users" name="selectpublishers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getPublishersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('publishers_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.publishers.text") %></th></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.developers") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="developers_group">
+                <option value="<%= mypage.getDevelopersGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getDevelopersGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getDevelopersGroup().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usergroup_select_options(db, mypage.getDevelopersGroup()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="developers_type">
+                <option value="<%= mypage.getDevelopersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getDevelopersType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getDevelopersType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usertype_select_options(db, mypage.getDevelopersType()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="developers_usersinput" name="developers_users" value="<%= mypage.getDevelopersUsers() %>">
+              <select multiple id="developers_users" name="selectdevelopers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getDevelopersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('developers_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.developers.text") %></th></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.administrators") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="administrators_group">
+                <option value="<%= mypage.getAdministratorsGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getAdministratorsGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getAdministratorsGroup().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usergroup_select_options(db, mypage.getAdministratorsGroup()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="administrators_type">
+                <option value="<%= mypage.getAdministratorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getAdministratorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getAdministratorsType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+                <%= mypage.usertype_select_options(db, mypage.getAdministratorsType()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="administrators_usersinput" name="administrators_users" value="<%= mypage.getAdministratorsUsers() %>">
+              <select multiple id="administrators_users" name="selectadministrators_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getAdministratorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('administrators_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="4" align="left"><%= mytext.display("content.accessrestrictions.administrators.text") %></th></tr>
+		<% } %>
+		<% } else { %>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.users") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="users_type">
+                <option value="<%= mypage.getUsersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getUsersType().equals("")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getUsersType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="=" <% if (mypage.getUsersType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+              </select>
+            </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="users_usersinput" name="users_users" value="<%= mypage.getUsersUsers() %>">
+              <select multiple id="users_users" name="selectusers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('users_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          		<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.creators") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="creators_type">
+                <option value="<%= mypage.getCreatorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="0" <% if (mypage.getCreatorsType().equals("0")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getCreatorsType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="" <% if (mypage.getCreatorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getCreatorsType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+              </select>
+            </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="creators_usersinput" name="creators_users" value="<%= mypage.getCreatorsUsers() %>">
+              <select multiple id="creators_users" name="selectcreators_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getCreatorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('creators_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.editors") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="editors_type">
+                <option value="<%= mypage.getEditorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getEditorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getEditorsType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+              </select>
+            </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="editors_usersinput" name="editors_users" value="<%= mypage.getEditorsUsers() %>">
+              <select multiple id="editors_users" name="selecteditors_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getEditorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('editors_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.publishers") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="publishers_type">
+                <option value="<%= mypage.getPublishersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="0" <% if (mypage.getPublishersType().equals("0")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (mypage.getPublishersType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <option value="" <% if (mypage.getPublishersType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getPublishersType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+              </select>
+            </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="publishers_usersinput" name="publishers_users" value="<%= mypage.getPublishersUsers() %>">
+              <select multiple id="publishers_users" name="selectpublishers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getPublishersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('publishers_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.developers") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="developers_type">
+                <option value="<%= mypage.getDevelopersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getDevelopersType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getDevelopersType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+              </select>
+            </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="developers_usersinput" name="developers_users" value="<%= mypage.getDevelopersUsers() %>">
+              <select multiple id="developers_users" name="selectdevelopers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getDevelopersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('developers_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.administrators") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="administrators_type">
+                <option value="<%= mypage.getAdministratorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (mypage.getAdministratorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <option value="=" <% if (mypage.getAdministratorsType().equals("=")) { %>selected<% } %>><%= mytext.display("creator") %>
+              </select>
+            </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="administrators_usersinput" name="administrators_users" value="<%= mypage.getAdministratorsUsers() %>">
+              <select multiple id="administrators_users" name="selectadministrators_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = mypage.getAdministratorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('administrators_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+          		<% } %>
+		<% } %>
+	<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.accessrestrictions.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.accessrestrictions.enableconfig") %><% } else { %><%= mytext.display("content.accessrestrictions.enablesuperadmin") %><% } %></td></tr>
+	<% } %>
+<% } else { %>
+	<% if (! myconfig.get(db, "use_accessrestrictions").equals("none")) { %>
+		<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.users") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getUsersGroup().equals("")) { %><%= mytext.display("public") %><% } else if (mypage.getUsersGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getUsersGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getUsersGroup() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getUsersType().equals("")) { %><%= mytext.display("public") %><% } else if (mypage.getUsersType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getUsersType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getUsersType() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = mypage.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.users.text") %></th></tr>
+			<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.creators") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getCreatorsGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getCreatorsGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getCreatorsGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getCreatorsGroup() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getCreatorsType().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getCreatorsType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getCreatorsType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getCreatorsType() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = mypage.getCreatorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.creators.text") %></th></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.editors") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getEditorsGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getEditorsGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getEditorsGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getEditorsGroup() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getEditorsType().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getEditorsType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getEditorsType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getEditorsType() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = mypage.getEditorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.editors.text") %></th></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.publishers") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getPublishersGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getPublishersGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getPublishersGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getPublishersGroup() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getPublishersType().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getPublishersType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getPublishersType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getPublishersType() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = mypage.getPublishersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.publishers.text") %></th></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.developers") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getDevelopersGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getDevelopersGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getDevelopersGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getDevelopersGroup() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getDevelopersType().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getDevelopersType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getDevelopersType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getDevelopersType() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = mypage.getDevelopersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.developers.text") %></th></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.administrators") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getAdministratorsGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getAdministratorsGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getAdministratorsGroup().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getAdministratorsGroup() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getAdministratorsType().equals("0")) { %><%= mytext.display("public") %><% } else if (mypage.getAdministratorsType().equals("*")) { %><%= mytext.display("restricted") %><% } else if (mypage.getAdministratorsType().equals("=")) { %><%= mytext.display("creator") %><% } else { %><%= mypage.getAdministratorsType() %><% } %> &nbsp; </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = mypage.getAdministratorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+          <tr><th class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.administrators.text") %></th></tr>
+			<% } %>
+		<% } else { %>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.users") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (mypage.getUsersType().equals("")) { %><%= mytext.display("public") %><% } else if (mypage.getUsersType().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= mypage.getUsersType() %><% } %> &nbsp; </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = mypage.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+		<% } %>
+	<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="6"><div><b><%= mytext.display("content.accessrestrictions.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.accessrestrictions.enableconfig") %><% } else { %><%= mytext.display("content.accessrestrictions.enablesuperadmin") %><% } %></td></tr>
+	<% } %>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="6"><%= mytext.display("content.accessrestrictions.about.heading") %></th></tr>
+          <tr><td align="left" colspan="6"><%= mytext.display("content.accessrestrictions.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>

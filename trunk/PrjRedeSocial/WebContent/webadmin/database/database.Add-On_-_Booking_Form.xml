@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="content">
+  <row>
+   <column name="id" value="12" />
+   <column name="locked" value="0" />
+   <column name="created" value="2003-12-07 09:52:11" />
+   <column name="updated" value="2007-07-05 12:21:32" />
+   <column name="published" value="2007-07-05 12:21:32" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="@@@import:title@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;all&quot; href=&quot;/webadmin/jscalendar/skins/aqua/theme.css&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/webadmin/jscalendar/calendar.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/webadmin/jscalendar/lang/calendar-en.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/webadmin/jscalendar/calendar-setup.js&quot;&gt;&lt;/script&gt;
+
+
+&lt;style type=&quot;text/css&quot;&gt;
+
+form.contact{
+	margin-bottom: 1em;
+	}
+	
+fieldset.contact{
+        margin: 10px 10px 0px 0px;
+	padding: 10px 0px 10px 5px;
+	border: 1px solid #666666;
+	width: 530px;
+	}
+	
+legend.contact{
+	padding: 0 10px;
+	text-transform: uppercase;
+	font-size: 1.0em;
+}
+
+.contactrow{
+	clear: both;
+	padding-top: 5px;
+        margin: 0 10px;
+	}
+
+.contactLabel{
+	line-height: 1.6em;
+	text-align: right;
+	margin-right: 10px;
+	width: 160px;
+	float: left;
+}
+input.formField{
+	float: left;
+	width: 330px;
+	}
+	
+input.formdateField{
+	float: left;
+	width: 305px;
+	}
+	
+input.dateimage{
+	vertical-align: middle;
+	}
+
+textarea.contactfield{
+        float: left;
+	font-size: 1em;
+	width: 330px;
+	}
+
+input.formField,input.formdateField, textarea.contactfield{
+	border: 1px solid #666666;
+	padding: 2px;
+	font-family: Arial,sans-serif;
+        }
+
+.contactsubmitButton{
+	font-weight: bold;
+	font-family: Arial,sans-serif;
+	padding: 4px 6px;
+	width: auto;
+	}	
+
+.clearfix:after {
+        content: &quot;.&quot;;
+        font-size: 0; 
+        display: block; 
+        height: 0; 
+        clear: both; 
+        visibility: hidden;
+        }
+
+.clearfix {
+        display: inline-block;
+        }
+
+/* Hides from IE-mac \*/
+        * html .clearfix {height: 1%;}
+        .clearfix {display: block;}
+/* End hide from IE-mac */
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="Book by submitting the form below.&lt;br&gt;&lt;br&gt;
+      &lt;form class=&quot;contact&quot; action=&quot;/contact.jsp&quot; method=&quot;post&quot;&gt;
+        &lt;fieldset class=&quot;contact clearfix&quot;&gt;
+          &lt;legend class=&quot;contact&quot;&gt;Your contact details&lt;/legend&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;realname&quot;&gt;Name&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;name&quot; id=&quot;realname&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;company&quot;&gt;Company&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;company&quot; id=&quot;company&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;email&quot;&gt;Email address&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;email&quot; id=&quot;email&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;phone&quot;&gt;Telephone&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;phone&quot; id=&quot;phone&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/fieldset&gt;
+        &lt;fieldset class=&quot;contact clearfix&quot;&gt;
+          &lt;legend class=&quot;contact&quot;&gt;Booking&lt;/legend&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;from&quot;&gt;From&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; id=&quot;from&quot; name=&quot;from&quot; alt=&quot;Please select a date.&quot; class=&quot;formdateField&quot; type=&quot;text&quot;&gt;&amp;nbsp;&lt;input class=&quot;dateimage&quot; src=&quot;/image.jsp?id=14&quot; value=&quot;...&quot; id=&quot;from_trigger&quot; alt=&quot;Please click here for a date picker.&quot; type=&quot;image&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+Calendar.setup(
+{
+inputField : &quot;from&quot;,
+@@@import:datetimeformat@@@,
+firstDay : 1,
+timeFormat : 24,
+button : &quot;from_trigger&quot;
+}
+);
+&lt;/script&gt; &lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;to&quot;&gt;To&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; id=&quot;to&quot; name=&quot;to&quot; alt=&quot;Please select a date.&quot; class=&quot;formdateField&quot; type=&quot;text&quot;&gt;&amp;nbsp;&lt;input class=&quot;dateimage&quot; src=&quot;/image.jsp?id=14&quot; value=&quot;...&quot; id=&quot;to_trigger&quot; alt=&quot;Please click here for a date picker.&quot; type=&quot;image&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+Calendar.setup(
+{
+inputField : &quot;to&quot;,
+@@@import:datetimeformat@@@,
+firstDay : 1,
+timeFormat : 24,
+button : &quot;to_trigger&quot;
+}
+);
+&lt;/script&gt; &lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;message&quot;&gt;Comments&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;textarea cols=&quot;8&quot; rows=&quot;6&quot; name=&quot;message&quot; id=&quot;message&quot; class=&quot;contactfield&quot;&gt;&lt;/textarea&gt;&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/fieldset&gt;
+&lt;br&gt;
+&lt;input src=&quot;/&quot; value=&quot;BOOK&quot; name=&quot;BOOK&quot; class=&quot;contactsubmitButton&quot; type=&quot;submit&quot;&gt;
+&lt;input src=&quot;/&quot; value=&quot;/page.jsp?id=13&quot; name=&quot;redirect&quot; type=&quot;hidden&quot;&gt;
+&lt;input src=&quot;/&quot; size=&quot;25&quot; name=&quot;subject&quot; value=&quot;@@@import:title@@@ Notification&quot; id=&quot;subject&quot; class=&quot;formField&quot; type=&quot;hidden&quot;&gt;
+      &lt;/form&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="13" />
+   <column name="locked" value="0" />
+   <column name="created" value="2003-12-07 09:53:37" />
+   <column name="updated" value="2007-07-05 11:36:22" />
+   <column name="published" value="2007-07-05 11:36:22" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Thank You" />
+   <column name="searchable" value="no" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;p&gt;We will confirm your booking as soon as possible.&lt;/p&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="14" />
+   <column name="locked" value="0" />
+   <column name="created" value="2007-07-02 18:06:29" />
+   <column name="updated" value="2007-07-02 18:06:29" />
+   <column name="published" value="2007-07-02 18:06:29" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="Calendar Icon" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="image" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="calendar.gif" />
+   <column name="server_filename" value="image/calendar.gif" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="12" />
+   <column name="locked" value="0" />
+   <column name="created" value="2003-12-07 09:52:11" />
+   <column name="updated" value="2007-07-05 12:21:32" />
+   <column name="published" value="2007-07-05 12:21:32" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="@@@import:title@@@ Form" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; media=&quot;all&quot; href=&quot;/webadmin/jscalendar/skins/aqua/theme.css&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/webadmin/jscalendar/calendar.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/webadmin/jscalendar/lang/calendar-en.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/webadmin/jscalendar/calendar-setup.js&quot;&gt;&lt;/script&gt;
+
+
+&lt;style type=&quot;text/css&quot;&gt;
+
+form.contact{
+	margin-bottom: 1em;
+	}
+	
+fieldset.contact{
+        margin: 10px 10px 0px 0px;
+	padding: 10px 0px 10px 5px;
+	border: 1px solid #666666;
+	width: 530px;
+	}
+	
+legend.contact{
+	padding: 0 10px;
+	text-transform: uppercase;
+	font-size: 1.0em;
+}
+
+.contactrow{
+	clear: both;
+	padding-top: 5px;
+        margin: 0 10px;
+	}
+
+.contactLabel{
+	line-height: 1.6em;
+	text-align: right;
+	margin-right: 10px;
+	width: 160px;
+	float: left;
+}
+input.formField{
+	float: left;
+	width: 330px;
+	}
+	
+input.formdateField{
+	float: left;
+	width: 305px;
+	}
+	
+input.dateimage{
+	vertical-align: middle;
+	}
+
+textarea.contactfield{
+        float: left;
+	font-size: 1em;
+	width: 330px;
+	}
+
+input.formField,input.formdateField, textarea.contactfield{
+	border: 1px solid #666666;
+	padding: 2px;
+	font-family: Arial,sans-serif;
+        }
+
+.contactsubmitButton{
+	font-weight: bold;
+	font-family: Arial,sans-serif;
+	padding: 4px 6px;
+	width: auto;
+	}	
+
+.clearfix:after {
+        content: &quot;.&quot;;
+        font-size: 0; 
+        display: block; 
+        height: 0; 
+        clear: both; 
+        visibility: hidden;
+        }
+
+.clearfix {
+        display: inline-block;
+        }
+
+/* Hides from IE-mac \*/
+        * html .clearfix {height: 1%;}
+        .clearfix {display: block;}
+/* End hide from IE-mac */
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="Book by submitting the form below.&lt;br&gt;&lt;br&gt;
+      &lt;form class=&quot;contact&quot; action=&quot;/contact.jsp&quot; method=&quot;post&quot;&gt;
+        &lt;fieldset class=&quot;contact clearfix&quot;&gt;
+          &lt;legend class=&quot;contact&quot;&gt;Your contact details&lt;/legend&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;realname&quot;&gt;Name&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;name&quot; id=&quot;realname&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;company&quot;&gt;Company&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;company&quot; id=&quot;company&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;email&quot;&gt;Email address&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;email&quot; id=&quot;email&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;phone&quot;&gt;Telephone&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;phone&quot; id=&quot;phone&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/fieldset&gt;
+        &lt;fieldset class=&quot;contact clearfix&quot;&gt;
+          &lt;legend class=&quot;contact&quot;&gt;Booking&lt;/legend&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;from&quot;&gt;From&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; id=&quot;from&quot; name=&quot;from&quot; alt=&quot;Please select a date.&quot; class=&quot;formdateField&quot; type=&quot;text&quot;&gt;&amp;nbsp;&lt;input class=&quot;dateimage&quot; src=&quot;/image.jsp?id=14&quot; value=&quot;...&quot; id=&quot;from_trigger&quot; alt=&quot;Please click here for a date picker.&quot; type=&quot;image&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+Calendar.setup(
+{
+inputField : &quot;from&quot;,
+@@@import:datetimeformat@@@,
+firstDay : 1,
+timeFormat : 24,
+button : &quot;from_trigger&quot;
+}
+);
+&lt;/script&gt; &lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;to&quot;&gt;To&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; id=&quot;to&quot; name=&quot;to&quot; alt=&quot;Please select a date.&quot; class=&quot;formdateField&quot; type=&quot;text&quot;&gt;&amp;nbsp;&lt;input class=&quot;dateimage&quot; src=&quot;/image.jsp?id=14&quot; value=&quot;...&quot; id=&quot;to_trigger&quot; alt=&quot;Please click here for a date picker.&quot; type=&quot;image&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+Calendar.setup(
+{
+inputField : &quot;to&quot;,
+@@@import:datetimeformat@@@,
+firstDay : 1,
+timeFormat : 24,
+button : &quot;to_trigger&quot;
+}
+);
+&lt;/script&gt; &lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;contactrow&quot;&gt;
+            &lt;span class=&quot;contactLabel&quot;&gt;&lt;label for=&quot;message&quot;&gt;Comments&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;textarea cols=&quot;8&quot; rows=&quot;6&quot; name=&quot;message&quot; id=&quot;message&quot; class=&quot;contactfield&quot;&gt;&lt;/textarea&gt;&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/fieldset&gt;
+&lt;br&gt;
+&lt;input src=&quot;/&quot; value=&quot;BOOK&quot; name=&quot;BOOK&quot; class=&quot;contactsubmitButton&quot; type=&quot;submit&quot;&gt;
+&lt;input src=&quot;/&quot; value=&quot;/page.jsp?id=13&quot; name=&quot;redirect&quot; type=&quot;hidden&quot;&gt;
+&lt;input src=&quot;/&quot; size=&quot;25&quot; name=&quot;subject&quot; value=&quot;@@@import:title@@@ Notification&quot; id=&quot;subject&quot; class=&quot;formField&quot; type=&quot;hidden&quot;&gt;
+      &lt;/form&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="13" />
+   <column name="locked" value="0" />
+   <column name="created" value="2003-12-07 09:53:37" />
+   <column name="updated" value="2007-07-05 11:36:22" />
+   <column name="published" value="2007-07-05 11:36:22" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Thank You" />
+   <column name="searchable" value="no" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;p&gt;We will confirm your booking as soon as possible.&lt;/p&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="14" />
+   <column name="locked" value="0" />
+   <column name="created" value="2007-07-02 18:06:29" />
+   <column name="updated" value="2007-07-02 18:06:29" />
+   <column name="published" value="2007-07-02 18:06:29" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="Calendar Icon" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="image" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="calendar.gif" />
+   <column name="server_filename" value="image/calendar.gif" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+ </table>
+ <folder name="image/">
+  <file name="calendar.gif">
+R0lGODlhFQATAKIAAIiKiICCgMDAwKChoE1QTdDN0P///wAAACH5BAAAAAAALAAAAAAVABMAAANVKLrcPjDKOckIOOutrfnFZ4SgSBpeqY6mmLLreVpFbd8FoOv2K4sAoGvQWgU/RxQxJkQOcdAdr+Yrwq5V5ip7/X1o0DCO68Uuu9bZuVwmuN/wuJyQAAA7DQo=
+  </file>
+ </folder>
+</database>

@@ -1,0 +1,379 @@
+	<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+
+<div id="Additional Content" class="Additional_Content st_view"><div class="st_view_inner">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("content.additionalcontent.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="3"><%= mytext.display("content.additionalcontent.intro") %></td></tr>
+
+		<% if ((myconfig.get(db, "use_additionalcontent").equals("yes")) && ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("template")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")))) { %>
+			<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file"))) { %>
+
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.additionalcontent.element") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.additionalcontent.content") %></th>
+		</tr>
+
+				<%
+				int j = 0;
+				Iterator contentelements = Common.SortedHashMapKeySetIterator(mypage.elements(db, myconfig));
+				while (contentelements.hasNext()) {
+					String element = "" + contentelements.next();
+				%>
+
+		<tr>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><input type="hidden" name="element<%= j %>name" value="<%= element %>"><%= element %></td>
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<input type="hidden" id="element<%= j %>value" name="element<%= j %>value" value="<%= mypage.getElement(element) %>">
+
+						<% String[] myelementvalues = mypage.getElement(element).split(","); %>
+
+					<select multiple size="<%= 4+myelementvalues.length %>" id="element<%= j %>values" name="element<%= j %>values" style="width: 400px;" onchange="changedSelectedOptions(this, document.getElementById('element<%= j %>value'))">
+<!--
+						<option value="<%= mypage.getElement(element) %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getElement(element)) %></option> &nbsp;
+-->
+						<option value="-1" <% if ((mypage.getElement(element).equals("-1")) || (mypage.getElement(element).equals(""))) { %>selected<% } %>><%= mytext.display("default") %></option>
+						<option value="0" <% if (mypage.getElement(element).equals("0")) { %>selected<% } %>><%= mytext.display("none") %></option>
+						<option value="-2" <% if (mypage.getElement(element).equals("-2")) { %>selected<% } %>><%= mytext.display("random") %></option>
+
+						<%
+						for (int i=0; i<myelementvalues.length; i++) {
+							String myelementvalue = myelementvalues[i];
+							if ((! myelementvalue.equals("")) && (! myelementvalue.equals("0")) && (! myelementvalue.equals("-1")) && (! myelementvalue.equals("-2"))) {
+						%>
+
+						<option value="<%= myelementvalue %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myelementvalue) %></option> &nbsp;
+
+						<%
+							} 
+						}
+						%>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_element<%= j %>" value="<%= mytext.display("add") %>" onclick="openSelectContentItem('element<%= j %>values', 'Elements', 'contentclass', '<%= URLEncoder.encode(element) %>', 'element');">
+					&nbsp;
+					<input type="button" value="&#9650;" onclick="moveSelectedOptionsUp(document.getElementById('element<%= j %>values'))">
+					<input type="button" value="&#9660;" onclick="moveSelectedOptionsDown(document.getElementById('element<%= j %>values'))">
+					&nbsp;
+					<input type="button" value="<%= mytext.display("remove") %>" onclick="deleteSelectedOptions(document.getElementById('element<%= j %>values'))">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"> <%= element %> </td>
+			<td class="WCMinnerContentInputValue" align="left">
+
+						<% if ((mypage.getElement(element) == null) || (mypage.getElement(element).equals("-1")) || (mypage.getElement(element).equals(""))) { %>
+
+				<%= mytext.display("default") %>
+
+						<% } else if ((mypage.getElement(element) != null) && (mypage.getElement(element).equals("0"))) { %>
+
+				<%= mytext.display("none") %>
+
+						<% } else if ((mypage.getElement(element) != null) && (mypage.getElement(element).equals("-2"))) { %>
+
+				<%= mytext.display("random") %>
+
+						<% } else { %>
+							<% for (int i=0; i<((Content[]) mypage.getElementContent().get(element)).length; i++) { %>
+
+				<% if (i>0) { %><br><% } %><%= ((Content[]) mypage.getElementContent().get(element))[i].getTitle() %><% if (! ((Content[]) mypage.getElementContent().get(element))[i].getVersion().equals("")) { %> (<%= ((Content[]) mypage.getElementContent().get(element))[i].getVersion() %>)<% } %>
+
+							<% } %>
+						<% } %>
+
+			</td>
+
+					<% } %>
+
+		</tr>
+
+				<%
+					j = j + 1;
+				}
+				%>
+			<% } %>
+			<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+				<% if (! mypage.getContentClass().equals("file")) { %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.additionalcontent.image") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.additionalcontent.content") %></th>
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.image1") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="image1" name="image1" style="width: 400px;">
+						<option value="<%= mypage.getImage1() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage1()) %></option> &nbsp;
+						<option value="" <% if (mypage.getImage1().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_image1" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('image1', 'Images', '', 'Images', 'image');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getImage1().equals("")) { %><a target="_blank" href="/image.jsp?id=<%= mypage.getImage1() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage1()) %><% if (! mypage.getImage1().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.image2") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="image2" name="image2" style="width: 400px;">
+						<option value="<%= mypage.getImage2() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage2()) %></option> &nbsp;
+						<option value="" <% if (mypage.getImage2().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_image2" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('image2', 'Images', '', 'Images', 'image');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getImage2().equals("")) { %><a target="_blank" href="/image.jsp?id=<%= mypage.getImage2() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage2()) %><% if (! mypage.getImage2().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.image3") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="image3" name="image3" style="width: 400px;">
+						<option value="<%= mypage.getImage3() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage3()) %></option> &nbsp;
+						<option value="" <% if (mypage.getImage3().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_image3" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('image3', 'Images', '', 'Images', 'image');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getImage3().equals("")) { %><a target="_blank" href="/image.jsp?id=<%= mypage.getImage3() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage3()) %><% if (! mypage.getImage3().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+
+		</tr>
+
+				<% } %>
+				<% if (! mypage.getContentClass().equals("image")) { %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.additionalcontent.file") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.additionalcontent.content") %></th>
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.file1") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="file1" name="file1" style="width: 400px;">
+						<option value="<%= mypage.getFile1() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile1()) %></option> &nbsp;
+						<option value="" <% if (mypage.getFile1().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_file1" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('file1', 'Files', '', 'Files', 'file');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getFile1().equals("")) { %><a target="_blank" href="/file.jsp?id=<%= mypage.getFile1() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile1()) %><% if (! mypage.getFile1().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.file2") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="file2" name="file2" style="width: 400px;">
+						<option value="<%= mypage.getFile2() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile2()) %></option> &nbsp;
+						<option value="" <% if (mypage.getFile2().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_file2" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('file2', 'Files', '', 'Files', 'file');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getFile2().equals("")) { %><a target="_blank" href="/file.jsp?id=<%= mypage.getFile2() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile2()) %><% if (! mypage.getFile2().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.file3") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="file3" name="file3" style="width: 400px;">
+						<option value="<%= mypage.getFile3() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile3()) %></option> &nbsp;
+						<option value="" <% if (mypage.getFile3().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_file3" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('file3', 'Files', '', 'Files', 'file');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getFile3().equals("")) { %><a target="_blank" href="/file.jsp?id=<%= mypage.getFile3() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile3()) %><% if (! mypage.getFile3().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+
+		</tr>
+
+				<% } %>
+				<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file"))) { %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.additionalcontent.link") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.additionalcontent.content") %></th>
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.link1") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="link1" name="link1" style="width: 400px;">
+						<option value="<%= mypage.getLink1() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink1()) %></option> &nbsp;
+						<option value="" <% if (mypage.getLink1().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_link1" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('link1', 'Links', '', 'Links', 'link');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getLink1().equals("")) { %><a target="_blank" href="/link.jsp?id=<%= mypage.getLink1() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink1()) %><% if (! mypage.getLink1().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.link2") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="link2" name="link2" style="width: 400px;">
+						<option value="<%= mypage.getLink2() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink2()) %></option> &nbsp;
+						<option value="" <% if (mypage.getLink2().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_link2" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('link2', 'Links', '', 'Links', 'link');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getLink2().equals("")) { %><a target="_blank" href="/link.jsp?id=<%= mypage.getLink2() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink2()) %><% if (! mypage.getLink2().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.link3") %></td>
+
+					<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left">
+				<nobr>
+					<select id="link3" name="link3" style="width: 400px;">
+						<option value="<%= mypage.getLink3() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink3()) %></option> &nbsp;
+						<option value="" <% if (mypage.getLink3().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+				</nobr>
+			</td>
+			<td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+				<nobr>
+					<input type="button" id="select_link3" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('link3', 'Links', '', 'Links', 'link');">
+				</nobr>
+			</td>
+
+					<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left"><% if (! mypage.getLink3().equals("")) { %><a target="_blank" href="/link.jsp?id=<%= mypage.getLink3() %>"><% } %><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink3()) %><% if (! mypage.getLink3().equals("")) { %></a><% } %> &nbsp;</td>
+
+					<% } %>
+
+		</tr>
+
+				<% } %>
+			<% } %>
+		<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.additionalcontent.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.additionalcontent.enableconfig") %><% } else { %><%= mytext.display("content.additionalcontent.enablesuperadmin") %><% } %></td></tr>
+
+		<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.additionalcontent.about.heading") %></th></tr>
+		<tr><td align="left" colspan="4"><%= mytext.display("content.additionalcontent.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>
+
+	<% } %>

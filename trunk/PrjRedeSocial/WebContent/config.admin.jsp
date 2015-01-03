@@ -1,0 +1,1 @@
+<%@ include file="webadmin/config.jsp" %><%@ include file="webadmin/webeditor/webeditor.jsp" %>

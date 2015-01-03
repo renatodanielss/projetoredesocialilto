@@ -1,0 +1,70 @@
+<%@ include file="../../config.jsp" %><%@ page import="HardCore.RequireUser" %><%@ page import="HardCore.MenuContent" %><% RequireUser.Administrator(mytext, mysession.get("username"), myconfig.get(db, "superadmin"), mysession.get("administrator"), myrequest, myresponse, database, mysession.get("database")); %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.Content" %><%@ page import="java.io.File" %><%@ page import="java.util.Date" %><%@ page import="java.util.regex.*" %><%
+
+String title = "Data-to-Page Import";
+
+String menu = "";
+
+String content = "";
+content +=  "<script type=\"text/javascript\">" + "\r\n";
+content +=  "" + "\r\n";
+content +=  "function openSelectContentItem(inputid, section, category, title, href_contentclass) {" + "\r\n";
+content +=  "	var inputnode = document.getElementById(inputid);" + "\r\n";
+content +=  "	if (inputnode && inputnode.options) {" + "\r\n";
+content +=  "		var contenttitle = inputnode.options[inputnode.selectedIndex].text;" + "\r\n";
+content +=  "		var contentid = inputnode.options[inputnode.selectedIndex].value;" + "\r\n";
+content +=  "		var contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;" + "\r\n";
+content +=  "		if (! ((contentid > 0) && (contenttitle != ''))) {" + "\r\n";
+content +=  "			contentid = '';" + "\r\n";
+content +=  "			contenttitle = '';" + "\r\n";
+content +=  "			contenthref = '';" + "\r\n";
+content +=  "		}" + "\r\n";
+content +=  "		window.open('/" + mytext.display("adminpath") + "/webeditor/selectormanager_wcm.jsp?input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);" + "\r\n";
+content +=  "	}" + "\r\n";
+content +=  "}" + "\r\n";
+content +=  "" + "\r\n";
+content +=  "function selectContentItem(inputid, contentid, contenttitle, href) {" + "\r\n";
+content +=  "	var inputnode = document.getElementById(inputid);" + "\r\n";
+content +=  "	if (inputnode && inputnode.options && (contentid != '') && (contenttitle != '')) {" + "\r\n";
+content +=  "		inputnode.options[0].text = contenttitle;" + "\r\n";
+content +=  "		inputnode.options[0].value = contentid;" + "\r\n";
+content +=  "		inputnode.selectedIndex = 0;" + "\r\n";
+content +=  "		if (inputnode.onchange) {" + "\r\n";
+content +=  "			inputnode.onchange();" + "\r\n";
+content +=  "		}" + "\r\n";
+content +=  "	}" + "\r\n";
+content +=  "}" + "\r\n";
+content +=  "" + "\r\n";
+content +=  "</script>" + "\r\n";
+content +=  "" + "\r\n";
+content +=  "      <form action=\"import.jsp\" method=\"post\" enctype=\"multipart/form-data\">" + "\r\n";
+content +=  "        <table width=\"100%\">" + "\r\n";
+content +=  "          <tr>" + "\r\n";
+content +=  "            <th class=\"WCMinnerContentHeading1\" align=\"left\">Data-to-Page Import</th>" + "\r\n";
+content +=  "          </tr>" + "\r\n";
+content +=  "          <tr>" + "\r\n";
+content +=  "            <td class=\"WCMinnerContentIntro\">Import CSV format data file to generate pages.</td>" + "\r\n";
+content +=  "          </tr>" + "\r\n";
+content +=  "          <tr>" + "\r\n";
+content +=  "            <th class=\"WCMinnerContentInputName\" align=\"left\">Master Page</th>" + "\r\n";
+content +=  "          </tr>" + "\r\n";
+content +=  "          <tr> " + "\r\n";
+content +=  "            <td class=\"WCMinnerContentInputValue\" colspan=\"2\"> " + "\r\n";
+content +=  "              <select id=\"master_page\" name=\"master_page\" style=\"width: 400px;\">" + "\r\n";
+content +=  "                <option value=\"\">&nbsp;" + "\r\n";
+content +=  "              </select>" + "\r\n";
+content +=  "              <input type=\"button\" value=\"" + mytext.display("select") + "\" onclick=\"openSelectContentItem('master_page', 'Pages', '', 'Pages', 'page');\">" + "\r\n";
+content +=  "            </td>" + "\r\n";
+content +=  "          </tr>" + "\r\n";
+content +=  "          <tr>" + "\r\n";
+content +=  "            <th class=\"WCMinnerContentInputName\" align=\"left\">Data File</th>" + "\r\n";
+content +=  "          </tr>" + "\r\n";
+content +=  "          <tr> " + "\r\n";
+content +=  "            <td class=\"WCMinnerContentInputValue\" colspan=\"2\"> " + "\r\n";
+content +=  "              <input type=\"file\" name=\"data_file\">" + "\r\n";
+content +=  "            </td>" + "\r\n";
+content +=  "          </tr>" + "\r\n";
+content +=  "        </table>" + "\r\n";
+content +=  "        <p><input type=\"submit\" value=\"Import Data And Generate Pages\"></p>" + "\r\n";
+content +=  "      </form>" + "\r\n";
+
+%><%@ include file="../../module.jsp.html" %>

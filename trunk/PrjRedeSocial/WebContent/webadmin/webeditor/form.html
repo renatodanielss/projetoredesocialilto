@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('form_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+
+function initform() {
+	document.forms[0].action.value = requestParameter("action");
+	document.forms[0].method.value = requestParameter("method");
+	document.forms[0].enctype.value = requestParameter("enctype");
+	document.forms[0].target.value = requestParameter("target");
+	document.forms[0].novalidate.value = requestParameter("novalidate");
+	document.forms[0].autocomplete.value = requestParameter("autocomplete");
+	document.forms[0].onsubmit.value = requestParameter("onsubmit");
+	document.forms[0].onreset.value = requestParameter("onreset");
+	document.forms[0].oninput.value = requestParameter("oninput");
+	document.forms[0].oninvalid.value = requestParameter("oninvalid");
+	document.forms[0].htmlclass.value = requestParameter("htmlclass");
+	document.forms[0].htmlid.value = requestParameter("htmlid");
+	var htmlformat = requestParameter("format");
+	if ((htmlformat == "html4") || (htmlformat == "xhtml")) {
+		document.forms[0].novalidate.disabled = true;
+		document.forms[0].autocomplete.disabled = true;
+		document.forms[0].oninput.disabled = true;
+		document.forms[0].oninvalid.disabled = true;
+	}
+}
+
+function insertform(form) {
+	var action = form.action.value;
+	var method = form.method.value;
+	var enctype = form.enctype.value;
+	var target = form.target.value;
+	var novalidate = form.novalidate.value;
+	var autocomplete = form.autocomplete.value;
+	var onsubmit = form.onsubmit.value;
+	var onreset = form.onreset.value;
+	var oninput = form.oninput.value;
+	var oninvalid = form.oninvalid.value;
+	var htmlclass = form.htmlclass.value;
+	var htmlid = form.htmlid.value;
+	webeditor.insertForm(action,method,enctype,target,onsubmit,onreset,htmlclass,htmlid,novalidate,autocomplete,oninput,oninvalid);
+	webeditor.window_close(window);
+}
+
+</script>
+</head>
+<body onLoad="initform();">
+<form action="#" onSubmit="javascript:insertform(this); return false;">
+<table summary="" width="100%" border="0" class="dtree">
+	<tr align="left" valign="top"> 
+		<td colspan="4" class="webeditor_window_title"><script type="text/javascript">document.write(Text('form_title'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="4">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('form_form'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_form_method'));</script></td>
+						<td class="webeditor_window_value"> 
+							<select name="method" style="width: 75px;">
+								<script type="text/javascript">
+								document.write('<option value="" selected>');
+								document.write('<option value="GET">' + Text('form_form_method_get'));
+								document.write('<option value="POST">' + Text('form_form_method_post'));
+								</script>
+							</select>
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_form_action'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="action" size="20" value="">
+						</td>
+					</tr>
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_form_target'));</script></td>
+						<td class="webeditor_window_value"> 
+							<select name="target" style="width: 75px;">
+								<script type="text/javascript">
+								document.write('<option value="" selected>&nbsp;');
+								document.write('<option value="_self">' + Text('form_form_target_self'));
+								document.write('<option value="_parent">' + Text('form_form_target_parent'));
+								document.write('<option value="_top">' + Text('form_form_target_top'));
+								document.write('<option value="_blank">' + Text('form_form_target_blank'));
+								</script>
+							</select>
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_form_encoding'));</script></td>
+						<td class="webeditor_window_value"> 
+							<select name="enctype">
+								<script type="text/javascript">
+								document.write('<option value="" selected>');
+								document.write('<option value="application/x-www-form-urlencoded">' + Text('form_form_encoding_urlencoded'));
+								document.write('<option value="multipart/form-data">' + Text('form_form_encoding_multipart'));
+								</script>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_form_novalidate'));</script></td>
+						<td class="webeditor_window_value"> 
+							<select name="novalidate">
+								<script type="text/javascript">
+								document.write('<option value="">' + Text('form_form_novalidate_no'));
+								document.write('<option value="novalidate">' + Text('form_form_novalidate_yes'));
+								</script>
+							</select>
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_form_autocomplete'));</script></td>
+						<td class="webeditor_window_value"> 
+							<select name="autocomplete">
+								<script type="text/javascript">
+								document.write('<option value="">' + '&nbsp;');
+								document.write('<option value="on">' + Text('form_form_autocomplete_on'));
+								document.write('<option value="off">' + Text('form_form_autocomplete_off'));
+								</script>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="4">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('form_events'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_events_onsubmit'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="onsubmit" size="20" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_events_onreset'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="onreset" size="20" value="">
+						</td>
+					</tr>
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_events_oninput'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="oninput" size="20" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('form_events_oninvalid'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="oninvalid" size="20" value="">
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="4">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('class_id'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('htmlclass'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="htmlclass" size="20" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('htmlid'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="htmlid" size="20" value="">
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+</table>
+<br>
+<div align="center">
+<script type="text/javascript">document.write('<input type="submit" value="' + Text('ok') + '">');</script>
+<script type="text/javascript">document.write('<input type="button" value="' + Text('cancel') + '" onClick="webeditor.window_close(window);">');</script>
+</div>
+</form>
+</body>
+</html>

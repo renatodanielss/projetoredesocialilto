@@ -1,0 +1,88 @@
+<%= "<" + "?xml version=\"1.0\" encoding=\"" + myconfig.get(db, "charset") + "\" ?" + ">" %>
+<ajax-response><response type="object" id="data_grid_updater">
+<% if (! error.equals("")) { %>
+<rows update_ui="false" /><error><%= html.encode(error) %></error>
+<% } else { %>
+<rows update_ui="true">
+<%
+	for (Iterator addresses = Common.SortedHashMapKeySetIterator(my_ini); addresses.hasNext(); ) {
+		String address = (String) addresses.next();
+%>
+        <tr> 
+<%
+	String myadminindex = adminuser.getIndexHosting();
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "index_hosting");
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "use_adminindex");
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = "checkbox:25px group:50px type:50px address:150px status:50px website:50px webadmin:50px view:50px update:50px delete:50px";
+	}
+	String[] columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "#";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " width: " + mycolumnwidth + ";";
+		}
+%>
+<% if (mycolumnname.equals("checkbox")) { %>
+          <td><![CDATA[<input type="checkbox" name="dummy" value="<%= address %>" onchange="toggleCheckbox('<%= address %>',this.checked);">]]></td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td><![CDATA[<span title="<%= ((HashMap)my_ini.get(address)).get("id") %>"><%= ((HashMap)my_ini.get(address)).get("id") %></span>]]></td>
+<% } else if (mycolumnname.equals("group")) { %>
+          <td><![CDATA[<span title="<%= ((HashMap)my_ini.get(address)).get("hostinggroup") %>"><%= ((HashMap)my_ini.get(address)).get("hostinggroup") %></span>]]></td>
+<% } else if (mycolumnname.equals("type")) { %>
+          <td><![CDATA[<span title="<%= ((HashMap)my_ini.get(address)).get("hostingtype") %>"><%= ((HashMap)my_ini.get(address)).get("hostingtype") %></span>]]></td>
+<% } else if (mycolumnname.equals("status")) { %>
+          <td><![CDATA[<span title="<%= ("" + ((HashMap)my_ini.get(address)).get("status")).replaceAll("<[^<]+>", " ") %>"><%= ((HashMap)my_ini.get(address)).get("status") %></span>]]></td>
+<% } else if (mycolumnname.equals("address")) { %>
+          <td><![CDATA[<span title="<%= address %>"><%= address %></span>]]></td>
+<% } else if (mycolumnname.equals("rootpath")) { %>
+          <td><![CDATA[<span title="<%= ((HashMap)my_ini.get(address)).get("URLrootpath") %>"><%= ((HashMap)my_ini.get(address)).get("URLrootpath") %></span>]]></td>
+<% } else if (mycolumnname.equals("database")) { %>
+          <td><![CDATA[<span title="<%= ((HashMap)my_ini.get(address)).get("database") %>"><%= ((HashMap)my_ini.get(address)).get("database") %></span>]]></td>
+<% } else if (mycolumnname.equals("username")) { %>
+          <td><![CDATA[<span title="<%= ((HashMap)my_ini.get(address)).get("superadmin") %>"><%= ((HashMap)my_ini.get(address)).get("superadmin") %></span>]]></td>
+<% } else if (mycolumnname.equals("email")) { %>
+          <td><![CDATA[<span title="<%= ((HashMap)my_ini.get(address)).get("superadmin_email") %>"><%= ((HashMap)my_ini.get(address)).get("superadmin_email") %></span>]]></td>
+<% } else if (mycolumnname.equals("website")) { %>
+          <td><![CDATA[<div align="center"><a href="http://<%= address %>/" target="_blank"><%= mytext.display("hosting.address") %></a></div>]]></td>
+<% } else if (mycolumnname.equals("webadmin")) { %>
+          <td><![CDATA[<div align="center"><a href="http://<%= address %>/<%= mytext.display("adminpath") %>/login_post.jsp?url=%2F<%= mytext.display("adminpath") %>%2Findex.jsp&username=<%= ((HashMap)my_ini.get(address)).get("superadmin") %>&password=<%= ((HashMap)my_ini.get(address)).get("superadmin_password") %>" target="_blank"><%= mytext.display("hosting.webadmin") %></a></div>]]></td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td><![CDATA[<div align="center"><a href="view.jsp?id=<%= address %>&<%= Math.random() %>"><%= mytext.display("view") %></a></div>]]></td>
+<% } else if (mycolumnname.equals("create")) { %>
+          <td><![CDATA[<div align="center"><a href="create.jsp?id=<%= address %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a></div>]]></td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td><![CDATA[<div align="center"><a href="update.jsp?id=<%= address %>&<%= Math.random() %>"><%= mytext.display("update") %></a></div>]]></td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td><![CDATA[<div align="center"><a href="delete.jsp?id=<%= address %>&<%= Math.random() %>"><%= mytext.display("delete") %></a></div>]]></td>
+<% } else { %>
+          <td><![CDATA[<div align="center"><a href="<%= mycolumnhref + address %>&<%= Math.random() %>"><%= mycolumnname %></a></div>]]></td>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	}
+%>
+</rows>
+<rowcount><%= recordCount %></rowcount>
+<% } %>
+</response></ajax-response>

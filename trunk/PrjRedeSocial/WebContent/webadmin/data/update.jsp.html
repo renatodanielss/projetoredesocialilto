@@ -1,0 +1,574 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("data.update.title") %></title>
+<%
+String basehref = "";
+// basehref = myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort();
+%>
+<script type="text/javascript">
+document.write('<base href="' + document.location.protocol + "//" + document.location.host + '<%= basehref %>' + '"><!--[if IE]></base><![endif]-->');
+</script>
+<script type="text/javascript">
+
+var baseHref = "/";
+var baseHrefPrefix = "/";
+
+function validateNumber(myinput, inputname) {
+	 myinput.value = myinput.value.replace(/^ */g, "").replace(/ *$/g, "");
+	 if (isNaN(myinput.value)) {
+		alert("<%= mytext.display("data.error.number").replaceAll("\r","\\\\r").replaceAll("\n","\\\\n") %>".replace("@@@name@@@", ""+inputname).replace("@@@value@@@", myinput.value));
+	}
+}
+
+function validateDateTime(myinput, inputname) {
+	 myinput.value = myinput.value.replace(/^ */g, "").replace(/ *$/g, "");
+	 if (! myinput.value.match("^[0-9][0-9][0-9][0-9](-[0-9][0-9](-[0-9][0-9]( [0-9][0-9](:[0-9][0-9](:[0-9][0-9])?)?)?)?)?$")) {
+		alert("<%= mytext.display("data.error.datetime").replaceAll("\r","\\\\r").replaceAll("\n","\\\\n") %>".replace("@@@name@@@", ""+inputname).replace("@@@value@@@", myinput.value));
+	}
+}
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contentid = '';
+		var contenttitle = '';
+		var contenthref = '';
+		if (inputnode.type != "select-multiple") {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		contenttitle = encodeURIComponent(contenttitle);
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		if (inputnode.type == "select-multiple") {
+			var newoption = new Option();
+			newoption.text = contenttitle;
+			newoption.value = contentid;
+			newoption.selected = true;
+			inputnode.options[inputnode.options.length] = newoption;
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+		}
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+if ((mypage.getContentFormat().equals("text")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) {
+	mywebeditor = "textarea";
+} else if (! adminuser.getContentEditor().equals("")) {
+	mywebeditor = adminuser.getContentEditor();
+} else if (! myconfig.get(db, "content_editor").equals("")) {
+	mywebeditor = myconfig.get(db, "content_editor");
+}
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+$(function(){
+
+	if (typeof(WebEditorInit) == "function") {
+		var webeditor_inputs = document.getElementsByClassName('webeditor_input');
+		var webeditor_input_ids = [];
+		for (var i=0; i<webeditor_inputs.length; i++) {
+			webeditor_input_ids[i] = webeditor_inputs[i].id;
+		}
+		for (var i=0; i<webeditor_input_ids.length; i++) {
+			WebEditorInit(webeditor_input_ids[i]);
+		}
+	}
+
+});
+
+</script>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("data.update.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<% if (! maintainData.database.getEditor()) { %>
+      <p><font color="red"><%= mytext.display("data.update.nopermission") %></font></p>
+<% } else { %>
+      <form action="/<%= mytext.display("adminpath") %>/data/update_post.jsp?database=<%= html.encodeHtmlEntities(myrequest.getParameter("database")) %>&id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST">
+        <input type="hidden" id="webeditor_stylesheet" name="webeditor_stylesheet" value="<%= stylesheet %>">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("data.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("data.intro") %></td>
+          </tr>
+<%
+	Vector v = new Vector(maintainData.database.columns.keySet());
+	Collections.sort(v, new Comparator() {
+		public int compare(Object o1, Object o2) {
+			int i1 = Integer.parseInt("0"+o1);
+			int i2 = Integer.parseInt("0"+o2);
+			if (i1 < i2) {
+				return -1;
+			} else if (i1 > i2) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	});
+	Iterator mycolumn = v.iterator();
+	while (mycolumn.hasNext()) {
+		HashMap columns = (HashMap)maintainData.database.columns.get("" + mycolumn.next());
+		String id = "" + columns.get("id");
+		String order = "" + columns.get("order");
+		String name = "" + columns.get("name");
+		String index = "" + columns.get("index");
+		String type = "" + columns.get("type");
+		String param1 = "" + columns.get("param1");
+		String param2 = "" + columns.get("param2");
+		String options = "" + columns.get("options");
+		String cols = param1;
+		String rows = param2;
+		String width = param1;
+		String height = param2;
+		String digits = param1;
+		String decimals = param2;
+		String contentclass = param2;
+		String size = param1;
+		String size2 = param2;
+		String databasename = param2;
+		String databasecontent = options;
+		String column = "col" + id;
+%>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= name %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+<% if ((type.equals("text")) && (rows.equals("1"))) { %>
+		<input type="text" size="<%= cols %>" maxlength="250" name="col<%= id %>" value="<%= html.encode(data.getContent(column)) %>">
+<% } else if (type.equals("text")) { %>
+		<textarea cols="<%= cols %>" rows="<%= rows %>" name="col<%= id %>">
+<%= html.encode(data.getContent(column)) %></textarea>
+<% } else if (type.equals("html")) { %>
+		<div id="<%= column %>_container" style="width: <%= width %>px; height: <%= height %>px;"><textarea id="<%= column %>" name="<%= column %>" class="webeditor_input" cols="80" rows="25" style="width: <%= width %>px; height: <%= height %>px;">
+<%= html.encode(mypage.adjust_links("", data.getContent(column), db, myconfig)) %></textarea></div>
+<% } else if (type.equals("number")) { %>
+		<input type="text" size="25" maxlength="25" name="col<%= id %>" value="<%= html.encode(data.getContent(column)) %>" onblur="validateNumber(this, '<%= name %>')">
+<% } else if (type.equals("select")) { %>
+		<select name="col<%= id %>"><%= data.select_options(options, data.getContent(column)) %></select>
+<% } else if (type.equals("selectmulti")) { %>
+		<select multiple name="col<%= id %>"><%= data.select_options(options, data.getContent(column)) %></select>
+<% } else if (type.equals("radio")) { %>
+		<%= data.radio_options(column, options, data.getContent(column)) %>
+<% } else if (type.equals("checkbox")) { %>
+		<%= data.checkbox_options(column, options, data.getContent(column)) %>
+<% } else if (type.equals("datetime")) { %>
+		<input type="text" size="20" maxlength="20" name="col<%= id %>" value="<%= html.encode(data.getContent(column)) %>" onblur="validateDateTime(this, '<%= name %>')">
+
+<% } else if (type.equals("created")) { %>
+		<input readonly type="text" size="20" maxlength="20" name="col<%= id %>" value="<%= html.encode(data.getContent(column)) %>">
+<% } else if (type.equals("updated")) { %>
+		<input readonly type="text" size="20" maxlength="20" name="col<%= id %>" value="<%= html.encode(data.getContent(column)) %>">
+<% } else if (type.equals("createdby")) { %>
+		<input readonly type="text" size="40" maxlength="250" name="col<%= id %>" value="<%= html.encode(data.getContent(column)) %>">
+<% } else if (type.equals("updatedby")) { %>
+		<input readonly type="text" size="40" maxlength="250" name="col<%= id %>" value="<%= html.encode(mysession.get("username")) %>">
+
+<% } else if (type.equals("content")) { %>
+		<% if (false) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<option value="<%= data.getContent(column) %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + data.getContent(column)) %>
+		<option value=""><%= mytext.display("none") %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', '', '', '', '');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("contents")) { %>
+		<% if (false) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select multiple size="<%= size %>" id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<%= content.select_options_ids(db, "", data.getContent(column)) %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', '', '', '', '');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("contentclass")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "elements", "element", data.getContent(column)) %></select>
+<% } else if (type.equals("contentclasses")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "elements", "element", data.getContent(column)) %></select>
+<% } else if (type.equals("contentgroup")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "contentgroups", "contentgroup", data.getContent(column)) %></select>
+<% } else if (type.equals("contentgroups")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "contentgroups", "contentgroup", data.getContent(column)) %></select>
+<% } else if (type.equals("contenttype")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "contenttypes", "contenttype", data.getContent(column)) %></select>
+<% } else if (type.equals("contenttypes")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "contenttypes", "contenttype", data.getContent(column)) %></select>
+
+<% } else if (type.equals("page")) { %>
+		<% if (false) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "page", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<option value="<%= data.getContent(column) %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + data.getContent(column)) %>
+		<option value=""><%= mytext.display("none") %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Pages', '', 'Pages', 'page');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("pages")) { %>
+		<% if (false) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "page", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select multiple size="<%= size %>" id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<%= content.select_options_ids(db, "page", data.getContent(column)) %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Pages', '', 'Pages', 'page');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("pagegroup")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "contentgroups", "contentgroup", data.getContent(column)) %></select>
+<% } else if (type.equals("pagegroups")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "contentgroups", "contentgroup", data.getContent(column)) %></select>
+<% } else if (type.equals("pagetype")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "contenttypes", "contenttype", data.getContent(column)) %></select>
+<% } else if (type.equals("pagetypes")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "contenttypes", "contenttype", data.getContent(column)) %></select>
+
+<% } else if (type.equals("image")) { %>
+		<% if (false) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "image", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<option value="<%= data.getContent(column) %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + data.getContent(column)) %>
+		<option value=""><%= mytext.display("none") %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Images', '', 'Images', 'image');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("images")) { %>
+		<% if (false) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "image", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select multiple size="<%= size %>" id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<%= content.select_options_ids(db, "image", data.getContent(column)) %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Images', '', 'Images', 'image');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("imagegroup")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "imagegroups", "imagegroup", data.getContent(column)) %></select>
+<% } else if (type.equals("imagegroups")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "imagegroups", "imagegroup", data.getContent(column)) %></select>
+<% } else if (type.equals("imagetype")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "imagetypes", "imagetype", data.getContent(column)) %></select>
+<% } else if (type.equals("imagetypes")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "imagetypes", "imagetype", data.getContent(column)) %></select>
+<% } else if (type.equals("imageformat")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "imageformats", "filenameextension", data.getContent(column)) %></select>
+<% } else if (type.equals("imageformats")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "imageformats", "filenameextension", data.getContent(column)) %></select>
+
+<% } else if (type.equals("file")) { %>
+		<% if (false) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "file", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<option value="<%= data.getContent(column) %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + data.getContent(column)) %>
+		<option value=""><%= mytext.display("none") %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Files', '', 'Files', 'file');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("files")) { %>
+		<% if (false) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "file", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select multiple size="<%= size %>" id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<%= content.select_options_ids(db, "file", data.getContent(column)) %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Files', '', 'Files', 'file');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("filegroup")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "filegroups", "filegroup", data.getContent(column)) %></select>
+<% } else if (type.equals("filegroups")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "filegroups", "filegroup", data.getContent(column)) %></select>
+<% } else if (type.equals("filetype")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "filetypes", "filetype", data.getContent(column)) %></select>
+<% } else if (type.equals("filetypes")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "filetypes", "filetype", data.getContent(column)) %></select>
+<% } else if (type.equals("fileformat")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "fileformats", "filenameextension", data.getContent(column)) %></select>
+<% } else if (type.equals("fileformats")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "fileformats", "filenameextension", data.getContent(column)) %></select>
+
+<% } else if (type.equals("link")) { %>
+		<% if (false) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "link", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<option value="<%= data.getContent(column) %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + data.getContent(column)) %>
+		<option value=""><%= mytext.display("none") %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Links', '', 'Links', 'link');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("links")) { %>
+		<% if (false) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "link", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select multiple size="<%= size %>" id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<%= content.select_options_ids(db, "link", data.getContent(column)) %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Links', '', 'Links', 'link');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("linkgroup")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "linkgroups", "linkgroup", data.getContent(column)) %></select>
+<% } else if (type.equals("linkgroups")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "linkgroups", "linkgroup", data.getContent(column)) %></select>
+<% } else if (type.equals("linktype")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "linktypes", "linktype", data.getContent(column)) %></select>
+<% } else if (type.equals("linktypes")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "linktypes", "linktype", data.getContent(column)) %></select>
+
+<% } else if (type.equals("product")) { %>
+		<% if (false) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "product", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<option value="<%= data.getContent(column) %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + data.getContent(column)) %>
+		<option value=""><%= mytext.display("none") %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Products', '', 'Products', 'product');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("products")) { %>
+		<% if (false) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "product", data.getContent(column)) %></select>
+		<% } else { %>
+		<nobr>
+		<select multiple size="<%= size %>" id="col<%= id %>" name="col<%= id %>" style="width: 400px;">
+		<%= content.select_options_ids(db, "product", data.getContent(column)) %>
+		</select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('col<%= id %>', 'Products', '', 'Products', 'product');">
+		</nobr>
+		<% } %>
+<% } else if (type.equals("productgroup")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "productgroups", "productgroup", data.getContent(column)) %></select>
+<% } else if (type.equals("productgroups")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "productgroups", "productgroup", data.getContent(column)) %></select>
+<% } else if (type.equals("producttype")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "producttypes", "producttype", data.getContent(column)) %></select>
+<% } else if (type.equals("producttypes")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "producttypes", "producttype", data.getContent(column)) %></select>
+
+<% } else if (type.equals("element")) { %>
+	<% if (! contentclass.equals("")) { %>
+		<select size="<%= size2 %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, contentclass, data.getContent(column)) %></select>
+	<% } else { %>
+		<select size="<%= size2 %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "element", data.getContent(column)) %></select>
+	<% } %>
+<% } else if (type.equals("elements")) { %>
+	<% if (! contentclass.equals("")) { %>
+		<select multiple size="<%= size2 %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, contentclass, data.getContent(column)) %></select>
+	<% } else { %>
+		<select multiple size="<%= size2 %>" name="col<%= id %>"><option value="">&nbsp;<%= content.select_options(db, "element", data.getContent(column)) %></select>
+	<% } %>
+
+<% } else if (type.equals("version")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "versions", "version", data.getContent(column)) %></select>
+<% } else if (type.equals("versions")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "versions", "version", data.getContent(column)) %></select>
+<% } else if (type.equals("database")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "data", "title", data.getContent(column)) %></select>
+<% } else if (type.equals("databases")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "data", "title", data.getContent(column)) %></select>
+
+<% } else if (type.equals("datum")) { %>
+<%
+	Databases databases = new Databases(mytext);
+	databases.readTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, databasename);
+	String columnid = databases.getAttributeColumn(databasecontent);
+%>
+	<% if (! columnid.equals("")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options_id(db, databases.getTable(), columnid, data.getContent(column)) %></select>
+	<% } %>
+<% } else if (type.equals("data")) { %>
+<%
+	Databases databases = new Databases(mytext);
+	databases.readTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, databasename);
+	String columnid = databases.getAttributeColumn(databasecontent);
+%>
+	<% if (! columnid.equals("")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options_id(db, databases.getTable(), columnid, data.getContent(column)) %></select>
+	<% } %>
+
+<% } else if ((type.equals("datumview")) || (type.equals("dataview"))) { %>
+<%
+	Databases databases = new Databases(mytext);
+	databases.readTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, databasename);
+	String columnid = databases.getAttributeColumn(databasecontent);
+%>
+	<% if (! columnid.equals("")) { %>
+		<select <% if (type.equals("dataview")) { %>multiple<% } %> size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options_id(db, databases.getTable(), columnid, data.getContent(column)) %></select>
+	<% } else if (! databases.getId().equals("")) { %>
+<%
+		String[] columnnames = databases.getAttributesColumns(databasecontent, db, myconfig, mysession);
+		String optionformat = databases.getAttributesColumnsFormat(databasecontent, db, myconfig, mysession);
+%>
+		<select <% if (type.equals("dataview")) { %>multiple<% } %> size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options_value(db, databases.getTable(), columnnames, data.getContent(column), optionformat) %></select>
+	<% } else { %>
+<%
+		String[] tablenames = databases.getAttributesTables(databasename, databasecontent, db, myconfig, mysession);
+		String[] columnnames = databases.getAttributesColumns(databasename, databasecontent, db, myconfig, mysession);
+		String optionformat = databases.getAttributesColumnsFormat(databasename, databasecontent, db, myconfig, mysession);
+		HashMap tablecolumnjoins = databases.getAttributesJoins(databasename, databasecontent, db, myconfig, mysession);
+%>
+		<select <% if (type.equals("dataview")) { %>multiple<% } %> size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options_value(db, tablenames, columnnames, tablecolumnjoins, data.getContent(column), optionformat) %></select>
+	<% } %>
+
+<% } else if (type.equals("username")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "users", "username", data.getContent(column)) %></select>
+<% } else if (type.equals("usernames")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "users", "username", data.getContent(column)) %></select>
+<% } else if (type.equals("useremail")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "users", "email", data.getContent(column)) %></select>
+<% } else if (type.equals("useremails")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "users", "email", data.getContent(column)) %></select>
+<% } else if (type.equals("usergroup")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "usergroups", "usergroup", data.getContent(column)) %></select>
+<% } else if (type.equals("usergroups")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "usergroups", "usergroup", data.getContent(column)) %></select>
+<% } else if (type.equals("usertype")) { %>
+		<select size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "usertypes", "usertype", data.getContent(column)) %></select>
+<% } else if (type.equals("usertypes")) { %>
+		<select multiple size="<%= size %>" name="col<%= id %>"><option value="">&nbsp;<%= Common.select_options(db, "usertypes", "usertype", data.getContent(column)) %></select>
+
+<% } else { %>
+		<%= data.getContent(column) %>
+<% } %>
+		&nbsp;
+            </td>
+          </tr>
+<%
+	}
+%>
+        </table>
+      </form>
+<% } %>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

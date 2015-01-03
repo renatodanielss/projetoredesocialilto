@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("content.schedule.title") %></title>
+<script type="text/javascript">
+
+function selectAll(myform) {
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "archiveid") {
+			myform.elements[i].checked = true;
+		}
+	}
+}
+
+function unselectAll(myform) {
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "archiveid") {
+			myform.elements[i].checked = false;
+		}
+	}
+}
+
+</script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/sorttable.js"></script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("content.schedule.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<form action="delete_multiple.jsp" method="POST">
+      <table width="100%" class="sortable" id="contents">
+        <tr class="WCMindex"> 
+          <th class="WCMindex" style="width:25px;">&nbsp;</th>
+          <th class="WCMindex" align="left"><%= mytext.display("content.title") %></th>
+<!--
+          <th class="WCMindex" align="right" style="width:25px;"><%= mytext.display("content.id") %></th>
+-->
+          <th class="WCMindex" align="left" style="width:100px;"><%= mytext.display("content.updated") %></th>
+          <th class="WCMindex" align="left" style="width:100px;"><%= mytext.display("content.published") %></th>
+          <th class="WCMindex" align="left" style="width:100px;"><%= mytext.display("content.unpublished") %></th>
+          <th class="WCMindex" align="left"><%= mytext.display("content.revision") %></th>
+          <th class="WCMindex" align="left" colspan="4">&nbsp;</th>
+        </tr>
+<%
+	while (schedulepage.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+%>
+        <tr class="WCMindex" onMouseOver="this.className='WCMindex_highlight'" onMouseOut="this.className='WCMindex'"> 
+          <td class="WCMindex"><input type="checkbox" name="archiveid" value="<%= schedulepage.getArchiveId() %>"></td>
+          <td class="WCMindex" valign="top"><%= schedulepage.getTitle() %> </td>
+<!--
+          <td class="WCMindex" valign="top"><%= schedulepage.getArchiveId() %> </td>
+-->
+          <td class="WCMindex" valign="top"><nobr><font size="1" color="#000000"> <%= schedulepage.getUpdated() %> </font></nobr></td>
+          <td class="WCMindex" valign="top"><nobr><font size="1" color="#000000"> <%= schedulepage.getPublished() %> </font></nobr></td>
+          <td class="WCMindex" valign="top"><nobr><font size="1" color="#000000"> <%= schedulepage.getScheduledUnpublish() %> </font></nobr></td>
+          <td class="WCMindex" valign="top"><%= schedulepage.getRevision() %> </td>
+          <td class="WCMindex" width="50"> 
+            <div align="center"><% if (schedulepage.getUser()) { %><a target="_blank" href="/<% if ((schedulepage.getContentClass().equals("product")) || (schedulepage.getContentClass().equals("page")) || (schedulepage.getContentClass().equals("template")) || (schedulepage.getContentClass().equals("stylesheet")) || (schedulepage.getContentClass().equals("image")) || (schedulepage.getContentClass().equals("file")) || (schedulepage.getContentClass().equals("link"))) { %><%= schedulepage.getContentClass() %><% } else { %>element<% } %>.jsp?mode=preview&id=<%= schedulepage.getId() %>&archive=<%= schedulepage.getArchiveId() %>&version=<%= schedulepage.getVersion() %>&<%= Math.random() %>"><%= mytext.display("preview") %></a><% } %>
+            </div>
+          </td>
+          <td class="WCMindex" width="50"> 
+            <div align="center"><% if (schedulepage.getUser()) { %><a href="view.jsp?id=<%= schedulepage.getId() %>&archive=<%= schedulepage.getArchiveId() %>&<%= Math.random() %>"><%= mytext.display("view") %></a><% } %>
+            </div>
+          </td>
+          <td class="WCMindex" width="50"> 
+            <div align="center"><% if (masterpage.getEditor()) { %><a href="update.jsp?id=<%= schedulepage.getId() %>&archive=<%= schedulepage.getArchiveId() %>&<%= Math.random() %>"><%= mytext.display("update") %></a><% } %>
+            </div>
+          </td>
+          <td class="WCMindex" width="50">
+            <% if ((("" + schedulepage.getLocked()).equals("0")) || (("" + schedulepage.getLocked()).equals(""))) { %>
+            <div align="center"><% if (schedulepage.getPublisher()) { %><a href="delete.jsp?id=<%= schedulepage.getId() %>&archive=<%= schedulepage.getArchiveId() %>&redirect=<%= URLEncoder.encode("schedule.jsp?id=" + schedulepage.getId()) %>&<%= Math.random() %>"><%= mytext.display("delete") %></a><% } %>
+            </div>
+            <% } %>
+          </td>
+        </tr>
+<%
+	}
+%>
+      </table>
+<div>&nbsp;</div>
+<input type="button" value="<%= mytext.display("selectall") %>" onClick="selectAll(this.form)">
+&nbsp;
+<input type="button" value="<%= mytext.display("unselectall") %>" onClick="unselectAll(this.form)">
+&nbsp;
+<input type="submit" value="<%= mytext.display("deleteselected") %>">
+</form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

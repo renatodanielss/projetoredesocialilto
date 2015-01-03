@@ -1,0 +1,49 @@
+
+<% if (mysession.get("menu").equals("experience")) { %>
+	<br>
+	<div id="experienceMenu" style="display: none;">
+		<ul>
+			<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_experience"><a href="#"><%= mytext.display("menu.experience") %></a>
+				<ul>
+	<% if (License.valid(db, myconfig, "experience")) { %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_experience_segments")) { %>
+			<%
+			String myselected = "";
+			if (myrequest.getServletPath().indexOf("/segments/") >= 0) {
+				myselected += "jstree-wcm-menu-selected";
+			}
+			%>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_experience_segments"><a class="<%= myselected %>" href="/<%= mytext.display("adminpath") %>/segments/index.jsp?menu=experience&<%= Math.random() %>"><%= mytext.display("menu.experience.segments") %></a></li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_experience_usertests")) { %>
+			<%
+			String myselected = "";
+			if (myrequest.getServletPath().indexOf("/usertests/") >= 0) {
+				myselected += "jstree-wcm-menu-selected";
+			}
+			%>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_experience_usertests"><a class="<%= myselected %>" href="/<%= mytext.display("adminpath") %>/usertests/index.jsp?menu=experience&<%= Math.random() %>"><%= mytext.display("menu.experience.usertests") %></a></li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_experience_heatmaps")) { %>
+			<%
+			String myselected = "";
+			if ((myrequest.getServletPath().indexOf("/content/") >= 0) && (selected_heatmap.equals("*"))) {
+				myselected += "jstree-wcm-menu-selected";
+			} else if ((myrequest.getServletPath().indexOf("/content/") >= 0) && (mysession.get("admin_heatmap").equals("*"))) {
+				myselected += "jstree-wcm-menu-selected";
+			}
+			%>
+					<li rel="pagefolder" id="menuitem_experience_heatmaps"><a class="<%= myselected %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?segment=+&usertest=+&heatmap=*&menu=experience&<%= Math.random() %>"><%= mytext.display("menu.experience.heatmaps") %></a></li>
+		<% } %>
+	<% } %>
+				</ul>
+			</li>
+	<% for (int i=0; i<module.size(); i++) { %>
+		<% if ((moduleExperienceMenuTitle.size()>i) && (! moduleExperienceMenuTitle.get(i).equals(""))) { %>
+			<li rel="page" class="jstree-leaf" id="menuitem_experience_module<%= i %>"><a href="<%= moduleExperienceMenuLink.get(i) %>"><%= moduleExperienceMenuTitle.get(i) %></a></li>
+		<% } %>
+	<% } %>
+		</ul>
+	</div>
+	<br>
+<% } %>

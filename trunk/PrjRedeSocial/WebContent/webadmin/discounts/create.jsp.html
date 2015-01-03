@@ -1,0 +1,670 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("discount.create.title") %></title>
+<script type="text/javascript">
+
+$(function(){
+	disableInputs()
+<% if (discount.getDiscountType().equals("general")) { %>
+	enableInputs('general');
+<% } %>
+<% if (discount.getDiscountType().equals("volume")) { %>
+	enableInputs('volume');
+<% } %>
+<% if (discount.getDiscountType().equals("fixed")) { %>
+	enableInputs('fixed');
+<% } %>
+<% if (discount.getDiscountType().equals("bogof")) { %>
+	enableInputs('bogof');
+<% } %>
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	$('#tabs').find('[rel=Discount_Rate]').click();
+});
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contentid = '';
+		var contenttitle = '';
+		var contenthref = '';
+		if (inputnode.type != "select-multiple") {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + encodeURIComponent(inputid) + '&section=' + encodeURIComponent(section) + '&category=' + encodeURIComponent(category) + '&title=' + encodeURIComponent(title) + '&id=' + encodeURIComponent(contentid) + '&link=' + encodeURIComponent(contenttitle) + '&href=' + encodeURIComponent(contenthref), 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		if (inputnode.type == "select-multiple") {
+			var newoption = new Option();
+			newoption.text = contenttitle;
+			newoption.value = contentid;
+			newoption.selected = true;
+			inputnode.options[inputnode.options.length] = newoption;
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+		}
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<script type="text/javascript">
+
+function disableInputs() {
+	var nodes = document.getElementById('Discount').getElementsByTagName('INPUT');
+	for (var i=0; i<nodes.length; i++) {
+		if (nodes[i].name != "discount_type") nodes[i].disabled = true;
+	}
+	var nodes = document.getElementById('Discount').getElementsByTagName('SELECT');
+	for (var i=0; i<nodes.length; i++) {
+		if (nodes[i].name != "discount_type") nodes[i].disabled = true;
+	}
+}
+function enableInputs(section) {
+	disableInputs();
+	var nodes = document.getElementById("discount_" + section + "_params").getElementsByTagName('INPUT');
+	for (var i=0; i<nodes.length; i++) {
+		nodes[i].disabled = false;
+	}
+	var nodes = document.getElementById("discount_" + section + "_params").getElementsByTagName('SELECT');
+	for (var i=0; i<nodes.length; i++) {
+		nodes[i].disabled = false;
+	}
+}
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<script type="text/javascript">
+
+$(function(){
+
+	$('#period_start_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#period_start').attr('value').length >= 10) ? $('#period_start').attr('value').substring(0,10) : $('#period_start').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#period_start').attr('value').length >= 10) {
+					$('#period_start_trigger').datepicker( "option", "defaultDate", $('#period_start').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#period_start').attr('value').length >= 10) {
+					$('#period_start').attr('value', dateText + $('#period_start').attr('value').substring(10));
+				} else {
+					$('#period_start').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#period_end_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#period_end').attr('value').length >= 10) ? $('#period_end').attr('value').substring(0,10) : $('#period_end').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#period_end').attr('value').length >= 10) {
+					$('#period_end_trigger').datepicker( "option", "defaultDate", $('#period_end').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#period_end').attr('value').length >= 10) {
+					$('#period_end').attr('value', dateText + $('#period_end').attr('value').substring(10));
+				} else {
+					$('#period_end').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+});
+
+</script>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("discount.create.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="create_post.jsp" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Discount_Rate" rel="Discount_Rate"><%= mytext.display("discount.rate.tab") %></a></li>
+                <li><a href="#Discount" rel="Discount"><%= mytext.display("discount.discount.tab") %></a></li>
+                <li><a href="#Applies_To_Orders" rel="Applies_To_Orders"><%= mytext.display("discount.orders.tab") %></a></li>
+                <li><a href="#Applies_To_Products" rel="Applies_To_Products"><%= mytext.display("discount.products.tab") %></a></li>
+                <li><a href="#Applies_To_Users" rel="Applies_To_Users"><%= mytext.display("discount.users.tab") %></a></li>
+                <li><a href="#Applies_To_Period" rel="Applies_To_Period"><%= mytext.display("discount.period.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Discount_Rate" class="Discount_Rate st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("discount.rate.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("discount.rate.title") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="60" maxlength="250" name="title" value="<%= discount.getTitle() %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="4" align="left"><%= mytext.display("discount.rate.description") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4"> 
+              <input type="text" size="60" maxlength="250" name="discount_description" value="<%= discount.getDiscountDescription() %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Discount" class="Discount st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="5" align="left"><%= mytext.display("discount.discount.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="5" align="left"></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><input type="radio" name="discount_type" value="general" onclick="enableInputs('general')"<% if (discount.getDiscountType().equals("general")) { %> checked<% } %>> <%= mytext.display("discount.discount.general") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" id="discount_general_params"> 
+              <%= mytext.display("discount.discount.general.buy") %>
+              <input type="text" size="10" maxlength="50" name="discount_amount" value="<%= discount.getDiscountAmount() %>">
+              <select name="discount_currency">
+                <option value="<%= discount.getDiscountCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="%" <% if (discount.getDiscountCurrency().equals("%")) { %>selected<% } %>><%= mytext.display("discount.discount.general.percent") %> 
+		<option value="" <% if (discount.getDiscountCurrency().equals("")) { %>selected<% } %>><%= discount.currency_symbol(db, myconfig.get(db, "default_currency")) %> (<%= mytext.display("default") %>) 
+<!--
+		<%= discount.currency_options(db, discount.getDiscountCurrency()) %> 
+-->
+              </select>
+              <select name="discount_orderitems">
+                <option value="<%= discount.getDiscountOrderItems() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="each" <% if (discount.getDiscountOrderItems().equals("each")) { %>selected<% } %>><%= mytext.display("discount.discount.general.each") %> 
+		<option value="total" <% if (discount.getDiscountOrderItems().equals("total")) { %>selected<% } %>><%= mytext.display("discount.discount.general.total") %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><input type="radio" name="discount_type" value="volume" onclick="enableInputs('volume')"<% if (discount.getDiscountType().equals("volume")) { %> checked<% } %>> <%= mytext.display("discount.discount.volume") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" id="discount_volume_params"> 
+              <%= mytext.display("discount.discount.volume.buy") %>
+              <input type="text" size="5" maxlength="50" name="discount_quantity" value="<%= discount.getDiscountQuantity().replaceAll("^0$", "") %>">
+              -
+              <input type="text" size="5" maxlength="50" name="discount_quantity2" value="<%= discount.getDiscountQuantity2().replaceAll("^0$", "") %>">
+              <select name="discount_products">
+                <option value="<%= discount.getDiscountProducts() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="any" <% if (discount.getDiscountProducts().equals("any")) { %>selected<% } %>><%= mytext.display("discount.discount.volume.products.any") %> 
+		<option value="same" <% if (discount.getDiscountProducts().equals("same")) { %>selected<% } %>><%= mytext.display("discount.discount.volume.products.same") %> 
+              </select>
+              <%= mytext.display("discount.discount.volume.get") %>
+              <input type="text" size="10" maxlength="50" name="discount_amount" value="<%= discount.getDiscountAmount() %>">
+              <select name="discount_currency">
+                <option value="<%= discount.getDiscountCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="%" <% if (discount.getDiscountCurrency().equals("%")) { %>selected<% } %>><%= mytext.display("discount.discount.volume.percent") %> 
+		<option value="" <% if (discount.getDiscountCurrency().equals("")) { %>selected<% } %>><%= discount.currency_symbol(db, myconfig.get(db, "default_currency")) %> (<%= mytext.display("default") %>) 
+<!--
+		<%= discount.currency_options(db, discount.getDiscountCurrency()) %> 
+-->
+              </select>
+              <select name="discount_orderitems">
+                <option value="<%= discount.getDiscountOrderItems() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="each" <% if (discount.getDiscountOrderItems().equals("each")) { %>selected<% } %>><%= mytext.display("discount.discount.volume.each") %> 
+		<option value="total" <% if (discount.getDiscountOrderItems().equals("total")) { %>selected<% } %>><%= mytext.display("discount.discount.volume.total") %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><input type="radio" name="discount_type" value="fixed" onclick="enableInputs('fixed')"<% if (discount.getDiscountType().equals("fixed")) { %> checked<% } %>> <%= mytext.display("discount.discount.fixed") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" id="discount_fixed_params"> 
+              <%= mytext.display("discount.discount.fixed.buy") %>
+              <input type="text" size="5" maxlength="50" name="discount_quantity" value="<%= discount.getDiscountQuantity().replaceAll("^0$", "") %>">
+              -
+              <input type="text" size="5" maxlength="50" name="discount_quantity2" value="<%= discount.getDiscountQuantity2().replaceAll("^0$", "") %>">
+              <select name="discount_products">
+                <option value="<%= discount.getDiscountProducts() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="any" <% if (discount.getDiscountProducts().equals("any")) { %>selected<% } %>><%= mytext.display("discount.discount.fixed.products.any") %> 
+		<option value="same" <% if (discount.getDiscountProducts().equals("same")) { %>selected<% } %>><%= mytext.display("discount.discount.fixed.products.same") %> 
+              </select>
+              <%= mytext.display("discount.discount.fixed.for") %>
+              <input type="text" size="10" maxlength="50" name="discount_amount" value="<%= discount.getDiscountAmount() %>">
+              <select name="discount_currency">
+                <option value="<%= discount.getDiscountCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="" <% if (discount.getDiscountCurrency().equals("")) { %>selected<% } %>><%= discount.currency_symbol(db, myconfig.get(db, "default_currency")) %> (<%= mytext.display("default") %>) 
+<!--
+		<%= discount.currency_options(db, discount.getDiscountCurrency()) %> 
+-->
+              </select>
+              <select name="discount_orderitems">
+                <option value="<%= discount.getDiscountOrderItems() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="each" <% if (discount.getDiscountOrderItems().equals("each")) { %>selected<% } %>><%= mytext.display("discount.discount.fixed.each") %> 
+		<option value="total" <% if (discount.getDiscountOrderItems().equals("total")) { %>selected<% } %>><%= mytext.display("discount.discount.fixed.total") %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><input type="radio" name="discount_type" value="bogof" onclick="enableInputs('bogof')"<% if (discount.getDiscountType().equals("bogof")) { %> checked<% } %>> <%= mytext.display("discount.discount.bogof") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" id="discount_bogof_params"> 
+              <%= mytext.display("discount.discount.bogof.buy") %>
+              <input type="text" size="5" maxlength="50" name="discount_quantity" value="<%= discount.getDiscountQuantity().replaceAll("^0$", "") %>">
+              <select name="discount_products">
+                <option value="<%= discount.getDiscountProducts() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="any" <% if (discount.getDiscountProducts().equals("any")) { %>selected<% } %>><%= mytext.display("discount.discount.bogof.products.any") %> 
+		<option value="same" <% if (discount.getDiscountProducts().equals("same")) { %>selected<% } %>><%= mytext.display("discount.discount.bogof.products.same") %> 
+              </select>
+              <%= mytext.display("discount.discount.bogof.get") %>
+              <input type="text" size="5" maxlength="50" name="discount_quantity2" value="<%= discount.getDiscountQuantity2() %>">
+              <%= mytext.display("discount.discount.bogof.for") %>
+              <input type="text" size="10" maxlength="50" name="discount_amount" value="<%= discount.getDiscountAmount() %>">
+              <select name="discount_currency">
+                <option value="<%= discount.getDiscountCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="%" <% if (discount.getDiscountCurrency().equals("%")) { %>selected<% } %>><%= mytext.display("discount.discount.volume.percent") %> 
+		<option value="" <% if (discount.getDiscountCurrency().equals("")) { %>selected<% } %>><%= discount.currency_symbol(db, myconfig.get(db, "default_currency")) %> (<%= mytext.display("default") %>) 
+<!--
+		<%= discount.currency_options(db, discount.getDiscountCurrency()) %> 
+-->
+              </select>
+              <select name="discount_orderitems">
+                <option value="<%= discount.getDiscountOrderItems() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="each" <% if (discount.getDiscountOrderItems().equals("each")) { %>selected<% } %>><%= mytext.display("discount.discount.bogof.each") %> 
+		<option value="total" <% if (discount.getDiscountOrderItems().equals("total")) { %>selected<% } %>><%= mytext.display("discount.discount.bogof.total") %> 
+		<option value="off" <% if (discount.getDiscountOrderItems().equals("off")) { %>selected<% } %>><%= mytext.display("discount.discount.bogof.off") %> 
+              </select>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Applies_To_Orders" class="Applies_To_Orders st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("discount.orders.heading") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.country") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.state") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="30" maxlength="50" name="country" value="<%= discount.getCountry() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="30" maxlength="50" name="state" value="<%= discount.getState() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.quantityfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.quantityto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="quantity_from" value="<%= discount.getQuantityFrom() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="quantity_to" value="<%= discount.getQuantityTo() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("discount.orders.currency") %></th>
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("discount.orders.totalfrom") %></th>
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("discount.orders.totalto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <select name="total_currency">
+                <option value="<%= discount.getTotalCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="" <% if (discount.getTotalCurrency().equals("")) { %>selected<% } %>><%= discount.currency_symbol(db, myconfig.get(db, "default_currency")) %> (<%= mytext.display("default") %>) 
+		<%= discount.currency_options(db, discount.getTotalCurrency()) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <input type="text" size="10" maxlength="50" name="total_from" value="<%= discount.getTotalFrom() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <input type="text" size="10" maxlength="50" name="total_to" value="<%= discount.getTotalTo() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.weightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.weightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_weight_from" value="<%= discount.getTotalWeightFrom() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_weight_to" value="<%= discount.getTotalWeightTo() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.volumefrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.volumeto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_volume_from" value="<%= discount.getTotalVolumeFrom() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_volume_to" value="<%= discount.getTotalVolumeTo() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Applies_To_Products" class="Applies_To_Products st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("discount.products.heading") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("discount.products.product") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <nobr>
+                <select id="product_id" name="product_id" style="width: 400px;">
+                  <option value="<%= discount.getProductId() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + discount.getProductId()) %><% if (! discount.getProductId().equals("")) { %> [<%= discount.getProductId() %>]<% } %></option>
+                  <option value=""<% if (discount.getProductId().equals("")) { %> selected<% } %>><%= mytext.display("any") %></option>
+                </select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('product_id', 'Products', '', 'Products', 'product');">
+              </nobr>
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "professional")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.products.group") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.products.type") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <select name="product_group"><option value=""><%= mytext.display("any") %><%= discount.productgroup_options(db, discount.getProductGroup()) %></select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <select name="product_type"><option value=""><%= mytext.display("any") %><%= discount.producttype_options(db, discount.getProductType()) %></select>
+            </td>
+          </tr>
+<% } else { %>
+          <input type="hidden" name="product_group" value="">
+          <input type="hidden" name="product_type" value="">
+<% } %>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.weightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.weightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_weight_from" value="<%= discount.getProductWeightFrom() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_weight_to" value="<%= discount.getProductWeightTo() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.volumefrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.volumeto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_volume_from" value="<%= discount.getProductVolumeFrom() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_volume_to" value="<%= discount.getProductVolumeTo() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.widthfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.widthto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_width_from" value="<%= discount.getProductWidthFrom() %>"> <%= mytext.display("content.productdetails.width.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_width_to" value="<%= discount.getProductWidthTo() %>"> <%= mytext.display("content.productdetails.width.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.heightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.heightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_height_from" value="<%= discount.getProductHeightFrom() %>"> <%= mytext.display("content.productdetails.height.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_height_to" value="<%= discount.getProductHeightTo() %>"> <%= mytext.display("content.productdetails.height.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.depthfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.orders.depthto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_depth_from" value="<%= discount.getProductDepthFrom() %>"> <%= mytext.display("content.productdetails.depth.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_depth_to" value="<%= discount.getProductDepthTo() %>"> <%= mytext.display("content.productdetails.depth.unit") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Applies_To_Users" class="Applies_To_Users st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("discount.users.heading") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("discount.users.user") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <select name="user_username"><option value=""><%= mytext.display("any") %><%= discount.user_options(db, discount.getUserUsername()) %></select>
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "professional")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.users.group") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.users.type") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <select name="user_group"><option value=""><%= mytext.display("any") %><%= discount.usergroup_options(db, discount.getUserGroup()) %></select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <select name="user_type"><option value=""><%= mytext.display("any") %><%= discount.usertype_options(db, discount.getUserType()) %></select>
+            </td>
+          </tr>
+<% } else { %>
+          <input type="hidden" name="user_group" value="">
+          <input type="hidden" name="user_type" value="">
+<% } %>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.users.code") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="6"> 
+              <input type="text" size="20" maxlength="50" name="user_code" value="<%= discount.getUserCode() %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Applies_To_Period" class="Applies_To_Period st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("discount.period.heading") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.period.start") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("discount.period.end") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <input type="text" size="20" maxlength="20" id="period_start" name="period_start" value="<%= discount.getPeriodStart() %>"><input type="button" value="..." id="period_start_trigger">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <input type="text" size="20" maxlength="20" id="period_end" name="period_end" value="<%= discount.getPeriodEnd() %>"><input type="button" value="..." id="period_end_trigger">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

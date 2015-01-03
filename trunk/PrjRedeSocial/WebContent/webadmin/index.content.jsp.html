@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("intro.content.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("intro.content.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="left" valign="top">
+                  <table width="100%" border="0">
+                    <tr align="left" valign="top"> 
+                      <th class="WCMinnerContentHeading1" colspan="2"><%= mytext.display("intro.content.heading") %></th>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td class="WCMinnerContentSectionIntro" colspan="2"><%= mytext.display("intro.content.intro") %></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td colspan="2"><%= mytext.display("intro.content.text") %></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <th width="50%">&nbsp;</th>
+                      <th width="50%">&nbsp;</th>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><%= mytext.display("intro.content.pages") %><br>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><%= mytext.display("intro.content.elements") %><br>&nbsp;</p>
+                      </td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><%= mytext.display("intro.content.templates") %><br>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><%= mytext.display("intro.content.stylesheets") %><br>&nbsp;</p>
+                      </td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><%= mytext.display("intro.content.scripts") %><br>&nbsp;</p>
+                      </td>
+<% int cellcount = 1; %>
+              <% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><%= mytext.display("intro.content.packages") %><br>&nbsp;</p>
+                      </td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><%= mytext.display("intro.content.relations") %><br>&nbsp;</p>
+                      </td>
+                    </tr>
+
+<% for(int i=0; i<module.size(); i++) { %>
+<% if ((moduleContentIntroTitle.size()>i) && (! moduleContentIntroTitle.get(i).equals(""))) { %>
+<% cellcount = cellcount+1; %>
+<% if (cellcount == 1) { %>
+                    <tr align="left" valign="top"> 
+<% } %>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><b><%= moduleContentIntroTitle.get(i) %></b><br><%= moduleContentIntroText.get(i) %><br>&nbsp;</p>
+                      </td>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+<% } %>
+<% } %>
+<% } %>
+
+                  </table>
+
+                  <table border="0">
+                    <tr align="left" valign="top"> 
+                      <td>
+                        <form action="/<%= mytext.display("adminpath") %>/content/checklinks.jsp" method="get">
+                          <input type="hidden" name="id" value="*">
+                          <input type="submit" value="<%= mytext.display("menu.content.checklinks") %>">
+                          <input type="checkbox" name="orphans" value="no"> <%= mytext.display("menu.content.checklinks.orphans") %>
+                        </form>
+                      </td>
+                      <td>&nbsp;</td>
+                      <td>
+                        <form action="/<%= mytext.display("adminpath") %>/content/metadata.jsp" method="get">
+                          <input type="submit" value="<%= mytext.display("menu.content.metadata") %>">
+                        </form>
+                      </td>
+                    </tr>
+                  </table>
+
+          </td>
+          <td align="right" valign="top" width="110">
+            <p><img src="content1.gif" width="100" height="100"></p>
+            <p><img src="content2.gif" width="100" height="100"></p>
+            <p><img src="content3.gif" width="100" height="100"></p>
+          </td>
+        </tr>
+      </table>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

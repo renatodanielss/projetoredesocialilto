@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="currencies">
+ </table>
+ <table name="content">
+  <row>
+   <column name="id" value="1" />
+   <column name="created" value="2004-04-08 07:04:04" />
+   <column name="updated" value="2004-04-08 07:04:04" />
+   <column name="published" value="2004-04-08 07:04:04" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="Home" />
+   <column name="contentclass" value="page" />
+  </row>
+  <row>
+   <column name="id" value="2" />
+   <column name="created" value="2004-04-08 07:04:04" />
+   <column name="updated" value="2004-04-08 07:04:04" />
+   <column name="published" value="2004-04-08 07:04:04" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="default" />
+   <column name="content" value="@@@content@@@" />
+   <column name="contentclass" value="template" />
+  </row>
+  <row>
+   <column name="id" value="3" />
+   <column name="created" value="2004-04-08 07:04:18" />
+   <column name="updated" value="2004-04-08 07:04:18" />
+   <column name="published" value="2004-04-08 07:04:18" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="default" />
+   <column name="contentclass" value="stylesheet" />
+  </row>
+  <row>
+   <column name="id" value="4" />
+   <column name="created" value="2006-01-20 11:52:21" />
+   <column name="updated" value="2006-01-25 13:13:30" />
+   <column name="published" value="2006-01-25 13:13:30" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="Login" />
+   <column name="content" value="&lt;form name=&quot;login&quot; action=&quot;/login_post.asp&quot; method=&quot;post&quot;&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;div align=&quot;center&quot;&gt;
+&lt;div style=&quot;border: 1px solid rgb(0, 0, 0); padding: 30px; width: 300px; height: 200px;&quot;&gt;
+&lt;h2 align=&quot;left&quot;&gt;Login&lt;/h2&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;table border=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;strong&gt;Username&lt;/strong&gt;:&lt;/td&gt;&lt;td&gt;&lt;input maxlength=&quot;50&quot; style=&quot;width: 120px; height: 22px;&quot; size=&quot;50&quot; name=&quot;username&quot; type=&quot;text&quot;&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td rowspan=&quot;1&quot; width=&quot;20%&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;strong&gt;Password&lt;/strong&gt;: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input style=&quot;width: 120px; height: 22px;&quot; size=&quot;16&quot; name=&quot;password&quot; type=&quot;password&quot;&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot; width=&quot;20%&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;br&gt;
+  &lt;br&gt;
+  &lt;div align=&quot;center&quot;&gt;&lt;input value=&quot;Login&quot; type=&quot;submit&quot;&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;  
+ &lt;input onclick=&quot;history.back(-1);&quot; value=&quot;Cancel&quot; type=&quot;button&quot;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;/form&gt;&lt;br&gt;" />
+   <column name="contentclass" value="page" />
+  </row>
+  <row>
+   <column name="id" value="5" />
+   <column name="created" value="2006-01-20 17:13:39" />
+   <column name="updated" value="2006-01-25 14:11:10" />
+   <column name="published" value="2006-01-25 14:11:10" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="Search Results Entry" />
+   <column name="content" value="&lt;p&gt;&lt;a href=&quot;/@@@class@@@.asp?id=@@@id@@@&quot;&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;/a&gt; &lt;br&gt;@@@description@@@&lt;br&gt;
+@@@author@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+  </row>
+  <row>
+   <column name="id" value="6" />
+   <column name="created" value="2006-01-20 17:19:07" />
+   <column name="updated" value="2006-01-25 13:56:57" />
+   <column name="published" value="2006-01-25 13:56:57" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="Search Results" />
+   <column name="content" value="&lt;div style=&quot;padding: 10px;&quot;&gt;&lt;h2&gt;Search Results&lt;/h2&gt;
+&lt;p align=&quot;center&quot;&gt;@@@searchresults@@@&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&amp;nbsp;&lt;br&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;input class=&quot;buttonbox&quot; style=&quot;width: 80px; height: 24px;&quot; onclick=&quot;history.back(-1);&quot; size=&quot;17&quot; value=&quot;&amp;lt;&amp;lt;&amp;lt; Back&quot; name=&quot;&amp;lt;&amp;lt;&amp;lt; Back&quot; type=&quot;button&quot;&gt;&lt;/p&gt;
+&lt;/div&gt;" />
+   <column name="contentclass" value="page" />
+  </row>
+  <row>
+   <column name="id" value="7" />
+   <column name="created" value="2006-01-20 17:13:39" />
+   <column name="updated" value="2006-01-25 14:11:10" />
+   <column name="published" value="2006-01-25 14:11:10" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="List Entry" />
+   <column name="content" value="&lt;p&gt;&lt;a href=&quot;/@@@class@@@.asp?id=@@@id@@@&quot;&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;/a&gt; &lt;br&gt;@@@description@@@&lt;br&gt;
+@@@author@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+  </row>
+ </table>
+ <table name="content_elements">
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="1" />
+   <column name="created" value="2004-04-08 07:04:04" />
+   <column name="updated" value="2004-04-08 07:04:04" />
+   <column name="published" value="2004-04-08 07:04:04" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="Home" />
+   <column name="contentclass" value="page" />
+  </row>
+  <row>
+   <column name="id" value="2" />
+   <column name="created" value="2004-04-08 07:04:04" />
+   <column name="updated" value="2004-04-08 07:04:04" />
+   <column name="published" value="2004-04-08 07:04:04" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="default" />
+   <column name="content" value="@@@content@@@" />
+   <column name="contentclass" value="template" />
+  </row>
+  <row>
+   <column name="id" value="3" />
+   <column name="created" value="2004-04-08 07:04:18" />
+   <column name="updated" value="2004-04-08 07:04:18" />
+   <column name="published" value="2004-04-08 07:04:18" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="default" />
+   <column name="contentclass" value="stylesheet" />
+  </row>
+  <row>
+   <column name="id" value="4" />
+   <column name="created" value="2006-01-20 11:52:21" />
+   <column name="updated" value="2006-01-25 13:13:30" />
+   <column name="published" value="2006-01-25 13:13:30" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="Login" />
+   <column name="content" value="&lt;form name=&quot;login&quot; action=&quot;/login_post.asp&quot; method=&quot;post&quot;&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;div align=&quot;center&quot;&gt;
+&lt;div style=&quot;border: 1px solid rgb(0, 0, 0); padding: 30px; width: 300px; height: 200px;&quot;&gt;
+&lt;h2 align=&quot;left&quot;&gt;Login&lt;/h2&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;table border=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;strong&gt;Username&lt;/strong&gt;:&lt;/td&gt;&lt;td&gt;&lt;input maxlength=&quot;50&quot; style=&quot;width: 120px; height: 22px;&quot; size=&quot;50&quot; name=&quot;username&quot; type=&quot;text&quot;&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td rowspan=&quot;1&quot; width=&quot;20%&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;strong&gt;Password&lt;/strong&gt;: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input style=&quot;width: 120px; height: 22px;&quot; size=&quot;16&quot; name=&quot;password&quot; type=&quot;password&quot;&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot; width=&quot;20%&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;br&gt;
+  &lt;br&gt;
+  &lt;div align=&quot;center&quot;&gt;&lt;input value=&quot;Login&quot; type=&quot;submit&quot;&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;  
+ &lt;input onclick=&quot;history.back(-1);&quot; value=&quot;Cancel&quot; type=&quot;button&quot;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;/form&gt;&lt;br&gt;" />
+   <column name="contentclass" value="page" />
+  </row>
+  <row>
+   <column name="id" value="5" />
+   <column name="created" value="2006-01-20 17:13:39" />
+   <column name="updated" value="2006-01-25 14:11:10" />
+   <column name="published" value="2006-01-25 14:11:10" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="Search Results Entry" />
+   <column name="content" value="&lt;p&gt;&lt;a href=&quot;/@@@class@@@.asp?id=@@@id@@@&quot;&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;/a&gt; &lt;br&gt;@@@description@@@&lt;br&gt;
+@@@author@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+  </row>
+  <row>
+   <column name="id" value="6" />
+   <column name="created" value="2006-01-20 17:19:07" />
+   <column name="updated" value="2006-01-25 13:56:57" />
+   <column name="published" value="2006-01-25 13:56:57" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="Search Results" />
+   <column name="content" value="&lt;div style=&quot;padding: 10px;&quot;&gt;&lt;h2&gt;Search Results&lt;/h2&gt;
+&lt;p align=&quot;center&quot;&gt;@@@searchresults@@@&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&amp;nbsp;&lt;br&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;input class=&quot;buttonbox&quot; style=&quot;width: 80px; height: 24px;&quot; onclick=&quot;history.back(-1);&quot; size=&quot;17&quot; value=&quot;&amp;lt;&amp;lt;&amp;lt; Back&quot; name=&quot;&amp;lt;&amp;lt;&amp;lt; Back&quot; type=&quot;button&quot;&gt;&lt;/p&gt;
+&lt;/div&gt;" />
+   <column name="contentclass" value="page" />
+  </row>
+  <row>
+   <column name="id" value="7" />
+   <column name="created" value="2006-01-20 17:13:39" />
+   <column name="updated" value="2006-01-25 14:11:10" />
+   <column name="published" value="2006-01-25 14:11:10" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="title" value="List Entry" />
+   <column name="content" value="&lt;p&gt;&lt;a href=&quot;/@@@class@@@.asp?id=@@@id@@@&quot;&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;/a&gt; &lt;br&gt;@@@description@@@&lt;br&gt;
+@@@author@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+  </row>
+ </table>
+ <table name="content_public_elements">
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="4" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="5" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+ </table>
+ <table name="content_archive">
+ </table>
+ <table name="content_archive_elements">
+ </table>
+ <table name="contentgroups">
+ </table>
+ <table name="contenttypes">
+ </table>
+ <table name="fileformats">
+  <row>
+   <column name="id" value="1" />
+   <column name="filenameextension" value="gif" />
+  </row>
+  <row>
+   <column name="id" value="2" />
+   <column name="filenameextension" value="jpeg" />
+  </row>
+  <row>
+   <column name="id" value="3" />
+   <column name="filenameextension" value="jpg" />
+  </row>
+  <row>
+   <column name="id" value="4" />
+   <column name="filenameextension" value="png" />
+  </row>
+  <row>
+   <column name="id" value="5" />
+   <column name="filenameextension" value="swf" />
+  </row>
+  <row>
+   <column name="id" value="6" />
+   <column name="filenameextension" value="pdf" />
+  </row>
+  <row>
+   <column name="id" value="7" />
+   <column name="filenameextension" value="zip" />
+  </row>
+  <row>
+   <column name="id" value="8" />
+   <column name="filenameextension" value="doc" />
+  </row>
+  <row>
+   <column name="id" value="9" />
+   <column name="filenameextension" value="exe" />
+  </row>
+  <row>
+   <column name="id" value="10" />
+   <column name="filenameextension" value="ppt" />
+  </row>
+  <row>
+   <column name="id" value="11" />
+   <column name="filenameextension" value="txt" />
+  </row>
+  <row>
+   <column name="id" value="12" />
+   <column name="filenameextension" value="rtf" />
+  </row>
+  <row>
+   <column name="id" value="13" />
+   <column name="filenameextension" value="xls" />
+  </row>
+ </table>
+ <table name="filegroups">
+ </table>
+ <table name="filetypes">
+ </table>
+ <table name="imageformats">
+  <row>
+   <column name="id" value="1" />
+   <column name="filenameextension" value="gif" />
+  </row>
+  <row>
+   <column name="id" value="2" />
+   <column name="filenameextension" value="jpeg" />
+  </row>
+  <row>
+   <column name="id" value="3" />
+   <column name="filenameextension" value="jpg" />
+  </row>
+  <row>
+   <column name="id" value="4" />
+   <column name="filenameextension" value="png" />
+  </row>
+  <row>
+   <column name="id" value="5" />
+   <column name="filenameextension" value="swf" />
+  </row>
+  <row>
+   <column name="id" value="6" />
+   <column name="filenameextension" value="class" />
+  </row>
+ </table>
+ <table name="imagegroups">
+ </table>
+ <table name="imagetypes">
+ </table>
+ <table name="linkgroups">
+ </table>
+ <table name="linktypes">
+ </table>
+ <table name="productgroups">
+ </table>
+ <table name="producttypes">
+ </table>
+ <table name="fonts">
+ </table>
+ <table name="elements">
+  <row>
+   <column name="id" value="1" />
+   <column name="element" value="menu" />
+  </row>
+  <row>
+   <column name="id" value="2" />
+   <column name="element" value="banner" />
+  </row>
+  <row>
+   <column name="id" value="3" />
+   <column name="element" value="logo" />
+  </row>
+  <row>
+   <column name="id" value="4" />
+   <column name="element" value="news" />
+  </row>
+  <row>
+   <column name="id" value="5" />
+   <column name="element" value="offer" />
+  </row>
+  <row>
+   <column name="id" value="6" />
+   <column name="element" value="toolbar" />
+  </row>
+  <row>
+   <column name="id" value="7" />
+   <column name="element" value="utilities" />
+  </row>
+  <row>
+   <column name="id" value="8" />
+   <column name="element" value="footer" />
+  </row>
+ </table>
+ <table name="versions">
+ </table>
+ <table name="usergroups">
+ </table>
+ <table name="usertypes">
+ </table>
+ <table name="usergroups2">
+ </table>
+ <table name="usertypes2">
+ </table>
+ <table name="users">
+ </table>
+ <table name="user2groups">
+ </table>
+ <table name="user2types">
+ </table>
+ <table name="users_usergroups">
+ </table>
+ <table name="users_usertypes">
+ </table>
+ <table name="permissions">
+ </table>
+ <table name="guestbook">
+ </table>
+ <table name="discounts">
+ </table>
+ <table name="shipping">
+ </table>
+ <table name="tax">
+ </table>
+ <table name="orders">
+ </table>
+ <table name="orderitems">
+ </table>
+ <table name="websites">
+ </table>
+ <table name="workflow">
+ </table>
+ <table name="data">
+ </table>
+ <table name="config">
+  <row>
+   <column name="configname" value="accessrestrictions" />
+   <column name="configvalue" value="and" />
+  </row>
+  <row>
+   <column name="configname" value="charset" />
+   <column name="configvalue" value="iso-8859-1" />
+  </row>
+  <row>
+   <column name="configname" value="community_license" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="contact_form_mailserver" />
+   <column name="configvalue" value="localhost" />
+  </row>
+  <row>
+   <column name="configname" value="contact_form_recipient" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="contact_form_recipients" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="content_editor" />
+   <column name="configvalue" value="HardCore" />
+  </row>
+  <row>
+   <column name="configname" value="databases_license" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="database_version" />
+   <column name="configvalue" value="9.0" />
+  </row>
+  <row>
+   <column name="configname" value="default_guestbook_entry" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="default_guestbook_page" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="default_list_entry" />
+   <column name="configvalue" value="7" />
+  </row>
+  <row>
+   <column name="configname" value="default_login" />
+   <column name="configvalue" value="4" />
+  </row>
+  <row>
+   <column name="configname" value="default_page" />
+   <column name="configvalue" value="1" />
+  </row>
+  <row>
+   <column name="configname" value="default_publish_ready" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="default_searchresults_entry" />
+   <column name="configvalue" value="5" />
+  </row>
+  <row>
+   <column name="configname" value="default_searchresults_page" />
+   <column name="configvalue" value="6" />
+  </row>
+  <row>
+   <column name="configname" value="default_stylesheet" />
+   <column name="configvalue" value="3" />
+  </row>
+  <row>
+   <column name="configname" value="default_template" />
+   <column name="configvalue" value="2" />
+  </row>
+  <row>
+   <column name="configname" value="default_version" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="doctype" />
+   <column name="configvalue" value="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;" />
+  </row>
+  <row>
+   <column name="configname" value="ecommerce_license" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="enterprise_license" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="file_upload" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="guestbook_administrator_approval" />
+   <column name="configvalue" value="no" />
+  </row>
+  <row>
+   <column name="configname" value="guestbook_admin_users_group" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="guestbook_admin_users_type" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_customscript" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_file_hrefs" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_format" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_height" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_image_hrefs" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_link_hrefs" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_onaltenter" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_onctrlenter" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_onenter" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_onshiftenter" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_stylesheet_hrefs" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_toolbar1" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_toolbar2" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_toolbar3" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_toolbar4" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_toolbar5" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_upload" />
+   <column name="configvalue" value="yes" />
+  </row>
+  <row>
+   <column name="configname" value="hardcore_width" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="hosting_license" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="login_notification_admin" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="login_notification_admin_failure" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="login_notification_superadmin" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="login_notification_superadmin_failure" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="order_form_recipient" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="personal_license" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="professional_license" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="redirect" />
+   <column name="configvalue" value="/webadmin/index.asp" />
+  </row>
+  <row>
+   <column name="configname" value="require_ssl_admin" />
+   <column name="configvalue" value="no" />
+  </row>
+  <row>
+   <column name="configname" value="require_ssl_user" />
+   <column name="configvalue" value="no" />
+  </row>
+  <row>
+   <column name="configname" value="statistics_license" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="superadmin" />
+   <column name="configvalue" value="admin" />
+  </row>
+  <row>
+   <column name="configname" value="superadmin_email" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="superadmin_password" />
+   <column name="configvalue" value="admin" />
+  </row>
+  <row>
+   <column name="configname" value="url_rewriting" />
+   <column name="configvalue" value="no" />
+  </row>
+  <row>
+   <column name="configname" value="use_accessrestrictions" />
+   <column name="configvalue" value="users" />
+  </row>
+  <row>
+   <column name="configname" value="use_additionalcontent" />
+   <column name="configvalue" value="yes" />
+  </row>
+  <row>
+   <column name="configname" value="use_advancedscripting" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_archive" />
+   <column name="configvalue" value="none" />
+  </row>
+  <row>
+   <column name="configname" value="use_checkin" />
+   <column name="configvalue" value="none" />
+  </row>
+  <row>
+   <column name="configname" value="use_checkout" />
+   <column name="configvalue" value="none" />
+  </row>
+  <row>
+   <column name="configname" value="use_contentclasses" />
+   <column name="configvalue" value="yes" />
+  </row>
+  <row>
+   <column name="configname" value="use_contentdefinition" />
+   <column name="configvalue" value="yes" />
+  </row>
+  <row>
+   <column name="configname" value="use_contentgroups" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_contentrelations" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_contenttypes" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_filegroups" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_filetypes" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_imagegroups" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_imagetypes" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_linkgroups" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_linktypes" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_metainformation" />
+   <column name="configvalue" value="yes" />
+  </row>
+  <row>
+   <column name="configname" value="use_presentation" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_productgroups" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_producttypes" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_publish" />
+   <column name="configvalue" value="auto-on-save" />
+  </row>
+  <row>
+   <column name="configname" value="use_revisionhistory" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_scheduled_publish" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_userclasses" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_userdatabase" />
+   <column name="configvalue" value="yes" />
+  </row>
+  <row>
+   <column name="configname" value="use_userdefinition" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_usergroups" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_usertypes" />
+   <column name="configvalue" value="" />
+  </row>
+  <row>
+   <column name="configname" value="use_versions" />
+   <column name="configvalue" value="" />
+  </row>
+ </table>
+</database>

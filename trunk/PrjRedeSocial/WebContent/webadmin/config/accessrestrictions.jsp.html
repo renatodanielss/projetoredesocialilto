@@ -1,0 +1,521 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.accessrestrictions.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.accessrestrictions.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <p> 
+      <form action="accessrestrictions.jsp" method="POST">
+        <p> 
+          <input type="Submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("config.accessrestrictions.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_accessrestrictions" value="none" <% if (myconfig.get(db, "use_accessrestrictions").equals("none")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.none") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_accessrestrictions" value="users" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_accessrestrictions").equals("users")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.users") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_accessrestrictions" value="all" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.all") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3">&nbsp;</th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2" width="50%">
+              <input type="radio" name="use_useraccessrestrictions" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.users.enable") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <input type="radio" name="use_useraccessrestrictions" value="" <% if (myconfig.get(db, "use_useraccessrestrictions").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.users.disable") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3">&nbsp;</th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2" width="50%">
+              <input type="radio" name="use_workflow" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_workflow").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.workflow.enable") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <input type="radio" name="use_workflow" value="" <% if (myconfig.get(db, "use_workflow").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.workflow.disable") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2" width="50%">
+              <input type="radio" name="use_workflow_orders" value="yes" <% if ((! License.valid(db, myconfig, "professional")) || (! License.valid(db, myconfig, "ecommerce"))) { %>disabled<% } else if (myconfig.get(db, "use_workflow_orders").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.workflow.orders.enable") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <input type="radio" name="use_workflow_orders" value="" <% if (myconfig.get(db, "use_workflow_orders").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.workflow.orders.disable") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3">&nbsp;</th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3" width="50%">
+              <input type="radio" name="use_workflow_create" value="" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_workflow_create").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.workflow.create.same") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3" width="50%">
+              <input type="radio" name="use_workflow_create" value="none" <% if (myconfig.get(db, "use_workflow_create").equals("none")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.workflow.create.none") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3">&nbsp;</th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3" width="50%">
+              <input type="radio" name="use_create_blank" value="" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_create_blank").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.create.blank.disable") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3" width="50%">
+              <input type="radio" name="use_create_blank" value="yes" <% if (myconfig.get(db, "use_create_blank").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.create.blank.enable") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3">&nbsp;</th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="radio" name="accessrestrictions" value="and" <% if (! myconfig.get(db, "accessrestrictions").equals("or")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.both") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="radio" name="accessrestrictions" value="or" <% if (myconfig.get(db, "accessrestrictions").equals("or")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.either") %>
+            </td>
+          </tr>
+		<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3">&nbsp;</th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="radio" name="inherit_accessrestrictions" value="no" <% if (myconfig.get(db, "inherit_accessrestrictions").equals("no")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.inherit.no") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="radio" name="inherit_accessrestrictions" value="yes" <% if (! myconfig.get(db, "inherit_accessrestrictions").equals("no")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.inherit.yes") %>
+              <br><%= mytext.display("config.accessrestrictions.inherit.text") %>
+            </td>
+          </tr>
+		<% } %>
+		<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3">&nbsp;</th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.accessrestrictions.hidemenuitems") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="radio" name="hide_accessrestricted_menu_items" value="no" <% if (! myconfig.get(db, "hide_accessrestricted_menu_items").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.hidemenuitems.no") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="radio" name="hide_accessrestricted_menu_items" value="yes" <% if (myconfig.get(db, "hide_accessrestricted_menu_items").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.hidemenuitems.yes") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              &nbsp;&nbsp;&nbsp; <input type="radio" name="hide_accessrestricted_menu_items_content" value="no" <% if (! myconfig.get(db, "hide_accessrestricted_menu_items_content").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.hidemenuitemscontent.no") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              &nbsp;&nbsp;&nbsp; <input type="radio" name="hide_accessrestricted_menu_items_content" value="yes" <% if (myconfig.get(db, "hide_accessrestricted_menu_items_content").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.hidemenuitemscontent.yes") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3">&nbsp;</th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.accessrestrictions.scheduled") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <input type="radio" name="use_accessrestrictions_scheduled" value="" <% if (myconfig.get(db, "use_accessrestrictions_scheduled").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.scheduled.all") %>
+              <input type="radio" name="use_accessrestrictions_scheduled" value="editor" <% if (myconfig.get(db, "use_accessrestrictions_scheduled").equals("editor")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.scheduled.editors") %>
+              <input type="radio" name="use_accessrestrictions_scheduled" value="developer" <% if (myconfig.get(db, "use_accessrestrictions_scheduled").equals("developer")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.scheduled.developers") %>
+              <input type="radio" name="use_accessrestrictions_scheduled" value="creator" <% if (myconfig.get(db, "use_accessrestrictions_scheduled").equals("creator")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.scheduled.creators") %>
+              <input type="radio" name="use_accessrestrictions_scheduled" value="publisher" <% if (myconfig.get(db, "use_accessrestrictions_scheduled").equals("publisher")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.scheduled.publishers") %>
+              <input type="radio" name="use_accessrestrictions_scheduled" value="administrator" <% if (myconfig.get(db, "use_accessrestrictions_scheduled").equals("administrator")) { %>checked<% } %> >
+              <%= mytext.display("config.accessrestrictions.scheduled.administrators") %>
+            </td>
+          </tr>
+		<% } %>
+        </table>
+	<% if (! myconfig.get(db, "use_accessrestrictions").equals("none")) { %>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("config.accessrestrictions.website") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("config.accessrestrictions.website.intro") %></td>
+          </tr>
+		<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.accessrestrictions.website.users") %></th>
+		<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.accessrestrictions.website.editors") %></th>
+		<% } else { %>
+            <th></th>
+            <th></th>
+		<% } %>
+          </tr>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_users_type">
+                <option value="<%= myconfig.get(db, "website_users_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_users_type").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_users_type").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <%= mypage.usertype_select_options(db, myconfig.get(db, "website_users_type")) %> 
+              </select>
+            </td>
+			<% if (myconfig.get(db, "use_accessrestrictions").equals("all"))  { %>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_editors_type">
+                <option value="<%= myconfig.get(db, "website_editors_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_editors_type").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_editors_type").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %> 
+                <option value="0" <% if (myconfig.get(db, "website_editors_type").equals("0")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usertype_select_options(db, myconfig.get(db, "website_editors_type")) %> 
+              </select>
+            </td>
+			<% } else { %>
+            <td width="50"></td>
+            <td width="50%"></td>
+			<% } %>
+          </tr>
+<% } %>
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_users_group">
+                <option value="<%= myconfig.get(db, "website_users_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_users_group").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_users_group").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %> 
+                <%= mypage.usergroup_select_options(db, myconfig.get(db, "website_users_group")) %> 
+              </select>
+            </td>
+            		<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_editors_group">
+                <option value="<%= myconfig.get(db, "website_editors_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_editors_group").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_editors_group").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %> 
+                <option value="0" <% if (myconfig.get(db, "website_editors_group").equals("0")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usergroup_select_options(db, myconfig.get(db, "website_editors_group")) %> 
+              </select>
+            </td>
+			<% } else { %>
+            <td width="50"></td>
+            <td width="50%"></td>
+            		<% } %>
+          </tr>
+<% } %>
+          		<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.accessrestrictions.website.creators") %></th>
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.accessrestrictions.website.publishers") %></th>
+          </tr>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="website_creators_type">
+                <option value="<%= myconfig.get(db, "website_creators_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_creators_type").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_creators_type").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %> 
+                <option value="0" <% if (myconfig.get(db, "website_creators_type").equals("0")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usertype_select_options(db, myconfig.get(db, "website_creators_type")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_publishers_type">
+                <option value="<%= myconfig.get(db, "website_publishers_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_publishers_type").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_publishers_type").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %> 
+                <option value="0" <% if (myconfig.get(db, "website_publishers_type").equals("0")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usertype_select_options(db, myconfig.get(db, "website_publishers_type")) %> 
+              </select>
+            </td>
+          </tr>
+<% } %>
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_creators_group">
+                <option value="<%= myconfig.get(db, "website_creators_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_creators_group").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_creators_group").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %> 
+                <option value="0" <% if (myconfig.get(db, "website_creators_group").equals("0")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usergroup_select_options(db, myconfig.get(db, "website_creators_group")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_publishers_group">
+                <option value="<%= myconfig.get(db, "website_publishers_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_publishers_group").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_publishers_group").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %> 
+                <option value="0" <% if (myconfig.get(db, "website_publishers_group").equals("0")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usergroup_select_options(db, myconfig.get(db, "website_publishers_group")) %> 
+              </select>
+            </td>
+          </tr>
+<% } %>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.accessrestrictions.website.administrators") %></th>
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.accessrestrictions.website.developers") %></th>
+          </tr>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_administrators_type">
+                <option value="<%= myconfig.get(db, "website_administrators_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_administrators_type").equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usertype_select_options(db, myconfig.get(db, "website_administrators_type")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="website_developers_type">
+                <option value="<%= myconfig.get(db, "website_developers_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_developers_type").equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usertype_select_options(db, myconfig.get(db, "website_developers_type")) %> 
+              </select>
+            </td>
+          </tr>
+<% } %>
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_administrators_group">
+                <option value="<%= myconfig.get(db, "website_administrators_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_administrators_group").equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usergroup_select_options(db, myconfig.get(db, "website_administrators_group")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("config.accessrestrictions.website.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+              <select name="website_developers_group">
+                <option value="<%= myconfig.get(db, "website_developers_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_developers_group").equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %> 
+                <%= mypage.usergroup_select_options(db, myconfig.get(db, "website_developers_group")) %> 
+              </select>
+            </td>
+          </tr>
+<% } %>
+          		<% } %>
+		<% } else { %>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.accessrestrictions.website.users") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <select name="website_users_type">
+                <option value="<%= myconfig.get(db, "website_users_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "website_users_type").equals("")) { %>selected<% } %>><%= mytext.display("public") %> 
+                <option value="*" <% if (myconfig.get(db, "website_users_type").equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+              </select>
+            </td>
+          </tr>
+		<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="6"><%= mytext.display("config.ecommerce.orderadmin.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="6"><%= mytext.display("config.ecommerce.orderadmin.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" align="left" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.type") %></th>
+            <th class="WCMinnerContentInputName" width="50%" align="left" colspan="4"><%= mytext.display("config.ecommerce.orderadmin.group") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="2">
+              <select name="order_admin_users_type">
+                <option value="<%= myconfig.get(db, "order_admin_users_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "order_admin_users_type").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usertype_select_options(db, myconfig.get(db, "order_admin_users_type")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="2">
+              <select name="order_admin_users_group">
+                <option value="<%= myconfig.get(db, "order_admin_users_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "order_admin_users_group").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usergroup_select_options(db, myconfig.get(db, "order_admin_users_group")) %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="6"><%= mytext.display("config.experience.accessrestrictions.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="6"><%= mytext.display("config.experience.accessrestrictions.intro") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50%" align="left" colspan="2"><%= mytext.display("config.experience.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputName" width="50%" align="left" colspan="4"><%= mytext.display("config.experience.accessrestrictions.group") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="2">
+              <select name="experience_admin_users_type">
+                <option value="<%= myconfig.get(db, "experience_admin_users_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "experience_admin_users_type").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usertype_select_options(db, myconfig.get(db, "experience_admin_users_type")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="2">
+              <select name="experience_admin_users_group">
+                <option value="<%= myconfig.get(db, "experience_admin_users_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "experience_admin_users_group").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usergroup_select_options(db, myconfig.get(db, "experience_admin_users_group")) %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="6"><%= mytext.display("config.statistics.accessrestrictions.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="6"><%= mytext.display("config.statistics.accessrestrictions.intro") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50%" align="left" colspan="2"><%= mytext.display("config.statistics.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputName" width="50%" align="left" colspan="4"><%= mytext.display("config.statistics.accessrestrictions.group") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="2">
+              <select name="statistics_admin_users_type">
+                <option value="<%= myconfig.get(db, "statistics_admin_users_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "statistics_admin_users_type").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usertype_select_options(db, myconfig.get(db, "statistics_admin_users_type")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="2">
+              <select name="statistics_admin_users_group">
+                <option value="<%= myconfig.get(db, "statistics_admin_users_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "statistics_admin_users_group").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usergroup_select_options(db, myconfig.get(db, "statistics_admin_users_group")) %> 
+              </select>
+            </td>
+          </tr>
+        </table>
+	<% } %>
+      </form>
+      <p>&nbsp;</p>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

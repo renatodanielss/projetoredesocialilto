@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("usertests.view.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("usertests.view.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("usertests.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left" colspan="3"><%= mytext.display("usertests.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("usertests.title") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <%= html.encode(usertest.getUsertest()) %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("usertests.description") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <%= html.encode(usertest.getDescription()) %>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("usertests.type") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <%= mytext.display("usertests.type.ab") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("usertests.variants") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <%= html.encode(usertest.getVariants()).replaceAll("\r\n", "<br>") %>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("usertests.visitors") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <%= html.encode(usertest.getProbability()) %>%
+              &nbsp; <input type="radio" name="visitors" value="all"<% if ((usertest.getVisitors().equals("")) || (usertest.getVisitors().equals("all"))) { %> checked<% } %>> <%= mytext.display("usertests.visitors.all") %>
+              &nbsp; <input type="radio" name="visitors" value="new"<% if (usertest.getVisitors().equals("new")) { %> checked<% } %>> <%= mytext.display("usertests.visitors.new") %>
+<!--
+              &nbsp; <input type="radio" name="visitors" value="old"<% if (usertest.getVisitors().equals("old")) { %> checked<% } %>> <%= mytext.display("usertests.visitors.old") %>
+-->
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("usertests.goals") %></th>
+          </tr>
+
+          <tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<nobr>
+
+						<% String[] mygoals = usertest.getGoals().split(","); %>
+
+						<%
+						for (int i=0; i<mygoals.length; i++) {
+							String mygoal = mygoals[i];
+							if (! mygoal.equals("")) {
+						%>
+
+						<%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mygoal) %><br>
+
+						<%
+							}
+						}
+						%>
+				</nobr>
+			</td>
+
+		</tr>
+
+          <tr colspan="3">
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("usertests.confidence") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="3">
+              <%= html.encode(usertest.getConfidence()) %>%
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="100"><%= mytext.display("usertests.active") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="200"><%= mytext.display("usertests.scheduled") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("usertests.unscheduled") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="checkbox" name="active" value="1"<% if (usertest.getActive().equals("1")) { %> checked<% } %>>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <%= html.encode(usertest.getScheduled()) %>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <%= html.encode(usertest.getUnscheduled()) %>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="3"><%= mytext.display("usertests.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="3">
+            <%= mytext.display("usertests.about.text") %>
+            </td>
+          </tr>
+        </table>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

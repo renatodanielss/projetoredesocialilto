@@ -1,0 +1,2291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Management System">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('specialcode_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+
+function insertSpecialCharacter(htmlcode) {
+	webeditor.insertSpecialCharacter(htmlcode);
+	webeditor.window_close(window);
+}
+
+</script>
+</head>
+<body>
+<table style="width: 100%; height: 100%;">
+	<tr align="left" valign="top"> 
+		<td class="webeditor_window_title"><script type="text/javascript">document.write(Text('specialcode_title'));</script></td>
+		<td align="right"><script type="text/javascript">document.write('<a href="specialcharacter.html?editor='+editor+'">'+Text('specialcharacter_title')+'<\/a>');</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_content'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@id@@@')">@@@id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@title@@@')">@@@title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@summary@@@')">@@@summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@content@@@')">@@@content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@author@@@')">@@@author@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_author'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@keywords@@@')">@@@keywords@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_keywords'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@description@@@')">@@@description@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_description'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@class@@@')">@@@class@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_contentclass'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@contentgroup@@@')">@@@contentgroup@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_contentgroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@contenttype@@@')">@@@contenttype@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_contenttype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@version@@@')">@@@version@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_version'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@created@@@')">@@@created@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_created'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@created:format=%Y-%m-%d %H:%M:%S@@@')">@@@created<br>:format=%Y-%m-%d %H:%M:%S@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_created'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@created:format=%a, %e. %b %y@@@')">@@@created<br>:format=%H:%M %a, %e. %b %y@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_created'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@created:format=%A, %e. %B %Y@@@')">@@@created<br>:format=%I:%M%p %A, %e. %B %Y@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_created'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@created_by@@@')">@@@created_by@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_created_by'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@updated@@@')">@@@updated@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_updated'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@updated:format=%Y-%m-%d %H:%M:%S@@@')">@@@updated<br>:format=%Y-%m-%d %H:%M:%S@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_updated'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@updated:format=%a, %e. %b %y@@@')">@@@updated<br>:format=%H:%M %a, %e. %b %y@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_updated'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@updated:format=%A, %e. %B %Y@@@')">@@@updated<br>:format=%I:%M%p %A, %e. %B %Y@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_updated'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@updated_by@@@')">@@@updated_by@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_updated_by'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@published@@@')">@@@published@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_published'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@published:format=%Y-%m-%d %H:%M:%S@@@')">@@@published<br>:format=%Y-%m-%d %H:%M:%S@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_published'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@published:format=%a, %e. %b %y@@@')">@@@published<br>:format=%H:%M %a, %e. %b %y@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_published'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@published:format=%A, %e. %B %Y@@@')">@@@published<br>:format=%I:%M%p %A, %e. %B %Y@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_published'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@published_by@@@')">@@@published_by@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_published_by'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@page_top@@@')">@@@page_top@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_page_top'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@page_up@@@')">@@@page_up@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_page_up'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@page_first@@@')">@@@page_first@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_page_first'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@page_last@@@')">@@@page_last@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_page_last'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@page_previous@@@')">@@@page_previous@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_page_previous'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@page_next@@@')">@@@page_next@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_page_next'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@image1@@@')">@@@image1@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_image1'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@image2@@@')">@@@image2@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_image2'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@image3@@@')">@@@image3@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_image3'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@file1@@@')">@@@file1@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_file1'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@file2@@@')">@@@file2@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_file2'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@file3@@@')">@@@file3@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_file3'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@link1@@@')">@@@link1@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_link1'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@link2@@@')">@@@link2@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_link2'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@link3@@@')">@@@link3@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_link3'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@user_username@@@')">@@@user_username@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_user_username'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@user_password@@@')">@@@user_password@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_user_password'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@user_name@@@')">@@@user_name@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_user_name'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@user_email@@@')">@@@user_email@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_user_email'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@user_group@@@')">@@@user_group@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_user_group'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@user_groups@@@')">@@@user_groups@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_user_groups'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@user_type@@@')">@@@user_type@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_user_type'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@user_types@@@')">@@@user_types@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_user_types'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('###id###')">###id###</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_parameter'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('###version###')">###version###</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_parameter'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('###search###')">###search###</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_content_parameter'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_templates'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@menu.title@@@')">@@@menu.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_templates_menu_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@menu.content@@@')">@@@menu.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_templates_menu_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@logo.title@@@')">@@@logo.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_templates_logo_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@logo.content@@@')">@@@logo.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_templates_logo_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@news.title@@@')">@@@news.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_templates_news_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@news.content@@@')">@@@news.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_templates_news_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@banner.title@@@')">@@@banner.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_templates_banner_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@banner.content@@@')">@@@banner.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_templates_banner_content'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_searchresults'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@searchresults@@@')">@@@searchresults@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_searchresults'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@title@@@')">@@@title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@content@@@')">@@@content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@author@@@')">@@@author@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_author'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@keywords@@@')">@@@keywords@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_keywords'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@description@@@')">@@@description@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_description'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@class@@@')">@@@class@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_class'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@contentgroup@@@')">@@@contentgroup@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_contentgroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@contenttype@@@')">@@@contenttype@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_contenttype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@version@@@')">@@@version@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_searchresults_version'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_guestbook'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@guestbook@@@')">@@@guestbook@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_guestbook'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@created@@@')">@@@created@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_created'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@updated@@@')">@@@updated@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_updated'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@published@@@')">@@@published@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_published'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@title@@@')">@@@title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@content@@@')">@@@content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@name@@@')">@@@name@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_name'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@company@@@')">@@@company@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_company'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@email@@@')">@@@email@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_email'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@website@@@')">@@@website@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_guestbook_website'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_products'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@title@@@')">@@@title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_products_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@code@@@')">@@@code@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_products_code'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@comment@@@')">@@@comment@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_products_comment'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@stock@@@')">@@@stock@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_products_stock'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@currency@@@')">@@@currency@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_products_currency'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@price@@@')">@@@price@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_products_price'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_ecommerce'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@shopcart@@@')">@@@shopcart@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_shopcart'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@items@@@')">@@@items@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_items'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@currency@@@')">@@@currency@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_currency'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@subtotal@@@')">@@@subtotal@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_subtotal'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@tax_description@@@')">@@@tax_description@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_tax_description'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@tax@@@')">@@@tax@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_tax'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@shipping_description@@@')">@@@shipping_description@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_shipping_description'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@shipping@@@')">@@@shipping@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_shipping'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@total@@@')">@@@total@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_total'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@title@@@')">@@@title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_product_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@code@@@')">@@@code@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_product_code'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@comment@@@')">@@@comment@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_product_comment'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@options@@@')">@@@options@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_product_options'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@stock@@@')">@@@stock@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_product_stock'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@price@@@')">@@@price@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_product_price'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@quantity@@@')">@@@quantity@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_product_quantity'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@total@@@')">@@@total@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_product_total'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_type@@@')">@@@card_type@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_type'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_name@@@')">@@@card_name@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_name'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_number@@@')">@@@card_number@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_number'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_issuedmonth@@@')">@@@card_issuedmonth@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_issuedmonth'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_issuedyear@@@')">@@@card_issuedyear@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_issuedyear'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_expirymonth@@@')">@@@card_expirymonth@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_expirymonth'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_expiryyear@@@')">@@@card_expiryyear@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_expiryyear'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_cvc@@@')">@@@card_cvc@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_cvc'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_issue@@@')">@@@card_issue@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_issue'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@card_postalcode@@@')">@@@card_postalcode@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_card_postalcode'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_email@@@')">@@@delivery_email@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_email'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_phone@@@')">@@@delivery_phone@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_phone'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_fax@@@')">@@@delivery_fax@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_fax'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_name@@@')">@@@delivery_name@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_name'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_address@@@')">@@@delivery_address@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_address'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_postalcode@@@')">@@@delivery_postalcode@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_postalcode'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_city@@@')">@@@delivery_city@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_city'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_state@@@')">@@@delivery_state@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_state'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery_country@@@')">@@@delivery_country@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery_country'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_email@@@')">@@@invoice_email@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_email'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_phone@@@')">@@@invoice_phone@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_phone'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_fax@@@')">@@@invoice_fax@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_fax'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_name@@@')">@@@invoice_name@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_name'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_address@@@')">@@@invoice_address@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_address'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_postalcode@@@')">@@@invoice_postalcode@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_postalcode'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_city@@@')">@@@invoice_city@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_city'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_state@@@')">@@@invoice_state@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_state'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@invoice_country@@@')">@@@invoice_country@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_invoice_country'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@payment@@@')">@@@payment@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_payment'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@delivery@@@')">@@@delivery@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_delivery'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@program_output@@@')">@@@program_output@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_program_output'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_address@@@')">@@@hosting_address@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_address'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_urlrootpath@@@')">@@@hosting_urlrootpath@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_urlrootpath'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_database@@@')">@@@hosting_database@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_database'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_username@@@')">@@@hosting_username@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_username'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_password@@@')">@@@hosting_password@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_password'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_email@@@')">@@@hosting_email@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_email'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_active@@@')">@@@hosting_active@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_active'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_notify@@@')">@@@hosting_notify@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_notify'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_expiry@@@')">@@@hosting_expiry@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_expiry'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_personal@@@')">@@@hosting_personal@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_personal'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_professional@@@')">@@@hosting_professional@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_professional'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_enterprise@@@')">@@@hosting_enterprise@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_enterprise'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_hosting@@@')">@@@hosting_hosting@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_hosting'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_ecommerce@@@')">@@@hosting_ecommerce@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_ecommerce'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_community@@@')">@@@hosting_community@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_community'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_databases@@@')">@@@hosting_databases@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_databases'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@hosting_statistics@@@')">@@@hosting_statistics@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_hosting_statistics'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@paypal_business@@@')">@@@paypal_business@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_paypal_business'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@paypal_item_name@@@')">@@@paypal_item_name@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_paypal_item_name'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@paypal_return@@@')">@@@paypal_return@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_paypal_return'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@paypal_cancel_return@@@')">@@@paypal_cancel_return@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_paypal_cancel_return'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@paypal_currency@@@')">@@@paypal_currency@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_ecommerce_paypal_currency'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_register'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@username@@@')">@@@username@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_register_username'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@password@@@')">@@@password@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_register_password'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@email@@@')">@@@email@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_register_email'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@name@@@')">@@@name@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_register_name'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@error@@@')">@@@error@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_register_error'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_personal'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_username@@@')">@@@personal_username@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_username'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_password@@@')">@@@personal_password@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_password'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_email@@@')">@@@personal_email@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_email'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_name@@@')">@@@personal_name@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_name'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_title@@@')">@@@personal_title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_content@@@')">@@@personal_content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_template@@@')">@@@personal_template@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_template'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_stylesheet@@@')">@@@personal_stylesheet@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_stylesheet'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_template_options@@@')">@@@personal_template_options@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_template_options'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_stylesheet_options@@@')">@@@personal_stylesheet_options@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_stylesheet_options'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_menu_options@@@')">@@@personal_menu_options@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_menu_options'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_logo_options@@@')">@@@personal_logo_options@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_logo_options'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_news_options@@@')">@@@personal_news_options@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_news_options'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@personal_banner_options@@@')">@@@personal_banner_options@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_personal_banner_options'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_extension'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@extension:breadcrumbs( - )@@@')">@@@extension<br>:breadcrumbs( - )@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_extension_breadcrumbs'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@extension:menu()@@@')">@@@extension<br>:menu()@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_extension_menu'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@extension:menu(top=ID:levels=3)@@@')">@@@extension<br>:menu(top=ID:levels=3)@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_extension_menu'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@extension:menu(class=STYLE:selected=STYLE)@@@')">@@@extension<br>:menu(class=STYLE:selected=STYLE)@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_extension_menu'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@extension:menu(count=DIV:item=SPAN)@@@')">@@@extension<br>:menu(count=DIV:item=SPAN)@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_extension_menu'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_include'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:ID.title@@@')">@@@include:ID.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_id_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:ID.content@@@')">@@@include:ID.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_id_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:ID.summary@@@')">@@@include:ID.summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_id_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_top.id@@@')">@@@include:page_top.id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_top_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_top.title@@@')">@@@include:page_top.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_top_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_top.content@@@')">@@@include:page_top.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_top_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_top.summary@@@')">@@@include:page_top.summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_top_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_up.id@@@')">@@@include:page_up.id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_up_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_up.title@@@')">@@@include:page_up.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_up_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_up.content@@@')">@@@include:page_up.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_up_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_up.summary@@@')">@@@include:page_up.summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_up_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_first.id@@@')">@@@include:page_first.id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_first_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_first.title@@@')">@@@include:page_first.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_first_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_first.content@@@')">@@@include:page_first.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_first_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_first.summary@@@')">@@@include:page_first.summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_first_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_last.id@@@')">@@@include:page_last.id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_last_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_last.title@@@')">@@@include:page_last.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_last_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_last.content@@@')">@@@include:page_last.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_last_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_last.summary@@@')">@@@include:page_last.summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_last_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_previous.id@@@')">@@@include:page_previous.id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_previous_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_previous.title@@@')">@@@include:page_previous.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_previous_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_previous.content@@@')">@@@include:page_previous.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_previous_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_previous.summary@@@')">@@@include:page_previous.summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_previous_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_next.id@@@')">@@@include:page_next.id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_next_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_next.title@@@')">@@@include:page_next.title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_next_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_next.content@@@')">@@@include:page_next.content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_next_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:page_next.summary@@@')">@@@include:page_next.summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_page_next_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@include:database=DATABASE:ID=VALUE:ATTRIBUTE@@@')">@@@include:database=DATABASE<br>:ID=VALUE:ATTRIBUTE@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_include_database'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_random'));</script></th>
+	</tr>
+
+
+
+
+
+
+
+
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:page:id@@@')">@@@random:NAME<br>:page:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_page_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:page:title@@@')">@@@random:NAME<br>:page:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_page_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:page:content@@@')">@@@random:NAME<br>:page:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_page_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:page:summary@@@')">@@@random:NAME<br>:page:summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_page_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:file:id@@@')">@@@random:NAME<br>:file:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_file_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:file:title@@@')">@@@random:NAME<br>:file:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_file_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:file:title@@@')">@@@random:NAME<br>:file:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_file_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:image:id@@@')">@@@random:NAME<br>:image:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_image_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:image:title@@@')">@@@random:NAME<br>:image:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_image_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:image:title@@@')">@@@random:NAME<br>:image:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_image_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:link:id@@@')">@@@random:NAME<br>:link:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_link_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:link:title@@@')">@@@random:NAME<br>:link:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_link_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:link:title@@@')">@@@random:NAME<br>:link:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_link_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:product:id@@@')">@@@random:NAME<br>:product:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_product_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:product:title@@@')">@@@random:NAME<br>:product:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_product_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:product:content@@@')">@@@random:NAME<br>:product:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_product_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:product:summary@@@')">@@@random:NAME<br>:product:summary@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_product_summary'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:stylesheet:id@@@')">@@@random:NAME<br>:stylesheet:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_stylesheet_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:stylesheet:title@@@')">@@@random:NAME<br>:stylesheet:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_stylesheet_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:stylesheet:title@@@')">@@@random:NAME<br>:stylesheet:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_stylesheet_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:template:id@@@')">@@@random:NAME<br>:template:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_template_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:template:title@@@')">@@@random:NAME<br>:template:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_template_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:template:title@@@')">@@@random:NAME<br>:template:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_template_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:content:id@@@')">@@@random:NAME<br>:content:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_content_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:content:title@@@')">@@@random:NAME<br>:content:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_content_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:content:title@@@')">@@@random:NAME<br>:content:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_content_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagegroup=NAME:id@@@')">@@@random:NAME<br>:pagegroup=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagegroup_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagegroup=NAME:title@@@')">@@@random:NAME<br>:pagegroup=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagegroup_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagegroup=NAME:title@@@')">@@@random:NAME<br>:pagegroup=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagegroup_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagegroup in NAME,NAME:id@@@')">@@@random:NAME<br>:pagegroup in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagegroup_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagegroup in NAME,NAME:title@@@')">@@@random:NAME<br>:pagegroup in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagegroup_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagegroup in NAME,NAME:title@@@')">@@@random:NAME<br>:pagegroup in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagegroup_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagetype=NAME:id@@@')">@@@random:NAME<br>:pagetype=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagetype_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagetype=NAME:title@@@')">@@@random:NAME<br>:pagetype=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagetype_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagetype=NAME:title@@@')">@@@random:NAME<br>:pagetype=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagetype_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagetype in NAME,NAME:id@@@')">@@@random:NAME<br>:pagetype in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagetype_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagetype in NAME,NAME:title@@@')">@@@random:NAME<br>:pagetype in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagetype_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:pagetype in NAME,NAME:title@@@')">@@@random:NAME<br>:pagetype in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_pagetype_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filegroup=NAME:id@@@')">@@@random:NAME<br>:filegroup=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filegroup_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filegroup=NAME:title@@@')">@@@random:NAME<br>:filegroup=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filegroup_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filegroup=NAME:title@@@')">@@@random:NAME<br>:filegroup=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filegroup_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filegroup in NAME,NAME:id@@@')">@@@random:NAME<br>:filegroup in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filegroup_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filegroup in NAME,NAME:title@@@')">@@@random:NAME<br>:filegroup in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filegroup_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filegroup in NAME,NAME:title@@@')">@@@random:NAME<br>:filegroup in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filegroup_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filetype=NAME:id@@@')">@@@random:NAME<br>:filetype=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filetype_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filetype=NAME:title@@@')">@@@random:NAME<br>:filetype=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filetype_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filetype=NAME:title@@@')">@@@random:NAME<br>:filetype=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filetype_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filetype in NAME,NAME:id@@@')">@@@random:NAME<br>:filetype in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filetype_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filetype in NAME,NAME:title@@@')">@@@random:NAME<br>:filetype in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filetype_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:filetype in NAME,NAME:title@@@')">@@@random:NAME<br>:filetype in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_filetype_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagegroup=NAME:id@@@')">@@@random:NAME<br>:imagegroup=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagegroup_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagegroup=NAME:title@@@')">@@@random:NAME<br>:imagegroup=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagegroup_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagegroup=NAME:title@@@')">@@@random:NAME<br>:imagegroup=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagegroup_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagegroup in NAME,NAME:id@@@')">@@@random:NAME<br>:imagegroup in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagegroup_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagegroup in NAME,NAME:title@@@')">@@@random:NAME<br>:imagegroup in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagegroup_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagegroup in NAME,NAME:title@@@')">@@@random:NAME<br>:imagegroup in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagegroup_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagetype=NAME:id@@@')">@@@random:NAME<br>:imagetype=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagetype_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagetype=NAME:title@@@')">@@@random:NAME<br>:imagetype=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagetype_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagetype=NAME:title@@@')">@@@random:NAME<br>:imagetype=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagetype_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagetype in NAME,NAME:id@@@')">@@@random:NAME<br>:imagetype in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagetype_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagetype in NAME,NAME:title@@@')">@@@random:NAME<br>:imagetype in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagetype_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:imagetype in NAME,NAME:title@@@')">@@@random:NAME<br>:imagetype in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_imagetype_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linkgroup=NAME:id@@@')">@@@random:NAME<br>:linkgroup=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linkgroup_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linkgroup=NAME:title@@@')">@@@random:NAME<br>:linkgroup=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linkgroup_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linkgroup=NAME:title@@@')">@@@random:NAME<br>:linkgroup=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linkgroup_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linkgroup in NAME,NAME:id@@@')">@@@random:NAME<br>:linkgroup in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linkgroup_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linkgroup in NAME,NAME:title@@@')">@@@random:NAME<br>:linkgroup in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linkgroup_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linkgroup in NAME,NAME:title@@@')">@@@random:NAME<br>:linkgroup in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linkgroup_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linktype=NAME:id@@@')">@@@random:NAME<br>:linktype=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linktype_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linktype=NAME:title@@@')">@@@random:NAME<br>:linktype=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linktype_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linktype=NAME:title@@@')">@@@random:NAME<br>:linktype=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linktype_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linktype in NAME,NAME:id@@@')">@@@random:NAME<br>:linktype in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linktype_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linktype in NAME,NAME:title@@@')">@@@random:NAME<br>:linktype in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linktype_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:linktype in NAME,NAME:title@@@')">@@@random:NAME<br>:linktype in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_linktype_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:productgroup=NAME:id@@@')">@@@random:NAME<br>:productgroup=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_productgroup_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:productgroup=NAME:title@@@')">@@@random:NAME<br>:productgroup=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_productgroup_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:productgroup=NAME:title@@@')">@@@random:NAME<br>:productgroup=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_productgroup_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:productgroup in NAME,NAME:id@@@')">@@@random:NAME<br>:productgroup in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_productgroup_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:productgroup in NAME,NAME:title@@@')">@@@random:NAME<br>:productgroup in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_productgroup_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:productgroup in NAME,NAME:title@@@')">@@@random:NAME<br>:productgroup in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_productgroup_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:producttype=NAME:id@@@')">@@@random:NAME<br>:producttype=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_producttype_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:producttype=NAME:title@@@')">@@@random:NAME<br>:producttype=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_producttype_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:producttype=NAME:title@@@')">@@@random:NAME<br>:producttype=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_producttype_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:producttype in NAME,NAME:id@@@')">@@@random:NAME<br>:producttype in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_producttype_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:producttype in NAME,NAME:title@@@')">@@@random:NAME<br>:producttype in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_producttype_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:producttype in NAME,NAME:title@@@')">@@@random:NAME<br>:producttype in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_producttype_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentgroup=NAME:id@@@')">@@@random:NAME<br>:contentgroup=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentgroup_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentgroup=NAME:title@@@')">@@@random:NAME<br>:contentgroup=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentgroup_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentgroup=NAME:title@@@')">@@@random:NAME<br>:contentgroup=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentgroup_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentgroup in NAME,NAME:id@@@')">@@@random:NAME<br>:contentgroup in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentgroup_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentgroup in NAME,NAME:title@@@')">@@@random:NAME<br>:contentgroup in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentgroup_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentgroup in NAME,NAME:title@@@')">@@@random:NAME<br>:contentgroup in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentgroup_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contenttype=NAME:id@@@')">@@@random:NAME<br>:contenttype=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contenttype_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contenttype=NAME:title@@@')">@@@random:NAME<br>:contenttype=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contenttype_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contenttype=NAME:title@@@')">@@@random:NAME<br>:contenttype=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contenttype_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contenttype in NAME,NAME:id@@@')">@@@random:NAME<br>:contenttype in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contenttype_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contenttype in NAME,NAME:title@@@')">@@@random:NAME<br>:contenttype in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contenttype_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contenttype in NAME,NAME:title@@@')">@@@random:NAME<br>:contenttype in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contenttype_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentclass=NAME:id@@@')">@@@random:NAME<br>:contentclass=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentclass_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentclass=NAME:title@@@')">@@@random:NAME<br>:contentclass=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentclass_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentclass=NAME:title@@@')">@@@random:NAME<br>:contentclass=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentclass_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentclass in NAME,NAME:id@@@')">@@@random:NAME<br>:contentclass in NAME,NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentclass_in_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentclass in NAME,NAME:title@@@')">@@@random:NAME<br>:contentclass in NAME,NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentclass_in_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:contentclass in NAME,NAME:title@@@')">@@@random:NAME<br>:contentclass in NAME,NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_contentclass_in_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:version=NAME:id@@@')">@@@random:NAME<br>:version=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_version_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:version=NAME:title@@@')">@@@random:NAME<br>:version=NAME:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_version_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:version=NAME:title@@@')">@@@random:NAME<br>:version=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_version_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:title=NAME:id@@@')">@@@random:NAME<br>:title=NAME:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_title_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:title=NAME:title@@@')">@@@random:NAME<br>:title=NAME:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_title_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:top=ID:id@@@')">@@@random:NAME<br>:top=ID:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_top_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:top=ID:title@@@')">@@@random:NAME<br>:top=ID:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_top_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:top=ID:title@@@')">@@@random:NAME<br>:top=ID:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_top_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:top!=ID:id@@@')">@@@random:NAME<br>:top!=ID:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_top_not_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:top!=ID:title@@@')">@@@random:NAME<br>:top!=ID:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_top_not_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:top!=ID:title@@@')">@@@random:NAME<br>:top!=ID:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_top_not_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:up=ID:id@@@')">@@@random:NAME<br>:up=ID:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_up_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:up=ID:title@@@')">@@@random:NAME<br>:up=ID:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_up_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:up=ID:title@@@')">@@@random:NAME<br>:up=ID:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_up_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:up!=ID:id@@@')">@@@random:NAME<br>:up!=ID:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_up_not_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:up!=ID:title@@@')">@@@random:NAME<br>:up!=ID:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_up_not_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:up!=ID:title@@@')">@@@random:NAME<br>:up!=ID:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_up_not_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=YYYY-MM-DD:id@@@')">@@@random:NAME<br>:published=YYYY-MM-DD:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=YYYY-MM-DD:title@@@')">@@@random:NAME<br>:published=YYYY-MM-DD:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=YYYY-MM-DD:title@@@')">@@@random:NAME<br>:published=YYYY-MM-DD:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<YYYY-MM-DD:id@@@')">@@@random:NAME<br>:published&lt;YYYY-MM-DD:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_before_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<YYYY-MM-DD:title@@@')">@@@random:NAME<br>:published&lt;YYYY-MM-DD:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_before_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<YYYY-MM-DD:title@@@')">@@@random:NAME<br>:published&lt;YYYY-MM-DD:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_before_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>YYYY-MM-DD:id@@@')">@@@random:NAME<br>:published&gt;YYYY-MM-DD:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_after_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>YYYY-MM-DD:title@@@')">@@@random:NAME<br>:published&gt;YYYY-MM-DD:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_after_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>YYYY-MM-DD:title@@@')">@@@random:NAME<br>:published&gt;YYYY-MM-DD:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_date_after_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2secs:id@@@')">@@@random:NAME<br>:published=-2secs:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2secs:title@@@')">@@@random:NAME<br>:published=-2secs:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2secs:title@@@')">@@@random:NAME<br>:published=-2secs:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2secs:id@@@')">@@@random:NAME<br>:published&lt;-2secs:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_before_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2secs:title@@@')">@@@random:NAME<br>:published&lt;-2secs:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_before_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2secs:title@@@')">@@@random:NAME<br>:published&lt;-2secs:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_before_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published&gt;-2secs:id@@@')">@@@random:NAME<br>:published&gt;-2secs:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_after_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published&gt;-2secs:title@@@')">@@@random:NAME<br>:published&gt;-2secs:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_after_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published&gt;-2secs:title@@@')">@@@random:NAME<br>:published&gt;-2secs:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_secs_after_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2mins:id@@@')">@@@random:NAME<br>:published=-2mins:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2mins:title@@@')">@@@random:NAME<br>:published=-2mins:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2mins:title@@@')">@@@random:NAME<br>:published=-2mins:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2mins:id@@@')">@@@random:NAME<br>:published&lt;-2mins:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_before_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2mins:title@@@')">@@@random:NAME<br>:published&lt;-2mins:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_before_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2mins:title@@@')">@@@random:NAME<br>:published&lt;-2mins:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_before_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2mins:id@@@')">@@@random:NAME<br>:published&gt;-2mins:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_after_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2mins:title@@@')">@@@random:NAME<br>:published&gt;-2mins:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_after_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2mins:title@@@')">@@@random:NAME<br>:published&gt;-2mins:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_mins_after_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2hours:id@@@')">@@@random:NAME<br>:published=-2hours:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2hours:title@@@')">@@@random:NAME<br>:published=-2hours:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2hours:title@@@')">@@@random:NAME<br>:published=-2hours:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2hours:id@@@')">@@@random:NAME<br>:published&lt;-2hours:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_before_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2hours:title@@@')">@@@random:NAME<br>:published&lt;-2hours:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_before_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2hours:title@@@')">@@@random:NAME<br>:published&lt;-2hours:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_before_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2hours:id@@@')">@@@random:NAME<br>:published&gt;-2hours:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_after_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2hours:title@@@')">@@@random:NAME<br>:published&gt;-2hours:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_after_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2hours:title@@@')">@@@random:NAME<br>:published&gt;-2hours:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_hours_after_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2days:id@@@')">@@@random:NAME<br>:published=-2days:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2days:title@@@')">@@@random:NAME<br>:published=-2days:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2days:title@@@')">@@@random:NAME<br>:published=-2days:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2days:id@@@')">@@@random:NAME<br>:published&lt;-2days:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_before_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2days:title@@@')">@@@random:NAME<br>:published&lt;-2days:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_before_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2days:title@@@')">@@@random:NAME<br>:published&lt;-2days:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_before_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2days:id@@@')">@@@random:NAME<br>:published&gt;-2days:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_after_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2days:title@@@')">@@@random:NAME<br>:published&gt;-2days:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_after_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2days:title@@@')">@@@random:NAME<br>:published&gt;-2days:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_days_after_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2weeks:id@@@')">@@@random:NAME<br>:published=-2weeks:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2weeks:title@@@')">@@@random:NAME<br>:published=-2weeks:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2weeks:title@@@')">@@@random:NAME<br>:published=-2weeks:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2weeks:id@@@')">@@@random:NAME<br>:published&lt;-2weeks:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_before_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2weeks:title@@@')">@@@random:NAME<br>:published&lt;-2weeks:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_before_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2weeks:title@@@')">@@@random:NAME<br>:published&lt;-2weeks:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_before_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2weeks:id@@@')">@@@random:NAME<br>:published&gt;-2weeks:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_after_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2weeks:title@@@')">@@@random:NAME<br>:published&gt;-2weeks:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_after_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2weeks:title@@@')">@@@random:NAME<br>:published&gt;-2weeks:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_weeks_after_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2months:id@@@')">@@@random:NAME<br>:published=-2months:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2months:title@@@')">@@@random:NAME<br>:published=-2months:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2months:title@@@')">@@@random:NAME<br>:published=-2months:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2months:id@@@')">@@@random:NAME<br>:published&lt;-2months:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_before_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2months:title@@@')">@@@random:NAME<br>:published&lt;-2months:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_before_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2months:title@@@')">@@@random:NAME<br>:published&lt;-2months:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_before_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2months:id@@@')">@@@random:NAME<br>:published&gt;-2months:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_after_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2months:title@@@')">@@@random:NAME<br>:published&gt;-2months:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_after_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2months:title@@@')">@@@random:NAME<br>:published&gt;-2months:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_months_after_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2years:id@@@')">@@@random:NAME<br>:published=-2years:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2years:title@@@')">@@@random:NAME<br>:published=-2years:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published=-2years:title@@@')">@@@random:NAME<br>:published=-2years:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2years:id@@@')">@@@random:NAME<br>:published&lt;-2years:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_before_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2years:title@@@')">@@@random:NAME<br>:published&lt;-2years:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_before_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published<-2years:title@@@')">@@@random:NAME<br>:published&lt;-2years:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_before_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2years:id@@@')">@@@random:NAME<br>:published&gt;-2years:id@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_after_id'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2years:title@@@')">@@@random:NAME<br>:published&gt;-2years:title@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_after_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@random:NAME:published>-2years:title@@@')">@@@random:NAME<br>:published&gt;-2years:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_random_published_years_after_content'));</script></td>
+	</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_list'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:pages@@@')">@@@list:pages@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_pages'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:files@@@')">@@@list:files@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_files'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:images@@@')">@@@list:images@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_images'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:links@@@')">@@@list:links@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_links'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:products@@@')">@@@list:products@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_products'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:stylesheets@@@')">@@@list:stylesheets@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_stylesheets'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:templates@@@')">@@@list:templates@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_templates'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:content@@@')">@@@list:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:pagegroup=NAME@@@')">@@@list:pagegroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_pagegroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:pagegroup in NAME,NAME@@@')">@@@list:pagegroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_pagegroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:pagetype=NAME@@@')">@@@list:pagetype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_pagetype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:pagetype in NAME,NAME@@@')">@@@list:pagetype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_pagetype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:filegroup=NAME@@@')">@@@list:filegroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_filegroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:filegroup in NAME,NAME@@@')">@@@list:filegroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_filegroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:filetype=NAME@@@')">@@@list:filetype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_filetype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:filetype in NAME,NAME@@@')">@@@list:filetype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_filetype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:imagegroup=NAME@@@')">@@@list:imagegroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_imagegroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:imagegroup in NAME,NAME@@@')">@@@list:imagegroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_imagegroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:imagetype=NAME@@@')">@@@list:imagetype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_imagetype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:imagetype in NAME,NAME@@@')">@@@list:imagetype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_imagetype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:linkgroup=NAME@@@')">@@@list:linkgroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_linkgroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:linkgroup in NAME,NAME@@@')">@@@list:linkgroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_linkgroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:linktype=NAME@@@')">@@@list:linktype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_linktype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:linktype in NAME,NAME@@@')">@@@list:linktype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_linktype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:productgroup=NAME@@@')">@@@list:productgroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_productgroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:productgroup in NAME,NAME@@@')">@@@list:productgroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_productgroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:producttype=NAME@@@')">@@@list:producttype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_producttype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:producttype in NAME,NAME@@@')">@@@list:producttype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_producttype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:contentgroup=NAME@@@')">@@@list:contentgroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_contentgroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:contentgroup in NAME,NAME@@@')">@@@list:contentgroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_contentgroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:contenttype=NAME@@@')">@@@list:contenttype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_contenttype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:contenttype in NAME,NAME@@@')">@@@list:contenttype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_contenttype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:contentclass=NAME@@@')">@@@list:contentclass=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_contentclass'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:contentclass in NAME,NAME@@@')">@@@list:contentclass in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_contentclass_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:version=NAME@@@')">@@@list:version=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_version'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:title=NAME@@@')">@@@list:title=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:top=ID@@@')">@@@list:top=ID@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_top'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:top!=ID@@@')">@@@list:top!=ID@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_top_not'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:up=ID@@@')">@@@list:up=ID@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_up'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:up!=ID@@@')">@@@list:up!=ID@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_up_not'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published=YYYY-MM-DD@@@')">@@@list:published=YYYY-MM-DD@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_date'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published<YYYY-MM-DD@@@')">@@@list:published&lt;YYYY-MM-DD@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_date_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published>YYYY-MM-DD@@@')">@@@list:published&gt;YYYY-MM-DD@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_date_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published=-2secs@@@')">@@@list:published=-2secs@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_secs'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published<-2secs@@@')">@@@list:published&lt;-2secs@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_secs_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published&gt;-2secs@@@')">@@@list:published&gt;-2secs@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_secs_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published=-2mins@@@')">@@@list:published=-2mins@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_mins'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published<-2mins@@@')">@@@list:published&lt;-2mins@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_mins_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published>-2mins@@@')">@@@list:published&gt;-2mins@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_mins_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published=-2hours@@@')">@@@list:published=-2hours@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_hours'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published<-2hours@@@')">@@@list:published&lt;-2hours@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_hours_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published>-2hours@@@')">@@@list:published&gt;-2hours@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_hours_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published=-2days@@@')">@@@list:published=-2days@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_days'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published<-2days@@@')">@@@list:published&lt;-2days@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_days_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published>-2days@@@')">@@@list:published&gt;-2days@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_days_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published=-2weeks@@@')">@@@list:published=-2weeks@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_weeks'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published<-2weeks@@@')">@@@list:published&lt;-2weeks@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_weeks_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published>-2weeks@@@')">@@@list:published&gt;-2weeks@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_weeks_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published=-2months@@@')">@@@list:published=-2months@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_months'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published<-2months@@@')">@@@list:published&lt;-2months@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_months_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published>-2months@@@')">@@@list:published&gt;-2months@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_months_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published=-2years@@@')">@@@list:published=-2years@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_years'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published<-2years@@@')">@@@list:published&lt;-2years@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_years_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:published>-2years@@@')">@@@list:published&gt;-2years@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_published_years_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@list:database=DATABASE:ATTRIBUTE=VALUE@@@')">@@@list:database=DATABASE<br>:ATTRIBUTE=VALUE@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_list_database'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_count'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:pages@@@')">@@@count:pages@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_pages'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:files@@@')">@@@count:files@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_files'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:images@@@')">@@@count:images@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_images'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:links@@@')">@@@count:links@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_links'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:products@@@')">@@@count:products@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_products'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:stylesheets@@@')">@@@count:stylesheets@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_stylesheets'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:templates@@@')">@@@count:templates@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_templates'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:content@@@')">@@@count:content@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_content'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:pagegroup=NAME@@@')">@@@count:pagegroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_pagegroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:pagegroup in NAME,NAME@@@')">@@@count:pagegroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_pagegroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:pagetype=NAME@@@')">@@@count:pagetype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_pagetype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:pagetype in NAME,NAME@@@')">@@@count:pagetype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_pagetype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:filegroup=NAME@@@')">@@@count:filegroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_filegroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:filegroup in NAME,NAME@@@')">@@@count:filegroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_filegroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:filetype=NAME@@@')">@@@count:filetype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_filetype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:filetype in NAME,NAME@@@')">@@@count:filetype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_filetype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:imagegroup=NAME@@@')">@@@count:imagegroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_imagegroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:imagegroup in NAME,NAME@@@')">@@@count:imagegroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_imagegroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:imagetype=NAME@@@')">@@@count:imagetype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_imagetype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:imagetype in NAME,NAME@@@')">@@@count:imagetype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_imagetype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:linkgroup=NAME@@@')">@@@count:linkgroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_linkgroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:linkgroup in NAME,NAME@@@')">@@@count:linkgroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_linkgroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:linktype=NAME@@@')">@@@count:linktype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_linktype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:linktype in NAME,NAME@@@')">@@@count:linktype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_linktype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:productgroup=NAME@@@')">@@@count:productgroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_productgroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:productgroup in NAME,NAME@@@')">@@@count:productgroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_productgroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:producttype=NAME@@@')">@@@count:producttype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_producttype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:producttype in NAME,NAME@@@')">@@@count:producttype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_producttype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:contentgroup=NAME@@@')">@@@count:contentgroup=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_contentgroup'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:contentgroup in NAME,NAME@@@')">@@@count:contentgroup in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_contentgroup_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:contenttype=NAME@@@')">@@@count:contenttype=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_contenttype'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:contenttype in NAME,NAME@@@')">@@@count:contenttype in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_contenttype_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:contentclass=NAME@@@')">@@@count:contentclass=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_contentclass'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:contentclass in NAME,NAME@@@')">@@@count:contentclass in NAME,NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_contentclass_in'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:version=NAME@@@')">@@@count:version=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_version'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:title=NAME@@@')">@@@count:title=NAME@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_title'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:top=ID@@@')">@@@count:top=ID@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_top'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:top!=ID@@@')">@@@count:top!=ID@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_top_not'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:up=ID@@@')">@@@count:up=ID@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_up'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:up!=ID@@@')">@@@count:up!=ID@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_up_not'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published=YYYY-MM-DD@@@')">@@@count:published=YYYY-MM-DD@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_date'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published<YYYY-MM-DD@@@')">@@@count:published&lt;YYYY-MM-DD@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_date_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published>YYYY-MM-DD@@@')">@@@count:published&gt;YYYY-MM-DD@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_date_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published=-2secs@@@')">@@@count:published=-2secs@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_secs'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published<-2secs@@@')">@@@count:published&lt;-2secs@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_secs_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published>-2secs@@@')">@@@count:published&gt;-2secs@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_secs_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published=-2mins@@@')">@@@count:published=-2mins@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_mins'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published<-2mins@@@')">@@@count:published&lt;-2mins@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_mins_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published>-2mins@@@')">@@@count:published&gt;-2mins@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_mins_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published=-2hours@@@')">@@@count:published=-2hours@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_hours'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published<-2hours@@@')">@@@count:published&lt;-2hours@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_hours_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published>-2hours@@@')">@@@count:published&gt;-2hours@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_hours_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published=-2days@@@')">@@@count:published=-2days@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_days'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published<-2days@@@')">@@@count:published&lt;-2days@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_days_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published>-2days@@@')">@@@count:published&gt;-2days@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_days_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published=-2weeks@@@')">@@@count:published=-2weeks@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_weeks'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published<-2weeks@@@')">@@@count:published&lt;-2weeks@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_weeks_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published>-2weeks@@@')">@@@count:published&gt;-2weeks@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_weeks_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published=-2months@@@')">@@@count:published=-2months@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_months'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published<-2months@@@')">@@@count:published&lt;-2months@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_months_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published>-2months@@@')">@@@count:published&gt;-2months@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_months_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published=-2years@@@')">@@@count:published=-2years@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_years'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published<-2years@@@')">@@@count::published&lt;-2years@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_years_before'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:published>-2years@@@')">@@@count:published&gt;-2years@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_published_years_after'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@count:database=DATABASE:ATTRIBUTE=VALUE@@@')">@@@count:database=DATABASE<br>:ATTRIBUTE=VALUE@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_count_database'));</script></td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<th align="left" colspan="2"><script type="text/javascript">document.write(Text('specialcode_database'));</script></th>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@sum:database=DATABASE:data=ATTRIBUTE@@@')">@@@sum:database=DATABASE<br>:data=ATTRIBUTE@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_sum'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@min:database=DATABASE:data=ATTRIBUTE@@@')">@@@min:database=DATABASE<br>:data=ATTRIBUTE@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_min'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@max:database=DATABASE:data=ATTRIBUTE@@@')">@@@max:database=DATABASE<br>:data=ATTRIBUTE@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_max'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@avg:database=DATABASE:data=ATTRIBUTE@@@')">@@@avg:database=DATABASE<br>:data=ATTRIBUTE@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_avg'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@ATTRIBUTE.br@@@')">@@@ATTRIBUTE.br@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_br'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@ATTRIBUTE.p@@@')">@@@ATTRIBUTE.p@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_p'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@ATTRIBUTE.div@@@')">@@@ATTRIBUTE.div@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_div'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@ATTRIBUTE.titles@@@')">@@@ATTRIBUTE.titles@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_titles'));</script></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><a style="text-decoration: none; font-size: small;" href="javascript:insertSpecialCharacter('@@@ATTRIBUTE.links@@@')">@@@ATTRIBUTE.links@@@</a></td>
+		<td align="left" valign="top"><script type="text/javascript">document.write(Text('specialcode_database_links'));</script></td>
+	</tr>
+</table>
+</body>
+</html>

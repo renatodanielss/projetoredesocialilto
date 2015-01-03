@@ -1,0 +1,889 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.ecommerce.title") %></title>
+<script type="text/javascript">
+
+$(function(){
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	$('#tabs').find('[rel=Order_Forms]').click();
+});
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contentid = '';
+		var contenttitle = '';
+		var contenthref = '';
+		if (inputnode.type != "select-multiple") {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + encodeURIComponent(inputid) + '&section=' + encodeURIComponent(section) + '&category=' + encodeURIComponent(category) + '&title=' + encodeURIComponent(title) + '&id=' + encodeURIComponent(contentid) + '&link=' + encodeURIComponent(contenttitle) + '&href=' + encodeURIComponent(contenthref), 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		if (inputnode.type == "select-multiple") {
+			var newoption = new Option();
+			newoption.text = contenttitle;
+			newoption.value = contentid;
+			newoption.selected = true;
+			inputnode.options[inputnode.options.length] = newoption;
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+		}
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.ecommerce.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="ecommerce.jsp" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Default_Currency" rel="Default_Currency"><%= mytext.display("config.ecommerce.currency.tab") %></a></li>
+                <li><a href="#Order_Forms" rel="Order_Forms"><%= mytext.display("config.ecommerce.orderforms.tab") %></a></li>
+                <li><a href="#Order_Administration" rel="Order_Administration"><%= mytext.display("config.ecommerce.orderadmin.tab") %></a></li>
+                <li><a href="#Payment_Processing" rel="Payment_Processing"><%= mytext.display("config.ecommerce.payment.tab") %></a></li>
+                <li><a href="#Product_Delivery" rel="Product_Delivery"><%= mytext.display("config.ecommerce.delivery.tab") %></a></li>
+                <li><a href="#Special_Pages" rel="Special_Pages"><%= mytext.display("config.ecommerce.special.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Default_Currency" class="Default_Currency st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.ecommerce.currency.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.currency.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.currency.default") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <select name="default_currency"><option value=""><%= mytext.display("pleaseselect") %>
+              <%= mycurrencies.currency_options(db, myconfig.get(db, "default_currency")) %>
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.ecommerce.price.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.price.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.price.default") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select name="default_price_options" onchange="document.getElementById('default_price').value=this.value;" style="width: 50%;">
+                <option value="">&nbsp;</option>
+                <option value="@@@price_list@@@"<% if (myconfig.get(db, "default_price").equals("@@@price_list@@@")) { %> selected<% } %>><%= mytext.display("config.ecommerce.price.default.list") %></option>
+                <option value="@@@price_discounted@@@"<% if (myconfig.get(db, "default_price").equals("@@@price_discounted@@@")) { %> selected<% } %>><%= mytext.display("config.ecommerce.price.default.discounted") %></option>
+                <option value="@@@price_taxed@@@"<% if (myconfig.get(db, "default_price").equals("@@@price_taxed@@@")) { %> selected<% } %>><%= mytext.display("config.ecommerce.price.default.taxed") %></option>
+                <option value="@@@price_shipped@@@"<% if (myconfig.get(db, "default_price").equals("@@@price_shipped@@@")) { %> selected<% } %>><%= mytext.display("config.ecommerce.price.default.shipped") %></option>
+              </select>
+              &nbsp;
+              <input type="text" size="80" style="width: 45%;" id="default_price" name="default_price" value="<%= html.encode(myconfig.get(db, "default_price")) %>">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.price.default.country") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="default_country" value="<%= html.encode(myconfig.get(db, "default_country")) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.price.default.state") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="default_state" value="<%= html.encode(myconfig.get(db, "default_state")) %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="6"><%= mytext.display("config.ecommerce.currency.about.heading") %></th></tr>
+          <tr><td align="left" colspan="6"><%= mytext.display("config.ecommerce.currency.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<div id="Order_Forms" class="Order_Forms st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.ecommerce.orderforms.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.orderforms.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.orderforms.recipient") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="60" name="order_form_recipient" value="<%= myconfig.get(db, "order_form_recipient") %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Order_Administration" class="Order_Administration st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("config.ecommerce.orderadmin.type") %></th>
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("config.ecommerce.orderadmin.group") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="order_admin_users_type">
+                <option value="<%= myconfig.get(db, "order_admin_users_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "order_admin_users_type").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usertype_select_options(db, myconfig.get(db, "order_admin_users_type")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="order_admin_users_group">
+                <option value="<%= myconfig.get(db, "order_admin_users_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "order_admin_users_group").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usergroup_select_options(db, myconfig.get(db, "order_admin_users_group")) %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.workflow.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.workflow.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.orderadmin.workflow.new") %></th>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select id="order_workflow_new" name="order_workflow_new">
+                <option value="">&nbsp;</option>
+                <%= myworkflow.state_select_options_where(db, myconfig.get(db, "order_workflow_new"), "title", "-orders-", true) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.orderadmin.workflow.free") %></th>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select id="order_workflow_free" name="order_workflow_free">
+                <option value="">&nbsp;</option>
+                <%= myworkflow.state_select_options_where(db, myconfig.get(db, "order_workflow_free"), "title", "-orders-", true) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.orderadmin.workflow.paid") %></th>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select id="order_workflow_paid" name="order_workflow_paid">
+                <option value="">&nbsp;</option>
+                <%= myworkflow.state_select_options_where(db, myconfig.get(db, "order_workflow_paid"), "title", "-orders-", true) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.orderadmin.workflow.delivered.partial") %></th>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select id="order_workflow_delivered_partial" name="order_workflow_delivered_partial">
+                <option value="">&nbsp;</option>
+                <%= myworkflow.state_select_options_where(db, myconfig.get(db, "order_workflow_delivered_partial"), "title", "-orders-", true) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.orderadmin.workflow.delivered.complete") %></th>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select id="order_workflow_delivered_complete" name="order_workflow_delivered_complete">
+                <option value="">&nbsp;</option>
+                <%= myworkflow.state_select_options_where(db, myconfig.get(db, "order_workflow_delivered_complete"), "title", "-orders-", true) %>
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.salesreports.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.salesreports.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("config.ecommerce.orderadmin.salesreports.type") %></th>
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("config.ecommerce.orderadmin.salesreports.group") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="sales_admin_users_type">
+                <option value="<%= myconfig.get(db, "sales_admin_users_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "sales_admin_users_type").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usertype_select_options(db, myconfig.get(db, "sales_admin_users_type")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="sales_admin_users_group">
+                <option value="<%= myconfig.get(db, "sales_admin_users_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "sales_admin_users_group").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usergroup_select_options(db, myconfig.get(db, "sales_admin_users_group")) %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.sales.heading") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.sales.index.report") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="100" maxlength="250" style="width:100%;" name="sales_index_report" value="<% if (myconfig.get(db, "sales_index_report").equals("")) { %>sales:summary:all:today sales:summary:all:thisweek sales:summary:all:thismonth<% } else { %><%= html.encode(myconfig.get(db, "sales_index_report")) %><% } %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.sales.index.reports") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <textarea cols="80" rows="10" style="width:100%;" name="sales_reports"><% if (myconfig.get(db, "sales_reports").equals("")) { %>
+Example = "sales:summary:all:today sales:summary:all:thisweek sales:summary:all:thismonth"
+<% } else { %>
+<%= html.encode(myconfig.get(db, "sales_reports")) %>
+<% } %>
+</textarea>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="6"><%= mytext.display("config.ecommerce.orderadmin.sales.about.heading") %></th></tr>
+          <tr><td align="left" colspan="6"><%= mytext.display("config.ecommerce.orderadmin.sales.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<div id="Payment_Processing" class="Payment_Processing st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("config.ecommerce.payment.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.ecommerce.payment.intro") %></td>
+          </tr>
+<% for (int i=0; i<module.size(); i++) { %>
+<% if ((modulePaymentTitle.size()>i) && (modulePaymentOptions.size()>i) && (! modulePaymentTitle.get(i).equals(""))) { %>
+          <tr>
+	    <td width="20"><input type="radio" name="payment_provider" value="<%= modulePaymentTitle.get(i) %>"<% if (myconfig.get(db, "payment_provider").equals(modulePaymentTitle.get(i))) { %> checked<% } %>></td>
+	    <th class="WCMinnerContentInputName" align="left"><%= modulePaymentTitle.get(i) %></th>
+          </tr>
+          <tr>
+            <td width="20">&nbsp;</td>
+            <td class="WCMinnerContentInputName"><%= modulePaymentOptions.get(i) %></td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+<% } %>
+<% } %>
+        </table>
+        <br>
+</div></div>
+<div id="Product_Delivery" class="Product_Delivery st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="4"><%= mytext.display("config.ecommerce.delivery.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.userid") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+              <select id="productdelivery_username_default" name="productdelivery_username_default" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "productdelivery_username_default") %>"><%= myconfig.get(db, "productdelivery_username_default") %></option> &nbsp;
+                <option value="" <% if (myconfig.get(db, "productdelivery_username_default").equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= myuser.template_select_options(db, myconfig.get(db, "productdelivery_username_default")) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.username") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.delivery.username.min") %></td>
+            <td class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.delivery.username.max") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="5" name="productdelivery_username_min" value="<%= myconfig.get(db, "productdelivery_username_min") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="5" name="productdelivery_username_max" value="<%= myconfig.get(db, "productdelivery_username_max") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.username.blocked") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <textarea rows="5" cols="80" name="productdelivery_username_blocked"><%= html.encode(myconfig.get(db, "productdelivery_username_blocked")) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.username.prefix") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="text" size="20" name="productdelivery_username_prefix" value="<%= myconfig.get(db, "productdelivery_username_prefix") %>">
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "hosting")) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.hosting") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.delivery.hosting.min") %></td>
+            <td class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.delivery.hosting.max") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="5" name="productdelivery_hosting_min" value="<%= myconfig.get(db, "productdelivery_hosting_min") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="5" name="productdelivery_hosting_max" value="<%= myconfig.get(db, "productdelivery_hosting_max") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.hosting.blocked") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <textarea rows="5" cols="80" name="productdelivery_hosting_blocked"><%= html.encode(myconfig.get(db, "productdelivery_hosting_blocked")) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.hosting.prefix") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="text" size="20" name="productdelivery_hosting_prefix" value="<%= myconfig.get(db, "productdelivery_hosting_prefix") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.delivery.hosting.www") %></td>
+            <td class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.delivery.hosting.domain") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="20" name="productdelivery_hosting_www" value="<%= myconfig.get(db, "productdelivery_hosting_www") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="20" name="productdelivery_hosting_domain" value="<%= myconfig.get(db, "productdelivery_hosting_domain") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.hosting.database") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="text" size="80" name="productdelivery_hosting_database" value="<%= myconfig.get(db, "productdelivery_hosting_database") %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.domainnameregistration") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.delivery.domainnameregistration.username") %></td>
+            <td class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.ecommerce.delivery.domainnameregistration.password") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="20" name="productdelivery_domainnameregistration_username" value="<%= myconfig.get(db, "productdelivery_domainnameregistration_username") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="20" name="productdelivery_domainnameregistration_password" value="<%= myconfig.get(db, "productdelivery_domainnameregistration_password") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.ecommerce.delivery.domainnameregistration.url") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="text" size="80" id="productdelivery_domainnameregistration_url" name="productdelivery_domainnameregistration_url" value="<%= myconfig.get(db, "productdelivery_domainnameregistration_url") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="radio" name="productdelivery_domainnameregistration_url" value="http://resellertest.enom.com/" onclick="document.getElementById('productdelivery_domainnameregistration_url').value = this.value"> http://resellertest.enom.com/
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="radio" name="productdelivery_domainnameregistration_url" value="http://reseller.enom.com/" onclick="document.getElementById('productdelivery_domainnameregistration_url').value = this.value"> http://reseller.enom.com/
+            </td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+</div></div>
+<div id="Special_Pages" class="Special_Pages st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("config.ecommerce.special.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="3"><%= mytext.display("config.ecommerce.special.shopcartsummary.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.shopcartsummary.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_shopcartsummary_page" name="default_shopcartsummary_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_shopcartsummary_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_shopcartsummary_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_shopcartsummary_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.shopcartsummary.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_shopcartsummary_entry" name="default_shopcartsummary_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_shopcartsummary_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_shopcartsummary_entry")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_shopcartsummary_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.shopcart.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.shopcart.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_shopcart_page" name="default_shopcart_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_shopcart_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_shopcart_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_shopcart_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.shopcart.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_shopcart_entry" name="default_shopcart_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_shopcart_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_shopcart_entry")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_shopcart_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.checkout.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.checkout.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_checkout_page" name="default_checkout_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_checkout_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_checkout_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_checkout_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.checkout.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_checkout_entry" name="default_checkout_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_checkout_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_checkout_entry")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_checkout_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.confirm.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.confirm.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_confirm_page" name="default_confirm_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_confirm_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_confirm_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_confirm_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.confirm.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_confirm_entry" name="default_confirm_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_confirm_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_confirm_entry")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_confirm_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.complete.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.complete.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_complete_page" name="default_complete_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_complete_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_complete_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_complete_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.complete.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_complete_entry" name="default_complete_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_complete_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_complete_entry")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_complete_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.empty.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.empty.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_empty_page" name="default_empty_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_empty_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_empty_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_empty_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.confirmation.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.confirmation.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_confirmation_page" name="default_confirmation_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_confirmation_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_confirmation_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_confirmation_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.confirmation.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_confirmation_entry" name="default_confirmation_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_confirmation_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_confirmation_entry")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_confirmation_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.notification.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.notification.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_notification_page" name="default_notification_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_notification_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_notification_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_notification_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.notification.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_notification_entry" name="default_notification_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_notification_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_notification_entry")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_notification_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.ordertracking.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.ordertracking.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_ordertracking_page" name="default_ordertracking_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_ordertracking_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_ordertracking_page")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_ordertracking_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.ordertracking.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="default_ordertracking_entry" name="default_ordertracking_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_ordertracking_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_ordertracking_entry")) %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_ordertracking_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.payment.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.payment.success") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="payment_return_success" name="payment_return_success" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "payment_return_success") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "payment_return_success")) %></option>
+                <option value="/shopcart.jsp?complete"<% if ((myconfig.get(db, "payment_return_success").equals("/shopcart.asp?complete")) || (myconfig.get(db, "payment_return_success").equals("/shopcart.aspx?complete")) || (myconfig.get(db, "payment_return_success").equals("/shopcart.jsp?complete")) || (myconfig.get(db, "payment_return_success").equals("/shopcart.php?complete"))) { %> selected<% } %>><%= mytext.display("config.ecommerce.special.payment.success.shopcart") %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('payment_return_success', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.payment.cancel") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select id="payment_return_cancel" name="payment_return_cancel" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "payment_return_cancel") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "payment_return_cancel")) %></option>
+                <option value="/shopcart.jsp?checkout"<% if ((myconfig.get(db, "payment_return_cancel").equals("/shopcart.asp?checkout")) || (myconfig.get(db, "payment_return_cancel").equals("/shopcart.aspx?checkout")) || (myconfig.get(db, "payment_return_cancel").equals("/shopcart.jsp?checkout")) || (myconfig.get(db, "payment_return_cancel").equals("/shopcart.php?checkout"))) { %> selected<% } %>><%= mytext.display("config.ecommerce.special.payment.cancel.shopcart") %></option>
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('payment_return_cancel', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.special.printing.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.printing.products") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <nobr>
+                <select multiple size="5" id="print_products" name="print_products" style="width: 400px;">
+                  <option value="">&nbsp;</option>
+                  <%= mypage.select_options_ids(db, "", myconfig.get(db, "print_products").replaceAll(",", "|")) %>
+                </select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('print_products', '', '', '', '');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.special.printing.orders") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <nobr>
+                <select multiple size="5" id="print_orders" name="print_orders" style="width: 400px;">
+                  <option value="">&nbsp;</option>
+                  <%= mypage.select_options_ids(db, "", myconfig.get(db, "print_orders").replaceAll(",", "|")) %>
+                </select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('print_orders', '', '', '', '');">
+              </nobr>
+            </td>
+          </tr>
+        </table>
+</div></div>
+
+    </div>
+</div>
+
+<% } %>
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

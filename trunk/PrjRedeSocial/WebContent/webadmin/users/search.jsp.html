@@ -1,0 +1,399 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("users.index.title") %></title>
+<script type="text/javascript">
+
+function selectAll(myform) {
+	var myelements = new Array();
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id") {
+			if (! myform.elements[i].checked) myform.elements[i].click();
+			myform.elements[i].checked = true;
+		} else if (myform.elements[i].name == "dummy") {
+			if (! myform.elements[i].checked) myform.elements[i].click();
+			myform.elements[i].checked = true;
+			myelements[myelements.length] = myform.elements[i].value;
+		}
+	}
+	for (var i=0; i<myelements.length; i++) {
+		if (toggleCheckbox) toggleCheckbox( myelements[i], true );
+	}
+}
+
+function unselectAll(myform) {
+	var myelements = new Array();
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id") {
+			myform.elements[i].checked = false;
+		} else if (myform.elements[i].name == "dummy") {
+			myform.elements[i].checked = false;
+			myelements[myelements.length] = myform.elements[i].value;
+		}
+	}
+	for (var i=0; i<myelements.length; i++) {
+		if (toggleCheckbox) toggleCheckbox( myelements[i], false );
+	}
+}
+
+function selectedItems(myform) {
+	for (var i=0; i<myform.elements.length; i++) {
+		if ((myform.elements[i].name == "id") || (myform.elements[i].name == "dummy")) {
+			if ((myform.elements[i].type == "checkbox") && (myform.elements[i].checked)) {
+				return true;
+			}
+		}
+	}
+}
+
+function deleteSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "delete_multiple.jsp";
+	myform.submit();
+}
+
+function emailSelected(myform) {
+	myform.action = "../email/index.jsp";
+	myform.submit();
+}
+
+function moveSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "move_multiple.jsp";
+	myform.submit();
+}
+
+</script>
+
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+<%@ include file="livegrid.search.jsp" %>
+<% } %>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("users.index.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <div align="right">
+        <form method="GET" action="create.jsp">
+          <input type="hidden" name="redirect" value="<%= myrequest.getServletPath() + "?search=" + mysession.get("search").replaceAll("\"", "&quot;") %>">
+          <select name="id">
+            <% if ((mysession.get("username") != null) && (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+            <option value=""><%= mytext.display("blank") %>
+            <% } %>
+<%
+	while (userCreate.records(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+%>
+            <option value="<%= userCreate.getId() %>"><%= userCreate.getName() %> - <%= userCreate.getUsername() %> (<%= userCreate.getId() %>)</option>
+<%
+	}
+%>
+          </select>
+          <input type="submit" value="<%= mytext.display("addnew") %>">
+        </form>
+      </div>
+
+<form method="GET" action="search.jsp">
+<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+<tr>
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+<td valign="bottom" align="left">
+<a id="bookmark" style="margin-bottom:3px;font-size:12px;text-decoration:none;"></a>
+</td>
+<td valign="bottom" align="center">
+<span style="margin-bottom:3px;font-size:12px"><%= mytext.display("content.index.page") %></span>
+<a id="first" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.first") %></a> -
+<a id="back" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.back") %></a> -
+<span style="margin-bottom:3px;font-size:12px" id="pages"></span>
+- <a id="next" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.next") %></a>
+- <a id="last" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.last") %></a>
+</td>
+<% } %>
+<td valign="bottom" align="right">
+          <select name="pagesize" onChange="this.form.submit();">
+            <option value="all"<% if (! mysession.get("admin_pagesize").equals("")) { %> selected<% } %>><%= mytext.display("content.index.pagesize.all") %>
+            <option value=" "<% if (mysession.get("admin_pagesize").equals("")) { %> selected<% } %>><%= mytext.display("content.index.pagesize.auto") %>
+          </select>
+</td>
+</table>
+</form>
+
+<form id="userform" method="POST">
+<input type="hidden" name="redirect" value="<%= myrequest.getServletPath() + "?search=" + mysession.get("search").replaceAll("\"", "&quot;") %>">
+<div id="container" class="WCMindex">
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+      <table style="width: 92%;" class="fixedTable WCMindex" id="data_grid_header">
+<% } else { %>
+      <table style="width: 100%;" class="sortable" id="users">
+<% } %>
+        <tr class="WCMindex"> 
+<%
+	String myadminindex = adminuser.getIndexUser();
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "index_user");
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "use_adminindex");
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = "checkbox:25px class:50px group:50px type:50px name username id:25px view:50px update:50px delete:50px";
+	}
+	String[] columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " width: " + mycolumnwidth + ";";
+		}
+%>
+<% if (mycolumnname.equals("checkbox")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("class")) { %>
+          <% if (myconfig.get(db, "use_userclasses").equals("yes")) { %>
+          <th id="column_userclass" name="userclass" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("users.class") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("group")) { %>
+          <% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+          <th id="column_usergroup" name="usergroup" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("users.group") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("type")) { %>
+          <% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+          <th id="column_usertype" name="usertype" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("users.type") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("name")) { %>
+          <th id="column_user" name="user" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("users.name") %></th>
+<% } else if (mycolumnname.equals("organisation")) { %>
+          <th id="column_organisation" name="organisation" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("users.organisation") %></th>
+<% } else if (mycolumnname.equals("email")) { %>
+          <th id="column_email" name="email" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("users.email") %></th>
+<% } else if (mycolumnname.equals("username")) { %>
+          <th id="column_username" name="username" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("users.username") %></th>
+<% } else if (mycolumnname.equals("id")) { %>
+          <th id="column_id" name="id" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("users.id") %></th>
+<% } else if (mycolumnname.equals("view")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("update")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("create")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+if (! mysession.get("admin_pagesize").equals("")) {
+	while (userEdit.records(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+%>
+        <tr class="WCMindex" onMouseOver="this.className='WCMindex_highlight'" onMouseOut="this.className='WCMindex'"> 
+<%
+	columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+		}
+%>
+<% if (mycolumnname.equals("checkbox")) { %>
+          <td class="WCMindex"><input type="checkbox" name="id" value="<%= userEdit.getId() %>"></td>
+<% } else if (mycolumnname.equals("class")) { %>
+          <% if (myconfig.get(db, "use_userclasses").equals("yes")) { %>
+          <td class="WCMindex">
+            <%= userEdit.getUserclass() %><% if (userEdit.getPassword().equals("")) { %><% if (! userEdit.getUserclass().equals("")) { %><br><% } %><%= mytext.display("users.class.template") %><% } %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("group")) { %>
+          <% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+          <td class="WCMindex">
+            <%= userEdit.getUsergroup() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("type")) { %>
+          <% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+          <td class="WCMindex">
+            <%= userEdit.getUsertype() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("name")) { %>
+          <td class="WCMindex">
+            <%= userEdit.getName() %>
+          </td>
+<% } else if (mycolumnname.equals("organisation")) { %>
+          <td class="WCMindex">
+            <%= userEdit.getOrganisation() %>
+          </td>
+<% } else if (mycolumnname.equals("email")) { %>
+          <td class="WCMindex">
+            <%= userEdit.getEmail() %>
+          </td>
+<% } else if (mycolumnname.equals("username")) { %>
+          <td class="WCMindex">
+            <%= userEdit.getUsername() %>
+          </td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td class="WCMindex"><%= userEdit.getId() %></td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (userEdit.getUser()) { %><a href="view.jsp?id=<%= userEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("view") %></a><% } %> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (userEdit.getEditor()) { %><a href="update.jsp?id=<%= userEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("update") %></a><% } %> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("create")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (userEdit.getCreator()) { %><a href="create.jsp?id=<%= userEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a><% } %> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td class="WCMindex">
+            <% if (userEdit.getLocked() == 0) { %>
+            <div align="center"><% if (userEdit.getPublisher()) { %><a href="delete.jsp?id=<%= userEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("delete") %></a><% } %> 
+            </div>
+            <% } %>
+          </td>
+<% } else { %>
+          <td class="WCMindex">
+            <div align="center"><a href="<%= mycolumnhref + userEdit.getId() %>&<%= Math.random() %>"><%= mycolumnname %></a></div>
+          </td>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	}
+}
+%>
+      </table>
+<div>&nbsp;</div>
+<input type="button" value="<%= mytext.display("selectall") %>" onClick="selectAll(this.form)">
+&nbsp;
+<input type="button" value="<%= mytext.display("unselectall") %>" onClick="unselectAll(this.form)">
+&nbsp;
+<input type="button" value="<%= mytext.display("deleteselected") %>" onClick="deleteSelected(this.form)">
+<% if (License.valid(db, myconfig, "community")) { %>
+&nbsp;
+<input type="button" value="<%= mytext.display("email.emailselected") %>" onClick="emailSelected(this.form)">
+<% } %>
+<% if ((myconfig.get(db, "use_usergroups").equals("yes")) || (myconfig.get(db, "use_usertypes").equals("yes"))) { %>
+	&nbsp;
+	<nobr>
+	<input type="button" value="<%= mytext.display("moveselected") %>" onClick="moveSelected(this.form)">
+	<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+          	<%= mytext.display("users.categories.group") %>
+		<select name="usergroup">
+		<option value="">
+		<option value=" "><%= mytext.display("none") %>
+                <%= HardCore.Common.select_options(db, "usergroups", "usergroup", mysession.get("admin_usergroup")) %> 
+		</select>
+	<% } %>
+	<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+          	<%= mytext.display("users.categories.type") %>
+		<select name="usertype">
+		<option value="">
+		<option value=" "><%= mytext.display("none") %>
+                <%= HardCore.Common.select_options(db, "usertypes", "usertype", mysession.get("admin_usertype")) %> 
+		</select>
+	<% } %>
+	</nobr>
+<% } %>
+</div>
+</form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

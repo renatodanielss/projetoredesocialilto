@@ -1,0 +1,157 @@
+	<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script"))) { %>
+
+<div id="Advanced Scripting" class="Advanced_Scripting st_view"><div class="st_view_inner">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.advancedscripting.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left"><%= mytext.display("content.advancedscripting.intro") %></td></tr>
+
+		<% if (mypage.getDeveloper()) { %>
+			<% if ((myconfig.get(db, "use_advancedscripting").equals("yes")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link"))) { %>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.advancedscripting.scripts") %></th></tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" colspan="2">
+				<nobr>
+					<input type="hidden" id="scriptsinput" name="scripts" value="<%= mypage.getScripts() %>">
+					<select multiple id="scripts" name="selectscripts" style="width: 600px;" onChange="changeScripts(this)">
+						<option value=""> &nbsp; </option>
+				<%
+				String[] myscripts = mypage.getScripts().split(",");
+				HashMap myselectedscript = new HashMap();
+				for (int i=0; i<myscripts.length; i++) {
+					String myscript = "" + myscripts[i];
+					myselectedscript.put(myscript, myscript);
+				}
+				%>
+				<%
+				for (int i=0; i<myscripts.length; i++) {
+					String myscript = "" + myscripts[i];
+					if (! myscript.equals("")) {
+
+						%><option value="<%= myscript %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myscript) %></option> &nbsp;<%
+
+					}
+				}
+				%>
+					</select>
+					<input type="button" id="select_scripts" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scripts', 'Scripts', '', 'Scripts', 'script');">
+				</nobr>
+			</td>
+		</tr>
+
+				<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template"))) { %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.website.specialsettings.doctype") %></th>
+		</tr>
+		<tr> 
+			<td class="WCMinnerContentInputValue" valign="top" colspan="4"> 
+				<textarea name="doctype" rows="2" cols="100" wrap="off" style="width: 100%;"><%= html.encode(mypage.getDocType()) %></textarea>
+			</td>
+		</tr>
+		<tr> 
+			<td class="WCMinnerContentInputValue" valign="top" colspan="4"> 
+				<nobr>
+					<input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("")) { %> checked<% } %> onclick="this.form.doctype.value=''"> <%= mytext.display("default") %>
+				</nobr>
+				<nobr>
+					<input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;>'"> HTML 4.01 Transitional
+				</nobr>
+				<nobr>
+					<input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;http://www.w3.org/TR/html4/strict.dtd&quot;>'"> HTML 4.01 Strict
+				</nobr>
+				<nobr>
+					<input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;>'"> XHTML 1.0 Transitional
+				</nobr>
+				<nobr>
+					<input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;>'"> XHTML 1.0 Strict
+				</nobr>
+				<nobr>
+					<input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;>'"> XHTML 1.1
+				</nobr>
+				<nobr>
+					<input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE html>")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html>'"> HTML 5
+				</nobr>
+			</td>
+		</tr>
+
+				<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlattributes") %></th></tr>
+		<tr><td class="WCMinnerContentInputValue"><input type="text" size="100" maxlength="250" style="width: 100%;" name="htmlattributes" value="<%= html.encode(mypage.getHtmlAttributes()) %>"></td></tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlheader") %></th></tr>
+		<tr><td class="WCMinnerContentInputValue"><textarea cols="80" rows="25" wrap="off" style="width: 100%;" name="htmlheader">
+<%= html.encode(mypage.getHtmlHeader()) %></textarea></td></tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlbodyonload") %></th></tr>
+		<tr><td class="WCMinnerContentInputValue"><input type="text" size="80" style="width: 100%;" name="htmlbodyonload" value="<%= mypage.getHtmlBodyOnload().replaceAll("\"", "&quot;") %>"></td></tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.advancedscripting.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.advancedscripting.enableconfig") %><% } else { %><%= mytext.display("content.advancedscripting.enablesuperadmin") %><% } %></td></tr>
+
+			<% } %>
+		<% } else { %>
+			<% if ((myconfig.get(db, "use_advancedscripting").equals("yes")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link"))) { %>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.advancedscripting.scripts") %></th></tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" colspan="2">
+
+				<%
+				String[] myscripts = mypage.getScripts().split(",");
+				for (int i=0; i<myscripts.length; i++) {
+					String myscript = "" + myscripts[i];
+					if (! myscript.equals("")) {
+
+				%><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myscript) %> &nbsp;<br><%
+
+					}
+				}
+				%>
+
+			</td>
+		</tr>
+
+				<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template"))) { %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.website.specialsettings.doctype") %></th>
+		</tr>
+		<tr> 
+			<td class="WCMinnerContentInputValue" valign="top" colspan="4"> 
+				<%= html.encode(mypage.getDocType()).replaceAll("\r\n", "\n").replaceAll("\r", "\n").replaceAll("\n", "<BR>") %> &nbsp;
+			</td>
+		</tr>
+
+				<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlattributes") %></th></tr>
+		<tr><td class="WCMinnerContentInputValue"><%= html.encode(mypage.getHtmlAttributes()) %>&nbsp;</td></tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlheader") %></th></tr>
+		<tr><td class="WCMinnerContentInputValue"><%= html.encode(mypage.getHtmlHeader()).replaceAll("\r\n", "\n").replaceAll("\r", "\n").replaceAll("\n", "<BR>") %>&nbsp;</td></tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlbodyonload") %></th></tr>
+		<tr><td class="WCMinnerContentInputValue"><%= html.encode(mypage.getHtmlBodyOnload()).replaceAll("\r\n", "\n").replaceAll("\r", "\n").replaceAll("\n", "<BR>") %>&nbsp;</td></tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.advancedscripting.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.advancedscripting.enableconfig") %><% } else { %><%= mytext.display("content.advancedscripting.enablesuperadmin") %><% } %></td></tr>
+
+			<% } %>
+		<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.advancedscripting.about.heading") %></th></tr>
+		<tr><td align="left" colspan="4"><%= mytext.display("content.advancedscripting.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>
+
+	<% } %>

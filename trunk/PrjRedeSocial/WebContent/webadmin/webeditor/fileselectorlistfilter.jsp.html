@@ -1,0 +1,233 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<script type="text/javascript" src="../ajax.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/webadmin/webadmin.css"> 
+<link rel="stylesheet" type="text/css" href="/webadmin/dtree.css">
+<link rel="stylesheet" type="text/css" href="/webadmin/jquery/css/layout-default.css">
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/json/json2.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-1.8.2.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery.cookie.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery.hotkeys.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jstree/jquery.jstree.js"></script>
+
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('fileselectorlistfilter_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+callback = requestParameter("callback");
+
+function initMenu(rootid) {
+	if (typeof($) != 'function') return;
+	if (! $(rootid)) return;
+
+	var ajaxurl = 'fileselectorlistfilter.jsp?';
+
+	$(rootid).bind("click.jstree", function (e) {
+		var targetnode = false;
+		if (e && e.target && e.target.nodeName) targetnode = e.target;
+		var parentnode = false;
+		if (e && e.target && e.target.parentNode && e.target.parentNode.nodeName) parentnode = e.target.parentNode;
+		if (((targetnode.nodeName == "NOBR")) && (targetnode.parentNode)) targetnode = targetnode.parentNode;
+		if (((parentnode.nodeName == "A") || (parentnode.nodeName == "NOBR")) && (parentnode.parentNode)) parentnode = parentnode.parentNode;
+		if (parentnode && parentnode.id && targetnode && (targetnode.nodeName == "A")) {
+			$(rootid).jstree('open_node', "#" + parentnode.id);
+		}
+		if (targetnode && (targetnode.nodeName == "A") && targetnode.href) {
+			eval(targetnode.href);
+		}
+	});
+
+	var myjstree = $(rootid).jstree({
+		core : {
+//			initially_open : [ initially_open_ids ]
+		},
+		themes : {
+			dots : true,
+			icons : true,
+			theme : 'wcm'
+		},
+		html_data : {
+			data : $(rootid).html(),
+			ajax : {
+				url : ajaxurl,
+				data : function (n) { 
+					return { path : n.attr ? n.attr("name") : "/", menuitem : n.attr ? n.attr("id") : "menuitem" };
+				},
+				correct_state : true
+			}
+		},
+		ui : {
+			select_multiple_modifier : 'off',
+			selected_parent_close : false
+		},
+		"types" : {
+			"max_depth" : -2,
+			"max_children" : -2,
+			"valid_children" : [ "root", "folder" ],
+			"types" : {
+				"default" : {
+					"valid_children" : "none",
+					"select_node" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/page.gif"
+					}
+				},
+				"root" : {
+					"valid_children" : [ "default", "folder", "pagefolder", "page" ],
+					"start_drag" : false,
+					"move_node" : false,
+					"delete_node" : false,
+					"remove" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/base.gif"
+					}
+				},
+				"folder" : {
+					"valid_children" : [ "default", "folder", "pagefolder", "page" ],
+					"select_node" : true,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/folder.gif"
+					}
+				},
+				"pagefolder" : {
+					"valid_children" : [ "default", "folder", "pagefolder", "page" ],
+					"select_node" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/imgfolder.gif"
+					}
+				},
+				"page" : {
+					"valid_children" : "none",
+					"select_node" : false,
+					"open_node" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/page.gif"
+					}
+				}
+			}
+		},
+		plugins : [ 'themes', 'html_data', 'ui', 'types' ]
+	});
+
+	var initially_open_ids = rootid ? $(rootid).find(".initopen").map(function() { return "" + this.id }).toArray() : [ '0' ];
+	var initially_closed_ids = rootid ? $(rootid).find(".initclosed").map(function() { return "" + this.id }).toArray() : [ ];
+	var open_ids = rootid ? $(rootid).find(".jstree-open").map(function() { return "" + this.id }).toArray() : [ ];
+	if ((! open_ids.length) || (rootid == "configMenu")) {
+		for (var i=0; i<initially_open_ids.length; i++) {
+			try {
+				if ($("#"+initially_open_ids[i]).find("ul").size()) $(rootid).jstree('open_node', "#"+initially_open_ids[i], { call: function() { if (DEBUG) console.debug("INITMENU:CALLBACK2:"); mycookiefunction(mycookieids, mycookiefunction,"FROMCALLBACK2"); } } );
+			} catch (e) {
+			}
+		}
+		for (var i=0; i<initially_closed_ids.length; i++) {
+			try {
+				if ($("#"+initially_closed_ids[i]).find("ul").size()) $(rootid).jstree('close_node', "#"+initially_closed_ids[i]);
+			} catch (e) {
+			}
+		}
+	}
+
+}
+
+function openit(section,category,title) {
+<% if ((! upload_path.equals("")) && (enable_upload.equals("yes"))) { %>
+	if (category == '') {
+		if (document.getElementById) {
+			if (document.getElementById('create')) document.getElementById('create').href = 'fileselectorcategory.jsp?action=Create&section='+escape(section)+'&category='+escape(category)+'&title='+encodeURIComponent(title)+'&editor=' + editor + '&callback=' + callback;
+			if (document.getElementById('update')) document.getElementById('update').href = 'javascript:alert(\'' + HtmlDecode(Text('fileselectorlistfilter_updatecategory')) + '\');';
+			if (document.getElementById('delete')) document.getElementById('delete').href = 'javascript:alert(\'' + HtmlDecode(Text('fileselectorlistfilter_deletecategory')) + '\');';
+		} else if (document.all) {
+			if (document.all['create']) document.all['create'].href = 'fileselectorcategory.jsp?action=Create&section='+escape(section)+'&category='+escape(category)+'&title='+encodeURIComponent(title)+'&editor=' + editor + '&callback=' + callback;
+			if (document.all['update']) document.all['update'].href = 'javascript:alert(\'' + HtmlDecode(Text('fileselectorlistfilter_updatecategory')) + '\');';
+			if (document.all['delete']) document.all['delete'].href = 'javascript:alert(\'' + HtmlDecode(Text('fileselectorlistfilter_deletecategory')) + '\');';
+		}
+	} else {
+		if (document.getElementById) {
+			if (document.getElementById('create')) document.getElementById('create').href = 'fileselectorcategory.jsp?action=Create&section='+escape(section)+'&category='+escape(category)+'&title='+encodeURIComponent(title)+'&editor=' + editor + '&callback=' + callback;
+			if (title != '') {
+				if (document.getElementById('update')) document.getElementById('update').href = 'fileselectorcategory.jsp?action=Update&section='+escape(section)+'&category='+escape(category)+'&title='+encodeURIComponent(title)+'&editor=' + editor + '&callback=' + callback;
+				if (document.getElementById('delete')) document.getElementById('delete').href = 'fileselectorcategory.jsp?action=Delete&section='+escape(section)+'&category='+escape(category)+'&title='+encodeURIComponent(title)+'&editor=' + editor + '&callback=' + callback;
+			} else {
+				if (document.getElementById('update')) document.getElementById('update').href = 'javascript:alert(\'' + HtmlDecode(Text('fileselectorlistfilter_updatecategory')) + '\');';
+				if (document.getElementById('delete')) document.getElementById('delete').href = 'javascript:alert(\'' + HtmlDecode(Text('fileselectorlistfilter_deletecategory')) + '\');';
+			}
+		} else if (document.all) {
+			if (document.all['create']) document.all['create'].href = 'fileselectorcategory.jsp?action=Create&section='+escape(section)+'&category='+escape(category)+'&title='+encodeURIComponent(title)+'&editor=' + editor + '&callback=' + callback;
+			if (title != '') {
+				if (document.all['update']) document.all['update'].href = 'fileselectorcategory.jsp?action=Update&section='+escape(section)+'&category='+escape(category)+'&title='+encodeURIComponent(title)+'&editor=' + editor + '&callback=' + callback;
+				if (document.all['delete']) document.all['delete'].href = 'fileselectorcategory.jsp?action=Delete&section='+escape(section)+'&category='+escape(category)+'&title='+encodeURIComponent(title)+'&editor=' + editor + '&callback=' + callback;
+			} else {
+				if (document.all['update']) document.all['update'].href = 'javascript:alert(\'' + HtmlDecode(Text('fileselectorlistfilter_updatecategory')) + '\');';
+				if (document.all['delete']) document.all['delete'].href = 'javascript:alert(\'' + HtmlDecode(Text('fileselectorlistfilter_deletecategory')) + '\');';
+			}
+		}
+	}
+<% } %>
+	parent.ready_section = section;
+	parent.ready_category = category;
+	parent.ready_title = title;
+	if (parent.fileselectorlist && parent.fileselectorlist.fileselectorlistMenu) parent.fileselectorlist.fileselectorlistMenu.clearCookie();
+	if (parent.fileselectorlist && parent.fileselectorlist.location) parent.fileselectorlist.location.href = 'fileselectorlist.jsp?editor=' + editor + '&callback=' + callback + '&section='+section+'&category='+category+'&title='+encodeURIComponent(title);
+	href = "<%= pages_path %>" + category;
+	parent.tag["href"] = href;
+	if (parent.fileselectorinsert && parent.fileselectorinsert.location) parent.fileselectorinsert.location.href = 'fileselectorinsert.jsp?editor=' + editor + '&callback=' + callback + '&title=' + encodeURIComponent(title) + '&href='+encodeURIComponent(href);
+}
+
+</script>
+</head>
+<body onload="initMenu('#folderMenu'); parent.fileselectorlistfilter_ready();">
+<div class="dtree">
+<!--
+<% if ((! upload_path.equals("")) && (enable_upload.equals("yes"))) { %>
+	<a id="create" target="fileselectorinsert" href="javascript:alert(HtmlDecode(Text('fileselectorlistfilter_createcategory')));"><img alt="" src="dtree/folder.gif"><script type="text/javascript">document.write(Text('fileselectorlistfilter_create'));</script></a>
+	<a id="update" target="fileselectorinsert" href="javascript:alert(HtmlDecode(Text('fileselectorlistfilter_updatecategory')));"><img alt="" src="dtree/folder.gif"><script type="text/javascript">document.write(Text('fileselectorlistfilter_update'));</script></a>
+	<a id="delete" target="fileselectorinsert" href="javascript:alert(HtmlDecode(Text('fileselectorlistfilter_deletecategory')));"><img alt="" src="dtree/trash.gif"><script type="text/javascript">document.write(Text('fileselectorlistfilter_delete'));</script></a>
+<% } else { %>
+	<a id="create" target="fileselectorinsert" href="javascript:alert(HtmlDecode(Text('disabled')));"><img alt="" src="dtree/folder.gif"><script type="text/javascript">document.write(Text('fileselectorlistfilter_create'));</script></a>
+	<a id="update" target="fileselectorinsert" href="javascript:alert(HtmlDecode(Text('disabled')));"><img alt="" src="dtree/folder.gif"><script type="text/javascript">document.write(Text('fileselectorlistfilter_update'));</script></a>
+	<a id="delete" target="fileselectorinsert" href="javascript:alert(HtmlDecode(Text('disabled')));"><img alt="" src="dtree/trash.gif"><script type="text/javascript">document.write(Text('fileselectorlistfilter_delete'));</script></a>
+<% } %>
+-->
+</div>
+<hr>
+<div id="folderMenu" class="dtree">
+	<ul>
+		<script>document.write('<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_folders"><a href="#">'+Text('fileselectorlistfilter_folders')+'</a>');</script>
+<% if (files != null) { %>
+	<%= folderMenu(root_path, hidden_paths, pages_path, files, "menu_folders", "/", "Files") %>
+<% } else { %>
+		<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_pages"><a href="javascript:openit('Pages','page',Text('fileselectorlistfilter_pages'))"><script>document.write(Text('fileselectorlistfilter_pages'));</script></a></li>
+		<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_images"><a href="javascript:openit('Images','image',Text('fileselectorlistfilter_images'))"><script>document.write(Text('fileselectorlistfilter_images'));</script></a></li>
+		<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_files"><a href="javascript:openit('Files','file',Text('fileselectorlistfilter_files'))"><script>document.write(Text('fileselectorlistfilter_files'));</script></a></li>
+		<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_links"><a href="javascript:openit('Links','link',Text('fileselectorlistfilter_links'))"><script>document.write(Text('fileselectorlistfilter_links'));</script></a></li>
+<% } %>
+		</li>
+	</ul>
+</div>
+</body>
+</html>

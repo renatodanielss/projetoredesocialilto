@@ -1,0 +1,149 @@
+<%
+	content = new Content();
+	content.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, SQL);
+	while (content.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		if (! content.getUser()) {
+			// ignore
+		} else if (content.getMenuitem().equals("no")) {
+			// ignore
+		} else {
+			pageordered.put("" + content.getId(), "" + html.encodeHtmlEntities(content.getTitle()));
+			pagetitle.put("" + content.getId(), "" + html.encodeHtmlEntities(content.getTitle()));
+			pagecontentclass.put("" + content.getId(), "" + content.getContentClass());
+			pageversion.put("" + content.getId(), "" + content.getVersion());
+			pageversionmaster.put("" + content.getId(), "" + content.getVersionMaster());
+			pagedevice.put("" + content.getId(), "" + content.getDevice());
+			pagetop.put("" + content.getId(), "" + content.getPageTop());
+			pageup.put("" + content.getId(), "" + content.getPageUp());
+			pagefirst.put("" + content.getId(), "" + content.getPageFirst());
+			pagelast.put("" + content.getId(), "" + content.getPageLast());
+			pageimage1.put("" + content.getId(), "" + content.getImage1());
+			pageimage2.put("" + content.getId(), "" + content.getImage2());
+			pageimage3.put("" + content.getId(), "" + content.getImage3());
+			pagefile1.put("" + content.getId(), "" + content.getFile1());
+			pagefile2.put("" + content.getId(), "" + content.getFile2());
+			pagefile3.put("" + content.getId(), "" + content.getFile3());
+			pagelink1.put("" + content.getId(), "" + content.getLink1());
+			pagelink2.put("" + content.getId(), "" + content.getLink2());
+			pagelink3.put("" + content.getId(), "" + content.getLink3());
+			pagefilename.put("" + content.getId(), "" + content.getServerFilename());
+			if (! pageversion.get("" + content.getId()).equals("")) {
+				pagetitle.put("" + content.getId(), "" + pagetitle.get("" + content.getId()) + html.encodeHtmlEntities(" (" + pageversion.get("" + content.getId()) + ")"));
+			}
+			if (! pagedevice.get("" + content.getId()).equals("")) {
+				pagetitle.put("" + content.getId(), "" + pagetitle.get("" + content.getId()) + html.encodeHtmlEntities(" (" + pagedevice.get("" + content.getId()) + ")"));
+			}
+		}
+		if ((content.getPagePrevious() != null) && (! content.getPagePrevious().equals("")) && (! content.getPagePrevious().equals("0"))) {
+			pageprevious.put("" + content.getId(), "" + content.getPagePrevious());
+			pagenext.put("" + content.getPagePrevious(), "" + content.getId());
+//		} else if (isTopFirst) {
+//			pagenext.put("" + id, "" + content.getId());
+//			pageprevious.put("" + content.getId(), "" + id);
+		}
+		if ((pageprevious.get("" + content.getId()) != null) && (pageprevious.get("" + content.getId()).equals(id))) {
+			pageprevious.put("" + content.getId(), null);
+		}
+		if ((content.getPageNext() != null) && (! content.getPageNext().equals("")) && (content.getPageNext().equals("0"))) {
+			pagenext.put("" + content.getId(), "" + content.getPageNext());
+			pageprevious.put("" + content.getPageNext(), "" + content.getId());
+		}
+		myrelations = " orphannode page";
+		if (! content.getPageTop().equals("")) myrelations += " page_top_" + content.getPageTop();
+		if (! content.getPageUp().equals("")) myrelations += " page_up_" + content.getPageUp();
+		if (! content.getPageFirst().equals("")) myrelations += " page_first_" + content.getPageFirst();
+		if (! content.getPagePrevious().equals("")) myrelations += " page_previous_" + content.getPagePrevious();
+		if (! content.getPageNext().equals("")) myrelations += " page_next_" + content.getPageNext();
+		if (! content.getPageLast().equals("")) myrelations += " page_last_" + content.getPageLast();
+		pagetype.put("" + content.getId(), "page");
+		if (descendents >= 0) descendents = db.query_value("select count(*) from content where (page_up='" + content.getId() + "') or ((page_top='" + content.getId() + "') and (" + SQLorphans +"))");
+		if (descendents > 0) {
+			myrelations += " jstree-closed";
+			pagetype.put("" + content.getId(), "pagefolder");
+		}
+		if (descendents >= 0) {
+			if (select_page_tops) {
+				descendents = db.query_value("select count(*) from content where page_top='" + content.getId() + "'");
+				if (descendents > 0) {
+					myrelations += " page_top";
+				}
+			}
+		}
+		pagerelations.put("" + content.getId(), myrelations);
+	}
+
+	// order pages
+	String[] pagetitles = (String[])pageordered.keySet().toArray(new String[0]);
+	int menuindex = 0;
+	for (int i=0; i<pagetitles.length; i++) {
+		myid = "" + pagetitles[i];
+		myselected = "";
+		String title = "";
+		if (pageordered.get(myid) != null) title = "" + pageordered.get(myid);
+		if ((! title.equals("")) && (pageprevious.get(myid) == null)) {
+			while ((! myid.equals("")) && (! myid.equals("0")) && (! title.equals(""))) {
+				if ((""+pagerelations.get(myid)).endsWith(" page_top")) {
+					myselected = "jstree-clicked";
+				} else {
+					myselected = "";
+				}
+%>
+<li class="<%= pagerelations.get(myid) %>" rel="<%= pagetype.get(myid) %>" id="content_<%= myid %>"><a class="<%= myselected %>" href="#" title="<%= pagetitle.get(myid) %> (<%= myid %>)"><%= pagetitle.get(myid) %> (<%= myid %>)</a>
+</li>
+<%
+				children.put("" + myid, "" + myid);
+				pageordered.put(myid, "");
+				if (pagenext.get(myid) != null) {
+					myid = "" + pagenext.get(myid);
+				} else {
+					myid = "";
+				}
+				while ((! myid.equals("")) && (pageordered.get(myid) == null)) {
+					if (pagenext.get(myid) != null) {
+						myid = "" + pagenext.get(myid);
+					} else {
+						myid = "";
+					}
+				}
+				title = "";
+				if (pageordered.get(myid) != null) title = "" + pageordered.get(myid);
+			}
+		}
+	}
+	// left-over unordered pages
+	for (int i=0; i<pagetitles.length; i++) {
+		myid = "" + pagetitles[i];
+		myselected = "";
+		String title = "";
+		if (pageordered.get(myid) != null) title = "" + pageordered.get(myid);
+		if (! title.equals("")) {
+			while ((! myid.equals("")) && (! myid.equals("0")) && (! title.equals(""))) {
+				if ((""+pagerelations.get(myid)).endsWith(" page_top")) {
+					myselected = "jstree-clicked";
+				} else {
+					myselected = "";
+				}
+%>
+<li class="<%= pagerelations.get(myid) %>" rel="<%= pagetype.get(myid) %>" id="content_<%= myid %>"><a class="<%= myselected %>" href="#" title="<%= pagetitle.get(myid) %> (<%= myid %>)"><%= pagetitle.get(myid) %> (<%= myid %>)</a>
+</li>
+<%
+				children.put("" + myid, "" + myid);
+				pageordered.put(myid, "");
+				if (pagenext.get(myid) != null) {
+					myid = "" + pagenext.get(myid);
+				} else {
+					myid = "";
+				}
+				while ((! myid.equals("")) && (pageordered.get(myid) == null)) {
+					if (pagenext.get(myid) != null) {
+						myid = "" + pagenext.get(myid);
+					} else {
+						myid = "";
+					}
+				}
+				title = "";
+				if (pageordered.get(myid) != null) title = "" + pageordered.get(myid);
+			}
+		}
+	}
+%>

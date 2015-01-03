@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="workflow">
+  <row>
+   <column name="id" value="1" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Keep private" />
+   <column name="fromstate" value="" />
+   <column name="tostate" value="@@@import:editorstate@@@" />
+   <column name="usertype" value="@@@import:editorusertype@@@" />
+   <column name="usergroup" value="@@@import:editorusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+  <row>
+   <column name="id" value="2" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Request approval and publishing" />
+   <column name="fromstate" value="" />
+   <column name="tostate" value="@@@import:managerstate@@@" />
+   <column name="usertype" value="@@@import:editorusertype@@@" />
+   <column name="usergroup" value="@@@import:editorusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+  <row>
+   <column name="id" value="3" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Request approval and publishing" />
+   <column name="fromstate" value="@@@import:editorstate@@@" />
+   <column name="tostate" value="@@@import:managerstate@@@" />
+   <column name="usertype" value="@@@import:editorusertype@@@" />
+   <column name="usergroup" value="@@@import:editorusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+  <row>
+   <column name="id" value="4" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Reject publishing" />
+   <column name="fromstate" value="@@@import:managerstate@@@" />
+   <column name="tostate" value="@@@import:editorstate@@@" />
+   <column name="usertype" value="@@@import:managerusertype@@@" />
+   <column name="usergroup" value="@@@import:managerusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+  <row>
+   <column name="id" value="5" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Approve publishing" />
+   <column name="fromstate" value="@@@import:managerstate@@@" />
+   <column name="tostate" value="@@@import:approvalstate@@@" />
+   <column name="usertype" value="@@@import:managerusertype@@@" />
+   <column name="usergroup" value="@@@import:managerusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+  <row>
+   <column name="id" value="6" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Approve publishing" />
+   <column name="fromstate" value="@@@import:approvalstate@@@" />
+   <column name="tostate" value="@@@import:publisherstate@@@" />
+   <column name="usertype" value="@@@import:approvalusertype@@@" />
+   <column name="usergroup" value="@@@import:approvalusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+  <row>
+   <column name="id" value="7" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Reject publishing" />
+   <column name="fromstate" value="@@@import:approvalstate@@@" />
+   <column name="tostate" value="@@@import:managerstate@@@" />
+   <column name="usertype" value="@@@import:approvalusertype@@@" />
+   <column name="usergroup" value="@@@import:approvalusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+  <row>
+   <column name="id" value="8" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Reject publishing" />
+   <column name="fromstate" value="@@@import:publisherstate@@@" />
+   <column name="tostate" value="@@@import:approvalstate@@@" />
+   <column name="usertype" value="@@@import:publisherusertype@@@" />
+   <column name="usergroup" value="@@@import:publisherusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+  <row>
+   <column name="id" value="9" />
+   <column name="title" value="@@@import:workflow@@@" />
+   <column name="action" value="Approve publishing" />
+   <column name="fromstate" value="@@@import:publisherstate@@@" />
+   <column name="tostate" value="" />
+   <column name="usertype" value="@@@import:publisherusertype@@@" />
+   <column name="usergroup" value="@@@import:publisherusergroup@@@" />
+   <column name="contentclass" value="" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="version" value="" />
+   <column name="notify_email" value="" />
+   <column name="contentchanges" value="" />
+  </row>
+ </table>
+ <table name="config">
+  <row>
+   <column name="configname" value="use_workflow" />
+   <column name="configvalue" value="yes" />
+  </row>
+ </table>
+</database>

@@ -1,0 +1,46 @@
+<%= dataHeader(db, myconfig, mytext, mysession, adminuser, column_name) %>
+<%
+	StringBuilder sbworkflowoptions = new StringBuilder();
+	while (mypage.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		if (mypage.getAdministrator()) {
+			administrator = true;
+		}
+		if (myworkflows) {
+			if ((! mypage.getStatus().equals("")) && (myconfig.get(db, "use_workflow").equals("yes")) && (! mypage.getAdministrator()) && (! workflow.permissions(db, mypage.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), (mypage.getStatusBy().equals(mysession.get("username")))))) {
+				if ((! mypage.getCreatedBy().equals(mysession.get("username"))) && (! mypage.getUpdatedBy().equals(mysession.get("username")))) {
+					mypage.setUser(false);
+				}
+				if (myconfig.get(db, "webadmin_workspace_workflow_noactions").equals("hide")) {
+					String myworkflowoptions = workflow.workflow_action_select_options(db, mypage.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), mypage.getAdministrator(), (mypage.getStatusBy().equals(mysession.get("username"))));
+					if (myworkflowoptions.equals("")) {
+						mypage.setUser(false);
+					}
+				}
+				mypage.setEditor(false);
+				mypage.setPublisher(false);
+			}
+		} else {
+			if ((myconfig.get(db, "use_workflow").equals("yes")) && (! mypage.getAdministrator()) && (! workflow.permissions(db, mypage.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), (mypage.getStatusBy().equals(mysession.get("username")))))) {
+				mypage.setUser(false);
+				mypage.setEditor(false);
+				mypage.setPublisher(false);
+			}
+// QQQ ignore workflow content items? - will be listed under workflow
+			if ((! mypage.getStatus().equals("")) && (myconfig.get(db, "use_workflow").equals("yes"))) {
+//				mypage.setUser(false);
+			}
+		}
+		if (mypage.getUser()) {
+			if (mypage.getCheckoutPermissions(mysession.get("username"), db, myconfig)) {
+				String myworkflowoptions = workflow.workflow_action_select_options(db, mypage.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), mypage.getAdministrator(), (mypage.getStatusBy().equals(mysession.get("username"))));
+				sbworkflowoptions.append("workflowoptions[" + mypage.getId() + "] = '" + myworkflowoptions.replaceAll("\\r","\\\\r").replaceAll("\\n","\\\\n") + "';" + "\r\n");
+			} else {
+				sbworkflowoptions.append(workflowoptions += "workflowoptions[" + mypage.getId() + "] = '';" + "\r\n");
+			}
+%>
+<%= dataBody(db, myconfig, mytext, mysession, adminuser, mypage) %>
+<%
+		}
+	}
+	workflowoptions += sbworkflowoptions.toString();
+%>

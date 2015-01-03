@@ -1,0 +1,423 @@
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Management System">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('medialistfilter_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+
+function openit(section,category,title) {
+<% if ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) && (myconfig.get(db, "use_contentdefinition").equals("yes")) && ((myconfig.get(db, "use_imagegroups").equals("yes")) || (myconfig.get(db, "use_imagetypes").equals("yes")))) { %>
+	if ((category != 'imagetype') && (category != 'imagegroup') && (category != 'filetype') && (category != 'filegroup')) {
+		if (document.getElementById) {
+			document.getElementById('create').href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_creategrouptype')) + '\');';
+			document.getElementById('update').href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_updategrouptype')) + '\');';
+			document.getElementById('delete').href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_deletegrouptype')) + '\');';
+		} else if (document.all) {
+			document.all['create'].href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_creategrouptype')) + '\');';
+			document.all['update'].href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_updategrouptype')) + '\');';
+			document.all['delete'].href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_deletegrouptype')) + '\');';
+		}
+	} else {
+		if (document.getElementById) {
+			document.getElementById('create').href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>mediacategory_wcm.jsp?action=Create&section='+section+'&category='+category+'&title='+encodeURIComponent(title)+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+			if (title != '') {
+				document.getElementById('update').href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>mediacategory_wcm.jsp?action=Update&section='+section+'&category='+category+'&title='+encodeURIComponent(title)+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+				document.getElementById('delete').href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>mediacategory_wcm.jsp?action=Delete&section='+section+'&category='+category+'&title='+encodeURIComponent(title)+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+			} else {
+				document.getElementById('update').href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_updategrouptype')) + '\');';
+				document.getElementById('delete').href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_deletegrouptype')) + '\');';
+			}
+		} else if (document.all) {
+			document.all['create'].href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>mediacategory_wcm.jsp?action=Create&section='+section+'&category='+category+'&title='+encodeURIComponent(title)+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+			if (title != '') {
+				document.all['update'].href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>mediacategory_wcm.jsp?action=Update&section='+section+'&category='+category+'&title='+encodeURIComponent(title)+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+				document.all['delete'].href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>mediacategory_wcm.jsp?action=Delete&section='+section+'&category='+category+'&title='+encodeURIComponent(title)+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+			} else {
+				document.all['update'].href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_updategrouptype')) + '\');';
+				document.all['delete'].href = 'javascript:alert(\'' + HtmlDecode(Text('medialistfilter_deletegrouptype')) + '\');';
+			}
+		}
+	}
+<% } %>
+	parent.ready_section = section;
+	parent.ready_category = category;
+	parent.ready_title = title;
+	if (section && category && title) medialistfilterMenu.selectURL('javascript:openit(\''+section+'\',\''+category+'\',\''+title.replace(/ /gi, "%20")+'\')');
+	if (parent.medialist && parent.medialist.medialistMenu) parent.medialist.medialistMenu.clearCookie();
+	if (parent.medialist && parent.medialist.location) parent.medialist.location.href = 'medialist_wcm.jsp?editor=' + editor + '&section='+section+'&category='+category+'&title='+encodeURIComponent(title);
+}
+
+function initMenu() {
+	var menuname = 'medialistfilterMenu';
+<% if (myconfig.get(db, "use_imagegroups").equals("yes")) { %>
+	var seq = menuitem_images_groups;
+	var selected = '';
+	var submenus = document.getElementById('dtreeimagegroups').innerHTML;
+	var t = document.getElementById(menuname+""+seq).innerHTML;
+	document.getElementById(menuname+""+seq).innerHTML = t + submenus;
+<% } %>
+<% if (myconfig.get(db, "use_imagetypes").equals("yes")) { %>
+	seq = menuitem_images_types;
+	selected = '';
+	submenus = document.getElementById('dtreeimagetypes').innerHTML;
+	t = document.getElementById(menuname+""+seq).innerHTML;
+	document.getElementById(menuname+""+seq).innerHTML = t + submenus;
+<% } %>
+<% if (myconfig.get(db, "use_filegroups").equals("yes")) { %>
+	var seq = menuitem_files_groups;
+	var selected = '';
+	var submenus = document.getElementById('dtreefilegroups').innerHTML;
+	var t = document.getElementById(menuname+""+seq).innerHTML;
+	document.getElementById(menuname+""+seq).innerHTML = t + submenus;
+<% } %>
+<% if (myconfig.get(db, "use_filetypes").equals("yes")) { %>
+	seq = menuitem_files_types;
+	selected = '';
+	submenus = document.getElementById('dtreefiletypes').innerHTML;
+	t = document.getElementById(menuname+""+seq).innerHTML;
+	document.getElementById(menuname+""+seq).innerHTML = t + submenus;
+<% } %>
+}
+
+</script>
+</head>
+<body onload="initMenu(); parent.medialistfilter_ready();">
+<div class="dtree">
+<% if ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) && (myconfig.get(db, "use_contentdefinition").equals("yes")) && ((myconfig.get(db, "use_imagegroups").equals("yes")) || (myconfig.get(db, "use_imagetypes").equals("yes")))) { %>
+	<a id="create" target="mediainsert" href="javascript:alert(HtmlDecode(Text('medialistfilter_creategrouptype')));"><img src="dtree/folder.gif"><script type="text/javascript">document.write(Text('medialistfilter_create'));</script></a>
+	<a id="update" target="mediainsert" href="javascript:alert(HtmlDecode(Text('medialistfilter_updategrouptype')));"><img src="dtree/folder.gif"><script type="text/javascript">document.write(Text('medialistfilter_update'));</script></a>
+	<a id="delete" target="mediainsert" href="javascript:alert(HtmlDecode(Text('medialistfilter_deletegrouptype')));"><img src="dtree/trash.gif"><script type="text/javascript">document.write(Text('medialistfilter_delete'));</script></a>
+<% } else { %>
+	&nbsp;
+<% } %>
+</div>
+<hr>
+<div class="dtree">
+	<script type="text/javascript">
+		<!--
+		menuitem = 0;
+		<% int menuitem = 0; %>
+		medialistfilterMenu = new dTree('medialistfilterMenu');
+		medialistfilterMenu.clearCookie();
+		menuitem_media = menuitem;
+		medialistfilterMenu.add(menuitem++,-1,Text('medialistfilter_media'),'','','',true,'');
+		<% menuitem++; %>
+		menuitem_images = menuitem;
+		medialistfilterMenu.add(menuitem++,menuitem_media,Text('medialistfilter_images'),'','','',true,'');
+		<% menuitem++; %>
+		medialistfilterMenu.add(menuitem++,menuitem_images,Text('medialistfilter_images_all'),'javascript:openit(\'Images\',\'all\',\'' + Text('medialistfilter_images_all') + '\')','','','','imgfolder.gif');
+		<% menuitem++; %>
+<% if (myconfig.get(db, "use_imagegroups").equals("yes")) { %>
+		menuitem_images_groups = menuitem;
+		medialistfilterMenu.add(menuitem++,menuitem_images,Text('medialistfilter_imagegroups'),'javascript:openit(\'Images\',\'imagegroup\',\'\')','','',true,'');
+		<% menuitem++; %>
+		medialistfilterMenu.add(menuitem++,menuitem_images_groups,'<%= mytext.display("none") %>','javascript:openit(\'Images\',\'imagegroup\',\'-\')','','','','imgfolder.gif');
+		<% menuitem++; %>
+// Imagegroup.dtree_options("medialistfilterMenu.add(menuitem++,menuitem_images_groups,'", "','javascript:openit(\\'Images\\',\\'imagegroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession)
+<% } %>
+<% if (myconfig.get(db, "use_imagetypes").equals("yes")) { %>
+		menuitem_images_types = menuitem;
+		medialistfilterMenu.add(menuitem++,menuitem_images,Text('medialistfilter_imagetypes'),'javascript:openit(\'Images\',\'imagetype\',\'\')','','',true,'');
+		<% menuitem++; %>
+		medialistfilterMenu.add(menuitem++,menuitem_images_types,'<%= mytext.display("none") %>','javascript:openit(\'Images\',\'imagetype\',\'-\')','','','','imgfolder.gif');
+		<% menuitem++; %>
+// Imagetype.dtree_options("medialistfilterMenu.add(menuitem++,menuitem_images_types,'", "','javascript:openit(\\'Images\\',\\'imagetype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession)
+<% } %>
+		menuitem_files = menuitem;
+		medialistfilterMenu.add(menuitem++,menuitem_media,Text('medialistfilter_files'),'','','',true,'');
+		<% menuitem++; %>
+		medialistfilterMenu.add(menuitem++,menuitem_files,Text('medialistfilter_files_all'),'javascript:openit(\'Files\',\'all\',\'' + Text('medialistfilter_files_all') + '\')','','','','imgfolder.gif');
+		<% menuitem++; %>
+<% if (myconfig.get(db, "use_filegroups").equals("yes")) { %>
+		menuitem_files_groups = menuitem;
+		medialistfilterMenu.add(menuitem++,menuitem_files,Text('medialistfilter_filegroups'),'javascript:openit(\'Files\',\'filegroup\',\'\')','','',true,'');
+		<% menuitem++; %>
+		medialistfilterMenu.add(menuitem++,menuitem_files_groups,'<%= mytext.display("none") %>','javascript:openit(\'Files\',\'filegroup\',\'-\')','','','','imgfolder.gif');
+		<% menuitem++; %>
+// Filegroup.dtree_options("medialistfilterMenu.add(menuitem++,menuitem_files_groups,'", "','javascript:openit(\\'Files\\',\\'filegroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession)
+<% } %>
+<% if (myconfig.get(db, "use_filetypes").equals("yes")) { %>
+		menuitem_files_types = menuitem;
+		medialistfilterMenu.add(menuitem++,menuitem_files,Text('medialistfilter_filetypes'),'javascript:openit(\'Files\',\'filetype\',\'\')','','',true,'');
+		<% menuitem++; %>
+		medialistfilterMenu.add(menuitem++,menuitem_files_types,'<%= mytext.display("none") %>','javascript:openit(\'Files\',\'filetype\',\'-\')','','','','imgfolder.gif');
+		<% menuitem++; %>
+// Filetype.dtree_options("medialistfilterMenu.add(menuitem++,menuitem_files_types,'", "','javascript:openit(\\'Files\\',\\'filetype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession)
+<% } %>
+		medialistfilterMenu.draw();
+		//-->
+	</script>
+</div>
+
+<%! 
+	public HashMap menuImagegroups(DB db, Configuration myconfig, Session mysession, Text mytext, int menuitem, int indent, String parentgroup) {
+		HashMap outputs = new HashMap();
+		StringBuffer output = new StringBuffer();
+		StringBuffer script = new StringBuffer();
+		String SQL = "select * from imagegroups where parentgroup='" + Common.SQL_clean(parentgroup) + "' order by imagegroup";
+		if (parentgroup.equals("")) {
+			SQL = "select * from imagegroups where parentgroup='' or parentgroup is null order by imagegroup";
+		}
+		Imagegroup imagegroups = new Imagegroup();
+		imagegroups.records(db, SQL);
+		while (imagegroups.records(db, "")) {
+			if ((! myconfig.get(db, "hide_accessrestricted_menu_items").equals("yes")) || imagegroups.getAccessRestrictions(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig)) {
+				String imagegroup = imagegroups.getImagegroup();
+				String classname = "node";
+				if (! imagegroup.equals("")) {
+//					if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + URLEncoder.encode(imagegroup) + "&contenttype= &status= &version= &")) {
+//						classname = "nodeSel";
+//					} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + URLEncoder.encode(imagegroup).replaceAll("\\+", " ") + "&contenttype= &status= &version= &")) {
+//						classname = "nodeSel";
+//					} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + imagegroup + "&contenttype= &status= &version= &")) {
+//						classname = "nodeSel";
+//					}
+					output.append("<nobr>");
+					for (int i=0; i<indent; i++) {
+						if (i == (indent-1)) {
+							output.append("<img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/join.gif\">");
+						} else {
+							output.append("<img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/line.gif\">");
+						}
+					}
+					output.append("<a href=\"javascript:openit('Images','imagegroup','" + html.encode(imagegroup) + "')\" onclick=\"medialistfilterMenu.select('medialistfilterMenu',"+menuitem+",'javascript:openit(\\'Images\\',\\'imagegroup\\',\\'" + html.encode(imagegroup) + "\\')')\"><img alt=\"\" id=\"medialistfilterMenuIcon"+menuitem+"\" src=\"/" + mytext.display("adminpath") + "/dtree/imgfolder.gif\"></a><a id=\"medialistfilterMenuLink"+menuitem+"\" class=\"" + classname + "\" href=\"javascript:openit('Images','imagegroup','" + html.encode(imagegroup) + "')\" onclick=\"medialistfilterMenu.select('medialistfilterMenu','"+menuitem+"','javascript:openit(\\'Images\\',\\'imagegroup\\',\\'" + html.encode(imagegroup) + "\\')')\">" + imagegroup + "</a><br>");
+					output.append("</nobr>" + "\r\n");
+					script.append("<script>medialistfilterMenu.pid[" + menuitem + "] = menuitem_images_groups;</script>" + "\r\n");
+					menuitem++;
+					HashMap myoutputs = menuImagegroups(db, myconfig, mysession, mytext, menuitem, indent+1, imagegroup);
+					output.append("" + myoutputs.get("html"));
+					script.append("" + myoutputs.get("script"));
+					menuitem = Common.intnumber("" + myoutputs.get("menuitem"));
+				}
+			}
+		}
+		outputs.put("html", "" + output);
+		outputs.put("script", "" + script);
+		outputs.put("menuitem", "" + menuitem);
+		return outputs;
+	}
+%>
+<%! 
+	public HashMap menuImagetypes(DB db, Configuration myconfig, Session mysession, Text mytext, int menuitem, int indent, String parenttype) {
+		HashMap outputs = new HashMap();
+		StringBuffer output = new StringBuffer();
+		StringBuffer script = new StringBuffer();
+		String SQL = "select * from imagetypes where parenttype='" + Common.SQL_clean(parenttype) + "' order by imagetype";
+		if (parenttype.equals("")) {
+			SQL = "select * from imagetypes where parenttype='' or parenttype is null order by imagetype";
+		}
+		Imagetype imagetypes = new Imagetype();
+		imagetypes.records(db, SQL);
+		while (imagetypes.records(db, "")) {
+			if ((! myconfig.get(db, "hide_accessrestricted_menu_items").equals("yes")) || imagetypes.getAccessRestrictions(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig)) {
+				String imagetype = imagetypes.getImagetype();
+				String classname = "node";
+				if (! imagetype.equals("")) {
+//					if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup= &contenttype=" + URLEncoder.encode(imagetype) + "&status= &version= &")) {
+//						classname = "nodeSel";
+//					} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup= &contenttype=" + URLEncoder.encode(imagetype).replaceAll("\\+", " ") + "&status= &version= &")) {
+//						classname = "nodeSel";
+//					} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup= &contenttype=" + imagetype + "&status= &version= &")) {
+//						classname = "nodeSel";
+//					}
+					output.append("<nobr>");
+					for (int i=0; i<indent; i++) {
+						if (i == (indent-1)) {
+							output.append("<img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/join.gif\">");
+						} else {
+							output.append("<img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/line.gif\">");
+						}
+					}
+					output.append("<a href=\"javascript:openit('Images','imagetype','" + html.encode(imagetype) + "')\" onclick=\"medialistfilterMenu.select('medialistfilterMenu',"+menuitem+",'javascript:openit(\\'Images\\',\\'imagetype\\',\\'" + html.encode(imagetype) + "\\')')\"><img alt=\"\" id=\"medialistfilterMenuIcon"+menuitem+"\" src=\"/" + mytext.display("adminpath") + "/dtree/imgfolder.gif\"></a><a id=\"medialistfilterMenuLink"+menuitem+"\" class=\"" + classname + "\" href=\"javascript:openit('Images','imagetype','" + html.encode(imagetype) + "')\" onclick=\"medialistfilterMenu.select('medialistfilterMenu','"+menuitem+"','javascript:openit(\\'Images\\',\\'imagetype\\',\\'" + html.encode(imagetype) + "\\')')\">" + imagetype + "</a><br>");
+					output.append("</nobr>" + "\r\n");
+					script.append("<script>medialistfilterMenu.pid[" + menuitem + "] = menuitem_images_types;</script>" + "\r\n");
+					menuitem++;
+					HashMap myoutputs = menuImagetypes(db, myconfig, mysession, mytext, menuitem, indent+1, imagetype);
+					output.append("" + myoutputs.get("html"));
+					script.append("" + myoutputs.get("script"));
+					menuitem = Common.intnumber("" + myoutputs.get("menuitem"));
+				}
+			}
+		}
+		outputs.put("html", "" + output);
+		outputs.put("script", "" + script);
+		outputs.put("menuitem", "" + menuitem);
+		return outputs;
+	}
+%>
+<%! 
+	public HashMap menuFilegroups(DB db, Configuration myconfig, Session mysession, Text mytext, int menuitem, int indent, String parentgroup) {
+		HashMap outputs = new HashMap();
+		StringBuffer output = new StringBuffer();
+		StringBuffer script = new StringBuffer();
+		String SQL = "select * from filegroups where parentgroup='" + Common.SQL_clean(parentgroup) + "' order by filegroup";
+		if (parentgroup.equals("")) {
+			SQL = "select * from filegroups where parentgroup='' or parentgroup is null order by filegroup";
+		}
+		Filegroup filegroups = new Filegroup();
+		filegroups.records(db, SQL);
+		while (filegroups.records(db, "")) {
+			if ((! myconfig.get(db, "hide_accessrestricted_menu_items").equals("yes")) || filegroups.getAccessRestrictions(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig)) {
+				String filegroup = filegroups.getFilegroup();
+				String classname = "node";
+				if (! filegroup.equals("")) {
+//					if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=file&contentgroup=" + URLEncoder.encode(filegroup) + "&contenttype= &status= &version= &")) {
+//						classname = "nodeSel";
+//					} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=file&contentgroup=" + URLEncoder.encode(filegroup).replaceAll("\\+", " ") + "&contenttype= &status= &version= &")) {
+//						classname = "nodeSel";
+//					} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=file&contentgroup=" + filegroup + "&contenttype= &status= &version= &")) {
+//						classname = "nodeSel";
+//					}
+					output.append("<nobr>");
+					for (int i=0; i<indent; i++) {
+						if (i == (indent-1)) {
+							output.append("<img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/join.gif\">");
+						} else {
+							output.append("<img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/line.gif\">");
+						}
+					}
+					output.append("<a href=\"javascript:openit('Files','filegroup','" + html.encode(filegroup) + "')\" onclick=\"medialistfilterMenu.select('medialistfilterMenu',"+menuitem+",'javascript:openit(\\'Files\\',\\'filegroup\\',\\'" + html.encode(filegroup) + "\\')')\"><img alt=\"\" id=\"medialistfilterMenuIcon"+menuitem+"\" src=\"/" + mytext.display("adminpath") + "/dtree/imgfolder.gif\"></a><a id=\"medialistfilterMenuLink"+menuitem+"\" class=\"" + classname + "\" href=\"javascript:openit('Files','filegroup','" + html.encode(filegroup) + "')\" onclick=\"medialistfilterMenu.select('medialistfilterMenu','"+menuitem+"','javascript:openit(\\'Files\\',\\'filegroup\\',\\'" + html.encode(filegroup) + "\\')')\">" + filegroup + "</a><br>");
+					output.append("</nobr>" + "\r\n");
+					script.append("<script>medialistfilterMenu.pid[" + menuitem + "] = menuitem_files_groups;</script>" + "\r\n");
+					menuitem++;
+					HashMap myoutputs = menuFilegroups(db, myconfig, mysession, mytext, menuitem, indent+1, filegroup);
+					output.append("" + myoutputs.get("html"));
+					script.append("" + myoutputs.get("script"));
+					menuitem = Common.intnumber("" + myoutputs.get("menuitem"));
+				}
+			}
+		}
+		outputs.put("html", "" + output);
+		outputs.put("script", "" + script);
+		outputs.put("menuitem", "" + menuitem);
+		return outputs;
+	}
+%>
+<%! 
+	public HashMap menuFiletypes(DB db, Configuration myconfig, Session mysession, Text mytext, int menuitem, int indent, String parenttype) {
+		HashMap outputs = new HashMap();
+		StringBuffer output = new StringBuffer();
+		StringBuffer script = new StringBuffer();
+		String SQL = "select * from filetypes where parenttype='" + Common.SQL_clean(parenttype) + "' order by filetype";
+		if (parenttype.equals("")) {
+			SQL = "select * from filetypes where parenttype='' or parenttype is null order by filetype";
+		}
+		Filetype filetypes = new Filetype();
+		filetypes.records(db, SQL);
+		while (filetypes.records(db, "")) {
+			if ((! myconfig.get(db, "hide_accessrestricted_menu_items").equals("yes")) || filetypes.getAccessRestrictions(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig)) {
+				String filetype = filetypes.getFiletype();
+				String classname = "node";
+				if (! filetype.equals("")) {
+//					if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=file&contentgroup= &contenttype=" + URLEncoder.encode(filetype) + "&status= &version= &")) {
+//						classname = "nodeSel";
+//					} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=file&contentgroup= &contenttype=" + URLEncoder.encode(filetype).replaceAll("\\+", " ") + "&status= &version= &")) {
+//						classname = "nodeSel";
+//					} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=file&contentgroup= &contenttype=" + filetype + "&status= &version= &")) {
+//						classname = "nodeSel";
+//					}
+					output.append("<nobr>");
+					for (int i=0; i<indent; i++) {
+						if (i == (indent-1)) {
+							output.append("<img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/join.gif\">");
+						} else {
+							output.append("<img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/line.gif\">");
+						}
+					}
+					output.append("<a href=\"javascript:openit('Files','filetype','" + html.encode(filetype) + "')\" onclick=\"medialistfilterMenu.select('medialistfilterMenu',"+menuitem+",'javascript:openit(\\'Files\\',\\'filetype\\',\\'" + html.encode(filetype) + "\\')')\"><img alt=\"\" id=\"medialistfilterMenuIcon"+menuitem+"\" src=\"/" + mytext.display("adminpath") + "/dtree/imgfolder.gif\"></a><a id=\"medialistfilterMenuLink"+menuitem+"\" class=\"" + classname + "\" href=\"javascript:openit('Files','filetype','" + html.encode(filetype) + "')\" onclick=\"medialistfilterMenu.select('medialistfilterMenu','"+menuitem+"','javascript:openit(\\'Files\\',\\'filetype\\',\\'" + html.encode(filetype) + "\\')')\">" + filetype + "</a><br>");
+					output.append("</nobr>" + "\r\n");
+					script.append("<script>medialistfilterMenu.pid[" + menuitem + "] = menuitem_files_types;</script>" + "\r\n");
+					menuitem++;
+					HashMap myoutputs = menuFiletypes(db, myconfig, mysession, mytext, menuitem, indent+1, filetype);
+					output.append("" + myoutputs.get("html"));
+					script.append("" + myoutputs.get("script"));
+					menuitem = Common.intnumber("" + myoutputs.get("menuitem"));
+				}
+			}
+		}
+		outputs.put("html", "" + output);
+		outputs.put("script", "" + script);
+		outputs.put("menuitem", "" + menuitem);
+		return outputs;
+	}
+%>
+
+<% HashMap outputs = new HashMap(); %>
+<% StringBuffer output = new StringBuffer(); %>
+<% String SQL = ""; %>
+<% if (myconfig.get(db, "use_imagegroups").equals("yes")) { %>
+<div id="dtreeimagegroups" style="display: none">
+<%
+	outputs = menuImagegroups(db, myconfig, mysession, mytext, menuitem, 3, "");
+	menuitem = Common.intnumber("" + outputs.get("menuitem"));
+	%><%= outputs.get("script") %><%
+	%><%= outputs.get("html") %><%
+%>
+</div>
+<% } %>
+
+<% if (myconfig.get(db, "use_imagetypes").equals("yes")) { %>
+<div id="dtreeimagetypes" style="display: none">
+<%
+	outputs = menuImagetypes(db, myconfig, mysession, mytext, menuitem, 3, "");
+	menuitem = Common.intnumber("" + outputs.get("menuitem"));
+	%><%= outputs.get("script") %><%
+	%><%= outputs.get("html") %><%
+%>
+</div>
+<% } %>
+
+<% if (myconfig.get(db, "use_filegroups").equals("yes")) { %>
+<div id="dtreefilegroups" style="display: none">
+<%
+	outputs = menuFilegroups(db, myconfig, mysession, mytext, menuitem, 3, "");
+	menuitem = Common.intnumber("" + outputs.get("menuitem"));
+	%><%= outputs.get("script") %><%
+	%><%= outputs.get("html") %><%
+%>
+</div>
+<% } %>
+
+<% if (myconfig.get(db, "use_filetypes").equals("yes")) { %>
+<div id="dtreefiletypes" style="display: none">
+<%
+	outputs = menuFiletypes(db, myconfig, mysession, mytext, menuitem, 3, "");
+	menuitem = Common.intnumber("" + outputs.get("menuitem"));
+	%><%= outputs.get("script") %><%
+	%><%= outputs.get("html") %><%
+%>
+</div>
+<% } %>
+
+</body>
+</html>

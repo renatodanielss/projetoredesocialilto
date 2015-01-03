@@ -1,0 +1,132 @@
+<%
+if ((HashMap)usage.get("webbrowserscountvisits") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("webbrowserscountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("webbrowserscountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("webbrowserscountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("webbrowserscountpageviews"));
+	long maxhits = reportUsage.maxValue((HashMap)usage.get("webbrowserscounthits"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("webbrowserscountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("webbrowserscountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("webbrowserscountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("webbrowserscountpageviews"));
+	long totalhits = reportUsage.totalValue((HashMap)usage.get("webbrowserscounthits"));
+%>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><%= mytext.display("usage.webbrowsers.webbrowser") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableHits"><%= mytext.display("usage.hits") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator mywebbrowserscounthits = ((HashMap)usage.get("webbrowserscounthits")).keySet().iterator();
+	while (mywebbrowserscounthits.hasNext()) {
+		String mywebbrowser = "" + mywebbrowserscounthits.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="center">&nbsp;<img width="16" height="16" src="webbrowser/<%= mywebbrowser.replaceAll(" \\(.*\\)", "").replaceAll(" ", "").replaceAll("\\/", "") %>.gif"></td>
+				<td align="left"><nobr><%= reportUsage.webbrowserName(mywebbrowser) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserscountclienthosts")).get(mywebbrowser)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserscountclienthosts")).get(mywebbrowser))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserscountvisitors")).get(mywebbrowser)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserscountvisitors")).get(mywebbrowser))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserscountvisits")).get(mywebbrowser)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserscountvisits")).get(mywebbrowser))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserscountpageviews")).get(mywebbrowser)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserscountpageviews")).get(mywebbrowser))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserscounthits")).get(mywebbrowser)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalhits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserscounthits")).get(mywebbrowser))*100/totalhits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscountclienthosts")).get(mywebbrowser))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscountclienthosts")).get(mywebbrowser))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscountvisitors")).get(mywebbrowser))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscountvisitors")).get(mywebbrowser))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscountvisits")).get(mywebbrowser))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscountvisits")).get(mywebbrowser))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscountpageviews")).get(mywebbrowser))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscountpageviews")).get(mywebbrowser))*100/maxpageviews) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscounthits")).get(mywebbrowser))*100/maxhits) > 0) { %><img src="hits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserscounthits")).get(mywebbrowser))*100/maxhits) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalhits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table border="0" class="WCMstatsTable sortable" id="stats2">
+<%
+	maxvisits = reportUsage.maxValue((HashMap)usage.get("webbrowserversionscountvisits"));
+	maxclienthosts = reportUsage.maxValue((HashMap)usage.get("webbrowserversionscountclienthosts"));
+	maxvisitors = reportUsage.maxValue((HashMap)usage.get("webbrowserversionscountvisitors"));
+	maxpageviews = reportUsage.maxValue((HashMap)usage.get("webbrowserversionscountpageviews"));
+	maxhits = reportUsage.maxValue((HashMap)usage.get("webbrowserversionscounthits"));
+	totalvisits = reportUsage.totalValue((HashMap)usage.get("webbrowserversionscountvisits"));
+	totalclienthosts = reportUsage.totalValue((HashMap)usage.get("webbrowserversionscountclienthosts"));
+	totalvisitors = reportUsage.totalValue((HashMap)usage.get("webbrowserversionscountvisitors"));
+	totalpageviews = reportUsage.totalValue((HashMap)usage.get("webbrowserversionscountpageviews"));
+	totalhits = reportUsage.totalValue((HashMap)usage.get("webbrowserversionscounthits"));
+%>
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><%= mytext.display("usage.webbrowsers.webbrowserversion") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableHits"><%= mytext.display("usage.hits") %></td>
+			</tr>
+<%
+	j = 0;
+	Iterator mywebbrowserversionscounthits = ((HashMap)usage.get("webbrowserversionscounthits")).keySet().iterator();
+	while (mywebbrowserversionscounthits.hasNext()) {
+		String mywebbrowserversion = "" + mywebbrowserversionscounthits.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+		String[] tmp = mywebbrowserversion.split(":::");
+		String mywebbrowser = tmp[0];
+%>
+			<tr>
+				<td align="center">&nbsp;<img width="16" height="16" src="webbrowser/<%= mywebbrowser.replaceAll(" ", "").replaceAll("\\/", "") %>.gif"></td>
+				<td align="left"><nobr><%= reportUsage.webbrowserversionName(mywebbrowserversion) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserversionscountclienthosts")).get(mywebbrowserversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserversionscountclienthosts")).get(mywebbrowserversion))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserversionscountvisitors")).get(mywebbrowserversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserversionscountvisitors")).get(mywebbrowserversion))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserversionscountvisits")).get(mywebbrowserversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserversionscountvisits")).get(mywebbrowserversion))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserversionscountpageviews")).get(mywebbrowserversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserversionscountpageviews")).get(mywebbrowserversion))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("webbrowserversionscounthits")).get(mywebbrowserversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalhits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("webbrowserversionscounthits")).get(mywebbrowserversion))*100/totalhits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscountclienthosts")).get(mywebbrowserversion))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscountclienthosts")).get(mywebbrowserversion))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscountvisitors")).get(mywebbrowserversion))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscountvisitors")).get(mywebbrowserversion))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscountvisits")).get(mywebbrowserversion))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscountvisits")).get(mywebbrowserversion))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscountpageviews")).get(mywebbrowserversion))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscountpageviews")).get(mywebbrowserversion))*100/maxpageviews) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscounthits")).get(mywebbrowserversion))*100/maxhits) > 0) { %><img src="hits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("webbrowserversionscounthits")).get(mywebbrowserversion))*100/maxhits) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalhits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>

@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.hosting.title") %></title>
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contentid = '';
+		var contenttitle = '';
+		var contenthref = '';
+		if (inputnode.type != "select-multiple") {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + encodeURIComponent(inputid) + '&section=' + encodeURIComponent(section) + '&category=' + encodeURIComponent(category) + '&title=' + encodeURIComponent(title) + '&id=' + encodeURIComponent(contentid) + '&link=' + encodeURIComponent(contenttitle) + '&href=' + encodeURIComponent(contenthref), 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		if (inputnode.type == "select-multiple") {
+			var newoption = new Option();
+			newoption.text = contenttitle;
+			newoption.value = contentid;
+			newoption.selected = true;
+			inputnode.options[inputnode.options.length] = newoption;
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+		}
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.hosting.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="hosting.jsp" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+
+<div id="Hosting_Clients" class="Hosting_Clients st_view">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="4"><%= mytext.display("config.hosting.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="4"><%= mytext.display("config.hosting.intro") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.hosting.hosting.database.rootpath") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="text" size="80" name="hosting_api_database_rootpath" value="<%= myconfig.get(db, "hosting_api_database_rootpath") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.hosting.hosting.database.username") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="text" size="20" name="hosting_api_database_username" value="<%= myconfig.get(db, "hosting_api_database_username") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.hosting.hosting.database.password") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="text" size="20" name="hosting_api_database_password" value="<%= myconfig.get(db, "hosting_api_database_password") %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div>
+
+<% } %>
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

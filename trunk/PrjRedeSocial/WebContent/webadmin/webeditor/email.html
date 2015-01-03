@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('email_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+
+function initform() {
+	document.forms[0].name.value = requestParameter("name");
+	document.forms[0].value.value = requestParameter("value");
+	document.forms[0].multiple.value = requestParameter("multiple");
+	document.forms[0].required.value = requestParameter("required");
+	document.forms[0].autocomplete.value = requestParameter("autocomplete");
+	document.forms[0].placeholder.value = requestParameter("placeholder");
+	document.forms[0].pattern.value = requestParameter("pattern");
+	document.forms[0].size.value = requestParameter("size");
+	document.forms[0].maxlength.value = requestParameter("maxlength");
+	document.forms[0].onclick.value = requestParameter("onclick");
+	document.forms[0].onchange.value = requestParameter("onchange");
+	document.forms[0].onfocus.value = requestParameter("onfocus");
+	document.forms[0].onblur.value = requestParameter("onblur");
+	document.forms[0].htmlclass.value = requestParameter("htmlclass");
+	document.forms[0].htmlid.value = requestParameter("htmlid");
+	var htmlformat = requestParameter("format");
+	if ((htmlformat == "html4") || (htmlformat == "xhtml")) {
+		document.forms[0].multiple.disabled = true;
+		document.forms[0].required.disabled = true;
+		document.forms[0].autocomplete.disabled = true;
+		document.forms[0].placeholder.disabled = true;
+		document.forms[0].pattern.disabled = true;
+	}
+}
+
+function insertemail(form) {
+	var type = form.type.value;
+	var name = form.name.value;
+	var value = form.value.value;
+	var multiple = form.multiple.value;
+	var required = form.required.value;
+	var autocomplete = form.autocomplete.value;
+	var placeholder = form.placeholder.value;
+	var pattern = form.pattern.value;
+	var size = form.size.value;
+	var maxlength = form.maxlength.value;
+	var onclick = form.onclick.value;
+	var onchange = form.onchange.value;
+	var onfocus = form.onfocus.value;
+	var onblur = form.onblur.value;
+	var htmlclass = form.htmlclass.value;
+	var htmlid = form.htmlid.value;
+	webeditor.insertEmail(type,name,value,size,maxlength,onclick,onchange,onfocus,onblur,htmlclass,htmlid,required,autocomplete,placeholder,pattern,multiple);
+	webeditor.window_close(window);
+}
+
+</script>
+</head>
+<body onLoad="initform();">
+<form action="#" onSubmit="javascript:insertemail(this); return false;">
+<input type="hidden" name="type" value="email">
+<table summary="" width="100%" border="0" class="dtree">
+	<tr align="left" valign="top"> 
+		<td colspan="5" class="webeditor_window_title"><script type="text/javascript">document.write(Text('email_title'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="5">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('email_parameter'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_parameter_name'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="name" size="20" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_parameter_value'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="value" size="20" value="">
+						</td>
+					</tr>
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_parameter_placeholder'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="placeholder" size="20" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_parameter_pattern'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="pattern" size="20" value="">
+						</td>
+					</tr>
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_parameter_required'));</script></td>
+						<td class="webeditor_window_value"> 
+							<select name="required">
+								<script type="text/javascript">
+								document.write('<option value="">' + Text('email_parameter_required_no'));
+								document.write('<option value="required">' + Text('email_parameter_required_yes'));
+								</script>
+							</select>
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_parameter_autocomplete'));</script></td>
+						<td class="webeditor_window_value"> 
+							<select name="autocomplete">
+								<script type="text/javascript">
+								document.write('<option value="">' + '&nbsp;');
+								document.write('<option value="on">' + Text('email_parameter_autocomplete_on'));
+								document.write('<option value="off">' + Text('email_parameter_autocomplete_off'));
+								</script>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_parameter_multiple'));</script></td>
+						<td class="webeditor_window_value"> 
+							<select name="multiple">
+								<script type="text/javascript">
+								document.write('<option value="">' + Text('email_parameter_multiple_no'));
+								document.write('<option value="multiple">' + Text('email_parameter_multiple_yes'));
+								</script>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="5">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('email_size'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_size_size'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="size" size="5" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_size_maxlength'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="maxlength" size="5" value="">
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="4">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('email_events'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_events_onclick'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="onclick" size="20" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_events_onchange'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="onchange" size="20" value="">
+						</td>
+					</tr>
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_events_onfocus'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="onfocus" size="20" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('email_events_onblur'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="onblur" size="20" value="">
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="5">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('class_id'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('htmlclass'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="htmlclass" size="20" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('htmlid'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="htmlid" size="20" value="">
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+</table>
+<br>
+<div align="center">
+<script type="text/javascript">document.write('<input type="submit" value="' + Text('ok') + '">');</script>
+<script type="text/javascript">document.write('<input type="button" value="' + Text('cancel') + '" onClick="webeditor.window_close(window);">');</script>
+</div>
+</form>
+</body>
+</html>

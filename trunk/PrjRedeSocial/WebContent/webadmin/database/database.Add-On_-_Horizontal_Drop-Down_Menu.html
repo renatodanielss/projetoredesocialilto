@@ -1,0 +1,76 @@
+<img src="/webadmin/database/database.Add-On_-_Horizontal_Drop-Down_Menu.gif" align="left">
+Horizontal drop-down toolbar menu.
+<br clear="all">
+
+<div class="import_parameters" style="display:none">
+
+<div>Adds a new content item of the given content class with the given menu name in the web content management system. Organize your website pages hierarchically and sequentially in your website structure (Website Content / Website Structure). Please note that a DOCTYPE must be configured for your website (Configuration / System / Website / Special Settings / HTML DOCTYPE) for the menu to work correctly in some web browsers.
+</div>
+
+<input disabled type="hidden" name="import_menutype" value="dropdown">
+<input disabled type="hidden" id="import_id" name="import_id" value="menu">
+<div>Menu name: <input disabled type="text" name="import_name" value="Menu" onchange="document.getElementById('import_id').value = this.value.toLowerCase().replace(/[^a-zA-Z]/, '');"></div>
+
+<div>
+<nobr>
+Menu top page:
+<select disabled id="import_menutop" name="import_menutop" style="width: 400px;">
+<option value="0">Default page (homepage)</option>
+</select>
+<input type="button" value="Select" onclick="openSelectContentItem('import_menutop', 'Pages', '', 'Pages', 'page');">
+</nobr>
+</div>
+
+<div>Include top page in menu: <input type="radio" name="import_topfirst" value="first=top:" checked> Yes - <input type="radio" name="import_topfirst" value=""> No</div>
+
+<div>Maximum number of menu levels: <select disabled name="import_menulevels"><option>1<option>2<option>3<option>4<option>5<option>6<option>7<option>8<option selected>9</select></div>
+
+<div>Content class:</div>
+<table style="width: 100%;"><tr><td>
+ <input disabled type="radio" name="import_contentclass_option" onclick="document.getElementById('import_contentclass').value='menu';"> Menu element
+</td><td>
+ <input disabled type="radio" name="import_contentclass_option" checked onclick="document.getElementById('import_contentclass').value='toolbar';"> Toolbar element
+</td><td>
+ <input disabled type="radio" name="import_contentclass_option" onclick="document.getElementById('import_contentclass').value='page';"> Page
+</td><td>
+ <input disabled type="radio" name="import_contentclass_option" onclick="document.getElementById('import_contentclass').value='template';"> Template
+</td><td>
+ Other: <input disabled type="text" size="10" id="import_contentclass" name="import_contentclass" value="toolbar">
+</div>
+</td></tr></table>
+
+<div>Menu item colours:</div>
+<table style="width: 100%;"><tr><td style="width: 33%;">
+<div>Background: <input disabled type="text" size="10" name="import_backcol" value="#ffffff" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #ffffff;"></div>
+</td><td style="width: 33%;">
+<div>Text: <input disabled type="text" size="10" name="import_textcol" value="#000000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #000000;"></div>
+</td><td>
+<div>Border: <input disabled type="text" size="10" name="import_bordercol" value="#000000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #000000;"></div>
+</td></tr></table>
+
+<div>Menu item colours on mouse over:</div>
+<table style="width: 100%;"><tr><td style="width: 33%;">
+<div>Background: <input disabled type="text" size="10" name="import_mouseoverbackcol" value="#eeeeee" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #eeeeee;"></div>
+</td><td>
+<div>Text: <input disabled type="text" size="10" name="import_mouseovertextcol" value="#ff0000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #ff0000;"></div>
+</td></tr></table>
+
+<div>Menu item size and horizontal sub-menu overlap width:</div>
+<table style="width: 100%;"><tr><td style="width: 33%;">
+<div>Height: <input disabled type="text" size="3" name="import_height" value="25"> pixels</div>
+</td><td style="width: 33%;">
+<div>Width: <input disabled type="text" size="3" id="import_width" name="import_width" value="148" onchange="document.getElementById('import_leftoffset1').value = document.getElementById('import_width').value - 29 - document.getElementById('import_overlap').value; document.getElementById('import_leftoffset0').value = document.getElementById('import_width').value - 30 - document.getElementById('import_overlap').value;"> pixels</div>
+</td><td>
+<div>Overlap: <input disabled type="text" size="3" id="import_overlap" name="import_overlap" value="20" onchange="document.getElementById('import_leftoffset1').value = document.getElementById('import_width').value - 29 - document.getElementById('import_overlap').value; document.getElementById('import_leftoffset0').value = document.getElementById('import_width').value - 30 - document.getElementById('import_overlap').value;"> pixels</div>
+</td></tr></table>
+<input disabled type="hidden" id="import_leftoffset1" name="import_leftoffset1" value="71">
+<input disabled type="hidden" id="import_leftoffset0" name="import_leftoffset0" value="70">
+
+<div>Menu item font:</div>
+<table style="width: 100%;"><tr><td style="width: 33%;">
+<div>Size: <input disabled type="text" size="10" name="import_fontsize" value="small"></div>
+</td><td>
+<div>Name: <input disabled type="text" size="40" name="import_fontname" value="Arial, Helvetica, sans-serif"></div>
+</td></tr></table>
+
+</div>

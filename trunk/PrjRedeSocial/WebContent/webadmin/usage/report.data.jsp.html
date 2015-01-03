@@ -1,0 +1,170 @@
+<% if (reportsection.startsWith("usage:")) { %>
+<% if (License.valid(db, myconfig, "statistics")) { %>
+<%
+	String[] myparams = reportsection.split(":",4);
+	if (myparams.length >= 2) {
+		String myreport = "" + myparams[1].replaceAll("[^a-zA-Z]", "");
+		String mytitle = "" + myreport;
+		if (myreport.equals("summary")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.summary");
+		} else if (myreport.equals("websites")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.websites");
+		} else if (myreport.equals("contents")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content");
+		} else if (myreport.equals("pages")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.pages");
+		} else if (myreport.equals("pagegroups")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.pages") + " - " + mytext.display("menu.groups");
+		} else if (myreport.equals("pagetypes")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.pages") + " - " + mytext.display("menu.types");
+		} else if (myreport.equals("contacts")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.contact");
+		} else if (myreport.equals("posts")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.post");
+		} else if (myreport.equals("logins")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.login");
+		} else if (myreport.equals("logouts")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.logout");
+		} else if (myreport.equals("stylesheets")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.stylesheets");
+		} else if (myreport.equals("scripts")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.content") + " - " + mytext.display("menu.statistics.what.content.scripts");
+		} else if (myreport.equals("library")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library");
+		} else if (myreport.equals("images")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.images");
+		} else if (myreport.equals("imagegroups")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.images") + " - " + mytext.display("menu.groups");
+		} else if (myreport.equals("imagetypes")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.images") + " - " + mytext.display("menu.types");
+		} else if (myreport.equals("files")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.files");
+		} else if (myreport.equals("filegroups")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.files") + " - " + mytext.display("menu.groups");
+		} else if (myreport.equals("filetypes")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.files") + " - " + mytext.display("menu.types");
+		} else if (myreport.equals("links")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.links");
+		} else if (myreport.equals("linkgroups")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.links") + " - " + mytext.display("menu.groups");
+		} else if (myreport.equals("linktypes")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.library") + " - " + mytext.display("menu.statistics.what.library.links") + " - " + mytext.display("menu.types");
+		} else if (myreport.equals("products")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.ecommerce") + " - " + mytext.display("menu.statistics.what.ecommerce.products");
+		} else if (myreport.equals("productgroups")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.ecommerce") + " - " + mytext.display("menu.statistics.what.ecommerce.products") + " - " + mytext.display("menu.groups");
+		} else if (myreport.equals("producttypes")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.ecommerce") + " - " + mytext.display("menu.statistics.what.ecommerce.products") + " - " + mytext.display("menu.types");
+		} else if (myreport.equals("databases")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.what.databases");
+		} else if (myreport.equals("daily")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.daily");
+		} else if (myreport.equals("weekly")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.weekly");
+		} else if (myreport.equals("monthly")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.monthly");
+		} else if (myreport.equals("yearly")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.yearly");
+		} else if (myreport.equals("hours")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.hours");
+		} else if (myreport.equals("weekdays")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.weekdays");
+		} else if (myreport.equals("days")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.days");
+		} else if (myreport.equals("weeks")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.weeks");
+		} else if (myreport.equals("months")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.when") + " - " + mytext.display("menu.statistics.when.months");
+		} else if (myreport.equals("countries")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.countries");
+		} else if (myreport.equals("visitors")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.visitors");
+		} else if (myreport.equals("robots")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.robots");
+		} else if (myreport.equals("operatingsystems")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.operatingsystems");
+		} else if (myreport.equals("webbrowsers")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.webbrowsers");
+		} else if (myreport.equals("devices")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.devices");
+		} else if (myreport.equals("users")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.users");
+		} else if (myreport.equals("usergroups")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.users") + " - " + mytext.display("menu.groups");
+		} else if (myreport.equals("usertypes")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.users") + " - " + mytext.display("menu.types");
+		} else if (myreport.equals("usersegments")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.users") + " - " + mytext.display("menu.segments");
+		} else if (myreport.equals("usertests")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.who") + " - " + mytext.display("menu.statistics.who.users") + " - " + mytext.display("menu.usertests");
+		} else if (myreport.equals("referers")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.why") + " - " + mytext.display("menu.statistics.why.referers");
+		} else if (myreport.equals("searchengines")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.why") + " - " + mytext.display("menu.statistics.why.searchengines");
+		} else if (myreport.equals("searchqueries")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.why") + " - " + mytext.display("menu.statistics.why.searchqueries");
+		} else if (myreport.equals("searchwords")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.why") + " - " + mytext.display("menu.statistics.why.searchwords");
+		} else if (myreport.equals("entry")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.how") + " - " + mytext.display("menu.statistics.how.entry");
+		} else if (myreport.equals("paths")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.how") + " - " + mytext.display("menu.statistics.how.paths");
+		} else if (myreport.equals("exit")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.how") + " - " + mytext.display("menu.statistics.how.exit");
+		} else if (myreport.equals("duration")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.how") + " - " + mytext.display("menu.statistics.how.duration");
+		} else if (myreport.equals("visits")) {
+			mytitle = mytext.display("menu.statistics") + " - " + mytext.display("menu.statistics.how") + " - " + mytext.display("menu.statistics.how.visits");
+		}
+		String myhost = "" + myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort();
+		String myscript = "/webadmin/usage/" + myreport + ".data.jsp";
+		String myquery = "username=" + mysession.get("username") + "&password=" +  mysession.get("password") + "&url=-&";
+		if (myparams.length == 2) {
+			String mylimit = "" + myrequest.getParameter("limit").replaceAll("[^0-9]","");
+			myquery += "limit=" + mylimit + "&";
+			if (! mylimit.equals("")) mytitle += " - " + mytext.display("usage.limit.top") + " " + mylimit;
+
+			if ((! myrequest.getParameter("period_start").equals("")) || (! myrequest.getParameter("period_end").equals(""))) {
+				myquery += "period_start=" + myrequest.getParameter("period_start") + "&" + "period_end=" + myrequest.getParameter("period_end") + "&";
+				mytitle += " - " + myrequest.getParameter("period_start").replaceAll("^$", ".....") + " - " + myrequest.getParameter("period_end").replaceAll("^$", ".....");
+			} else {
+				String myperiod = "" + myrequest.getParameter("period").replaceAll("[^a-zA-Z0-9]","").replaceAll("^now$", "");
+				myquery += "period=" + myperiod + "&";
+				if (! myperiod.equals("")) {
+					try {
+						mytitle += " - " + mytext.display("usage.period." + myperiod);
+					} catch (Exception e) {
+					}
+				} else {
+					mytitle += " - " + mytext.display("usage.period.now");
+				}
+			}
+		}
+		if (myparams.length >= 3) {
+			String mylimit = "" + myparams[2].replaceAll("[^0-9]","");
+			myquery += "limit=" + mylimit + "&";
+			if (! mylimit.equals("")) mytitle += " - " + mytext.display("usage.limit.top") + " " + mylimit;
+		}
+		if (myparams.length >= 4) {
+			String myperiod = "" + myparams[3].replaceAll("[^a-zA-Z0-9]","").replaceAll("^now$", "");
+			myquery += "period=" + myperiod + "&";
+			if (! myperiod.equals("")) {
+				try {
+					mytitle += " - " + mytext.display("usage.period." + myperiod);
+				} catch (Exception e) {
+				}
+			} else {
+				mytitle += " - " + mytext.display("usage.period.now");
+			}
+		}
+		String output = http.get(myhost, myscript, myquery, myrequest);
+%>
+		<table border="0" style="width: 100%;"><tr align="left" valign="top"><td class="WCMfrontpage">
+			<p><b><font color="#cc0000"><%= mytitle %></b></p>
+		</td></tr></table>
+		<%= output %>
+<%
+	}
+%>
+<% } %>
+<% } %>

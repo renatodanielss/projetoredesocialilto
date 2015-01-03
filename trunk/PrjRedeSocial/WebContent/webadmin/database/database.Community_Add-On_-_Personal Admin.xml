@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="HardCore Web Content Management">
+ <table name="content">
+  <row>
+   <column name="id" value="6628" />
+   <column name="locked" value="0" />
+   <column name="created" value="2004-06-22 16:46:09" />
+   <column name="updated" value="2004-06-23 17:58:26" />
+   <column name="published" value="2004-06-23 17:58:26" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Personal Page Content" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Personal Page Content&lt;/h2&gt;
+&lt;br&gt;
+&lt;form action=&quot;/personal/admin.php&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;table height=&quot;100%&quot; width=&quot;100%&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;Title:&lt;br&gt;
+&lt;/td&gt;&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;&lt;input name=&quot;title&quot; value=&quot;@@@personal_title@@@&quot; size=&quot;40&quot; type=&quot;text&quot;&gt;&lt;/td&gt;
+&lt;td colspan=&quot;1&quot; rowspan=&quot;3&quot; align=&quot;right&quot; valign=&quot;middle&quot;&gt;
+&lt;input value=&quot;Preview&quot; onclick=&quot;doPreview(this.form)&quot; type=&quot;button&quot;&gt;
+&lt;input value=&quot;Save&quot; type=&quot;submit&quot;&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;Template:&lt;br&gt;
+&lt;/td&gt;&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;
+@@@personal_template_options@@@
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;
+Style:&lt;br&gt;
+&lt;/td&gt;&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;
+@@@personal_stylesheet_options@@@
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td colspan=&quot;3&quot; align=&quot;left&quot; height=&quot;100%&quot; valign=&quot;top&quot;&gt;
+@@@personal_content@@@
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/form&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Forms" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="searchable" value="" />
+  </row>
+  <row>
+   <column name="id" value="6629" />
+   <column name="locked" value="0" />
+   <column name="created" value="2004-06-22 19:17:40" />
+   <column name="updated" value="2004-06-23 17:31:32" />
+   <column name="published" value="2004-06-23 17:31:32" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Personal Page Administration" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Personal Page Administration&lt;/h2&gt;&lt;br&gt;
+
+
+&lt;table border=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr align=&quot;left&quot; valign=&quot;top&quot;&gt;
+&lt;td width=&quot;30%&quot;&gt;&lt;a style=&quot;font-weight: bold;&quot; href=&quot;/personal/admin.php?id=6628&quot;&gt;Content&lt;/a&gt;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td width=&quot;30%&quot;&gt;&lt;a style=&quot;font-weight: bold;&quot; href=&quot;/personal/admin.php?id=6630&quot;&gt;Preferences&lt;/a&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td width=&quot;30%&quot;&gt;&lt;a style=&quot;font-weight: bold;&quot; href=&quot;/personal/admin.php?id=6631&quot;&gt;Personal Details&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr align=&quot;left&quot; valign=&quot;top&quot;&gt;
+&lt;td width=&quot;30%&quot;&gt;Edit your personal page content.&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td width=&quot;30%&quot;&gt;Select your content preferences.&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td width=&quot;30%&quot;&gt;Edit your personal details.&lt;/td&gt;
+&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;br&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="searchable" value="" />
+  </row>
+  <row>
+   <column name="id" value="6630" />
+   <column name="locked" value="0" />
+   <column name="created" value="2004-06-22 19:24:28" />
+   <column name="updated" value="2004-06-24 09:15:29" />
+   <column name="published" value="2004-06-24 09:15:29" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Personal Page Preferences" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Personal Page Preferences&lt;/h2&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;form action=&quot;/personal/admin.php&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save&quot; type=&quot;submit&quot;&gt;
+  &lt;br&gt;
+&lt;br&gt;
+&lt;table border=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Banner: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;@@@personal_banner_options@@@&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Menu: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;@@@personal_menu_options@@@&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;News: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;@@@personal_news_options@@@&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Offers: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;@@@personal_offer_options@@@&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
+  &lt;/table&gt;
+  &lt;br&gt;
+&lt;/form&gt;&lt;br&gt;
+&lt;br&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Forms" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="searchable" value="" />
+  </row>
+  <row>
+   <column name="id" value="6631" />
+   <column name="locked" value="0" />
+   <column name="created" value="2004-06-22 19:25:17" />
+   <column name="updated" value="2004-06-23 17:35:59" />
+   <column name="published" value="2004-06-23 17:35:59" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Personal Details" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Personal Details&lt;/h2&gt;&lt;br&gt;
+
+&lt;form action=&quot;/personal/admin.php&quot; method=&quot;post&quot;&gt;
+&lt;input value=&quot;Save&quot; type=&quot;submit&quot;&gt;&lt;br&gt;
+  &lt;br&gt;
+
+
+&lt;table border=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Name: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input name=&quot;name&quot; value=&quot;@@@personal_name@@@&quot; size=&quot;60&quot; type=&quot;text&quot;&gt;&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Email: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input name=&quot;email&quot; value=&quot;@@@personal_email@@@&quot; size=&quot;60&quot; type=&quot;text&quot;&gt;&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Username: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input name=&quot;username&quot; value=&quot;@@@personal_username@@@&quot; type=&quot;text&quot;&gt;&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Password: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input name=&quot;password&quot; value=&quot;@@@personal_password@@@&quot; type=&quot;text&quot;&gt;&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;br&gt;
+&lt;/form&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Forms" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="searchable" value="" />
+  </row>
+ </table>
+ <table name="content_elements">
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="6628" />
+   <column name="locked" value="0" />
+   <column name="created" value="2004-06-22 16:46:09" />
+   <column name="updated" value="2004-06-23 17:58:26" />
+   <column name="published" value="2004-06-23 17:58:26" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Personal Page Content" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Personal Page Content&lt;/h2&gt;
+&lt;br&gt;
+&lt;form action=&quot;/personal/admin.php&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;table height=&quot;100%&quot; width=&quot;100%&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;Title:&lt;br&gt;
+&lt;/td&gt;&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;&lt;input name=&quot;title&quot; value=&quot;@@@personal_title@@@&quot; size=&quot;40&quot; type=&quot;text&quot;&gt;&lt;/td&gt;
+&lt;td colspan=&quot;1&quot; rowspan=&quot;3&quot; align=&quot;right&quot; valign=&quot;middle&quot;&gt;
+&lt;input value=&quot;Preview&quot; onclick=&quot;doPreview(this.form)&quot; type=&quot;button&quot;&gt;
+&lt;input value=&quot;Save&quot; type=&quot;submit&quot;&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;Template:&lt;br&gt;
+&lt;/td&gt;&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;
+@@@personal_template_options@@@
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;
+Style:&lt;br&gt;
+&lt;/td&gt;&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;
+@@@personal_stylesheet_options@@@
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td colspan=&quot;3&quot; align=&quot;left&quot; height=&quot;100%&quot; valign=&quot;top&quot;&gt;
+@@@personal_content@@@
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/form&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Forms" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="searchable" value="" />
+  </row>
+  <row>
+   <column name="id" value="6629" />
+   <column name="locked" value="0" />
+   <column name="created" value="2004-06-22 19:17:40" />
+   <column name="updated" value="2004-06-23 17:31:32" />
+   <column name="published" value="2004-06-23 17:31:32" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Personal Page Administration" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Personal Page Administration&lt;/h2&gt;&lt;br&gt;
+
+
+&lt;table border=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr align=&quot;left&quot; valign=&quot;top&quot;&gt;
+&lt;td width=&quot;30%&quot;&gt;&lt;a style=&quot;font-weight: bold;&quot; href=&quot;/personal/admin.php?id=6628&quot;&gt;Content&lt;/a&gt;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td width=&quot;30%&quot;&gt;&lt;a style=&quot;font-weight: bold;&quot; href=&quot;/personal/admin.php?id=6630&quot;&gt;Preferences&lt;/a&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td width=&quot;30%&quot;&gt;&lt;a style=&quot;font-weight: bold;&quot; href=&quot;/personal/admin.php?id=6631&quot;&gt;Personal Details&lt;/a&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr align=&quot;left&quot; valign=&quot;top&quot;&gt;
+&lt;td width=&quot;30%&quot;&gt;Edit your personal page content.&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td width=&quot;30%&quot;&gt;Select your content preferences.&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td width=&quot;30%&quot;&gt;Edit your personal details.&lt;/td&gt;
+&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;br&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="searchable" value="" />
+  </row>
+  <row>
+   <column name="id" value="6630" />
+   <column name="locked" value="0" />
+   <column name="created" value="2004-06-22 19:24:28" />
+   <column name="updated" value="2004-06-24 09:15:29" />
+   <column name="published" value="2004-06-24 09:15:29" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Personal Page Preferences" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Personal Page Preferences&lt;/h2&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;form action=&quot;/personal/admin.php&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save&quot; type=&quot;submit&quot;&gt;
+  &lt;br&gt;
+&lt;br&gt;
+&lt;table border=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Banner: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;@@@personal_banner_options@@@&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Menu: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;@@@personal_menu_options@@@&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;News: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;@@@personal_news_options@@@&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Offers: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;@@@personal_offer_options@@@&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
+  &lt;/table&gt;
+  &lt;br&gt;
+&lt;/form&gt;&lt;br&gt;
+&lt;br&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Forms" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="searchable" value="" />
+  </row>
+  <row>
+   <column name="id" value="6631" />
+   <column name="locked" value="0" />
+   <column name="created" value="2004-06-22 19:25:17" />
+   <column name="updated" value="2004-06-23 17:35:59" />
+   <column name="published" value="2004-06-23 17:35:59" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Personal Details" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Personal Details&lt;/h2&gt;&lt;br&gt;
+
+&lt;form action=&quot;/personal/admin.php&quot; method=&quot;post&quot;&gt;
+&lt;input value=&quot;Save&quot; type=&quot;submit&quot;&gt;&lt;br&gt;
+  &lt;br&gt;
+
+
+&lt;table border=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Name: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input name=&quot;name&quot; value=&quot;@@@personal_name@@@&quot; size=&quot;60&quot; type=&quot;text&quot;&gt;&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Email: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input name=&quot;email&quot; value=&quot;@@@personal_email@@@&quot; size=&quot;60&quot; type=&quot;text&quot;&gt;&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Username: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input name=&quot;username&quot; value=&quot;@@@personal_username@@@&quot; type=&quot;text&quot;&gt;&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Password: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input name=&quot;password&quot; value=&quot;@@@personal_password@@@&quot; type=&quot;text&quot;&gt;&lt;br&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;br&gt;
+&lt;/form&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Forms" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="searchable" value="" />
+  </row>
+ </table>
+ <table name="content_public_elements">
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6628" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6629" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6630" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="banner" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="logo" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="menu" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="news" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="offer" />
+   <column name="element_id" value="-1" />
+  </row>
+  <row>
+   <column name="content_id" value="6631" />
+   <column name="element" value="toolbar" />
+   <column name="element_id" value="-1" />
+  </row>
+ </table>
+ <table name="contentgroups">
+  <row>
+   <column name="id" value="245" />
+   <column name="contentgroup" value="Personal Admin" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+  </row>
+ </table>
+ <table name="config">
+  <row>
+   <column name="configname" value="default_personal_admin_page" />
+   <column name="configvalue" value="6629" />
+  </row>
+ </table>
+</database>

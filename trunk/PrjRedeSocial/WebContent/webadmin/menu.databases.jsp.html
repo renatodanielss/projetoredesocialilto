@@ -1,0 +1,29 @@
+
+<% if (mysession.get("menu").equals("databases")) { %>
+	<br>
+	<div id="databasesMenu" style="display: none;">
+		<ul>
+			<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_databases"><a href="#"><%= mytext.display("menu.databases") %></a>
+				<ul>
+	<% if (License.valid(db, myconfig, "databases")) { %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_databases_data")) { %>
+					<li rel="folder" class="jstree-closed" id="menuitem_databases_data"><a href="#"><%= mytext.display("menu.databases.data") %></a></li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_databases_export")) { %>
+					<li rel="folder" class="jstree-closed" id="menuitem_databases_export"><a href="#"><%= mytext.display("menu.databases.export") %></a></li>
+		<% } %>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_databases_import")) { %>
+					<li rel="folder" class="jstree-closed" id="menuitem_databases_import"><a href="#"><%= mytext.display("menu.databases.import") %></a></li>
+		<% } %>
+	<% } %>
+				</ul>
+			</li>
+	<% for (int i=0; i<module.size(); i++) { %>
+		<% if ((moduleDatabasesMenuTitle.size()>i) && (! moduleDatabasesMenuTitle.get(i).equals(""))) { %>
+			<li rel="page" class="jstree-leaf" id="menuitem_databases_module<%= i %>"><a href="<%= moduleDatabasesMenuLink.get(i) %>"><%= moduleDatabasesMenuTitle.get(i) %></a></li>
+		<% } %>
+	<% } %>
+		</ul>
+	</div>
+	<br>
+<% } %>

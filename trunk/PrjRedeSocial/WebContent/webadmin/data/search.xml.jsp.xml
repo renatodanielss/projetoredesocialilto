@@ -1,0 +1,99 @@
+<%= "<" + "?xml version=\"1.0\" encoding=\"" + myconfig.get(db, "charset") + "\" ?" + ">" %>
+<ajax-response><response type="object" id="data_grid_updater">
+<% if (! error.equals("")) { %>
+<rows update_ui="false" /><error><%= html.encode(error) %></error>
+<% } else { %>
+<rows update_ui="true">
+<%
+	while (data.records(db, "")) {
+		data.adjustContent(datadatabase.columns);
+%>
+        <tr> 
+<%
+	String myadminindex = "";
+	if (myadminindex.equals("")) {
+		myadminindex = datadatabase.getAdminIndex();
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = "checkbox:25px default id:25px view:50px update:50px delete:50px";
+	}
+
+	String[] columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+		}
+%>
+<% if (mycolumnname.equals("BLANK")) { %>
+          <td><![CDATA[&nbsp;]]></td>
+<% } else if (mycolumnname.equals("checkbox")) { %>
+          <td><![CDATA[<input type="checkbox" name="dummy" value="<%= data.getId() %>">]]></td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td><![CDATA[<div align="center"><% if (maintainData.database.getUser()) { %><a href="view.jsp?database=<%= html.encodeHtmlEntities(myrequest.getParameter("database")) %>&id=<%= data.getId() %>&<%= Math.random() %>"><%= mytext.display("view") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td><![CDATA[<div align="center"><% if (maintainData.database.getEditor()) { %><a href="update.jsp?database=<%= html.encodeHtmlEntities(myrequest.getParameter("database")) %>&id=<%= data.getId() %>&<%= Math.random() %>"><%= mytext.display("update") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("create")) { %>
+          <td><![CDATA[<div align="center"><% if (maintainData.database.getCreator()) { %><a href="create.jsp?database=<%= html.encodeHtmlEntities(myrequest.getParameter("database")) %>&id=<%= data.getId() %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td><![CDATA[<div align="center"><% if (maintainData.database.getPublisher()) { %><a href="delete.jsp?database=<%= html.encodeHtmlEntities(myrequest.getParameter("database")) %>&id=<%= data.getId() %>&<%= Math.random() %>"><%= mytext.display("delete") %></a><% } %></div>]]></td>
+<% } else if (maintainData.database.namedcolumns.get(mycolumnname) != null) { %>
+<%
+	String dataid = maintainData.database.namedcolumns.get(mycolumnname).get("id");
+	String datatype = maintainData.database.namedcolumns.get(mycolumnname).get("type");
+	String databasename = maintainData.database.namedcolumns.get(mycolumnname).get("param2");
+	String databasecontent = maintainData.database.namedcolumns.get(mycolumnname).get("options");
+	String datacolumn = "col" + dataid;
+	String datacontent = data.getContent(datacolumn);
+	if (datatype.equals("html")) {
+		datacontent = mypage.adjust_links("", datacontent, db, myconfig);
+	} else if ((datatype.equals("selectmulti")) || (datatype.equals("radio")) || (datatype.equals("checkbox")) || (datatype.equals("contentclasses")) || (datatype.equals("contentgroups")) || (datatype.equals("contenttypes")) || (datatype.equals("pagegroups")) || (datatype.equals("pagetypes")) || (datatype.equals("imagegroups")) || (datatype.equals("imagetypes")) || (datatype.equals("imageformats")) || (datatype.equals("filegroups")) || (datatype.equals("filetypes")) || (datatype.equals("fileformats")) || (datatype.equals("linkgroups")) || (datatype.equals("linktypes")) || (datatype.equals("productgroups")) || (datatype.equals("producttypes")) || (datatype.equals("versions")) || (datatype.equals("databases")) || (datatype.equals("usernames")) || (datatype.equals("useremails")) || (datatype.equals("usergroups")) || (datatype.equals("usertypes"))) {
+		datacontent = datacontent.replaceAll("\\|", "<br>");
+	} else if ((datatype.equals("content")) || (datatype.equals("contents")) || (datatype.equals("page")) || (datatype.equals("pages")) || (datatype.equals("image")) || (datatype.equals("images")) || (datatype.equals("file")) || (datatype.equals("files")) || (datatype.equals("link")) || (datatype.equals("links")) || (datatype.equals("product")) || (datatype.equals("products")) || (datatype.equals("element")) || (datatype.equals("elements"))) {
+		datacontent = mypage.list_titles(mysession, myrequest, myresponse, myconfig, db, datacontent.replaceAll("\\|", ","));
+	} else if ((datatype.equals("datum")) || (datatype.equals("data"))) {
+		Databases mydatabases = new Databases(mytext);
+		mydatabases.readTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, databasename);
+		String columnid = "";
+		Iterator dbcolumns = mydatabases.columns.keySet().iterator();
+		while (dbcolumns.hasNext()) {
+			HashMap dbcolumn = (HashMap)mydatabases.columns.get("" + dbcolumns.next());
+			if (databasecontent.equals(dbcolumn.get("name"))) { columnid = "" + dbcolumn.get("id"); }
+		}
+		datacontent = data.list_titles(db, "data" + mydatabases.getId(), datacolumn, data.getContent(datacolumn).replaceAll("\\|",","));
+	}
+%>
+          <td><![CDATA[<%= datacontent %>]]></td>
+<% } else if (mycolumnname.equals("title")) { %>
+          <td><![CDATA[<span title="<%= data.getContent(maintainData.titlecolumn) %>"><%= data.getContent(maintainData.titlecolumn) %></span>]]></td>
+<% } else if (mycolumnname.equals("default")) { %>
+          <td><![CDATA[<span title="<%= data.getContent(maintainData.titlecolumn) %>"><%= data.getContent(maintainData.titlecolumn) %></span>]]></td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td><![CDATA[<div style="text-align: right;"><%= data.getId() %></div>]]></td>
+<% } else if (! mycolumnname.equals("")) { %>
+          <td><![CDATA[<div align="center"><a href="<%= mycolumnhref + data.getId() %>&<%= Math.random() %>"><%= mycolumnname %></a></div>]]></td>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	}
+%>
+</rows>
+<rowcount><%= recordCount %></rowcount>
+<% } %>
+</response></ajax-response>

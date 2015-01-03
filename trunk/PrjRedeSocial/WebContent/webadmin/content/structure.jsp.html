@@ -1,0 +1,366 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("content.structure.title") %></title>
+<script type="text/javascript">
+
+var savewindow = false;
+
+function doLogin(saveclose) {
+	if (saveclose) {
+		savewindow = webeditor_window('/<%= mytext.display("adminpath") %>/saveclose.jsp', '_save', 800, 600, 'scrollbars=yes,width=800,height=600,resizable=yes,status=yes', true);
+	} else {
+		savewindow = webeditor_window('/<%= mytext.display("adminpath") %>/save.jsp', '_save', 800, 600, 'scrollbars=yes,width=800,height=600,resizable=yes,status=yes', true);
+	}
+	if (savewindow && (typeof(savewindow.focus) == "function")) savewindow.focus();
+}
+
+function doSave() {
+	if (savewindow && savewindow.close) savewindow.close();
+//	var output = doSaveForm($('#relationsform'), $('#roottree').find('.rootnode'), '', '');
+	var output = doSaveForm($('#relationsform'), $('#roottree').find('#0'), '', '');
+}
+
+function doSaveForm(form, parentnode, page_top, page_up) {
+	var content_ids = [];
+	if ((! page_top) && (! page_up)) {
+		content_ids = parentnode ? parentnode.children("ul").children("li").map(function() { return "" + this.id }).toArray() : [];
+		parentnode = parentnode.parent();
+	} else {
+		content_ids = parentnode ? parentnode.children("ul").children("li").map(function() { return "" + this.id }).toArray() : [];
+	}
+	var output = "";
+	var parentnode_id = parentnode.attr('id') ? parentnode.attr('id').replace(/^content_([0-9]+)$/, "$1") : "";
+	if (! page_top) page_top = parentnode_id;
+	page_top = page_top.replace(/^000$/,"0");
+	page_up = page_up.replace(/^000$/,"0");
+	for (attrib in content_ids) {
+		var subnode = parentnode.find("#" + content_ids[attrib]);
+
+		var page_first = subnode.parent().children('.page').filter(':first') && subnode.parent().children('.page').filter(':first').hasClass('page') && subnode.parent().children('.page').filter(':first').attr('id') ? subnode.parent().children('.page').filter(':first').attr('id').replace(/^content_([0-9]+)$/, "$1") : 0;
+		var page_last = subnode.parent().children('.page').filter(':last') && subnode.parent().children('.page').filter(':last').hasClass('page') && subnode.parent().children('.page').filter(':last').attr('id') ? subnode.parent().children('.page').filter(':last').attr('id').replace(/^content_([0-9]+)$/, "$1") : 0;
+		if (subnode && subnode.attr('id') && ((subnode.hasClass('page') && subnode.attr('id').match(/^content_([0-9]+)$/)) || (subnode.attr('id') == "000"))) {
+			var page_previous = subnode.prev() && subnode.prev().hasClass('page') && subnode.prev().attr('id') ? subnode.prev().attr('id').replace(/^content_([0-9]+)$/, "$1") : 0;
+			var page_next = subnode.next() && subnode.next().hasClass('page') && subnode.next().attr('id') ? subnode.next().attr('id').replace(/^content_([0-9]+)$/, "$1") : 0;
+			var subnode_id = subnode.attr('id').replace(/^content_([0-9]+)$/, "$1");
+			var subnode_page_top = subnode.attr('class').replace(/(^|^.*[^a-zA-Z0-9])page_top_([0-9]+)([^0-9].*$|$)/, "$2");
+			var subnode_page_up = subnode.attr('class').replace(/(^|^.*[^a-zA-Z0-9])page_up_([0-9]+)([^0-9].*$|$)/, "$2");
+			var subnode_page_first = subnode.attr('class').replace(/(^|^.*[^a-zA-Z0-9])page_first_([0-9]+)([^0-9].*$|$)/, "$2");
+			var subnode_page_previous = subnode.attr('class').replace(/(^|^.*[^a-zA-Z0-9])page_previous_([0-9]+)([^0-9].*$|$)/, "$2");
+			var subnode_page_next = subnode.attr('class').replace(/(^|^.*[^a-zA-Z0-9])page_next_([0-9]+)([^0-9].*$|$)/, "$2");
+			var subnode_page_last = subnode.attr('class').replace(/(^|^.*[^a-zA-Z0-9])page_last_([0-9]+)([^0-9].*$|$)/, "$2");
+			output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+			if (page_top && subnode.hasClass('page') && (! subnode.hasClass('page_top_'+page_top))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~TOP:::"+subnode_page_top+"->"+page_top;
+				if (form) form.append('<input type="hidden" name="page_top_' + subnode_id + '" value="' + page_top + '">');
+			} else if ((! page_top) && subnode.hasClass('page') && (subnode.attr('class').match(/page_top_/)) && (page_top == "") && (parentnode_id == "")) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~TOP:::"+subnode_page_top+"->";
+				if (form) form.append('<input type="hidden" name="page_top_' + subnode_id + '" value="">');
+			} else if ((! page_top) && subnode.hasClass('page') && (! subnode.hasClass('page_top_0')) && ((page_top != "") || (parentnode_id != ""))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~TOP:::"+subnode_page_top+"->0";
+				if (form) form.append('<input type="hidden" name="page_top_' + subnode_id + '" value="0">');
+			}
+			if (page_up && subnode.hasClass('page') && (! subnode.hasClass('page_up_'+page_up))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~UP:::"+subnode_page_up+"->"+page_up;
+				if (form) form.append('<input type="hidden" name="page_up_' + subnode_id + '" value="' + page_up + '">');
+			} else if ((! page_up) && subnode.hasClass('page') && (subnode.attr('class').match(/page_up_/)) && (page_top == "") && (parentnode_id == "")) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~UP:::"+subnode_page_up+"->";
+				if (form) form.append('<input type="hidden" name="page_up_' + subnode_id + '" value="">');
+			} else if ((! page_up) && subnode.hasClass('page') && (! subnode.hasClass('page_up_0')) && ((page_top != "") || (parentnode_id != ""))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~UP:::"+subnode_page_up+"->0";
+				if (form) form.append('<input type="hidden" name="page_up_' + subnode_id + '" value="0">');
+			}
+			if (false && (page_first == subnode_id) && (subnode.hasClass('page_first_0'))) {
+				// ok - is first
+			} else if (false && (page_first == subnode_id) && (! subnode.hasClass('page_first_0'))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~FIRST:::"+subnode_page_first+"->"+0;
+				if (form) form.append('<input type="hidden" name="page_first_' + subnode_id + '" value="0">\r\n');
+			} else if ((page_first) && (subnode.hasClass('page')) && (! subnode.hasClass('page_first_'+page_first))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~FIRST:::"+subnode_page_first+"->"+page_first;
+				if (form) form.append('<input type="hidden" name="page_first_' + subnode_id + '" value="' + page_first + '">');
+			}
+			if ((page_previous == subnode_id) && (subnode.hasClass('page_previous_0'))) {
+				// ok - is first
+			} else if ((page_previous == subnode_id) && (! subnode.hasClass('page_previous_0'))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~PREV:::"+subnode_page_previous+"->"+0;
+				if (form) form.append('<input type="hidden" name="page_previous_' + subnode_id + '" value="0">\r\n');
+			} else if ((! page_previous) && (! subnode.hasClass('page_previous_0'))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~PREV:::"+subnode_page_previous+"->"+0;
+				if (form) form.append('<input type="hidden" name="page_previous_' + subnode_id + '" value="0">\r\n');
+			} else if ((page_previous) && (subnode.hasClass('page')) && (! subnode.hasClass('page_previous_'+page_previous))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~PREV:::"+subnode_page_previous+"->"+page_previous;
+				if (form) form.append('<input type="hidden" name="page_previous_' + subnode_id + '" value="' + page_previous + '">');
+			}
+			if ((page_next == subnode_id) && (subnode.hasClass('page_next_0'))) {
+				// ok - is last
+			} else if ((page_next == subnode_id) && (! subnode.hasClass('page_next_0'))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~NEXT:::"+subnode_page_next+"->"+0;
+				if (form) form.append('<input type="hidden" name="page_next_' + subnode_id + '" value="0">\r\n');
+			} else if ((! page_next) && (! subnode.hasClass('page_next_0'))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~NEXT:::"+subnode_page_next+"->"+0;
+				if (form) form.append('<input type="hidden" name="page_next_' + subnode_id + '" value="0">\r\n');
+			} else if (page_next && subnode.hasClass('page') && (! subnode.hasClass('page_next_'+page_next))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~NEXT:::"+subnode_page_next+"->"+page_next;
+				if (form) form.append('<input type="hidden" name="page_next_' + subnode_id + '" value="' + page_next + '">');
+			}
+			if (false && (page_last == subnode_id) && (subnode.hasClass('page_last_0'))) {
+				// ok - is last
+			} else if (false && (page_last == subnode_id) && (! subnode.hasClass('page_last_0'))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~LAST:::"+subnode_page_last+"->"+0;
+				if (form) form.append('<input type="hidden" name="page_first_' + subnode_id + '" value="0">\r\n');
+			} else if (page_last && subnode.hasClass('page') && (! subnode.hasClass('page_last_'+page_last))) {
+				output += "\r\n\r\n" + parentnode.attr('id') + ":" + page_top + ":" + page_up + ":" + parentnode.hasClass('page_top') + ":" + parentnode.children('a').hasClass('jstree-clicked') + " --- " + content_ids[attrib] + " - " + subnode_id + " - " + subnode.attr('class') + " - " + subnode.children('a').attr('innerHTML') + " - " + page_first+ " - " + page_previous + " - " + page_next + " - " + page_last;
+				output += "\r\n~LAST:::"+subnode_page_last+"->"+page_last;
+				if (form) form.append('<input type="hidden" name="page_last_' + subnode_id + '" value="' + page_last + '">');
+			}
+			if (subnode.children('a').hasClass('jstree-clicked')) {
+				output += doSaveForm(form, subnode, subnode_id, subnode_id);
+			} else {
+				output += doSaveForm(form, subnode, page_top, subnode_id);
+			}
+		}
+	}
+	if ((! page_top) && (! page_up)) {
+		form.submit();
+	}
+	return output;
+}
+ 
+function doWebsiteStructure(rootid, ajaxurl, selectedids) {
+	ajaxurl = window.location.href.replace(/[^\/]*$/, '') + ajaxurl;
+	// automatically reselect all the "page_top" for the top-level html data which are unselected by the jstree "initially_select" functionality
+	$(rootid).bind("reselect.jstree", function() {
+		var page_top_ids = rootid ? $(rootid).find(".page_top").map(function() { return "" + this.id }).toArray() : [];
+		$(rootid).jstree('deselect_all');
+		for (attrib in page_top_ids) {
+			$(rootid).jstree('select_node', "#" + page_top_ids[attrib]);
+		}
+		return page_top_ids;
+	});
+	$(rootid).bind("reopen.jstree", function() {
+		var rootnode_ids = rootid ? $(rootid).find(".rootnode").map(function() { return "" + this.id }).toArray() : [];
+		for (attrib in rootnode_ids) {
+			$(rootid).jstree('open_node', "#" + rootnode_ids[attrib]);
+		}
+	});
+	$(rootid).bind("click.jstree", function (e) {
+		if (e && e.target && e.target.nodeName && (e.target.nodeName == "A") && e.target.parentNode && e.target.parentNode.id) {
+			$(rootid).jstree('open_node', "#" + e.target.parentNode.id);
+		}
+	});
+//	$(rootid).bind("open_all.jstree", function (e) {
+//		alert("expand all finished");
+//	});
+//	$(rootid).bind("close_all.jstree", function (e) {
+//		alert("close all finished");
+//	});
+	return $(rootid).jstree({
+		core : {
+			initially_open : [ '0' ]
+		},
+		themes : {
+			dots : true,
+			icons : true,
+			theme : 'wcm'
+		},
+		html_data : {
+			data : $(rootid).html(),
+			ajax : {
+				url : ajaxurl,
+				data : function (n) { 
+					return { id : n.attr ? n.attr("id") : 0 };
+				}
+			}
+		},
+		ui : {
+			select_multiple_modifier : 'on',
+			selected_parent_close : false,
+			initially_select : selectedids
+		},
+		crrm : {
+			move : {
+				check_move : function (m) {
+					return (m.o[0].className.indexOf("undraggable") >= 0) ? false : true;
+				},
+				move_node : function (m) {
+					return (m.o[0].className.indexOf("undraggable") >= 0) ? false : true;
+				}
+			}
+		},
+		types : {
+			"valid_children" : [ "root" ],
+			"types" : {
+//				"default" : {
+//					"valid_children" : "none",
+//					"valid_children" : [ "default" ],
+//					"icon" : {
+//						"image" : "/webadmin/dtree/page.gif"
+//					}
+//				},
+				"page" : {
+					// can have files and other folders inside of it, but NOT `drive` nodes
+					"valid_children" : [ "default", "page", "pagefolder", "folder" ],
+					"icon" : {
+						"image" : "/webadmin/dtree/page.gif"
+					}
+				},
+				"pagefolder" : {
+					// can have files and other folders inside of it, but NOT `drive` nodes
+					"valid_children" : [ "default", "page", "pagefolder", "folder" ],
+					"icon" : {
+						"image" : "/webadmin/dtree/imgfolder.gif"
+					}
+				},
+				"folder" : {
+					// can have files and other folders inside of it, but NOT `drive` nodes
+					"valid_children" : [ "default", "page", "pagefolder", "folder" ],
+					"icon" : {
+						"image" : "/webadmin/dtree/folder.gif"
+					}
+				},
+				"root" : {
+					// can have files and folders inside, but NOT other `root` nodes
+					"valid_children" : [ "default", "page", "pagefolder", "folder" ],
+					"icon" : {
+						"image" : "/webadmin/dtree/base.gif"
+					},
+					// those options prevent the functions with the same name to be used on the `drive` type nodes
+					// internally the `before` event is used
+					"hover_node" : false,
+					"select_node" : function () {return false;},
+//					"start_drag" : false,
+//					"move_node" : false,
+					"delete_node" : false,
+					"remove" : false
+				}
+			}
+		},
+		plugins : [ 'themes', 'html_data', 'ui', 'dnd', 'crrm', 'callback', 'types' ]
+	});
+}
+
+function initLiveGrid() {
+	var dummy = doWebsiteStructure('#roottree', 'structure.subtree.jsp?mode=structure&root=<%= myrequest.getParameter("root") %>&<%= Math.random() %>', []);
+}
+
+</script>
+
+<style>
+	.rootnode { font-weight: bold; }
+	.rootnode > UL { font-weight: normal; }
+	.orphannode { font-weight: normal; }
+	.page_top_0 { }
+	.page_up_0 { }
+	.page_first_0 { }
+	.page_previous_0 { }
+	.page_next_0 { }
+	.page_last_0 { }
+	.undraggable > a { font-style: italic; }
+</style>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("content.structure.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<form id="relationsform" name="relationsform" action="structure_post.jsp?redirect=structure.jsp&root=<%= html.encode(myrequest.getParameter("root")) %>&title=<%= html.encode(myrequest.getParameter("title")) %>" method="POST">
+  <div align="left">
+    <input type="button" value="<%= mytext.display("save") %>" onclick="doLogin(false)">
+    <input type="checkbox" name="publish" value="Publish">Publish (content relations only)
+    &nbsp; - &nbsp;
+    <input type="button" value="<%= mytext.display("content.structure.openall") %>" onclick="$('#roottree').jstree('open_all');">
+    <input type="button" value="<%= mytext.display("content.structure.closeall") %>" onclick="$('#roottree').jstree('close_all');">
+  </div>
+  <br>
+  <div>
+    <%= mytext.display("content.structure.intro") %>
+  </div>
+  <br>
+  <div id="roottree">
+    <ul>
+      <li class="jstree-closed rootnode" rel="root" id="0"><a href="#"><% if (! myrequest.getParameter("title").equals("")) { %><%= myrequest.getParameter("title") %><% } else { %><%= mytext.display("content.structure.title") %><% } %></a>
+      </li>
+    </ul>
+  </div>
+</form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

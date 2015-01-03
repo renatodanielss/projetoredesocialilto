@@ -1,0 +1,334 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("data.delete.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("data.delete.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<% if (! maintainData.database.getPublisher()) { %>
+      <p><font color="red"><%= mytext.display("data.delete.nopermission") %></font></p>
+<% } else { %>
+      <form action="delete_post.jsp?database=<%= html.encodeHtmlEntities(myrequest.getParameter("database")) %>&id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("delete") %>">
+        </p>
+
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("data.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("data.intro") %></td>
+          </tr>
+<%
+	Vector v = new Vector(maintainData.database.columns.keySet());
+	Collections.sort(v, new Comparator() {
+		public int compare(Object o1, Object o2) {
+			int i1 = Integer.parseInt("0"+o1);
+			int i2 = Integer.parseInt("0"+o2);
+			if (i1 < i2) {
+				return -1;
+			} else if (i1 > i2) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	});
+	Iterator mycolumn = v.iterator();
+	while (mycolumn.hasNext()) {
+		HashMap columns = (HashMap)maintainData.database.columns.get("" + mycolumn.next());
+		String id = "" + columns.get("id");
+		String order = "" + columns.get("order");
+		String name = "" + columns.get("name");
+		String index = "" + columns.get("index");
+		String type = "" + columns.get("type");
+		String param1 = "" + columns.get("param1");
+		String param2 = "" + columns.get("param2");
+		String options = "" + columns.get("options");
+		String cols = param1;
+		String rows = param2;
+		String width = param1;
+		String height = param2;
+		String digits = param1;
+		String decimals = param2;
+		String contentclass = param2;
+		String size = param1;
+		String size2 = param2;
+		String databasename = param2;
+		String databasecontent = options;
+		String column = "col" + id;
+%>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= name %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+<% if ((type.equals("text")) && (rows.equals("1"))) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("text")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("html")) { %>
+		<%= mypage.adjust_links("", data.getContent(column), db, myconfig) %>
+<% } else if (type.equals("number")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("select")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("selectmulti")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("radio")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("checkbox")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("datetime")) { %>
+		<%= data.getContent(column) %>
+
+<% } else if (type.equals("created")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("updated")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("createdby")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("updatedby")) { %>
+		<%= data.getContent(column) %>
+
+<% } else if (type.equals("content")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column)) %>
+<% } else if (type.equals("contents")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column).replaceAll("\\|", ",")) %>
+<% } else if (type.equals("contentclass")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("contentclasses")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("contentgroup")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("contentgroups")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("contenttype")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("contenttypes")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+
+<% } else if (type.equals("page")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column)) %>
+<% } else if (type.equals("pages")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column).replaceAll("\\|", ",")) %>
+<% } else if (type.equals("pagegroup")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("pagegroups")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("pagetype")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("pagetypes")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+
+<% } else if (type.equals("image")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column)) %>
+<% } else if (type.equals("images")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column).replaceAll("\\|", ",")) %>
+<% } else if (type.equals("imagegroup")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("imagegroups")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("imagetype")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("imagetypes")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("imageformat")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("imageformats")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+
+<% } else if (type.equals("file")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column)) %>
+<% } else if (type.equals("files")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column).replaceAll("\\|", ",")) %>
+<% } else if (type.equals("filegroup")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("filegroups")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("filetype")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("filetypes")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("fileformat")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("fileformats")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+
+<% } else if (type.equals("link")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column)) %>
+<% } else if (type.equals("links")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column).replaceAll("\\|", ",")) %>
+<% } else if (type.equals("linkgroup")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("linkgroups")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("linktype")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("linktypes")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+
+<% } else if (type.equals("product")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column)) %>
+<% } else if (type.equals("products")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column).replaceAll("\\|", ",")) %>
+<% } else if (type.equals("productgroup")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("productgroups")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("producttype")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("producttypes")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+
+<% } else if (type.equals("element")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column)) %>
+<% } else if (type.equals("elements")) { %>
+		<%= content.list_titles(mysession, myrequest, myresponse, myconfig, db, data.getContent(column).replaceAll("\\|", ",")) %>
+
+<% } else if (type.equals("version")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("versions")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("database")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("databases")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+
+<% } else if (type.equals("datum")) { %>
+<%
+	Databases databases = new Databases(mytext);
+	databases.readTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, databasename);
+	String columnid = databases.getAttributeColumn(databasecontent);
+%>
+		<%= data.list_titles(db, databases.getTable(), columnid, data.getContent(column)) %>
+<% } else if (type.equals("data")) { %>
+<%
+	Databases databases = new Databases(mytext);
+	databases.readTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, databasename);
+	String columnid = databases.getAttributeColumn(databasecontent);
+%>
+		<%= data.list_titles(db, databases.getTable(), columnid, data.getContent(column).replaceAll("\\|",",")) %>
+
+<% } else if ((type.equals("datumview")) || (type.equals("dataview"))) { %>
+<%
+	Databases databases = new Databases(mytext);
+	databases.readTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, databasename);
+	String columnid = databases.getAttributeColumn(databasecontent);
+%>
+	<% if (! columnid.equals("")) { %>
+		<%= data.list_titles(db, databases.getTable(), columnid, data.getContent(column).replaceAll("\\|",",")) %>
+	<% } else if (! databases.getId().equals("")) { %>
+<%
+		String[] columnnames = databases.getAttributesColumns(databasecontent, db, myconfig, mysession);
+		String optionformat = databases.getAttributesColumnsFormat(databasecontent, db, myconfig, mysession);
+%>
+		<select <% if (type.equals("dataview")) { %>multiple<% } %> size="<%= size %>" name="col<%= id %>"><%= Common.select_options_value(db, databases.getTable(), columnnames, data.getContent(column), optionformat, true) %></select>
+	<% } else { %>
+<%
+		String[] tablenames = databases.getAttributesTables(databasename, databasecontent, db, myconfig, mysession);
+		String[] columnnames = databases.getAttributesColumns(databasename, databasecontent, db, myconfig, mysession);
+		String optionformat = databases.getAttributesColumnsFormat(databasename, databasecontent, db, myconfig, mysession);
+		HashMap tablecolumnjoins = databases.getAttributesJoins(databasename, databasecontent, db, myconfig, mysession);
+%>
+		<select <% if (type.equals("dataview")) { %>multiple<% } %> size="<%= size %>" name="col<%= id %>"><%= Common.select_options_value(db, tablenames, columnnames, tablecolumnjoins, data.getContent(column), optionformat, true) %></select>
+	<% } %>
+
+<% } else if (type.equals("username")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("usernames")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("useremail")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("useremails")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("usergroup")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("usergroups")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+<% } else if (type.equals("usertype")) { %>
+		<%= data.getContent(column) %>
+<% } else if (type.equals("usertypes")) { %>
+		<%= data.getContent(column).replaceAll("\\|", "<br>") %>
+
+<% } else { %>
+		<%= data.getContent(column) %>
+<% } %>
+		&nbsp;
+            </td>
+          </tr>
+<%
+	}
+%>
+        </table>
+      </form>
+<% } %>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

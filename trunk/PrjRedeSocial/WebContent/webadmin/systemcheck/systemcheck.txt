@@ -1,0 +1,65 @@
+
+Place QuickStart Configuration Server System Check scripts in this folder and in sub-folders.
+Sub-folders can be common for all programming language versions or programming language specific using programming language extensions on the sub-folder names.
+
+For example:
+
+	Common Tests A/					# "Common Tests A" QuickStart Configuration Server System Check header for all programming language versions
+	Common Tests A/Test 1.aspx
+	Common Tests A/Test 1.jsp
+	Common Tests A/Test 1.php
+	Common Tests A/Test 2.aspx
+	Common Tests A/Test 2.jsp
+	Common Tests A/Test 2.php
+	Common Tests A/Test 3.aspx
+	Common Tests A/Test 3.jsp
+	Common Tests A/Test 3.php
+
+	Common Tests B/					# "Common Tests A" QuickStart Configuration Server System Check header for all programming language versions
+	Common Tests B/Test 1.aspx
+	Common Tests B/Test 1.jsp
+	Common Tests B/Test 1.php
+	Common Tests B/Test 2.aspx
+	Common Tests B/Test 2.jsp
+	Common Tests B/Test 2.php
+	Common Tests B/Test 3.aspx
+	Common Tests B/Test 3.jsp
+	Common Tests B/Test 3.php
+
+	ASP.NET Specific Tests C.aspx/			# "ASP.NET Specific Tests C" QuickStart Configuration Server System Check header for ASP.NET programming language version only
+	ASP.NET Specific Tests C.aspx/Test 1.aspx
+	ASP.NET Specific Tests C.aspx/Test 2.aspx
+	ASP.NET Specific Tests C.aspx/Test 3.aspx
+
+	JSP Specific Tests D.aspx/			# "JSP Specific Tests D" QuickStart Configuration Server System Check header for JSP programming language version only
+	JSP Specific Tests D.aspx/Test 1.aspx
+	JSP Specific Tests D.aspx/Test 2.aspx
+	JSP Specific Tests D.aspx/Test 3.aspx
+
+	PHP Specific Tests E.aspx/			# "PHP Specific Tests E" QuickStart Configuration Server System Check header for PHP programming language version only
+	PHP Specific Tests E.aspx/Test 1.aspx
+	PHP Specific Tests E.aspx/Test 2.aspx
+	PHP Specific Tests E.aspx/Test 3.aspx
+
+
+
+Scripts should return their test results to the web content management system through the "systemcheck" session variable.
+Test results should be simple texts starting with either "OK:", "NOTE:" or "ERROR:" to indicate if the test failed or was successful or if something should be noted.
+
+For example:
+
+	ASP.NET:
+		<%@ Page Language="C#" Debug="true" ValidateRequest="false" %>
+		<%
+		Session["systemcheck"] = "OK: This test succeded.";
+		%>
+
+	JSP:
+		<%
+		session.setAttribute("systemcheck", "NOTE: Please note this.");
+		%>
+
+	PHP:
+		<?php
+		$_SESSION["systemcheck"] = "ERROR: This test failed.";
+		?>

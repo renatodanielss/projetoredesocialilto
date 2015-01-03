@@ -1,0 +1,464 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("hosting.update.title") %>&nbsp;<%= maintainHosting.getHosting().getClientAddress() %></title>
+<script type="text/javascript">
+
+$(function(){
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	$('#tabs').find('[rel=Hosting_Details]').click();
+});
+
+</script>
+
+<script type="text/javascript">
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contenttitle = inputnode.options[inputnode.selectedIndex].text;
+		var contentid = inputnode.options[inputnode.selectedIndex].value;
+		var contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		window.open('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		inputnode.options[0].text = contenttitle;
+		inputnode.options[0].value = contentid;
+		inputnode.selectedIndex = 0;
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<script type="text/javascript">
+
+$(function(){
+
+	$('#scheduled_publish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_publish').attr('value').length >= 10) ? $('#scheduled_publish').attr('value').substring(0,10) : $('#scheduled_publish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish_trigger').datepicker( "option", "defaultDate", $('#scheduled_publish').attr('value') );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish').attr('value', dateText + $('#scheduled_publish').attr('value').substring(10));
+				} else {
+					$('#scheduled_publish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#scheduled_notify_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_notify').attr('value').length >= 10) ? $('#scheduled_notify').attr('value').substring(0,10) : $('#scheduled_notify').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_notify').attr('value').length >= 10) {
+					$('#scheduled_notify_trigger').datepicker( "option", "defaultDate", $('#scheduled_notify').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_notify').attr('value').length >= 10) {
+					$('#scheduled_notify').attr('value', dateText + $('#scheduled_notify').attr('value').substring(10));
+				} else {
+					$('#scheduled_notify').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#scheduled_unpublish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_unpublish').attr('value').length >= 10) ? $('#scheduled_unpublish').attr('value').substring(0,10) : $('#scheduled_unpublish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish_trigger').datepicker( "option", "defaultDate", $('#scheduled_unpublish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish').attr('value', dateText + $('#scheduled_unpublish').attr('value').substring(10));
+				} else {
+					$('#scheduled_unpublish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+});
+
+</script>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("hosting.update.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="update_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <% if (! error.equals("")) { %><p><font color="red"><%= mytext.display("error") %> <%= error %></font></p><% } %>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Hosting_Details" rel="Hosting_Details"><%= mytext.display("hosting.hosting.tab") %></a></li>
+                <li><a href="#Hosting_Licenses" rel="Hosting_Licenses"><%= mytext.display("hosting.license.tab") %></a></li>
+                <li><a href="#Superadmin_Details" rel="Superadmin_Details"><%= mytext.display("hosting.superadmin.tab") %></a></li>
+                <li><a href="#Hosting_Categories" rel="Hosting_Categories"><%= mytext.display("hosting.categories.tab") %></a></li>
+                <li><a href="#Activation_Expiration" rel="Activation_Expiration"><%= mytext.display("hosting.activation.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Hosting_Details" class="Hosting_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("hosting.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <%= maintainHosting.getHosting().getClientAddress() %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("hosting.urlrootpath") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" maxlength="250" name="client_URLrootpath" value="<%= maintainHosting.getHosting().getClientURLrootpath() %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("hosting.database") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" maxlength="250" name="client_database" value="<%= maintainHosting.getHosting().getClientDatabase() %>">
+            </td>
+          </tr>
+        </table>
+        <p>
+</div></div>
+<div id="Hosting_Licenses" class="Hosting_Licenses st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("hosting.license") %></th>
+            <th class="WCMinnerContentHeading1" align="right">
+              <a href="../license/index.jsp" target="_blank"><%= mytext.display("hosting.license.generate") %></a>
+            </th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.personal") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="personal_license" value="<%= maintainHosting.getHosting().getPersonalLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "personal_license") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.professional") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="professional_license" value="<%= maintainHosting.getHosting().getProfessionalLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "professional_license") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.enterprise") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="enterprise_license" value="<%= maintainHosting.getHosting().getEnterpriseLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "enterprise_license") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.hosting") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="hosting_license" value="<%= maintainHosting.getHosting().getHostingLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "hosting_license") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("hosting.license.addons") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.ecommerce") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="ecommerce_license" value="<%= maintainHosting.getHosting().getEcommerceLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "ecommerce_license") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.community") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="community_license" value="<%= maintainHosting.getHosting().getCommunityLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "community_license") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.databases") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="databases_license" value="<%= maintainHosting.getHosting().getDatabasesLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "databases_license") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.statistics") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="statistics_license" value="<%= maintainHosting.getHosting().getStatisticsLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "statistics_license") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.license.experience") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="experience_license" value="<%= maintainHosting.getHosting().getCustomerExperienceLicense() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "experience_license") %></font>&nbsp;
+            </td>
+          </tr>
+        </table>
+        <p>
+</div></div>
+<div id="Superadmin_Details" class="Superadmin_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("hosting.superadmin") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.username") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" name="superadmin" value="<%= maintainHosting.getHosting().getSuperadmin() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "superadmin") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.password") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" name="superadmin_password" value="<%= maintainHosting.getHosting().getSuperadminPassword() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "superadmin_password") %></font>&nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200" valign="top"><%= mytext.display("hosting.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="superadmin_email" value="<%= maintainHosting.getHosting().getSuperadminEmail() %>">
+              <br><font size="-1"><%= client_config.get(client_db, "superadmin_email") %></font>&nbsp;
+            </td>
+          </tr>
+        </table>
+        <p>
+</div></div>
+<div id="Hosting_Categories" class="Hosting_Categories st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("hosting.categories") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("hosting.categories.group") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("hosting.categories.type") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="hostinggroup">
+                <option value="<%= maintainHosting.getHosting().getHostinggroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value=""><%= mytext.display("none") %>
+                <%= maintainHosting.getHosting().Hostinggroup_select_options(db, maintainHosting.getHosting().getHostinggroup()) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="hostingtype">
+                <option value="<%= maintainHosting.getHosting().getHostingtype() %>"><%= mytext.display("pleaseselect") %>
+                <option value=""><%= mytext.display("none") %>
+                <%= maintainHosting.getHosting().Hostingtype_select_options(db, maintainHosting.getHosting().getHostingtype()) %> 
+              </select>
+            </td>
+          </tr>
+        </table>
+        <p>
+</div></div>
+<div id="Activation_Expiration" class="Activation_Expiration st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("hosting.activation") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("hosting.activation.activate") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_publish" name="scheduled_publish" value="<%= maintainHosting.getHosting().getScheduledPublish() %>"><input type="button" value="..." id="scheduled_publish_trigger">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("hosting.activation.activate.email") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <nobr>
+              <select id="scheduled_publish_email" name="scheduled_publish_email" style="width: 400px;">
+                <option value="<%= scheduled_publish_email.getId() %>"><%= scheduled_publish_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_publish_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_publish_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("hosting.activation.notify") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_notify" name="scheduled_notify" value="<%= maintainHosting.getHosting().getScheduledNotify() %>"><input type="button" value="..." id="scheduled_notify_trigger">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("hosting.activation.notify.email") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <nobr>
+              <select id="scheduled_notify_email" name="scheduled_notify_email" style="width: 400px;">
+                <option value="<%= scheduled_notify_email.getId() %>"><%= scheduled_notify_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_notify_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_notify_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("hosting.activation.expire") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_unpublish" name="scheduled_unpublish" value="<%= maintainHosting.getHosting().getScheduledUnpublish() %>"><input type="button" value="..." id="scheduled_unpublish_trigger">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("hosting.activation.expire.email") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <nobr>
+              <select id="scheduled_unpublish_email" name="scheduled_unpublish_email" style="width: 400px;">
+                <option value="<%= scheduled_unpublish_email.getId() %>"><%= scheduled_unpublish_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_unpublish_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_unpublish_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+        </table>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

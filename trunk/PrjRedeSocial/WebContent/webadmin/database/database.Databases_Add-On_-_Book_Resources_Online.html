@@ -1,0 +1,111 @@
+<img src="/webadmin/database/database.Databases_Add-On_-_Book_Resources_Online.gif" align="left">
+Booking application, which enables visitors/users to search for and book available resources. Enables registered visitors/users to view their bookings and website administrators to manage bookings.
+<br clear="all">
+
+<div class="import_parameters" style="display:none">
+
+<div>
+<h4>Resource Categories and Resources</h4>
+Please note that when you have imported the application the first thing you need to do is to add your resource categories and resources to custom databases. A resource category could for example be &quot;Single Room&quot; and a resource could for example be &quot;Room 204&quot;. If you enter &quot;Room&quot; in the Resource Type field below then resource categories should first be added to the &quot;Room Categories&quot; custom database and then actual resources can be added to the &quot;Room Resources&quot; custom database. 
+When you have ensured that you have the right resource categories and resources in the custom databases the booking application is ready for use.<br>
+<h4>Start Page</h4>
+If you for example enter &quot;Room&quot; in the Resource Type field below the name of the start page for your application is &quot;Room Booking&quot; and the page is located in the page group with the name &quot;Room Bookings&quot;. The start page will provide you with more details on how to use the application. The application will store bookings in the &quot;Room Bookings&quot; table.<br>
+</div>
+<div>
+<h4>Resource Type</h4>
+Enter a type name for your resources in the Resource Type input field below. You could for example enter &quot;Room&quot;, &quot;Laptop&quot; or &quot;Car&quot;. If you enter &quot;Room&quot; then all the pages for your room booking application will be located in the &quot;Room Bookings&quot; page group and the start page for your booking application is the &quot;Room Booking&quot; page.<br>
+<h5>Resource Type</h5>
+<input disabled type="text" name="import_resourcetype" value="Room"><br>
+</div>
+<div>
+<h4>Time Unit</h4>
+You can book resources spanning hours, nights or days. If you select Hour then resources can be booked for one or several hours and will be priced per hour. If you select Night then resources can be booked between two dates and will be priced by the number of nights between the two dates. If you select Day then  resources can be booked for one or several days, and will be priced by the number of days selected.<br><br>
+<input disabled type="radio" onclick="
+document.getElementById('import_ifformat').value=' %H:%M';
+document.getElementById('import_validateformat').value='datetime';
+document.getElementById('import_showstime').value='true';
+document.getElementById('import_calculateperiod').value='@@@extension:calculate(hours(###start time###,###end time###))@@@';
+document.getElementById('import_calculatetotalpricebook').value='@@@extension:calculate((###price###*(hours(###start time###,###end time###))):2)@@@';
+document.getElementById('import_calculatetotalpricevalidate').value='@@@extension:calculate((@@@include:database=@@@import:resourcetype@@@ Categories:id=###category_id###:Price@@@*(hours(###start time###,###end time###))):2)@@@';
+document.getElementById('import_managebookings1').value='-0hours';
+document.getElementById('import_administerbookings1').value='Start Time&amp;gt;-0hours:Start Time=-0days';
+document.getElementById('import_administerbookings2').value='Start Time&amp;lt;-0hours:End Time&amp;gt;=-0hours';
+document.getElementById('import_bookcheck').value='';
+document.getElementById('import_validatecheck').value='';
+" value="Hour" name="import_timeunit" checked="true">Hour<br>
+<input disabled type="radio" onclick="
+document.getElementById('import_ifformat').value='';
+document.getElementById('import_validateformat').value='date';
+document.getElementById('import_showstime').value='false';
+document.getElementById('import_calculateperiod').value='@@@extension:calculate(days(###start time###,###end time###)-1)@@@';
+document.getElementById('import_calculatetotalpricebook').value='@@@extension:calculate((###price###*(days(###start time###,###end time###)-1)):2)@@@';
+document.getElementById('import_calculatetotalpricevalidate').value='@@@extension:calculate((@@@include:database=@@@import:resourcetype@@@ Categories:id=###category_id###:Price@@@*(days(###start time###,###end time###)-1)):2)@@@';
+document.getElementById('import_managebookings1').value='-0days';
+document.getElementById('import_administerbookings1').value='Start Time=-0days';
+document.getElementById('import_administerbookings2').value='Start Time&amp;lt;=-1day:End Time&amp;gt;=-0days';
+document.getElementById('import_bookcheck').value='';
+document.getElementById('import_validatecheck').value='';
+" value="Night" name="import_timeunit">Night<br>
+<input disabled type="radio" onclick="
+document.getElementById('import_ifformat').value='';
+document.getElementById('import_validateformat').value='date';
+document.getElementById('import_showstime').value='false';
+document.getElementById('import_calculateperiod').value='@@@extension:calculate(days(###start time###,###end time###))@@@';
+document.getElementById('import_calculatetotalpricebook').value='@@@extension:calculate((###price###*(days(###start time###,###end time###))):2)@@@';
+document.getElementById('import_calculatetotalpricevalidate').value='@@@extension:calculate((@@@include:database=@@@import:resourcetype@@@ Categories:id=###category_id###:Price@@@*(days(###start time###,###end time###))):2)@@@';
+document.getElementById('import_managebookings1').value='-0days';
+document.getElementById('import_administerbookings1').value='Start Time=-0days';
+document.getElementById('import_administerbookings2').value='Start Time&amp;lt;=-1day:End Time&amp;gt;=-0days';
+document.getElementById('import_bookcheck').value='=';
+document.getElementById('import_validatecheck').value='=';
+" value="Day" name="import_timeunit">Day<br>
+<input disabled type="hidden" value=" %H:%M" name="import_ifformat" id="import_ifformat">
+<input disabled type="hidden" value="datetime" name="import_validateformat" id="import_validateformat">
+<input disabled type="hidden" value="true" name="import_showstime" id="import_showstime">
+<input disabled type="hidden" value="@@@extension:calculate(hours(###start time###,###end time###))@@@" name="import_calculateperiod" id="import_calculateperiod">
+<input disabled type="hidden" value="@@@extension:calculate((###price###*(hours(###start time###,###end time###))):2)@@@" name="import_calculatetotalpricebook" id="import_calculatetotalpricebook">
+<input disabled type="hidden" value="@@@extension:calculate((@@@include:database=@@@import:resourcetype@@@ Categories:id=###category_id###:Price@@@*(hours(###start time###,###end time###))):2)@@@" name="import_calculatetotalpricevalidate" id="import_calculatetotalpricevalidate">
+<input disabled type="hidden" value="-0hours" name="import_managebookings1" id="import_managebookings1">
+<input disabled type="hidden" value="Start Time&amp;gt;-0hours:Start Time=-0days" name="import_administerbookings1" id="import_administerbookings1">
+<input disabled type="hidden" value="Start Time&amp;lt;-0hours:End Time&amp;gt;=-0hours" name="import_administerbookings2" id="import_administerbookings2">
+<input disabled type="hidden" value="" name="import_bookcheck" id="import_bookcheck">
+<input disabled type="hidden" value="" name="import_validatecheck" id="import_validatecheck">
+</div>
+<div>
+<h4>Default Capacity</h4>
+The booking module enables you to assign a capacity to each resource category. If you have two resource categories, which are single rooms for 1 adult and double rooms for 2 adults the capacity for the single rooms would be 1 and the capacity for the double rooms would be 2. Enter the default capacity your visitors/users should see when booking.<br><br>
+<input disabled type="text" name="import_capacities" value="1">
+</div>
+<div>
+<h4>Access to Book</h4>
+Access to book resources can be completely public or for registered visitors/users only. If you want access to book resources to be public please select Public below. If you want access to book resources to be for registered visitors/users only please select Private below.<br><br>
+<input disabled type="radio" onclick="document.getElementById('import_bookingdatabasecreate').value='0'" value="" name="import_bookingpageview" checked="true">Public<br>
+<input disabled type="radio" onclick="document.getElementById('import_bookingdatabasecreate').value='*'" value="*" name="import_bookingpageview">Private<br>
+<input disabled type="hidden" value="0" name="import_bookingdatabasecreate" id="import_bookingdatabasecreate">
+</div>
+<div>
+<h4>Resource Selection</h4>
+You may have several resources in each resource category.  For example you may have &quot;Room1&quot; and &quot;Room2&quot;, which are both in the &quot;Single Room&quot; resource category and &quot;Room3&quot;, which is in the &quot;Double Room&quot; category. Please select if visitors/users should be able to select specific resources (e.g. &quot;Room2&quot;) or resource categories (e.g. &quot;Single Room&quot;).<br><br>
+<input disabled type="radio" onclick="document.getElementById('import_specificentry').value='11';document.getElementById('import_specificresourcenamea').value='';document.getElementById('import_specificresourcenameb').value='';document.getElementById('import_specificresourcenamec').value='';document.getElementById('import_specificresourcenamed').value='';document.getElementById('import_specificresourcenamee').value='';document.getElementById('import_specificresourcenamef').value='';" value="" name="import_bookingspecific" checked="true">Resource Category<br>
+<input disabled type="radio" onclick="document.getElementById('import_specificentry').value='74';document.getElementById('import_specificresourcenamea').value='@@@include:database=@@@import:resourcetype@@@ Resources:id=###resource_id###:Name@@@ /';document.getElementById('import_specificresourcenameb').value='###resourcename### / ';document.getElementById('import_specificresourcenamec').value='@@@Resource Name@@@ /';document.getElementById('import_specificresourcenamed').value='Resource / ';document.getElementById('import_specificresourcenamee').value='@@@include:database=@@@import:resourcetype@@@ Resources:id=@@@Resource@@@:Name@@@ / ';document.getElementById('import_specificresourcenamef').value='@@@list:database=LLPResource Resources:entry=75:id=@@@include:database=@@@import:resourcetype@@@ Bookings:id=###data_id###:Resource@@@@@@ / ';" value="*" name="import_bookingspecific">Specific Resource<br>
+<input disabled type="hidden" value="11" name="import_specificentry" id="import_specificentry">
+<input disabled type="hidden" value="" name="import_specificresourcenamea" id="import_specificresourcenamea">
+<input disabled type="hidden" value="" name="import_specificresourcenameb" id="import_specificresourcenameb">
+<input disabled type="hidden" value="" name="import_specificresourcenamec" id="import_specificresourcenamec">
+<input disabled type="hidden" value="" name="import_specificresourcenamed" id="import_specificresourcenamed">
+<input disabled type="hidden" value="" name="import_specificresourcenamee" id="import_specificresourcenamee">
+<input disabled type="hidden" value="" name="import_specificresourcenamef" id="import_specificresourcenamef">
+</div>
+<div>
+<h4>View Bookings</h4>
+The application includes pages, which enable administrators to view and manage bookings. In addition you can choose to include a page, which enables any registered visitor/user to view existing bookings. If you wish to include this page please select Any Registered Visitor/User below.<br><br>
+<input disabled type="radio" onclick="document.getElementById('import_availabilitylink').value='View Availability'" value="*" name="import_bookingdatabaseview" checked="true">Any Registered Visitor/User<br>
+<input disabled type="radio" onclick="document.getElementById('import_availabilitylink').value=''" value="=" name="import_bookingdatabaseview">Only Administrators<br>
+<input disabled type="hidden" value="View Availability" name="import_availabilitylink" id="import_availabilitylink">
+</div>
+<div>
+<h4>Advanced Access Restrictions</h4>
+If you are using the Small Business Edition or the Professional Edition of the web content management system you can easily change the access restrictions for the booking application after it has been imported. The application's pages are divided into various page types and access restrictions for the corresponding content types can be modified. The actual booking pages are located in the &quot;Room Booking&quot; page type. The pages that enable users to manage their bookings are located in the &quot;Room Manage&quot; page type. Administration pages are located in the &quot;Room Admin&quot; page type. In addition you can of course also change access restrictions for each of the custom databases.<br>
+</div>
+
+</div>

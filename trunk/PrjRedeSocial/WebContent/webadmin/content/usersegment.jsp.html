@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<link rel="stylesheet" type="text/css" href="/<%= mytext.display("adminpath") %>/webadmin.css">
+<link rel="stylesheet" type="text/css" href="/<%= mytext.display("adminpath") %>/dtree.css">
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/json/json2.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/webadmin.js"></script>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("content.index.usersegment.title") %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+function initOptions() {
+	var inputnode = document.getElementById('master');
+	if (inputnode && inputnode.options) {
+		var inputoptions = '';
+		if (document.location.search) {
+			inputoptions = GET('/<%= mytext.display("adminpath") %>/content/index.create.jsp'+document.location.search+'&<%= Math.random() %>');
+		} else {
+			inputoptions = GET('/<%= mytext.display("adminpath") %>/content/index.create.jsp'+'?<%= Math.random() %>');
+		}
+		// MSIE may not set OPTIONS correctly through innerHTML - clear and add OPTIONS through DOM
+//		inputnode.innerHTML = "";
+		var myoptions = inputoptions.split("\n");
+		for (var i=0; i<myoptions.length; i++) {
+			var regexpOption = new RegExp('<option value="(.*)">(.*)</option>', "gi");
+			var mymatch = regexpOption.exec(myoptions[i]);
+			if (mymatch) {
+				var myvalue = "" + mymatch[1];
+				var mytext = "" + mymatch[2];
+				if (myvalue != "") {
+					myoption = document.createElement("option");
+					//myoption.appendChild(document.createTextNode(mytext));
+					myoption.innerHTML = mytext; // use innerHTML instead of CreateTextNode to handle special characters
+					myoption.setAttribute("value", myvalue);
+					inputnode.appendChild(myoption);
+				}
+			}
+		}
+		if (document.all) inputnode.outerHTML = inputnode.outerHTML;
+	}
+}
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contenttitle;
+		var contentid;
+		var contenthref;
+		if (inputnode.selectedIndex >= 0) {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		contenttitle = encodeURIComponent(contenttitle);
+		var webeditor = {};
+		if (! webeditor.window_close) {
+			webeditor.window_close = function(mywindow) {
+				if (webeditor_custom_window_close) {
+					try {
+						webeditor_custom_window_close(mywindow);
+					} catch(e) {
+					}
+				} else {
+					mywindow.close();
+				}
+			}
+		}
+		if (! webeditor.window_open) {
+			webeditor.window_open = function(url, name, width, height, specs, replacehistory) {
+				if (webeditor_custom_window) {
+					try {
+						return webeditor_custom_window(url, name, width, height, specs, replacehistory);
+					} catch(e) {
+					}
+				} else {
+					return window.open(url, name, specs, replacehistory);
+				}
+			}
+		}
+		if (! webeditor.selectContentItem) {
+			webeditor.selectContentItem = selectContentItem;
+		}
+		if (! top.webeditor.window_proxy) top.webeditor.window_proxy = {};
+		top.webeditor.window_proxy['usersegmentselector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=usersegmentselector&input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function getContentItem(contentid) {
+	var content = GET('/<%= mytext.display("adminpath") %>/content/usersegment_content.jsp?id='+contentid+'&<%= Math.random() %>');
+	var contents = content.split(":::");
+	var contentdata = {};
+	contentdata.id = contents[0];
+	contentdata.version_master = contents[1];
+	contentdata.version = contents[2];
+	contentdata.device = contents[3];
+	contentdata.usersegment = contents[4];
+	contentdata.usertest = contents[5];
+	contentdata.title = contents[6];
+	return contentdata;
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		inputnode.options[0].text = contenttitle;
+		inputnode.options[0].value = contentid;
+		inputnode.selectedIndex = 0;
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+	if (inputid == "master") {
+		mastercontent = getContentItem(contentid);
+	} else if (inputid == "variant") {
+		variantcontent = getContentItem(contentid);
+	}
+	validateSelected();
+}
+
+var mastercontent = false;
+var variantcontent = false;
+
+function validateSelected() {
+	var myerror = document.getElementById("error");
+	var myform = document.getElementById("form");
+	var myid = document.getElementById("id");
+	var myversionmaster = document.getElementById("version_master");
+	var mymaster = document.getElementById("master");
+	var myvariant = document.getElementById("variant");
+	var myusersegment = document.getElementById("usersegment");
+	var mysubmit = document.getElementById("submit");
+
+	if ((mymaster.value != "") && ((! mastercontent) || (mastercontent.id != mymaster.value))) {
+		mastercontent = getContentItem(mymaster.value);
+	}
+	if ((myvariant.value != "") && ((! variantcontent) || (variantcontent.id != myvariant.value))) {
+		variantcontent = getContentItem(mymaster.value);
+	}
+
+	if (mastercontent && variantcontent && (mymaster.value != "") && (myvariant.value != "") && (variantcontent.version_master != "") && (variantcontent.version_master != "0") && (variantcontent.version_master != mastercontent.id)) {
+  		myform.action='#';
+		mysubmit.disabled = true;
+		myerror.innerHTML = '<%= mytext.display("content.index.usersegment.master.error") %>';
+	} else if (mastercontent && variantcontent && (mymaster.value != "") && (myvariant.value != "") && (mastercontent.usersegment != "")) {
+  		myform.action='#';
+		mysubmit.disabled = true;
+		myerror.innerHTML = '<%= mytext.display("content.index.usersegment.variant.error") %>';
+	} else if (mastercontent && variantcontent && (mymaster.value != "") && (myvariant.value != "") && (myusersegment.value != "")) {
+ 		myform.action='update.jsp';
+          	myid.value = myvariant.value;
+          	myversionmaster.value = mymaster.value;
+		if ((mymaster.value != "") && mastercontent && (mastercontent.version_master != '') && (mastercontent.version_master != '0')) {
+			myversionmaster.value = mastercontent.version_master;
+		}
+		mysubmit.disabled = false;
+		myerror.innerHTML = "&nbsp;";
+	} else if (mastercontent && (mymaster.value != "") && (myvariant.value == "") && (myusersegment.value != "")) {
+          	myform.action='create.jsp';
+          	myid.value = mymaster.value;
+          	myversionmaster.value = mymaster.value;
+		mysubmit.disabled = false;
+		myerror.innerHTML = "&nbsp;";
+	} else {
+       		myform.action='#';
+		mysubmit.disabled = true;
+		myerror.innerHTML = "&nbsp;";
+	}
+}
+
+</script>
+
+<!-- #EndEditable -->
+</head>
+<body>
+          
+      <form id="form" method="GET" action="#" target="_top">
+      	<input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/content/index.jsp?segment=<%= html.encode(myrequest.getParameter("usersegment")) %>&usertest= &heatmap= &menu=experience&<%= Math.random() %>">
+      	<input type="hidden" id="id" name="id" value="">
+      	<input type="hidden" id="version_master" name="version_master" value="">
+
+        <div style="margin-top: 50px; margin-left: 100px; margin-right: 100px;">
+
+          <div class="WCMinnerContentHeading1"><%= mytext.display("content.index.usersegment.heading") %></div>
+          <div class="WCMinnerContentIntro"><%= mytext.display("content.index.usersegment.intro") %></div>
+          <div class="WCMerror" id="error">&nbsp;</div>
+          <div>&nbsp;</div>
+
+          <div class="WCMinnerContentHeading2"><%= mytext.display("content.index.usersegment.master") %></div>
+          <select id="master" name="master" style="width: 400px;" onchange="validateSelected()">
+            <option value=""><%= mytext.display("content.index.usersegment.master.select") %></option>
+          </select>
+          <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('master', '', '', '', '');">
+          <div>&nbsp;</div>
+
+          <div class="WCMinnerContentHeading2"><%= mytext.display("content.index.usersegment.variant") %></div>
+          <select id="variant" name="variant" style="width: 400px;" onchange="validateSelected()">
+            <option value=""><%= mytext.display("content.index.usersegment.variant.select") %></option>
+            <option value=""><%= mytext.display("new") %></option>
+          </select>
+          <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('variant', '', '', '', '');">
+          <div>&nbsp;</div>
+
+          <div class="WCMinnerContentHeading2"><%= mytext.display("content.index.usersegment.usersegment") %></div>
+          <select id="usersegment" name="usersegment" style="width: 400px;" onchange="validateSelected()">
+            <option value="<%= html.encode(myrequest.getParameter("usersegment")) %>"><%= html.encode(myrequest.getParameter("usersegment")) %></option>
+          </select>
+          <div>&nbsp;</div>
+
+        </div>
+
+        <div align="center">
+          <input type="submit" value="<%= mytext.display("ok") %>" id="submit" disabled>
+          <input type="button" value="<%= mytext.display("cancel") %>" onclick="top.webeditor.window_close(top);">
+        </div>
+
+      </form>
+</body>
+<!-- #EndTemplate --></html>

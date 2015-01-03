@@ -1,0 +1,249 @@
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Management System">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('selectorlistfilter_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+
+function openit(section,category,title) {
+<% if ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) && (myconfig.get(db, "use_contentdefinition").equals("yes")) && (! myrequest.getParameter("section").equals("Users"))) { %>
+	if ((category != 'contenttype') && (category != 'contentgroup') && (category != 'imagetype') && (category != 'imagegroup') && (category != 'filetype') && (category != 'filegroup') && (category != 'linktype') && (category != 'linkgroup') && (category != 'producttype') && (category != 'productgroup')) {
+		if (document.getElementById) {
+			document.getElementById('create').href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_creategrouptype')) + '\');';
+			document.getElementById('update').href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_updategrouptype')) + '\');';
+			document.getElementById('delete').href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_deletegrouptype')) + '\');';
+		} else if (document.all) {
+			document.all['create'].href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_creategrouptype')) + '\');';
+			document.all['update'].href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_updategrouptype')) + '\');';
+			document.all['delete'].href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_deletegrouptype')) + '\');';
+		}
+	} else {
+		if (document.getElementById) {
+			document.getElementById('create').href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>selectorcategory_wcm.jsp?action=Create&section='+section+'&category='+category+'&title='+title+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+			if (title != '') {
+				document.getElementById('update').href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>selectorcategory_wcm.jsp?action=Update&section='+section+'&category='+category+'&title='+title+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+				document.getElementById('delete').href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>selectorcategory_wcm.jsp?action=Delete&section='+section+'&category='+category+'&title='+title+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+			} else {
+				document.getElementById('update').href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_updategrouptype')) + '\');';
+				document.getElementById('delete').href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_deletegrouptype')) + '\');';
+			}
+		} else if (document.all) {
+			document.all['create'].href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>selectorcategory_wcm.jsp?action=Create&section='+section+'&category='+category+'&title='+title+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+			if (title != '') {
+				document.all['update'].href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>selectorcategory_wcm.jsp?action=Update&section='+section+'&category='+category+'&title='+title+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+				document.all['delete'].href = '<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>selectorcategory_wcm.jsp?action=Delete&section='+section+'&category='+category+'&title='+title+'&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %><% } else { %>javascript:;<% } %>';
+			} else {
+				document.all['update'].href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_updategrouptype')) + '\');';
+				document.all['delete'].href = 'javascript:alert(\'' + HtmlDecode(Text('selectorlistfilter_deletegrouptype')) + '\');';
+			}
+		}
+	}
+<% } %>
+	parent.ready_section = section;
+	parent.ready_category = category;
+	parent.ready_title = title;
+	if (parent.selectorlist && parent.selectorlist.selectorlistMenu) parent.selectorlist.selectorlistMenu.clearCookie();
+	if (parent.selectorlist && parent.selectorlist.location) parent.selectorlist.location.href = 'selectorlist_wcm.jsp?editor=' + editor + '&section='+section+'&category='+category+'&title='+encodeURIComponent(title);
+}
+
+</script>
+</head>
+<body onload="parent.selectorlistfilter_ready();">
+<div class="dtree">
+<% if ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) && (myconfig.get(db, "use_contentdefinition").equals("yes")) && (! myrequest.getParameter("section").equals("Users"))) { %>
+	<a id="create" target="selectorinsert" href="javascript:alert(HtmlDecode(Text('selectorlistfilter_creategrouptype')));"><img src="dtree/folder.gif"><script type="text/javascript">document.write(Text('selectorlistfilter_create'));</script></a>
+	<a id="update" target="selectorinsert" href="javascript:alert(HtmlDecode(Text('selectorlistfilter_updategrouptype')));"><img src="dtree/folder.gif"><script type="text/javascript">document.write(Text('selectorlistfilter_update'));</script></a>
+	<a id="delete" target="selectorinsert" href="javascript:alert(HtmlDecode(Text('selectorlistfilter_deletegrouptype')));"><img src="dtree/trash.gif"><script type="text/javascript">document.write(Text('selectorlistfilter_delete'));</script></a>
+<% } else { %>
+	&nbsp;
+<% } %>
+</div>
+<hr>
+<div class="dtree">
+	<script type="text/javascript">
+		<!--
+		menuitem = 0;
+		selectorlistfilterMenu = new dTree('selectorlistfilterMenu');
+		selectorlistfilterMenu.clearCookie();
+		menuitem_selectors = menuitem;
+if (parent.tag["section"] == "Users") {
+		selectorlistfilterMenu.add(menuitem++,-1,Text('selectorlistfilter_users'),'');
+} else {
+		selectorlistfilterMenu.add(menuitem++,-1,Text('selectorlistfilter_content'),'');
+}
+var folderopened = (parent.tag["section"] != "");
+var subfolderopened = (parent.tag["section"] != "");
+if ((parent.tag["section"] == "Pages") || (parent.tag["section"] == "")) {
+		menuitem_pages = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_pages'),'javascript:openit(\'Pages\',\'\',\'' + Text('selectorlistfilter_pages') + '\')','','',folderopened,'imgfolder.gif');
+<% if (myconfig.get(db, "use_contentgroups").equals("yes")) { %>
+		menuitem_pages_groups = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_pages,Text('selectorlistfilter_pagegroups'),'javascript:openit(\'Pages\',\'contentgroup\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_pages_groups,'<%= mytext.display("none") %>','javascript:openit(\'Pages\',\'contentgroup\',\'-\')','','','','imgfolder.gif');
+		<%= Contentgroup.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_pages_groups,'", "','javascript:openit(\\'Pages\\',\\'contentgroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+<% if (myconfig.get(db, "use_contenttypes").equals("yes")) { %>
+		menuitem_pages_types = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_pages,Text('selectorlistfilter_pagetypes'),'javascript:openit(\'Pages\',\'contenttype\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_pages_types,'<%= mytext.display("none") %>','javascript:openit(\'Pages\',\'contenttype\',\'-\')','','','','imgfolder.gif');
+		<%= Contenttype.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_pages_types,'", "','javascript:openit(\\'Pages\\',\\'contenttype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+}
+if ((parent.tag["section"] == "Elements") || (parent.tag["section"] == "")) {
+		menuitem_elements = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_elements'),'javascript:openit(\'Elements\',\'\',\'' + Text('selectorlistfilter_elements') + '\')','','',folderopened,'imgfolder.gif');
+<% if (myconfig.get(db, "use_contentclasses").equals("yes")) { %>
+if ((parent.tag["category"] == "contentclass") || (parent.tag["category"] == "")) {
+		menuitem_elements_classes = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_elements,Text('selectorlistfilter_classes'),'javascript:openit(\'Elements\',\'contentclass\',\'\')','','',subfolderopened,'');
+		<%= Element.dtree_options(db, "selectorlistfilterMenu.add(menuitem++,menuitem_elements_classes,'", "','javascript:openit(\\'Elements\\',\\'contentclass\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n") %> 
+}
+<% } %>
+<% if (myconfig.get(db, "use_contentgroups").equals("yes")) { %>
+if ((parent.tag["category"] == "contentgroup") || (parent.tag["category"] == "")) {
+		menuitem_elements_groups = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_elements,Text('selectorlistfilter_pagegroups'),'javascript:openit(\'Elements\',\'contentgroup\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_elements_groups,'<%= mytext.display("none") %>','javascript:openit(\'Elements\',\'contentgroup\',\'-\')','','','','imgfolder.gif');
+		<%= Contentgroup.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_elements_groups,'", "','javascript:openit(\\'Elements\\',\\'contentgroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+}
+<% } %>
+<% if (myconfig.get(db, "use_contenttypes").equals("yes")) { %>
+if ((parent.tag["category"] == "contenttype") || (parent.tag["category"] == "")) {
+		menuitem_elements_types = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_elements,Text('selectorlistfilter_pagetypes'),'javascript:openit(\'Elements\',\'contenttype\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_elements_types,'<%= mytext.display("none") %>','javascript:openit(\'Elements\',\'contenttype\',\'-\')','','','','imgfolder.gif');
+		<%= Contenttype.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_elements_types,'", "','javascript:openit(\\'Elements\\',\\'contenttype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+}
+<% } %>
+}
+if ((parent.tag["section"] == "Images") || (parent.tag["section"] == "")) {
+		menuitem_images = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_images'),'javascript:openit(\'Images\',\'\',\'' + Text('selectorlistfilter_images') + '\')','','',folderopened,'imgfolder.gif');
+<% if (myconfig.get(db, "use_imagegroups").equals("yes")) { %>
+		menuitem_images_groups = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_images,Text('selectorlistfilter_imagegroups'),'javascript:openit(\'Images\',\'imagegroup\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_images_groups,'<%= mytext.display("none") %>','javascript:openit(\'Images\',\'imagegroup\',\'-\')','','','','imgfolder.gif');
+		<%= Imagegroup.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_images_groups,'", "','javascript:openit(\\'Images\\',\\'imagegroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+<% if (myconfig.get(db, "use_imagetypes").equals("yes")) { %>
+		menuitem_images_types = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_images,Text('selectorlistfilter_imagetypes'),'javascript:openit(\'Images\',\'imagetype\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_images_types,'<%= mytext.display("none") %>','javascript:openit(\'Images\',\'imagetype\',\'-\')','','','','imgfolder.gif');
+		<%= Imagetype.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_images_types,'", "','javascript:openit(\\'Images\\',\\'imagetype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+}
+if ((parent.tag["section"] == "Files") || (parent.tag["section"] == "")) {
+		menuitem_files = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_files'),'javascript:openit(\'Files\',\'\',\'' + Text('selectorlistfilter_files') + '\')','','',folderopened,'imgfolder.gif');
+<% if (myconfig.get(db, "use_filegroups").equals("yes")) { %>
+		menuitem_files_groups = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_files,Text('selectorlistfilter_filegroups'),'javascript:openit(\'Files\',\'filegroup\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_files_groups,'<%= mytext.display("none") %>','javascript:openit(\'Files\',\'filegroup\',\'-\')','','','','imgfolder.gif');
+		<%= Filegroup.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_files_groups,'", "','javascript:openit(\\'Files\\',\\'filegroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+<% if (myconfig.get(db, "use_filetypes").equals("yes")) { %>
+		menuitem_files_types = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_files,Text('selectorlistfilter_filetypes'),'javascript:openit(\'Files\',\'filetype\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_files_types,'<%= mytext.display("none") %>','javascript:openit(\'Files\',\'filetype\',\'-\')','','','','imgfolder.gif');
+		<%= Filetype.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_files_types,'", "','javascript:openit(\\'Files\\',\\'filetype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+}
+if ((parent.tag["section"] == "Links") || (parent.tag["section"] == "")) {
+		menuitem_links = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_links'),'javascript:openit(\'Links\',\'\',\'' + Text('selectorlistfilter_links') + '\')','','',folderopened,'imgfolder.gif');
+<% if (myconfig.get(db, "use_linkgroups").equals("yes")) { %>
+		menuitem_links_groups = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_links,Text('selectorlistfilter_linkgroups'),'javascript:openit(\'Links\',\'linkgroup\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_links_groups,'<%= mytext.display("none") %>','javascript:openit(\'Links\',\'linkgroup\',\'-\')','','','','imgfolder.gif');
+		<%= Linkgroup.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_links_groups,'", "','javascript:openit(\\'Links\\',\\'linkgroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+<% if (myconfig.get(db, "use_linktypes").equals("yes")) { %>
+		menuitem_links_types = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_links,Text('selectorlistfilter_linktypes'),'javascript:openit(\'Links\',\'linktype\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_links_types,'<%= mytext.display("none") %>','javascript:openit(\'Links\',\'linktype\',\'-\')','','','','imgfolder.gif');
+		<%= Linktype.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_links_types,'", "','javascript:openit(\\'Links\\',\\'linktype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+}
+if ((parent.tag["section"] == "Products") || (parent.tag["section"] == "") || (parent.tag["section"] == "Pages")) {
+		<% if (License.valid(db, myconfig, "ecommerce")) { %>
+		menuitem_products = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_products'),'javascript:openit(\'Products\',\'\',\'' + Text('selectorlistfilter_products') + '\')','','',folderopened,'imgfolder.gif');
+<% if (myconfig.get(db, "use_productgroups").equals("yes")) { %>
+		menuitem_products_groups = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_products,Text('selectorlistfilter_productgroups'),'javascript:openit(\'Products\',\'productgroup\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_products_groups,'<%= mytext.display("none") %>','javascript:openit(\'Products\',\'productgroup\',\'-\')','','','','imgfolder.gif');
+		<%= Productgroup.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_products_groups,'", "','javascript:openit(\\'Products\\',\\'productgroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+<% if (myconfig.get(db, "use_producttypes").equals("yes")) { %>
+		menuitem_products_types = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_products,Text('selectorlistfilter_producttypes'),'javascript:openit(\'Products\',\'producttype\',\'\')','','',subfolderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_products_types,'<%= mytext.display("none") %>','javascript:openit(\'Products\',\'producttype\',\'-\')','','','','imgfolder.gif');
+		<%= Producttype.dtree_options("selectorlistfilterMenu.add(menuitem++,menuitem_products_types,'", "','javascript:openit(\\'Products\\',\\'producttype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n", db, myconfig, mysession) %> 
+<% } %>
+		<% } %>
+}
+if ((parent.tag["section"] == "Templates") || (parent.tag["section"] == "")) {
+		menuitem_templates = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_templates'),'javascript:openit(\'Templates\',\'\',\'' + Text('selectorlistfilter_templates') + '\')','','',folderopened,'imgfolder.gif');
+}
+if ((parent.tag["section"] == "Style Sheets") || (parent.tag["section"] == "")) {
+		menuitem_stylesheets = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_stylesheets'),'javascript:openit(\'Style Sheets\',\'\',\'' + Text('selectorlistfilter_stylesheets') + '\')','','',folderopened,'imgfolder.gif');
+}
+if ((parent.tag["section"] == "Scripts") || (parent.tag["section"] == "")) {
+		menuitem_scripts = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_scripts'),'javascript:openit(\'Scripts\',\'\',\'' + Text('selectorlistfilter_scripts') + '\')','','',folderopened,'imgfolder.gif');
+}
+if (parent.tag["section"] == "Users") {
+		menuitem_users = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_administrators'),'javascript:openit(\'Users\',\'administrator\',\'' + Text('selectorlistfilter_administrators') + '\')','','',folderopened,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_selectors,Text('selectorlistfilter_users'),'javascript:openit(\'Users\',\'\',\'' + Text('selectorlistfilter_users') + '\')','','',folderopened,'imgfolder.gif');
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+		menuitem_users_groups = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_users,Text('selectorlistfilter_usergroups'),'','','',true,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_users_groups,'<%= mytext.display("none") %>','javascript:openit(\'Users\',\'usergroup\',\'-\')','','','','imgfolder.gif');
+		<%= Usergroup.dtree_options(db, "selectorlistfilterMenu.add(menuitem++,menuitem_users_groups,'", "','javascript:openit(\\'Users\\',\\'usergroup\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n") %> 
+<% } %>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+		menuitem_users_types = menuitem;
+		selectorlistfilterMenu.add(menuitem++,menuitem_users,Text('selectorlistfilter_usertypes'),'','','',true,'');
+		selectorlistfilterMenu.add(menuitem++,menuitem_users_types,'<%= mytext.display("none") %>','javascript:openit(\'Users\',\'usertype\',\'-\')','','','','imgfolder.gif');
+		<%= Usertype.dtree_options(db, "selectorlistfilterMenu.add(menuitem++,menuitem_users_types,'", "','javascript:openit(\\'Users\\',\\'usertype\\',\\'", "\\')','','','','imgfolder.gif');" + "\r\n") %> 
+<% } %>
+}
+		selectorlistfilterMenu.draw();
+		//-->
+	</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,688 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('colour_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+var editor = requestParameter("editor");
+var webeditor;
+if ((typeof(webeditor) == "undefined") && editor && window && window.parent && window.parent.opener && window.parent.opener[editor] && window.parent.opener[editor].window_close) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window && window.opener && window.opener[editor] && window.opener[editor].window_close) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top.opener && top.opener[editor] && top.opener[editor].window_close) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor] && top[editor].window_close) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor] && parent[editor].window_close) webeditor = parent[editor];
+if ((typeof(webeditor) == "undefined") && editor && window && window.parent && window.parent.opener && window.parent.opener.webeditor && window.parent.opener.webeditor.window_proxy && window.parent.opener.webeditor.window_proxy[editor]) webeditor = window.parent.opener.webeditor.window_proxy[editor];
+if ((typeof(webeditor) == "undefined") && editor && window && window.opener && window.opener.webeditor && window.opener.webeditor.window_proxy && window.opener.webeditor.window_proxy[editor]) webeditor = window.opener.webeditor.window_proxy[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top.opener && top.opener.webeditor && top.opener.webeditor.window_proxy && top.opener.webeditor.window_proxy[editor]) webeditor = top.opener.webeditor.window_proxy[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top.webeditor && top.webeditor.window_proxy && top.webeditor.window_proxy[editor]) webeditor = top.webeditor.window_proxy[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent.webeditor && parent.webeditor.window_proxy && parent.webeditor.window_proxy[editor]) webeditor = parent.webeditor.window_proxy[editor];
+var attribute = requestParameter("attribute");
+
+function selectColour(value) {
+	document.forms[0].colour.value=value;
+}
+
+function setColour(value) {
+	try {
+		webeditor[attribute](value);
+	} catch(e) {
+		if (webeditor.setColour) webeditor.setColour(value);
+	}
+	webeditor.window_close(window);
+}
+
+function initColours() {
+	var colour = document.getElementsByTagName('TD');
+	for (var i=0; i<colour.length; i++) {
+		if (colour[i].className == "webeditor_colour") {
+			colour[i].onmouseover = webeditor_colour_mouseover;
+			colour[i].onmouseout = webeditor_colour_mouseout;
+			colour[i].onclick = webeditor_colour_click;
+		}
+	}
+}
+
+function webeditor_colour_mouseover() {
+	this.className = "webeditor_colour_mouseover";
+	window.status = "#" + this.id.substring(4);
+}
+
+function webeditor_colour_mouseout() {
+	this.className = "webeditor_colour";
+}
+
+function webeditor_colour_click() {
+	selectColour("#" + this.id.substring(4));
+}
+
+</script>
+</head>
+<body bgcolor="white" onLoad="initColours();">
+<div align="center">
+<form action="#">
+<table summary="" border="0" cellpadding="0" cellspacing="0">
+  <tr> 
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_FFFFFF" bgcolor="#FFFFFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_EEEEEE" bgcolor="#EEEEEE" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_DDDDDD" bgcolor="#DDDDDD" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CCCCCC" bgcolor="#CCCCCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_BBBBBB" bgcolor="#BBBBBB" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_FF0000" bgcolor="#FF0000" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF3300" bgcolor="#FF3300" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF6600" bgcolor="#FF6600" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF9900" bgcolor="#FF9900" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FFCC00" bgcolor="#FFCC00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FF0033" bgcolor="#FF0033" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF3333" bgcolor="#FF3333" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF6633" bgcolor="#FF6633" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF9933" bgcolor="#FF9933" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FFCC33" bgcolor="#FFCC33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FF0066" bgcolor="#FF0066" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF3366" bgcolor="#FF3366" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF6666" bgcolor="#FF6666" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF9966" bgcolor="#FF9966" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FFCC66" bgcolor="#FFCC66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FF0099" bgcolor="#FF0099" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF3399" bgcolor="#FF3399" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF6699" bgcolor="#FF6699" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF9999" bgcolor="#FF9999" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FFCC99" bgcolor="#FFCC99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FF00CC" bgcolor="#FF00CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF33CC" bgcolor="#FF33CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF66CC" bgcolor="#FF66CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FF99CC" bgcolor="#FF99CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_FFCCCC" bgcolor="#FFCCCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_FFFF00" bgcolor="#FFFF00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FFFF33" bgcolor="#FFFF33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FFFF66" bgcolor="#FFFF66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FFFF99" bgcolor="#FFFF99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FFFFCC" bgcolor="#FFFFCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_00FF00" bgcolor="#00FF00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_00FF33" bgcolor="#00FF33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_00FF66" bgcolor="#00FF66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_00FF99" bgcolor="#00FF99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_00FFCC" bgcolor="#00FFCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_33FF00" bgcolor="#33FF00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_33FF33" bgcolor="#33FF33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_33FF66" bgcolor="#33FF66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_33FF99" bgcolor="#33FF99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_33FFCC" bgcolor="#33FFCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_66FF00" bgcolor="#66FF00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_66FF33" bgcolor="#66FF33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_66FF66" bgcolor="#66FF66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_66FF99" bgcolor="#66FF99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_66FFCC" bgcolor="#66FFCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_99FF00" bgcolor="#99FF00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_99FF33" bgcolor="#99FF33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_99FF66" bgcolor="#99FF66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_99FF99" bgcolor="#99FF99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_99FFCC" bgcolor="#99FFCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CCFF00" bgcolor="#CCFF00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CCFF33" bgcolor="#CCFF33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CCFF66" bgcolor="#CCFF66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CCFF99" bgcolor="#CCFF99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CCFFCC" bgcolor="#CCFFCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_00FFFF" bgcolor="#00FFFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_33FFFF" bgcolor="#33FFFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_66FFFF" bgcolor="#66FFFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_99FFFF" bgcolor="#99FFFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CCFFFF" bgcolor="#CCFFFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_0000FF" bgcolor="#0000FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_0033FF" bgcolor="#0033FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_0066FF" bgcolor="#0066FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_0099FF" bgcolor="#0099FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_00CCFF" bgcolor="#00CCFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_3300FF" bgcolor="#3300FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_3333FF" bgcolor="#3333FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_3366FF" bgcolor="#3366FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_3399FF" bgcolor="#3399FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_33CCFF" bgcolor="#33CCFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_6600FF" bgcolor="#6600FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_6633FF" bgcolor="#6633FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_6666FF" bgcolor="#6666FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_6699FF" bgcolor="#6699FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_66CCFF" bgcolor="#66CCFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_9900FF" bgcolor="#9900FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_9933FF" bgcolor="#9933FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_9966FF" bgcolor="#9966FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_9999FF" bgcolor="#9999FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_99CCFF" bgcolor="#99CCFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CC00FF" bgcolor="#CC00FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC33FF" bgcolor="#CC33FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC66FF" bgcolor="#CC66FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC99FF" bgcolor="#CC99FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CCCCFF" bgcolor="#CCCCFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_FF00FF" bgcolor="#FF00FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FF33FF" bgcolor="#FF33FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FF66FF" bgcolor="#FF66FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FF99FF" bgcolor="#FF99FF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_FFCCFF" bgcolor="#FFCCFF" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_AAAAAA" bgcolor="#AAAAAA" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_999999" bgcolor="#999999" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_888888" bgcolor="#888888" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_777777" bgcolor="#777777" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_CC0000" bgcolor="#CC0000" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC3300" bgcolor="#CC3300" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC6600" bgcolor="#CC6600" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC9900" bgcolor="#CC9900" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CC0033" bgcolor="#CC0033" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC3333" bgcolor="#CC3333" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC6633" bgcolor="#CC6633" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC9933" bgcolor="#CC9933" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CC0066" bgcolor="#CC0066" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC3366" bgcolor="#CC3366" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC6666" bgcolor="#CC6666" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC9966" bgcolor="#CC9966" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CC0099" bgcolor="#CC0099" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC3399" bgcolor="#CC3399" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC6699" bgcolor="#CC6699" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_CC9999" bgcolor="#CC9999" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_CCCC00" bgcolor="#CCCC00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CCCC33" bgcolor="#CCCC33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CCCC66" bgcolor="#CCCC66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CCCC99" bgcolor="#CCCC99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_00CC00" bgcolor="#00CC00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_00CC33" bgcolor="#00CC33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_00CC66" bgcolor="#00CC66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_00CC99" bgcolor="#00CC99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_33CC00" bgcolor="#33CC00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_33CC33" bgcolor="#33CC33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_33CC66" bgcolor="#33CC66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_33CC99" bgcolor="#33CC99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_66CC00" bgcolor="#66CC00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_66CC33" bgcolor="#66CC33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_66CC66" bgcolor="#66CC66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_66CC99" bgcolor="#66CC99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_99CC00" bgcolor="#99CC00" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_99CC33" bgcolor="#99CC33" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_99CC66" bgcolor="#99CC66" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_99CC99" bgcolor="#99CC99" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_00CCCC" bgcolor="#00CCCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_33CCCC" bgcolor="#33CCCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_66CCCC" bgcolor="#66CCCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_99CCCC" bgcolor="#99CCCC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_0000CC" bgcolor="#0000CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_0033CC" bgcolor="#0033CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_0066CC" bgcolor="#0066CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_0099CC" bgcolor="#0099CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_3300CC" bgcolor="#3300CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_3333CC" bgcolor="#3333CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_3366CC" bgcolor="#3366CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_3399CC" bgcolor="#3399CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_6600CC" bgcolor="#6600CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_6633CC" bgcolor="#6633CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_6666CC" bgcolor="#6666CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_6699CC" bgcolor="#6699CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_9900CC" bgcolor="#9900CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_9933CC" bgcolor="#9933CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_9966CC" bgcolor="#9966CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_9999CC" bgcolor="#9999CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_CC00CC" bgcolor="#CC00CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CC33CC" bgcolor="#CC33CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CC66CC" bgcolor="#CC66CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_CC99CC" bgcolor="#CC99CC" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_666666" bgcolor="#666666" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_555555" bgcolor="#555555" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_444444" bgcolor="#444444" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_990000" bgcolor="#990000" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_993300" bgcolor="#993300" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_996600" bgcolor="#996600" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_990033" bgcolor="#990033" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_993333" bgcolor="#993333" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_996633" bgcolor="#996633" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_990066" bgcolor="#990066" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_993366" bgcolor="#993366" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_996666" bgcolor="#996666" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_999900" bgcolor="#999900" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_999933" bgcolor="#999933" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_999966" bgcolor="#999966" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_009900" bgcolor="#009900" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_009933" bgcolor="#009933" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_009966" bgcolor="#009966" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_339900" bgcolor="#339900" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_339933" bgcolor="#339933" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_339966" bgcolor="#339966" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_669900" bgcolor="#669900" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_669933" bgcolor="#669933" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_669966" bgcolor="#669966" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_009999" bgcolor="#009999" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_339999" bgcolor="#339999" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_669999" bgcolor="#669999" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_000099" bgcolor="#000099" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_003399" bgcolor="#003399" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_006699" bgcolor="#006699" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_330099" bgcolor="#330099" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_333399" bgcolor="#333399" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_336699" bgcolor="#336699" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_660099" bgcolor="#660099" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_663399" bgcolor="#663399" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_666699" bgcolor="#666699" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_990099" bgcolor="#990099" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_993399" bgcolor="#993399" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_996699" bgcolor="#996699" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_333333" bgcolor="#333333" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_222222" bgcolor="#222222" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_660000" bgcolor="#660000" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_663300" bgcolor="#663300" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_660033" bgcolor="#660033" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_663333" bgcolor="#663333" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_666600" bgcolor="#666600" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_666633" bgcolor="#666633" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_006600" bgcolor="#006600" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_006633" bgcolor="#006633" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_336600" bgcolor="#336600" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_336633" bgcolor="#336633" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_006666" bgcolor="#006666" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_336666" bgcolor="#336666" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_000066" bgcolor="#000066" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_003366" bgcolor="#003366" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_330066" bgcolor="#330066" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+          <td id="col_333366" bgcolor="#333366" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_660066" bgcolor="#660066" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+        <tr> 
+          <td id="col_663366" bgcolor="#663366" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_111111" bgcolor="#111111" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_330000" bgcolor="#330000" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_333300" bgcolor="#333300" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_003300" bgcolor="#003300" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_003333" bgcolor="#003333" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_000033" bgcolor="#000033" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_330033" bgcolor="#330033" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      <table summary="">
+        <tr> 
+          <td id="col_000000" bgcolor="#000000" class="webeditor_colour"><img width="12" height="13" src="spacer.gif" alt=""></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<input name="colour" type="text" size="10">
+<script type="text/javascript">document.write('<input type="submit" value="' + Text('ok') + '" onClick="setColour(this.form.colour.value);">');</script>
+<script type="text/javascript">document.write('<input type="button" value="' + Text('cancel') + '" onClick="webeditor.window_close(window);">');</script>
+</form>
+</div>
+</body>
+</html>

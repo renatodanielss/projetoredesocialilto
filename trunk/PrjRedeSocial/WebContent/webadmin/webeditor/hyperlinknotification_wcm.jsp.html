@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Asbru Web Content Editor</title>
+<script type="text/javascript">
+
+var error = "<%= error.replaceAll("<br>", "\\\\r\\\\n") %>";
+
+// Set href to URL for hyperlink
+<% if (content.getId().equals("")) { %>
+var href = "";
+<% } else if (((content.getContentClass().equals("image")) && (myconfig.get(db, "hardcore_image_hrefs").equals("direct"))) || ((content.getContentClass().equals("file")) && (myconfig.get(db, "hardcore_file_hrefs").equals("direct")))) { %>
+var href = "<%= myconfig.get(db, "URLrootpath") + content.getServerFilename() %>";
+<% } else { %>
+var href = "<%= "/" + content.getContentClass() + ".jsp?id=" + content.getId() %>";
+<% } %>
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_action = '<%= html.encodeHtmlEntities(myrequest.getParameter("action")) %>';
+request_id = requestParameter("id");
+request_title = '<%= content.getTitle() %>';
+request_url = requestParameter("url");
+request_list = requestParameter("list");
+if (! request_list) request_list = 'hyperlinklist_wcm.jsp?editor=' + editor;
+
+</script>
+</head>
+<body>
+<script type="text/javascript">
+	if (error != "") {
+		parent.hyperlinklist.document.location.href = request_list;
+		alert(error.replace("<br>", "\r\n"));
+		document.location.href = 'hyperlinkinsert_wcm.jsp?editor=' + editor;
+	} else {
+		if (request_action == "Delete") {
+			parent.ready_id = '';
+			parent.ready_link = '';
+			parent.ready_href = '';
+			parent.tag["href"] = '';
+			parent.hyperlinklist.document.location.href = request_list;
+			document.location.href = 'hyperlinkinsert_wcm.jsp?editor=' + editor;
+		} else {
+			parent.ready_id = '<%= content.getId() %>';
+			parent.ready_link = request_title;
+			parent.ready_href = href;
+			parent.tag["href"] = href;
+			parent.hyperlinklist.document.location.href = request_list;
+			document.location.href = 'hyperlinkinsert_wcm.jsp?editor=' + editor;
+		}
+	}
+</script> 
+</body>
+</html>

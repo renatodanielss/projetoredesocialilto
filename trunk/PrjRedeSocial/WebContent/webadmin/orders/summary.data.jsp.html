@@ -1,0 +1,102 @@
+	<div align="center">
+		<table border="0" class="WCMstatsTable">
+			<tr>
+				<td align="center" class="WCMstatsTableName">&nbsp;</td>
+				<td align="center" width="50" class="WCMstatsTableCustomers"><nobr>&nbsp;<%= mytext.display("sales.customers") %>&nbsp;</nobr></td>
+				<td align="center" width="50" class="WCMstatsTableOrders"><nobr>&nbsp;<%= mytext.display("sales.orders") %>&nbsp;</nobr></td>
+				<td align="center" width="50" class="WCMstatsTableOrderitems"><nobr>&nbsp;<%= mytext.display("sales.orderitems") %>&nbsp;</nobr></td>
+				<td align="center" width="50" class="WCMstatsTableQuantity"><nobr>&nbsp;<%= mytext.display("sales.quantity") %>&nbsp;</nobr></td>
+				<td align="center" width="50" class="WCMstatsTableSales"><nobr>&nbsp;<%= mytext.display("sales.sales") %>&nbsp;</nobr></td>
+<!--
+				<td align="center" width="50" class="WCMstatsTableSales"><nobr>&nbsp;<%= mytext.display("sales.sales") %>&nbsp;</nobr></td>
+-->
+				<td align="center" width="50" class="WCMstatsTableDiscount"><nobr>&nbsp;<%= mytext.display("sales.discount") %>&nbsp;</nobr></td>
+				<td align="center" width="50" class="WCMstatsTableTax"><nobr>&nbsp;<%= mytext.display("sales.tax") %>&nbsp;</nobr></td>
+				<td align="center" width="50" class="WCMstatsTableShipping"><nobr>&nbsp;<%= mytext.display("sales.shipping") %>&nbsp;</nobr></td>
+				<td align="center" width="50" class="WCMstatsTableTotal"><nobr>&nbsp;<%= mytext.display("sales.total") %>&nbsp;</nobr></td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("sales.total") %></td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("countcustomers"), 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("countorders"), 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("countorderitems"), 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("sumitemquantity"), 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("sumitemtotal"), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+<!--
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("sumordersubtotal"), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+-->
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("sumorderdiscounttotal"), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("sumordertaxtotal"), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("sumordershippingtotal"), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + usage.get("sumordertotal"), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+			</tr>
+<% if (Common.integernumber("" + usage.get("countcustomers")) > 0) { %>
+			<tr>
+				<td align="left"><%= mytext.display("sales.averagepercustomer") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("countorders"))/Common.number("" + usage.get("countcustomers"))), 2, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("countorderitems"))/Common.number("" + usage.get("countcustomers"))), 2, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumitemquantity"))/Common.number("" + usage.get("countcustomers"))), 2, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumitemtotal"))/Common.number("" + usage.get("countcustomers"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+<!--
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordersubtotal"))/Common.number("" + usage.get("countcustomers"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+-->
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumorderdiscounttotal"))/Common.number("" + usage.get("countcustomers"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordertaxtotal"))/Common.number("" + usage.get("countcustomers"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordershippingtotal"))/Common.number("" + usage.get("countcustomers"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordertotal"))/Common.number("" + usage.get("countcustomers"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+			</tr>
+<% } %>
+<% if (Common.integernumber("" + usage.get("countorders")) > 0) { %>
+			<tr>
+				<td align="left"><%= mytext.display("sales.averageperorder") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("countorderitems"))/Common.number("" + usage.get("countorders"))), 2, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumitemquantity"))/Common.number("" + usage.get("countorders"))), 2, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumitemtotal"))/Common.number("" + usage.get("countorders"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+<!--
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordersubtotal"))/Common.number("" + usage.get("countorders"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+-->
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumorderdiscounttotal"))/Common.number("" + usage.get("countorders"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordertaxtotal"))/Common.number("" + usage.get("countorders"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordershippingtotal"))/Common.number("" + usage.get("countorders"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordertotal"))/Common.number("" + usage.get("countorders"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+			</tr>
+<% } %>
+<% if (Common.integernumber("" + usage.get("countorderitems")) > 0) { %>
+			<tr>
+				<td align="left"><%= mytext.display("sales.averageperorderitem") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumitemquantity"))/Common.number("" + usage.get("countorderitems"))), 2, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumitemtotal"))/Common.number("" + usage.get("countorderitems"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+<!--
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordersubtotal"))/Common.number("" + usage.get("countorderitems"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+-->
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumorderdiscounttotal"))/Common.number("" + usage.get("countorderitems"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordertaxtotal"))/Common.number("" + usage.get("countorderitems"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordershippingtotal"))/Common.number("" + usage.get("countorderitems"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordertotal"))/Common.number("" + usage.get("countorderitems"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+			</tr>
+<% } %>
+<% if (Common.integernumber("" + usage.get("sumitemquantity")) > 0) { %>
+			<tr>
+				<td align="left"><%= mytext.display("sales.averageperproduct") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumitemtotal"))/Common.number("" + usage.get("sumitemquantity"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+<!--
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordersubtotal"))/Common.number("" + usage.get("sumitemquantity"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+-->
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumorderdiscounttotal"))/Common.number("" + usage.get("sumitemquantity"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordertaxtotal"))/Common.number("" + usage.get("sumitemquantity"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordershippingtotal"))/Common.number("" + usage.get("sumitemquantity"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right">&nbsp;<%= Common.numberformat("" + (Common.number("" + usage.get("sumordertotal"))/Common.number("" + usage.get("sumitemquantity"))), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+			</tr>
+<% } %>
+		</table>
+	</div>

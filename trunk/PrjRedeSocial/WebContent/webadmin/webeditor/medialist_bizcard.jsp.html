@@ -1,0 +1,109 @@
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Management System">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('medialist_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_title = requestParameter("title");
+request_category = requestParameter("category");
+
+function openit(title, href, mediaclass) {
+	if (! mediaclass) {
+		if (href.substring(href.length-4) == ".swf") {
+			mediaclass = "flash";
+		} else if (href.substring(href.length-6) == ".class") {
+			mediaclass = "applet";
+		} else {
+			mediaclass = "image";
+		}
+	}
+	if (href != "") {
+		parent.tag["href"] = href;
+		if (matches = href.match(/id=(\d+)\D*$/)) {
+			id = matches[1];
+		} else {
+			id = '';
+		}
+	}
+	parent.mediapreview.location.href = 'mediapreview.jsp?editor=' + editor + '&title='+encodeURIComponent(title)+'&href='+escape(href)+'&mediaclass='+escape(mediaclass);
+	parent.mediainsert.location.href = 'mediainsert_bizcard.jsp?editor=' + editor + '&action=server&title='+encodeURIComponent(title)+'&href='+escape(href)+'&mediaclass='+escape(mediaclass);
+}
+
+</script>
+</head>
+<body onload="parent.medialist_ready();">
+<div class="dtree">
+	&nbsp;
+</div>
+<hr>
+<div class="dtree">
+	<script type="text/javascript">
+		<!--
+		menuitem = 0;
+		medialistMenu = new dTree('medialistMenu');
+		menuitem_images = menuitem;
+if ((request_category != "") && (request_title != "")) {
+		medialistMenu.add(menuitem++,-1,request_title,'','','',true,'imgfolder.gif');
+
+<%
+	while (images.records("", "", "", "", "", "", "", db, myconfig, "")) {
+		String id = images.getId();
+		String title = images.getTitle();
+		String version = images.getVersion();
+		String server_filename = images.getServerFilename();
+		String mediaclass;
+		String href;
+		if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".swf"))) {
+			mediaclass = "flash";
+			href = "/image.jsp?id=" + id;
+		} else if ((server_filename.length()>6) && (server_filename.substring(server_filename.length()-6).equals(".class"))) {
+			mediaclass = "applet";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else {
+			mediaclass = "image";
+			href = "/image.jsp?id=" + id;
+		}
+%>
+		medialistMenu.add(menuitem++,menuitem_images,'<%= title.replaceAll("'", "\\\\'") %><% if (! version.equals("")) { %> (<%= version %>)<% } %>','javascript:openit(\'<%= title.replaceAll("'", "\\\\\\\\\\\\'") %><% if (! version.equals("")) { %> (<%= version %>)<% } %>\',\'<%= href %>\',\'<%= mediaclass %>\')','','',true,'');
+<%
+	}
+%>
+
+}
+		medialistMenu.draw();
+		if (parent.tag["href"]) medialistMenu.selectURLsubstring(parent.tag["href"]);
+		//-->
+	</script>
+</div>
+</body>
+</html>

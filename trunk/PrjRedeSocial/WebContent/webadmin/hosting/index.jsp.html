@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("hosting.index.title") %></title>
+<script type="text/javascript">
+
+function selectAll(myform) {
+	var myelements = new Array();
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id") {
+			myform.elements[i].checked = true;
+		} else if (myform.elements[i].name == "dummy") {
+			myform.elements[i].checked = true;
+			myelements[myelements.length] = myform.elements[i].value;
+		}
+	}
+	for (var i=0; i<myelements.length; i++) {
+		if (toggleCheckbox) toggleCheckbox( myelements[i], true );
+	}
+}
+
+function unselectAll(myform) {
+	var myelements = new Array();
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id") {
+			myform.elements[i].checked = false;
+		} else if (myform.elements[i].name == "dummy") {
+			myform.elements[i].checked = false;
+			myelements[myelements.length] = myform.elements[i].value;
+		}
+	}
+	for (var i=0; i<myelements.length; i++) {
+		if (toggleCheckbox) toggleCheckbox( myelements[i], false );
+	}
+}
+
+function deleteSelected(myform) {
+	myform.action = "delete_multiple.jsp";
+	myform.submit();
+}
+
+function moveSelected(myform) {
+	myform.action = "move_multiple.jsp";
+	myform.submit();
+}
+
+</script>
+
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+<%@ include file="livegrid.jsp" %>
+<% } else { %>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/sorttable.js"></script>
+<% } %>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("hosting.index.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <div align="right">
+        <form method="GET" action="create.jsp">
+          <select name="id">
+            <option value=""><%= mytext.display("blank") %>
+<%
+	for (Iterator addresses = my_ini.keySet().iterator(); addresses.hasNext(); ) {
+		String address = (String) addresses.next();
+%> 
+            <option value="<%= address %>"><%= address %>
+<%
+	}
+%> 
+          </select>
+          <input type="submit" value="<%= mytext.display("addnew") %>">
+        </form>
+      </div>
+
+<form method="GET" action="index.jsp">
+<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+<tr>
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+<td valign="bottom" align="left">
+<a id="bookmark" style="margin-bottom:3px;font-size:12px;text-decoration:none;"></a>
+</td>
+<td valign="bottom" align="center">
+<span style="margin-bottom:3px;font-size:12px"><%= mytext.display("content.index.page") %></span>
+<a id="first" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.first") %></a> -
+<a id="back" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.back") %></a> -
+<span style="margin-bottom:3px;font-size:12px" id="pages"></span>
+- <a id="next" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.next") %></a>
+- <a id="last" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.last") %></a>
+</td>
+<% } %>
+<td valign="bottom" align="right">
+          <select name="pagesize" onChange="this.form.submit();">
+            <option value="all"<% if (! mysession.get("admin_pagesize").equals("")) { %> selected<% } %>><%= mytext.display("content.index.pagesize.all") %>
+            <option value=" "<% if (mysession.get("admin_pagesize").equals("")) { %> selected<% } %>><%= mytext.display("content.index.pagesize.auto") %>
+          </select>
+</td>
+</table>
+</form>
+
+<form method="POST">
+<div id="container" class="WCMindex">
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+      <table style="width: 92%;" class="fixedTable WCMindex" id="data_grid_header">
+<% } else { %>
+      <table style="width: 100%;" class="sortable" id="clients">
+<% } %>
+        <tr class="WCMindex"> 
+<%
+	String myadminindex = adminuser.getIndexHosting();
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "index_hosting");
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "use_adminindex");
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = "checkbox:25px group:50px type:50px address:150px status:50px website:50px webadmin:50px view:50px update:50px delete:50px";
+	}
+	String[] columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "#";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " width: " + mycolumnwidth + ";";
+		}
+%>
+<% if (mycolumnname.equals("checkbox")) { %>
+          <th class="WCMindex unsortable" style="text-align: center;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("id")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.id") %></th>
+<% } else if (mycolumnname.equals("group")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.hostinggroup") %></th>
+<% } else if (mycolumnname.equals("type")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.hostingtype") %></th>
+<% } else if (mycolumnname.equals("status")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.status") %></th>
+<% } else if (mycolumnname.equals("address")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.address") %></th>
+<% } else if (mycolumnname.equals("rootpath")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.urlrootpath") %></th>
+<% } else if (mycolumnname.equals("database")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.database") %></th>
+<% } else if (mycolumnname.equals("username")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.username") %></th>
+<% } else if (mycolumnname.equals("email")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("hosting.email") %></th>
+<% } else if (mycolumnname.equals("website")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("webadmin")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("view")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("create")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("update")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+if (! mysession.get("admin_pagesize").equals("")) {
+	for (Iterator addresses = Common.SortedHashMapKeySetIterator(my_ini); addresses.hasNext(); ) {
+		String address = (String) addresses.next();
+%> 
+        <tr class="WCMindex" onMouseOver="this.className='WCMindex_highlight'" onMouseOut="this.className='WCMindex'"> 
+<%
+	columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "#";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+		}
+%>
+<% if (mycolumnname.equals("checkbox")) { %>
+          <td class="WCMindex" style="text-align: center;"><input type="checkbox" name="id" value="<%= address %>"></td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td class="WCMindex"><%= ((HashMap)my_ini.get(address)).get("id") %></td>
+<% } else if (mycolumnname.equals("group")) { %>
+          <td class="WCMindex"><%= ((HashMap)my_ini.get(address)).get("hostinggroup") %></td>
+<% } else if (mycolumnname.equals("type")) { %>
+          <td class="WCMindex"><%= ((HashMap)my_ini.get(address)).get("hostingtype") %></td>
+<% } else if (mycolumnname.equals("status")) { %>
+          <td class="WCMindex"><%= ((HashMap)my_ini.get(address)).get("status") %></td>
+<% } else if (mycolumnname.equals("address")) { %>
+          <td class="WCMindex"><%= address %></td>
+<% } else if (mycolumnname.equals("rootpath")) { %>
+          <td class="WCMindex"><%= ((HashMap)my_ini.get(address)).get("URLrootpath") %></td>
+<% } else if (mycolumnname.equals("database")) { %>
+          <td class="WCMindex"><%= ((HashMap)my_ini.get(address)).get("database") %></td>
+<% } else if (mycolumnname.equals("username")) { %>
+          <td class="WCMindex"><%= ((HashMap)my_ini.get(address)).get("superadmin") %></td>
+<% } else if (mycolumnname.equals("email")) { %>
+          <td class="WCMindex"><%= ((HashMap)my_ini.get(address)).get("superadmin_email") %></td>
+<% } else if (mycolumnname.equals("website")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="http://<%= address %>" target="_blank"><%= mytext.display("hosting.address") %></a> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("webadmin")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="http://<%= address %>/<%= mytext.display("adminpath") %>/login_post.jsp?url=%2F<%= mytext.display("adminpath") %>%2Findex.jsp&username=<%= ((HashMap)my_ini.get(address)).get("superadmin") %>&password=<%= ((HashMap)my_ini.get(address)).get("superadmin_password") %>" target="_blank"><%= mytext.display("hosting.webadmin") %></a> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="view.jsp?id=<%= address %>&<%= Math.random() %>"><%= mytext.display("view") %></a> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("create")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="create.jsp?id=<%= address %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="update.jsp?id=<%= address %>&<%= Math.random() %>"><%= mytext.display("update") %></a> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td class="WCMindex">  
+            <div align="center"><a href="delete.jsp?id=<%= address %>&<%= Math.random() %>"><%= mytext.display("delete") %></a> 
+            </div>
+          </td>
+<% } else { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="<%= mycolumnhref + address %>&<%= Math.random() %>"><%= mycolumnname %></a></div>
+          </td>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	}
+}
+%>
+      </table>
+<div>&nbsp;</div>
+<input type="button" value="<%= mytext.display("selectall") %>" onClick="selectAll(this.form)">
+&nbsp;
+<input type="button" value="<%= mytext.display("unselectall") %>" onClick="unselectAll(this.form)">
+&nbsp;
+<input type="button" value="<%= mytext.display("deleteselected") %>" onClick="deleteSelected(this.form)">
+	&nbsp;
+	<nobr>
+	<input type="button" value="<%= mytext.display("moveselected") %>" onClick="moveSelected(this.form)">
+  	<%= mytext.display("hosting.categories.group") %>
+	<select name="hostinggroup">
+	<option value="">
+	<option value=" "><%= mytext.display("none") %>
+        <%= HardCore.Common.select_options(db, "hostinggroups", "hostinggroup", mysession.get("admin_hostinggroup")) %> 
+	</select>
+  	<%= mytext.display("hosting.categories.type") %>
+	<select name="hostingtype">
+	<option value="">
+	<option value=" "><%= mytext.display("none") %>
+        <%= HardCore.Common.select_options(db, "hostingtypes", "hostingtype", mysession.get("admin_hostingtype")) %> 
+	</select>
+	</nobr>
+</form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

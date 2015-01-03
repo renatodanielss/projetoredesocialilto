@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('hyperlinkpreview_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_title = requestParameter("title");
+request_href = requestParameter("href") || parent.tag.href;
+
+if (request_href.indexOf("?") >= 0) {
+	request_href += "&" + Math.random();
+} else if (request_href != "") {
+	request_href += "?" + Math.random();
+}
+
+function setPreviewColor(color) {
+	if (color) {
+		window.parent.previewColor = color;
+		if (document.getElementById("preview")) document.getElementById("preview").style.background = color;
+	}
+}
+
+base_href = document.location.pathname.replace("hyperlinkpreview_wcm\.jsp", "");
+
+document.write('<base href="' + webeditor.baseHref + '">');
+
+</script>
+</head>
+<body onload="setPreviewColor(window.parent.previewColor);">
+<div>
+<table border="0" width="100%">
+	<tr>
+		<td align="left">
+			<div class="dtree"><script type="text/javascript">document.write(Text('hyperlinkpreview_text'));</script></div>
+		</td>
+		<td align="right">
+			<div class="dtree">
+				<script type="text/javascript">if (document.all) document.write('<img src="' + base_href + 'zoom.gif"> <a href="javascript:zoom_in();">Zoom In</a>');</script>
+				<script type="text/javascript">if (document.all) document.write('<img src="' + base_href + 'zoom.gif"> <a href="javascript:zoom_out();">Zoom Out</a>');</script>
+			</div>
+		</td>
+	</tr>
+</table>
+</div>
+<hr>
+<script type="text/javascript">
+function zoom_out() {
+	if (! document.all) return;
+	if (! document.getElementById("previewiframe")) return;
+	var zoomwidth = 100;
+	var zoomheight = 100;
+	var contentbody;
+	try {
+		contentbody = document.getElementById("previewiframe").contentWindow.document.body;
+	} catch(e) {
+		return;
+	}
+
+	if (contentbody["clientWidth"] > zoomwidth) {
+		zoomwidth = parseInt(100 * document.getElementById("previewiframe").clientWidth / contentbody["clientWidth"]);
+	}
+	if (contentbody["clientHeight"] > zoomheight) {
+		zoomheight = parseInt(100 * document.getElementById("previewiframe").clientHeight / contentbody["clientHeight"]);
+	}
+
+	if (zoomwidth > zoomheight) {
+		document.getElementById("previewiframe").style.zoom = "" + zoomheight + "%";
+		document.getElementById("previewiframe").width = 200 / (zoomheight / 100);
+		document.getElementById("previewiframe").height = 200 / (zoomheight / 100);
+	} else {
+		document.getElementById("previewiframe").style.zoom = "" + zoomwidth + "%";
+		document.getElementById("previewiframe").width = 200 / (zoomwidth / 100);
+		document.getElementById("previewiframe").height = 200 / (zoomwidth / 100);
+	}
+}
+function zoom_in() {
+	if (! document.all) return;
+	if (! document.getElementById("previewiframe")) return;
+	document.getElementById("previewiframe").style.zoom = "100%";
+	document.getElementById("previewiframe").width = 200;
+	document.getElementById("previewiframe").height = 200;
+}
+</script>
+<table summary="" width="100%"><tr><td align="center" valign="middle">
+<script type="text/javascript">
+var preview_href = "";
+if (request_href != "") {
+	if (request_title != "") {
+		document.writeln('<div class="dtree" align="left"><img src="'+base_href+'dtree/page.gif"> ' + request_title + '</div>');
+	}
+//	document.writeln('<div class="dtree" align="center">&nbsp;</div>');
+	if ((request_href == '') || (request_href == "#")) {
+		preview_href = "";
+	} else if ( request_href.substr(0,2) == "/.") {
+		preview_href = "";
+	} else if ( request_href.substr(0,5) == "file:") {
+		preview_href = "";
+	} else if (( request_href.substr(0,1) == "/") && (request_href.indexOf("@@@") >= 0 )) {
+		preview_href = "";
+		document.writeln('<div id="preview" class="dtree" align="left" style="padding: 10px; padding-left: 20px;"><a href="javascript:;">' + request_href + '</a></div>');
+	} else if (( request_href.substr(0,1) == "/") && (request_href.indexOf("?") >= 0)) {
+		preview_href = request_href + "&mode=preview";
+		document.writeln('<div id="preview" class="dtree" align="left" style="padding: 10px; padding-left: 20px;"><a target="_blank" href="' + request_href + '&mode=preview">' + request_href + '</a></div>');
+	} else if ( request_href.substr(0,1) == "/") {
+		preview_href = request_href + "?mode=preview";
+		document.writeln('<div id="preview" class="dtree" align="left" style="padding: 10px; padding-left: 20px;"><a target="_blank" href="' + request_href + '?mode=preview">' + request_href + '</a></div>');
+	} else {
+		preview_href = request_href;
+		document.writeln('<div id="preview" class="dtree" align="left" style="padding: 10px; padding-left: 20px;"><a target="_blank" href="' + request_href + '">' + request_href + '</a></div>');
+	}
+	if (preview_href.substr(0,6) == "/file.") {
+		preview_href = "";
+	} else if (preview_href.substr(0,11) == "/subscribe.") {
+		preview_href = "";
+	} else if (preview_href.substr(0,13) == "/unsubscribe.") {
+		preview_href = "";
+	} else if (preview_href.substr(0,7) == "/login.") {
+		preview_href = "";
+	} else if (preview_href.substr(0,8) == "/logout.") {
+		preview_href = "";
+	}
+	if ((preview_href != "") && (! preview_href.match("((^https?:|^ftp:|^file:)|(^/(atom|contact|contentitem|data|defaults|element|file|guestbook|image|index|link|login|login_post|logout|page|post|product|register|rss|script|search|shopcart|stylesheet|subscribe|template|unavailable|unsubscribe|xml)\\.jsp))"))) preview_href = "<%= myconfig.get(db, "URLrootpath") %>" + preview_href.substring(1);
+}
+</script>
+</td></tr></table>
+<script type="text/javascript">
+if (preview_href != "") {
+	document.writeln('<iframe onload="zoom_out();" id="previewiframe" style="zoom: 100%;" width="200" height="200" src="' + preview_href + '">');
+}
+</script>
+</body>
+</html>

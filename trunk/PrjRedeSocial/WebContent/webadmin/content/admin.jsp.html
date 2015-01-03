@@ -1,0 +1,1042 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("content.update.title") %>&nbsp;<%= mypage.getTitle() %></title>
+<%
+String basehref = "";
+// basehref = myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort();
+if (((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) && (myconfig.get(db, "use_static_filenames").equals("yes"))) {
+	String server_filename = html.encode(mypage.getServerFilename());
+	if (! server_filename.equals("")) {
+		basehref += "/" + server_filename;
+	}
+}
+%>
+<script type="text/javascript">
+document.write('<base href="' + document.location.protocol + "//" + document.location.host + '<%= basehref %>' + '"><!--[if IE]></base><![endif]-->');
+</script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+<script type="text/javascript">
+
+var baseHref = "/";
+var baseHrefPrefix = "/";
+<% if (((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) && (myconfig.get(db, "use_static_filenames").equals("yes"))) { %>
+var server_filename = "<%= html.encode(mypage.getServerFilename()) %>";
+if (server_filename) {
+	baseHref = "/"+server_filename;
+	baseHrefPrefix = "";
+}
+<% } %>
+
+var update = <% if (update) { %>true<% } else { %>false<% } %>;
+
+<jsp:include page="admin.script.jsp" />
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+if ((mypage.getContentFormat().equals("text")) || (mypage.getContentFormat().equals("xml")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) {
+	mywebeditor = "textarea";
+} else if (! adminuser.getContentEditor().equals("")) {
+	mywebeditor = adminuser.getContentEditor();
+} else if (! myconfig.get(db, "content_editor").equals("")) {
+	mywebeditor = myconfig.get(db, "content_editor");
+}
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<script type="text/javascript">
+
+function validateScheduledDateTime(input) {
+	var now = '<%= new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()) %>';
+	if (input && (input.value != "") && (input.value < now)) {
+		alert('<%= mytext.display("content.scheduled.invalid") %>');
+	}
+}
+
+$(function(){
+
+	if ((typeof(WebEditorInit) == "function") && (document.getElementById('content')) && (document.getElementById('summary'))) {
+		WebEditorInit('content');
+		WebEditorInit('summary');
+		if (WebEditorDisplayReady('content') && WebEditorDisplayReady('summary')) {
+			mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+		}
+	} else if ((typeof(WebEditorInit) == "function") && (document.getElementById('content'))) {
+		WebEditorInit('content');
+		if (WebEditorDisplayReady('content')) {
+			mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+		}
+	} else {
+		mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	}
+
+	changeWebEditorTemplate(document.getElementById('template'), document.getElementById('stylesheet'));
+
+	$('#scheduled_publish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_publish').attr('value').length >= 10) ? $('#scheduled_publish').attr('value').substring(0,10) : $('#scheduled_publish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish_trigger').datepicker( "option", "defaultDate", $('#scheduled_publish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish').attr('value', dateText + $('#scheduled_publish').attr('value').substring(10));
+				} else {
+					$('#scheduled_publish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+				validateScheduledDateTime($('#scheduled_publish')[0]);
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#scheduled_unpublish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_unpublish').attr('value').length >= 10) ? $('#scheduled_unpublish').attr('value').substring(0,10) : $('#scheduled_unpublish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish_trigger').datepicker( "option", "defaultDate", $('#scheduled_unpublish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish').attr('value', dateText + $('#scheduled_unpublish').attr('value').substring(10));
+				} else {
+					$('#scheduled_unpublish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+				validateScheduledDateTime($('#scheduled_unpublish')[0]);
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	var dropzone = $('.WCMadminpage');
+	dropzone.on('dragover', function() {
+		//add hover class when drag over
+		dropzone.addClass('hover');
+		return false;
+	});
+	dropzone.on('dragleave', function() {
+		//remove hover class when drag out
+		dropzone.removeClass('hover');
+		return false;
+	});
+	dropzone.on('drop', function(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+		dropzone.removeClass('hover');
+		selectedInputFile(evt.originalEvent.dataTransfer.files);
+		return false;
+	});
+
+	$('#file').on('change', function(evt) {
+		selectedInputFile(evt.originalEvent.target.files);
+	});
+
+});
+
+</script>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("content.update.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+
+<% HashMap dependents = mypage.dependents(myconfig, db); %>
+<% if ((mypage.getUser()) && (dependents.size() > 0) && ((myrequest.getParameter("archive").equals("")) || (myrequest.getParameter("archive").equals("public")))) { %>
+	<% if ((myconfig.get(db, "use_contentdependencies").equals("permit")) || (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+
+		<p id="errorcontainer"><font color="red"><%= mytext.display("content.contentdependencies.permit") %></font></p>
+
+	<% } else { %>
+
+		<p id="errorcontainer"><font color="red"><%= mytext.display("content.contentdependencies.forbid") %></font></p>
+
+	<% } %>
+<% } else { %>
+
+		<p id="errorcontainer" style="display:none;"></p>
+
+<% } %>
+
+<% if (! mypage.getUser()) { %>
+
+		<p><%= mytext.display("content.view.nopermission") %></p>
+
+<% } %>
+
+<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+	<% String[] editorsEmails = mypage.editorsEmails(mysession, myconfig, db); %>
+	<% String[] publishersEmails = mypage.publishersEmails(mysession, myconfig, db); %>
+	<% String[] administratorsEmails = mypage.administratorsEmails(mysession, myconfig, db); %>
+	<% if ((editorsEmails.length>0) || (publishersEmails.length>0) || (administratorsEmails.length>0)) { %>
+
+		<p align="right">
+		<% if (editorsEmails.length>0) { %><a href="mailto:<%= Common.join(",",editorsEmails) %>?subject=<%= mypage.getTitle().replaceAll("&", "%26").replaceAll(":", "%3A").replaceAll("=", "%3D") + " (" + mypage.getId() + ")" %>"><%= mytext.display("content.update.email.editors") %></a><% } %>
+		&nbsp;
+		<% if (publishersEmails.length>0) { %><a href="mailto:<%= Common.join(",",publishersEmails) %>?subject=<%= mypage.getTitle().replaceAll("&", "%26").replaceAll(":", "%3A").replaceAll("=", "%3D") + " (" + mypage.getId() + ")" %>"><%= mytext.display("content.update.email.publishers") %></a><% } %>
+		&nbsp;
+		<% if (administratorsEmails.length>0) { %><a href="mailto:<%= Common.join(",",administratorsEmails) %>?subject=<%= mypage.getTitle().replaceAll("&", "%26").replaceAll(":", "%3A").replaceAll("=", "%3D") + " (" + mypage.getId() + ")" %>"><%= mytext.display("content.update.email.administrators") %></a><% } %>
+		</p>
+
+	<% } %>
+<% } %>
+
+<% if (mypage.getUser()) { %>
+
+		<% if ((! myconfig.get(db, "use_archive").equals("none")) || (myconfig.get(db, "use_schedule").equals("yes"))) { %>
+
+			<div align="right">
+
+			<% if (update || create) { %>
+
+				<form action="/<%= mytext.display("adminpath") %>/content/admin.jsp" method="GET">
+
+			<% } else { %>
+
+				<form action="/<%= mytext.display("adminpath") %>/content/admin.jsp" method="GET">
+
+			<% } %>
+
+					<input type="hidden" name="id" value="<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>">
+					<input type="hidden" name="redirect" value="<%= html.encodeHtmlEntities(myrequest.getParameter("redirect")) %>">
+
+			<% if (! mypage.getPublisher()) { %>
+			<% } else if ((myconfig.get(db, "use_workflow").equals("yes")) && (! mypage.getAdministrator()) && (! workflow.permissions(db, mypage.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), (mypage.getStatusBy().equals(mysession.get("username")))))) { %>
+			<% } else { %>
+
+					<input type="button" value="<%= mytext.display("delete") %>" onclick="this.form.action='/<%= mytext.display("adminpath") %>/content/delete.jsp';this.form.submit()">
+
+			<% } %>
+
+			<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link"))) { %>
+
+					<input type="button" value="<%= mytext.display("compare") %>" onclick="doCompare(this.form);">
+
+			<% } %>
+
+			<% if (update || create) { %>
+
+					<input type="submit" value="<%= mytext.display("restore") %>">
+
+			<% } else { %>
+
+					<input type="submit" value="<%= mytext.display("view") %>">
+
+			<% } %>
+					<select name="archive">
+						<option value=""><%= mytext.display("current") %></option>
+
+			<% if (! mypage.getPublished().equals("")) { %>
+
+						<option value="public" <% if (myrequest.getParameter("archive").equals("public")) { %>selected<% } %>><%= mytext.display("published") %></option>
+
+			<% } %>
+			<%= mypage.archive_select_options(db, myrequest.getParameter("id"),myrequest.getParameter("archive")) %>
+
+					</select>
+				</form>
+			</div>
+
+		<% } %>
+
+			<form id="contentform" name="contentform" action="/<%= mytext.display("adminpath") %>/content/update_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&redirect=<% if (! myrequest.getParameter("redirect").equals("")) { %><%= URLEncoder.encode(myrequest.getParameter("redirect"), myconfig.get(db, "charset")) %><% } %>" method="POST" enctype="multipart/form-data">
+				<input type="hidden" id="webeditor_stylesheet" name="webeditor_stylesheet" value="<%= stylesheet %>">
+<% if (! webeditor_format.equals("")) { %>
+				<input type="hidden" id="webeditor_format" name="webeditor_format" value="<%= webeditor_format %>">
+<% } %>
+
+		<% if ((! update) && (! create)) { %>
+
+				<textarea disabled name="title" style="display: none;"><%= html.encode(mypage.getTitle()) %></textarea>
+				<textarea disabled name="content" style="display: none;"><%= html.encode(mypage.getContent()) %></textarea>
+				<textarea disabled name="summary" style="display: none;"><%= html.encode(mypage.getSummary()) %></textarea>
+
+			<% if (viewupdate) { %>
+
+				<input type="hidden" id="revision" name="revision" value="<%= html.encodeHtmlEntities(mypage.getRevision()) %>">
+				<input type="hidden" name="update" value="view">
+
+			<% } %>
+
+				<p>
+
+		<% } %>
+
+		<% if (update || ((myrequest.getParameter("archive").equals("")) && (myconfig.get(db, "use_workflow").equals("yes")) && ((mypage.getAdministrator()) || (workflowpermissions))) || (create) || (mypage.getPublisher())) { %>
+
+				<input type="hidden" name="restore" value="<%= html.encodeHtmlEntities(myrequest.getParameter("archive")) %>">
+				<p>
+					<nobr>
+
+			<% if (update || create || viewupdate || viewpublish) { %>
+
+						<input type="button" value="<%= mytext.display("saveclose") %>" onclick="doSaveAndClose(true);">
+						<input type="button" value="<%= mytext.display("save") %>" onclick="doSaveAndClose(false);">
+
+			<% } %>
+
+			<% if ((! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image"))) { %>
+
+						<input type="button" value="<%= mytext.display("preview") %>" onClick="doPreview(this.form)">
+						<select id="simulator" name="simulator">
+							<option value=""><%= mytext.display("simulators.default") %></option>
+							<%= simulator.select_options(servletcontext, myrequest, db, "") %>
+						</select>
+
+
+			<% } %>
+
+			<% if (update || create) { %>
+				<% if ((! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("script"))) { %>
+
+						<input type="button" value="<%= mytext.display("content.primarycontent.validatemarkup") %>" onClick="doValidateMarkup(document.contentform)">
+
+				<% } %>
+			<% } %>
+
+			<% if (update || create) { %>
+				<% if ((myconfig.get(db, "use_workflow").equals("yes")) && (! mypage.getAdministrator()) && (! workflow.permissions(db, mypage.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), (mypage.getStatusBy().equals(mysession.get("username")))))) { %>
+				<% } else if (mypage.getCreator()) { %>
+
+						&nbsp; - &nbsp;
+						<input type="button" value="<%= mytext.display("addnew") %>" onclick="doCreate(this.form)">
+
+				<% } %>
+			<% } %>
+
+			<% if (viewpublish) { %>
+
+						&nbsp; - &nbsp;
+						<input type="button" name="unpublish" value="<%= mytext.display("unpublish") %>" onclick="doUnpublish(this.form)">
+						<input type="button" name="delete" value="<%= mytext.display("delete") %>" onclick="doDelete(this.form)">
+
+			<% } %>
+
+						<br>&nbsp;<br>
+
+			<% if (update || create || viewupdate || viewpublish) { %>
+
+				<% if (myconfig.get(db, "use_archive").equals("manual-on")) { %>
+
+						<input type="checkbox" name="archive" value="Save & Archive" checked><%= mytext.display("archive") %>
+
+				<% } else if (myconfig.get(db, "use_archive").equals("manual-off")) { %>
+
+						<input type="checkbox" name="archive" value="Save & Archive"><%= mytext.display("archive") %>
+
+				<% } %>
+
+				<% if (mypage.getPublisher()) { %>
+					<% if (myconfig.get(db, "use_publish").equals("manual-on")) { %>
+
+						<input type="checkbox" name="publish" value="Save & Publish" checked><%= mytext.display("publish") %>
+
+					<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>
+
+						<input type="checkbox" name="publish" value="Save & Publish"><%= mytext.display("publish") %>
+
+					<% } else if (myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+
+						<input type="hidden" name="publish" value="Save & Publish">
+
+					<% } %>
+					<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+						<% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+
+						<input type="checkbox" name="schedule" value="schedule"><%= mytext.display("schedule") %>
+
+						<% } %>
+					<% } %>
+				<% } else if (! myconfig.get(db, "use_workflow").equals("yes")) { %>
+					<% if (myconfig.get(db, "use_publish").equals("manual-on")) { %>
+
+						<input type="checkbox" name="ready_to_publish" value="Ready To Publish" checked><%= mytext.display("ready") %>
+
+					<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>
+
+						<input type="checkbox" name="ready_to_publish" value="Ready To Publish"><%= mytext.display("ready") %>
+
+					<% } %>
+				<% } %>
+
+					</nobr> <nobr>
+
+				<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+					<% if ((! update) && (! create) && (! mypage.getPublisher())) { %>
+						<% if (! mypage.getScheduledPublish().equals("")) { %> - <%= mytext.display("content.scheduledpublish") %> <%= mypage.getScheduledPublish() %><% } else if (! mypage.getRequestedPublish().equals("")) { %> - <%= mytext.display("content.scheduledpublish") %> <%= mypage.getRequestedPublish() %><% } %>
+					<% } else { %>
+
+						- <%= mytext.display("content.scheduledpublish") %>
+						<input type="text" size="20" id="scheduled_publish" name="scheduled_publish" value="<% if (! mypage.getScheduledPublish().equals("")) { %><%= mypage.getScheduledPublish() %><% } else if (! mypage.getRequestedPublish().equals("")) { %><%= mypage.getRequestedPublish() %><% } else { %><%= new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()) %><% } %>" onchange="validateScheduledDateTime(this)"><input type="button" value="..." id="scheduled_publish_trigger">
+
+					<% } %>
+				<% } %>
+
+					</nobr> <nobr>
+
+				<% if (myconfig.get(db, "use_scheduled_unpublish").equals("yes")) { %>
+					<% if ((! update) && (! create) && (! mypage.getPublisher())) { %>
+						<% if (! mypage.getScheduledUnpublish().equals("")) { %> - <%= mytext.display("content.scheduledunpublish") %> <%= mypage.getScheduledUnpublish() %><% } else if (! mypage.getRequestedUnpublish().equals("")) { %> - <%= mytext.display("content.scheduledunpublish") %> <%= mypage.getRequestedUnpublish() %><% } %>
+					<% } else { %>
+
+						- <%= mytext.display("content.scheduledunpublish") %>
+						<input type="text" size="20" id="scheduled_unpublish" name="scheduled_unpublish" value="<% if (! mypage.getScheduledUnpublish().equals("")) { %><%= mypage.getScheduledUnpublish() %><% } else if (! mypage.getRequestedUnpublish().equals("")) { %><%= mypage.getRequestedUnpublish() %><% } %>" onchange="validateScheduledDateTime(this)"><input type="button" value="..." id="scheduled_unpublish_trigger">
+
+					<% } %>
+				<% } %>
+
+				<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+
+					</nobr>
+				</p>
+				<p>
+					<nobr>
+						<%= mytext.display("content.workflow") %>
+						<select id="status" name="status" onchange="changeWorkflowStatus(this.value)">
+
+					<% if (! mytext.display("content.workflow.select.static").equals("content.workflow.select.static")) { %>
+
+							<option value=""><%= mytext.display("content.workflow.select.static") %></option>
+
+					<% } else { %>
+
+							<option value=""><% if (! mytext.display("content.workflow.select.prefix").equals("content.workflow.select.prefix")) { %><%= mytext.display("content.workflow.select.prefix") %><% } %><% if (! mypage.getStatus().equals("")) { %><%= mypage.getStatus() %><% } else { %><%= mytext.display("none") %><% } %></option>
+
+					<% } %>
+
+					<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>
+
+							<option value="0"><%= mytext.display("end") %></option>
+
+					<% } %>
+
+							<%= workflow.workflow_action_select_options(db, mypage.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), mypage.getAdministrator(), (mypage.getStatusBy().equals(mysession.get("username")))) %>
+						</select>
+						&nbsp;
+				<% } %>
+
+					</nobr> <nobr>
+
+				<% if ((! myconfig.get(db, "use_assign").equals("no")) && (! myconfig.get(db, "use_checkout").equals("none")) && ((myconfig.get(db, "use_publish").equals("manual-on")) || (myconfig.get(db, "use_publish").equals("manual-off")))) { %>
+
+						<%= mytext.display("content.checkedout") %>
+						<select id="checkedout" name="checkedout">
+							<option value=""></option> &nbsp;
+							<option value="-creators-"<% if (mypage.getCheckedOut().equals("-creators-")) { %> selected<% } %>><%= mytext.display("content.checkedout.creators") %></option>
+							<option value="-editors-"<% if (mypage.getCheckedOut().equals("-editors-")) { %> selected<% } %>><%= mytext.display("content.checkedout.editors") %></option>
+							<option value="-developers-"<% if (mypage.getCheckedOut().equals("-developers-")) { %> selected<% } %>><%= mytext.display("content.checkedout.developers") %></option>
+							<option value="-publishers-"<% if (mypage.getCheckedOut().equals("-publishers-")) { %> selected<% } %>><%= mytext.display("content.checkedout.publishers") %></option>
+							<option value="-administrators-"<% if (mypage.getCheckedOut().equals("-administrators-")) { %> selected<% } %>><%= mytext.display("content.checkedout.administrators") %></option>
+							<option value="<%= myconfig.get(db, "superadmin") %>"<% if (mypage.getCheckedOut().equals(myconfig.get(db, "superadmin"))) { %> selected<% } %>><%= myconfig.get(db, "superadmin") %></option>
+							<%= adminuser.select_options_where(db, mypage.getCheckedOut(), "where userclass='administrator'") %>
+						</select>
+
+				<% } %>
+
+				<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+
+						<br><%= mytext.display("content.workflow.comments") %><textarea rows="3" cols="75" name="comments" style="vertical-align: text-top;"></textarea>
+
+				<% } %>
+
+			<% } %>
+
+					</nobr>
+				</p>
+
+		<% } %>
+
+		<% if ((! update) && (! create)) { %>
+
+			</form>
+
+		<% } %>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Revision_History" rel="Revision_History"><%= mytext.display("content.revisionhistory.tab") %></a></li>
+<% if (mypage.getContentClass().equals("product")) { %>
+                <li><a href="#Product_Details" rel="Product_Details"><%= mytext.display("content.productdetails.tab") %></a></li>
+                <li><a href="#Product_Delivery" rel="Product_Delivery"><%= mytext.display("content.productdelivery.tab") %></a></li>
+                <li><a href="#Product_Stock" rel="Product_Stock"><%= mytext.display("content.productstock.tab") %></a></li>
+<% } %>
+                <li><a href="#Primary_Content" rel="Primary_Content" class="st_tab_active"><%= mytext.display("content.primarycontent.tab") %></a></li>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template"))) { %>
+                <li><a href="#Content_Presentation" rel="Content_Presentation"><%= mytext.display("content.contentpresentation.tab") %></a></li>
+<% } %>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+                <li><a href="#Additional_Content" rel="Additional_Content"><%= mytext.display("content.additionalcontent.tab") %></a></li>
+<% } %>
+                <li><a href="#Meta_Information" rel="Meta_Information"><%= mytext.display("content.metainformation.tab") %></a></li>
+<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script"))) { %>
+                <li><a href="#Advanced_Scripting" rel="Advanced_Scripting"><%= mytext.display("content.advancedscripting.tab") %></a></li>
+<% } %>
+<% if ((myconfig.get(db, "use_contentpackages").equals("yes")) || ((! mypage.getContentClass().equals("template")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")))) { %>
+                <li><a href="#Content_Categories" rel="Content_Categories"><%= mytext.display("content.contentcategories.tab") %></a></li>
+<% } %>
+                <li><a href="#Content_Version" rel="Content_Version"><%= mytext.display("content.contentversion.tab") %></a></li>
+                <li><a href="#Access_Restrictions" rel="Access_Restrictions"><%= mytext.display("content.accessrestrictions.tab") %></a></li>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("link"))) { %>
+                <li><a href="#Content_Relations" rel="Content_Relations"><%= mytext.display("content.contentrelations.tab") %></a></li>
+<% } %>
+                <li><a href="/<%= mytext.display("adminpath") %>/content/dependencies.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&<%= Math.random() %>" data-target="#Content_Dependencies" rel="Content_Dependencies"><%= mytext.display("content.contentdependencies.tab") %></a></li>
+
+<% for (int i=0; i<module.size(); i++) { %>
+<% if ((moduleContentTab.size()>i) && (! moduleContentTab.get(i).equals(""))) { %>
+<% if ((! moduleContentTabScript.get(i).equals("")) && (! moduleContentTabURL.get(i).equals(""))) { %>
+                <li><a onclick="<%= moduleContentTabScript.get(i) %>" href="<%= moduleContentTabURL.get(i) %>" data-target="#<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>" rel="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>"><%= moduleContentTabTitle.get(i) %></a></li>
+<% } else if (! moduleContentTabScript.get(i).equals("")) { %>
+                <li><a onclick="<%= moduleContentTabScript.get(i) %>" href="#<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>" rel="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>"><%= moduleContentTabTitle.get(i) %></a></li>
+<% } else if (! moduleContentTabURL.get(i).equals("")) { %>
+                <li><a href="<%= moduleContentTabURL.get(i) %>" data-target="#<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>" rel="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>"><%= moduleContentTabTitle.get(i) %></a></li>
+<% } else { %>
+                <li><a href="#<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>" rel="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>"><%= moduleContentTabTitle.get(i) %></a></li>
+<% } %>
+<% } %>
+<% } %>
+
+<!--
+                <li><a href="javascript:displayAll()" rel="showall"><%= mytext.display("showall").replaceAll(" ", "<br>") %></a></li>
+-->
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+
+
+	<jsp:include page="admin.revisionhistory.jsp" />
+
+
+
+	<div id="Primary Content" class="Primary_Content st_view"><div class="st_view_inner">
+		<table width="100%">
+			<tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.primarycontent.heading") %></th></tr>
+			<tr><td class="WCMinnerContentIntro" align="left"><%= mytext.display("content.primarycontent.intro") %></td></tr>
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.title") %></th></tr>
+
+		<% if (update || create) { %>
+
+			<tr><td class="WCMinnerContentInputValue"><input type="text" size="60" maxlength="250" name="title" value="<%= mypage.getTitle().replaceAll("\"", "&quot;") %>"></td></tr>
+
+		<% } else { %>
+
+			<tr><td class="WCMinnerContentInputValue"><%= mypage.getTitle() %>&nbsp; </td></tr>
+
+		<% } %>
+
+		<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link"))) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.content") %></th></tr>
+			<tr>
+
+			<% if (update || create) { %>
+
+				<td class="WCMinnerContentInputValue" id="content_container">
+					<textarea id="content" name="content" cols="80" rows="25"><%= html.encode(mypage.getContent()) %></textarea>
+				</td>
+
+			<% } else { %>
+				<td class="WCMinnerContentInputValue">
+					<div style="position: relative;">
+						<% if ((mypage.getContentFormat().equals("text")) || (mypage.getContentFormat().equals("xml")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) { %><pre><%= html.encode(mypage.getContent()) %></pre><% } else { %><%= mypage.getContent() %><% } %>
+						&nbsp;
+					</div>
+				</td>
+			<% } %>
+			</tr>
+		<% } %>
+
+		<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.summary") %></th></tr>
+			<tr>
+
+			<% if (update || create) { %>
+
+				<td class="WCMinnerContentInputValue" id="summary_container">
+					<textarea id="summary" name="summary" cols="80" rows="25"><%= html.encode(mypage.getSummary()) %></textarea>
+				</td>
+
+			<% } else { %>
+
+				<td class="WCMinnerContentInputValue">
+					<div style="position: relative;">
+						<% if ((mypage.getContentFormat().equals("text")) || (mypage.getContentFormat().equals("xml")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) { %><pre><%= html.encode(mypage.getSummary()) %></pre><% } else { %><%= mypage.getSummary() %><% } %>
+						&nbsp;
+					</div>
+				</td>
+
+			<% } %>
+
+			</tr>
+		<% } %>
+
+		<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("stylesheet"))) { %>
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.format") %></th></tr>
+			<tr><td class="WCMinnerContentInputValue">
+				<input type="radio" name="contentformat" value=""<% if (mypage.getContentFormat().equals("")) { %> checked<% } %>><%= mytext.display("content.format.default") %>
+				- <input type="radio" name="contentformat" value="html"<% if (mypage.getContentFormat().equals("html")) { %> checked<% } %>><%= mytext.display("content.format.html") %>
+				- <input type="radio" name="contentformat" value="html4"<% if (mypage.getContentFormat().equals("html4")) { %> checked<% } %>><%= mytext.display("content.format.html4") %>
+				- <input type="radio" name="contentformat" value="html5"<% if (mypage.getContentFormat().equals("html5")) { %> checked<% } %>><%= mytext.display("content.format.html5") %>
+				- <input type="radio" name="contentformat" value="xhtml"<% if (mypage.getContentFormat().equals("xhtml")) { %> checked<% } %>><%= mytext.display("content.format.xhtml") %>
+				- <input type="radio" name="contentformat" value="xml"<% if (mypage.getContentFormat().equals("xml")) { %> checked<% } %>><%= mytext.display("content.format.xml") %>
+				- <input type="radio" name="contentformat" value="text"<% if (mypage.getContentFormat().equals("text")) { %> checked<% } %>><%= mytext.display("content.format.text") %>
+			</td></tr>
+
+		<% } %>
+
+		<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("link"))) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.searchable") %></th></tr>
+
+			<% if (update || create) { %>
+
+			<tr><td class="WCMinnerContentInputValue"><input type="hidden" id="searchable" name="searchable" value="<%= mypage.getSearchable() %>"><input onclick="document.getElementById('searchable').value = (this.checked ? 'no' : '')" type="checkbox" name="searchable_dummy" value="no"<% if (mypage.getSearchable().equals("no")) { %> checked<% } %>><%= mytext.display("content.primarycontent.searchable.no") %></td></tr>
+
+			<% } else { %>
+
+			<tr><td class="WCMinnerContentInputValue"><input disabled type="checkbox" name="searchable" value="no"<% if (mypage.getSearchable().equals("no")) { %> checked<% } %>><%= mytext.display("content.primarycontent.searchable.no") %></td></tr>
+
+			<% } %>
+
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.menuitem") %></th></tr>
+
+			<% if (update || create) { %>
+
+			<tr><td class="WCMinnerContentInputValue"><input type="hidden" id="menuitem" name="menuitem" value="<%= mypage.getMenuitem() %>"><input onclick="document.getElementById('menuitem').value = (this.checked ? 'no' : '')" type="checkbox" name="menuitem_dummy" value="no"<% if (mypage.getMenuitem().equals("no")) { %> checked<% } %>><%= mytext.display("content.primarycontent.menuitem.no") %></td></tr>
+
+			<% } else { %>
+
+			<tr><td class="WCMinnerContentInputValue"><input disabled type="checkbox" name="menuitem" value="no"<% if (mypage.getMenuitem().equals("no")) { %> checked<% } %>><%= mytext.display("content.primarycontent.menuitem.no") %></td></tr>
+
+			<% } %>
+		<% } %>
+
+		<% if (((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) && (myconfig.get(db, "use_static_filenames").equals("yes"))) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.filename") %></th></tr>
+
+			<% if (update || create) { %>
+
+			<tr><td class="WCMinnerContentInputValue"><input type="text" size="60" maxlength="250" id="server_filename" name="server_filename" value="<%= mypage.getServerFilename() %>"> <input type="button" id="select_server_filename" value="<%= mytext.display("select") %>" onclick="openSelectFile(this.form.server_filename, '<%= mypage.getContentClass() %>');"></td></tr>
+
+			<% } else { %>
+
+			<tr><td class="WCMinnerContentInputValue"><%= mypage.getServerFilename() %> &nbsp;</td></tr>
+
+			<% } %>
+		<% } %>
+
+		<% if (mypage.getContentClass().equals("link")) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.url") %></th></tr>
+
+			<% if (update || create) { %>
+
+			<tr><td class="WCMinnerContentInputValue"><input type="text" size="80" maxlength="250" name="url" value="<%= mypage.getUrl().replaceAll("\"", "&quot;") %>"></td></tr>
+
+			<% } else { %>
+
+			<tr><td class="WCMinnerContentInputValue"><%= mypage.getUrl() %> &nbsp; </td></tr>
+
+			<% } %>
+		<% } %>
+
+		<% if ((mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+
+			<tr id="file_input"><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.file") %></th></tr>
+			<tr>
+				<td class="WCMinnerContentInputValue">
+
+			<% if (update || create) { %>
+
+					<input type="file" id="file" name="file" value="">
+					<input type="hidden" id="file_data" name="file_data" value="">
+
+			<% } %>
+			<% if (mypage.getContentClass().equals("file")) { %>
+				<% if (update || create) { %>
+
+					<br>
+					<br>
+					<% if (myrequest.getParameter("archive").equals("")) { %><a id="contentfile" target="_blank" href="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>"><%= mypage.getUploadFilename() %></a><% } else { %><a id="contentfile" target="_blank" href="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>?<%= Math.random() %>"><%= mypage.getUploadFilename() %></a><% } %>
+					<br>
+					<br>
+
+				<% } else { %>
+					<% if (myrequest.getParameter("archive").equals("")) { %>
+
+					<br>
+					<br>
+					<a id="contentfile" target="_blank" href="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>"><%= mypage.getUploadFilename() %></a>
+					<br>
+					<br>
+
+					<% } else { %>
+
+					<br>
+					<br>
+					<a id="contentfile" target="_blank" href="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>?<%= Math.random() %>"><%= mypage.getUploadFilename() %></a>
+					<br>
+					<br>
+
+					<% } %>
+				<% } %>
+			<% } else if (mypage.getContentClass().equals("image")) { %>
+
+				<% if ((myrequest.getParameter("archive").equals("")) || (myrequest.getParameter("archive").equals("public"))) { %>
+					<% if (mypage.getServerFilename().endsWith(".swf")) { %>
+
+					<br>
+					<br>
+					<object codeBase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param name="movie" value="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>"><param name="quality" value="high"><embed src="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high"></embed></object>
+
+					<% } else if (mypage.getServerFilename().endsWith(".class")) { %>
+						<%
+						String code = "";
+						String codebase = "";
+						if (mypage.getServerFilename().indexOf("/") > -1) {
+							code = mypage.getServerFilename().substring(mypage.getServerFilename().lastIndexOf("/")+1);
+							codebase = myconfig.get(db, "URLrootpath") + mypage.getServerFilename().substring(0, mypage.getServerFilename().lastIndexOf("/")+1);
+						} else {
+							code = mypage.getServerFilename();
+							codebase = "/";
+						}
+						%>
+
+					<br>
+					<br>
+					<object codebase="http://java.sun.com/products/plugin/autodl/jinstall-1_4_2-windows-i586.cab" classid="clsid:CAFEEFAC-0014-0002-0000-ABCDEFFEDCBA"><param name="codebase" value="<%= codebase %>"><param name="code" value="<%= code %>"><param name="type" value="application/x-java-applet"><comment><embed pluginspage="http://java.sun.com/products/plugin/index.html#download" codebase="<%= codebase %>" code="<%= code %>" type="application/x-java-applet"><noembed><applet codebase="<%= codebase %>" code="<%= code %>">Java applet</applet></noembed></embed></comment></object>
+
+					<% } else { %>
+
+					<input id="contentimage_edit" type="button" value="<%= mytext.display("content.primarycontent.file.edit.image") %>" onclick="doEditImage('<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>')">
+					<br>
+					<br>
+					<img id="contentimage" title="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>" src="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>">
+
+					<% } %>
+				<% } else { %>
+					<% if (mypage.getServerFilename().endsWith(".swf")) { %>
+
+					<br>
+					<br>
+					<object codeBase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param name="movie" value="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>?<%= Math.random() %>"><param name="quality" value="high"><embed src="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>?<%= Math.random() %>" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high"></embed></object>
+
+					<% } else if (mypage.getServerFilename().endsWith(".class")) { %>
+						<%
+						String code = "";
+						String codebase = "";
+						if (mypage.getServerFilename().indexOf("/") > -1) {
+							code = mypage.getServerFilename().substring(mypage.getServerFilename().lastIndexOf("/")+1);
+							codebase = myconfig.get(db, "URLrootpath") + mypage.getServerFilename().substring(0, mypage.getServerFilename().lastIndexOf("/")+1);
+						} else {
+							code = mypage.getServerFilename();
+							codebase = "/";
+						}
+						%>
+
+					<br>
+					<br>
+					<object codebase="http://java.sun.com/products/plugin/autodl/jinstall-1_4_2-windows-i586.cab" classid="clsid:CAFEEFAC-0014-0002-0000-ABCDEFFEDCBA"><param name="codebase" value="<%= codebase %>"><param name="code" value="<%= code %>"><param name="type" value="application/x-java-applet"><comment><embed pluginspage="http://java.sun.com/products/plugin/index.html#download" codebase="<%= codebase %>" code="<%= code %>" type="application/x-java-applet"><noembed><applet codebase="<%= codebase %>" code="<%= code %>">Java applet</applet></noembed></embed></comment></object>
+
+					<% } else { %>
+
+					<input id="contentimage_edit" type="button" value="<%= mytext.display("content.primarycontent.file.edit.image") %>" onclick="doEditImage('/image.jsp?mode=preview&archive=<%= myrequest.getParameter("archive") %>&<%= Math.random() %>')">
+					<br>
+					<br>
+					<img id="contentimage" title="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>" src="/image.jsp?mode=preview&archive=<%= myrequest.getParameter("archive") %>&<%= Math.random() %>">
+
+					<% } %>
+				<% } %>
+			<% } else { %>
+
+					<br>
+					<br>
+					<%= mypage.getUploadFilename() %>
+
+			<% } %>
+				</td>
+			</tr>
+		<% } %>
+
+		<% if (update || create) { %>
+			<% if (((mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) && (myconfig.get(db, "use_static_filenames").equals("yes"))) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.filename") %></th></tr>
+			<tr><td class="WCMinnerContentInputValue"><input type="text" size="60" maxlength="250" id="server_filename" name="server_filename" value="<%= mypage.getServerFilename() %>"> <input type="button" id="select_server_filename" value="<%= mytext.display("select") %>" onclick="openSelectFile(this.form.server_filename, '<%= mypage.getContentClass() %>');"></td></tr>
+
+			<% } %>
+		<% } %>
+
+		<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("link")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script")) || (mypage.getContentClass().equals("product"))) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.url") %></th></tr>
+			<tr>
+				<td class="WCMinnerContentInputValue">
+
+			<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) { %>
+				<% if (! mypage.getServerFilename().equals("")) { %>
+
+					<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %><br>
+
+				<% } %>
+			<% } %>
+			<% if (mypage.getContentClass().equals("page")) { %>
+
+					<%= "/page.jsp?id=" + mypage.getId() %> &nbsp;
+
+			<% } else if (mypage.getContentClass().equals("file")) { %>
+
+					<%= "/file.jsp?id=" + mypage.getId() %> &nbsp;<br>
+					<%= "/file.jsp?" + mypage.getServerFilename() %> &nbsp;
+
+			<% } else if (mypage.getContentClass().equals("image")) { %>
+
+					<%= "/image.jsp?id=" + mypage.getId() %> &nbsp;
+
+			<% } else if (mypage.getContentClass().equals("link")) { %>
+
+					<%= "/link.jsp?id=" + mypage.getId() %> &nbsp;
+
+			<% } else if (mypage.getContentClass().equals("stylesheet")) { %>
+
+					<%= "/stylesheet.jsp?id=" + mypage.getId() %> &nbsp;
+
+			<% } else if (mypage.getContentClass().equals("script")) { %>
+
+					<%= "/script.jsp?id=" + mypage.getId() %> &nbsp;
+
+			<% } else if (mypage.getContentClass().equals("product")) { %>
+
+					<%= "/product.jsp?id=" + mypage.getId() %> &nbsp;
+
+			<% } %>
+
+				</td>
+			</tr>
+
+			<% if ((mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+
+			<tr><td class="WCMinnerContentInputValue"><%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %> &nbsp; </td></tr>
+
+			<% } %>
+		<% } %>
+		</table>
+	        <br>
+	</div></div>
+
+
+
+	<jsp:include page="admin.productdetails.jsp" />
+
+
+
+	<jsp:include page="admin.productdelivery.jsp" />
+
+
+
+	<jsp:include page="admin.productstock.jsp" />
+
+
+
+	<jsp:include page="admin.contentpresentation.jsp" />
+
+
+
+	<jsp:include page="admin.additionalcontent.jsp" />
+
+
+
+	<jsp:include page="admin.metainformation.jsp" />
+
+
+
+	<jsp:include page="admin.advancedscripting.jsp" />
+
+
+
+	<jsp:include page="admin.contentcategories.jsp" />
+
+
+
+	<jsp:include page="admin.contentversion.jsp" />
+
+
+
+	<jsp:include page="accessrestrictions.jsp" />
+
+
+
+	<jsp:include page="admin.contentrelations.jsp" />
+
+
+
+	<div id="Content Dependencies" class="Content_Dependencies st_view"><div class="st_view_inner"></div></div>
+
+
+
+		<% for (int i=0; i<module.size(); i++) { %>
+			<% if ((moduleContentTab.size()>i) && (! moduleContentTab.get(i).equals(""))) { %>
+
+	<div id="<%= moduleContentTab.get(i) %>" class="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %> st_view"><div class="st_view_inner"><%= moduleContentTabContent.get(i) %></div></div>
+
+			<% } %>
+		<% } %>
+
+
+
+    </div>
+</div>
+
+		<% if (update || create) { %>
+
+			</form>
+
+		<% } %>
+
+			<div style="display:none;">
+				<form name="validationform" action="http://validator.w3.org/check" method="post" enctype="multipart/form-data" target="_validate">
+					<textarea name="fragment"></textarea>
+					<textarea name="text"></textarea>
+				</form>
+			</div>
+
+			<script type="text/javascript">initForm('metainfo');</script>
+			<script type="text/javascript">initForm('segmentation');</script>
+
+		<% if (mypage.getContentClass().equals("product")) { %>
+
+			<script type="text/javascript">initForm('product_info');</script>
+			<script type="text/javascript">initForm('product_options');</script>
+
+		<% } %>
+
+			<script type="text/javascript">
+				if ((typeof(browserIs) != "undefined") && browserIs("Safari")) {
+					document.write('<div style="overflow: hidden; top: 0px; left: 0px; z-index: -1; position: absolute; opacity: 0;">');
+					document.write('<iframe id="iframe_save" name="iframe_save" src="/<%= mytext.display("adminpath") %>/dummy.html"></iframe>');
+					document.write('</div>');
+				} else {
+					document.write('<div style="display: none;">');
+					document.write('<iframe id="iframe_save" name="iframe_save" src="/<%= mytext.display("adminpath") %>/dummy.html"></iframe>');
+					document.write('</div>');
+				}
+			</script>
+
+<% } %>
+
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

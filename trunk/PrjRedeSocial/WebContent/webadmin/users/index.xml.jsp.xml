@@ -1,0 +1,87 @@
+<%= "<" + "?xml version=\"1.0\" encoding=\"" + myconfig.get(db, "charset") + "\" ?" + ">" %>
+<ajax-response><response type="object" id="data_grid_updater">
+<% if (! error.equals("")) { %>
+<rows update_ui="false" /><error><%= html.encode(error) %></error>
+<% } else { %>
+<rows update_ui="true">
+<%
+	while (userEdit.records(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+%>
+        <tr> 
+<%
+			String myadminindex = adminuser.getIndexUser();
+			if (myadminindex.equals("")) {
+				myadminindex = myconfig.get(db, "index_user");
+			}
+			if (myadminindex.equals("")) {
+				myadminindex = myconfig.get(db, "use_adminindex");
+			}
+			if (myadminindex.equals("")) {
+				myadminindex = "checkbox:25px class:50px group:50px type:50px name username id:25px view:50px update:50px delete:50px";
+			}
+			String[] columns = myadminindex.split(" ");
+			for (int i=0; i<columns.length; i++) {
+				String mycolumn = columns[i];
+				String mycolumnname = "";
+				String mycolumnwidth = "";
+				String mycolumnhref = "";
+				if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+					mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+					mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+					mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+				} else if (mycolumn.matches("^(.+):(.+)$")) {
+					mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+					mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+				} else {
+					mycolumnname = mycolumn;
+				}
+				if (! mycolumnwidth.equals("")) {
+					mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+				}
+%>
+<% if (mycolumnname.equals("checkbox")) { %>
+          <td><![CDATA[<input type="checkbox" name="dummy" value="<%= userEdit.getId() %>" onchange="toggleCheckbox(<%= userEdit.getId() %>,this.checked);">]]></td>
+<% } else if (mycolumnname.equals("class")) { %>
+          <% if (myconfig.get(db, "use_userclasses").equals("yes")) { %>
+          <td><![CDATA[<span title="<%= userEdit.getUserclass() %><% if (userEdit.getPassword().equals("")) { %><% if (! userEdit.getUserclass().equals("")) { %> <% } %><%= mytext.display("users.class.template") %><% } %>"><%= userEdit.getUserclass() %><% if (userEdit.getPassword().equals("")) { %><% if (! userEdit.getUserclass().equals("")) { %> <% } %><%= mytext.display("users.class.template") %><% } %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("group")) { %>
+          <% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+          <td><![CDATA[<span title="<%= userEdit.getUsergroup() %>"><%= userEdit.getUsergroup() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("type")) { %>
+          <% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+          <td><![CDATA[<span title="<%= userEdit.getUsertype() %>"><%= userEdit.getUsertype() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("name")) { %>
+          <td><![CDATA[<span title="<%= userEdit.getName() %>"><%= userEdit.getName() %></span>]]></td>
+<% } else if (mycolumnname.equals("organisation")) { %>
+          <td><![CDATA[<span title="<%= userEdit.getOrganisation() %>"><%= userEdit.getOrganisation() %></span>]]></td>
+<% } else if (mycolumnname.equals("email")) { %>
+          <td><![CDATA[<span title="<%= userEdit.getEmail() %>"><%= userEdit.getEmail() %></span>]]></td>
+<% } else if (mycolumnname.equals("username")) { %>
+          <td><![CDATA[<span title="<%= userEdit.getUsername() %>"><%= userEdit.getUsername() %></span>]]></td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td><![CDATA[<%= userEdit.getId() %>]]></td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td><![CDATA[<div align="center"><% if (userEdit.getUser()) { %><a href="view.jsp?id=<%= userEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("view") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td><![CDATA[<div align="center"><% if (userEdit.getEditor()) { %><a href="update.jsp?id=<%= userEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("update") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("create")) { %>
+          <td><![CDATA[<div align="center"><% if (userEdit.getCreator()) { %><a href="create.jsp?id=<%= userEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td><![CDATA[<% if (userEdit.getLocked() == 0) { %><div align="center"><% if (userEdit.getPublisher()) { %><a href="delete.jsp?id=<%= userEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("delete") %></a><% } %><% } %></div>]]></td>
+<% } else { %>
+          <td><![CDATA[<div align="center"><a href="<%= mycolumnhref + userEdit.getId() %>&<%= Math.random() %>"><%= mycolumnname %></a></div>]]></td>
+<% } %>
+<%
+			}
+%>
+        </tr>
+<%
+	}
+%>
+</rows>
+<rowcount><%= recordCount %></rowcount>
+<% } %>
+</response></ajax-response>

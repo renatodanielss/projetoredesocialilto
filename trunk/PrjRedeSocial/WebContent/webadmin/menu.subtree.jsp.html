@@ -1,0 +1,283 @@
+<%
+	// additional content
+
+	content = content_additional;
+	if (content != null) while (content.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		if (content_additional_content) {
+			content.getElements(db, myconfig, "content", "id", content.getId());
+			Iterator contentelements = Common.SortedHashMapKeySetIterator(content.getElement());
+			while (contentelements.hasNext()) {
+				String element = "" + contentelements.next();
+				if ((content.getElement().get(element) != null) && (! content.getElement().get(element).equals("-2")) && (! content.getElement().get(element).equals("-1")) && (! content.getElement().get(element).equals("0")) && (! content.getElement().get(element).equals(""))) {
+					Content mycontent = new Content();
+					mycontent.preview_read(db, myconfig, ""+content.getElement().get(element), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+					myid = "" + mycontent.getId();
+					mytitle = "" + mycontent.getTitle();
+					if (! mycontent.getVersion().equals("")) {
+						mytitle += " (" + mycontent.getVersion() + ")";
+					}
+					if (! mycontent.getDevice().equals("")) {
+						mytitle += " (" + mycontent.getDevice() + ")";
+					}
+					if (! mycontent.getContentClass().equals("")) {
+						mytitle += " (" + element + ")";
+					}
+					mycontentclass = "" + mycontent.getContentClass();
+					myrelations = "";
+					myrelations += " undraggable additional additional_" + element.replaceAll("[^a-zA-Z0-9]", "") + "_" + content.getElement().get(element);
+					mytype = "page";
+					descendents = db.query_value("select count(*) from content where page_up='" + myid + "'");
+					if (descendents > 0) {
+						mytype = "pagefolder";
+					}
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+				}
+			}
+		}
+		mytype = "page";
+		if (content_additional_media) {
+			if (! content.getImage1().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getImage1(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (image1)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable image image1 image1_" + content.getImage1();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+			if (! content.getImage2().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getImage2(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (image2)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable image image2 image2_" + content.getImage2();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+			if (! content.getImage3().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getImage3(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (image3)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable image image3 image3_" + content.getImage3();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+			if (! content.getFile1().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getFile1(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (file1)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable file file1 file1_" + content.getFile1();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+			if (! content.getFile2().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getFile2(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (file2)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable file file2 file2_" + content.getFile2();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+			if (! content.getFile3().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getFile3(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (file3)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable file file3 file3_" + content.getFile3();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+			if (! content.getLink1().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getLink1(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (link1)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable link link1 link1_" + content.getLink1();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+			if (! content.getLink2().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getLink2(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (link2)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable link link2 link2_" + content.getLink2();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+			if (! content.getLink3().equals("")) {
+				Content mycontent = new Content();
+				mycontent.preview_read(db, myconfig, content.getLink3(), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+				myid = "" + mycontent.getId();
+				mytitle = "" + mycontent.getTitle();
+				if (! mycontent.getVersion().equals("")) {
+					mytitle += " (" + mycontent.getVersion() + ")";
+				}
+				if (! mycontent.getDevice().equals("")) {
+					mytitle += " (" + mycontent.getDevice() + ")";
+				}
+				if (! mycontent.getContentClass().equals("")) {
+					mytitle += " (link3)";
+				}
+				mycontentclass = "" + mycontent.getContentClass();
+				myrelations = "";
+				myrelations += " undraggable link link3 link3_" + content.getLink3();
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+			}
+		}
+	}
+%>
+
+
+
+<%
+	// content versions
+
+	content = content_versions;
+	if (content != null) while (content.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		myid = "" + content.getId();
+		mytitle = "" + content.getTitle();
+		if (! content.getVersion().equals("")) {
+			mytitle += " (" + content.getVersion() + ")";
+		}
+		myrelations = "";
+		if (! content.getVersionMaster().equals("")) myrelations += " undraggable version version_master_" + content.getVersionMaster().replaceAll("[^a-zA-Z0-9]", "_");
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+	}
+%>
+
+
+<%
+	// content devices
+
+	content = content_devices;
+	if (content != null) while (content.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		myid = "" + content.getId();
+		mytitle = "" + content.getTitle();
+		if (! content.getDevice().equals("")) {
+			mytitle += " (" + content.getDevice() + ")";
+		}
+		myrelations = "";
+		if (! content.getVersionMaster().equals("")) myrelations += " undraggable device version version_master_" + content.getVersionMaster().replaceAll("[^a-zA-Z0-9]", "_");
+%>
+<li class="jstree-closed<%= myrelations %>" rel="<%= mytype %>" id="content_<%= myid %>"><a href="#" title="<%= mytitle %> (<%= myid %>)"><%= mytitle %> (<%= myid %>)</a>
+</li>
+<%
+	}
+%>

@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="content">
+  <row>
+   <column name="id" value="199" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-06-11 04:03:54" />
+   <column name="updated" value="2002-10-13 21:22:49" />
+   <column name="published" value="2002-10-13 21:22:49" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Magic hour (oranges)" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+	.hidden{
+		position:absolute;
+		left:-10000px;
+		top:auto;
+		width:1px;
+		height:1px;
+		overflow:hidden;
+}
+
+	.alignleft{
+		float:left;
+}
+
+	.alignright{
+		float:right;
+		text-align:right;
+}
+
+	.clearalign{
+		clear:both;
+}
+
+	.templatedesign01 {
+		background:#d67542;    	/* Top background colour */
+}
+
+	#maincontentbox {
+		padding-top:8px;
+}
+
+	.left_centre_right .colleft, .left_centre{
+		background:#f49d1a;    	/* Left column background colour */
+}
+
+
+	#wrapper_outer, #maincontentbox, .centre, .centre_right, .centre_right .colleft, .left_centre .colright, .left_centre_right, .left_centre_right .colmid, .left_right, .left_right .colleft{
+		background-color:#fdf5e6;    	/* Content background colour */
+}
+
+
+/* Needed to expand width for ecommerce toolbar */
+	#wrapper_outer{
+	   /* YOU CAN USE px, em OR % */
+		width:1060px;               
+}
+
+
+	#wrapper_inner{
+		padding:0 35px;
+}
+
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;div id=&quot;wrapper_outer&quot;&gt;
+   &lt;div id=&quot;wrapper_inner&quot;&gt;
+   &lt;a href=&quot;#maincontent&quot; class=&quot;hidden&quot;&gt;Skip to main content&lt;/a&gt; 
+&lt;table class=&quot;templatedesign01&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td colspan=&quot;1&quot; rowspan=&quot;2&quot; valign=&quot;top&quot; width=&quot;187&quot;&gt;&lt;img style=&quot;width: 187px; height: 117px;&quot; src=&quot;/image.jsp?id=424&quot; border=&quot;0&quot;&gt;&lt;br&gt;
+&lt;/td&gt;
+&lt;td width=&quot;5&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;
+&lt;!-- START OF HEADER AREA --&gt;
+            &lt;div id=&quot;header&quot;&gt;
+                        &lt;div class=&quot;alignright&quot;&gt;
+                           @@@utilities.content@@@
+                        &lt;/div&gt;
+@@@logo.content@@@
+            &lt;/div&gt;
+            &lt;!-- END OF HEADER AREA --&gt;
+&lt;br&gt;
+&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td width=&quot;5&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;           &lt;!-- START OF TOOLBAR NAVIGATION --&gt;
+                  @@@toolbar.content@@@
+            &lt;!-- END OF TOOLBAR NAVIGATION --&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+            &lt;!-- START OF MAIN CONTENT AREA --&gt;
+&lt;div id=&quot;maincontentbox&quot;&gt;
+@@@content@@@
+&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;
+            &lt;!-- END OF MAIN CONTENT AREA --&gt;
+            &lt;!-- START OF FOOTER AREA --&gt;
+                        &lt;div id=&quot;footer&quot;&gt;
+                              &lt;div class=&quot;alignright&quot;&gt;&lt;a class=&quot;footerlink&quot; href=&quot;#&quot;&gt;
+                                    Skip to top&lt;/a&gt;&lt;/div&gt;
+                                    &lt;div class=&quot;hr_footer clearalign&quot;&gt;&lt;/div&gt;
+                              &lt;div class=&quot;alignleft&quot;&gt;
+@@@footer.content@@@
+                              &lt;/div&gt;
+                              &lt;div class=&quot;alignright copyright&quot;&gt;
+                                    © All rights reserved.
+                              &lt;/div&gt;
+                        &lt;div style=&quot;clear: both;&quot;&gt;&lt;/div&gt;
+&lt;br&gt;
+                        &lt;/div&gt;
+                        &lt;div style=&quot;clear: both;&quot;&gt;&lt;/div&gt;
+            &lt;!-- END OF FOOTER AREA --&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="template" />
+   <column name="contenttype" value="General" />
+   <column name="contentgroup" value="Asbru" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+  </row>
+  <row>
+   <column name="id" value="424" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-10-13 21:22:40" />
+   <column name="updated" value="2002-10-13 21:22:40" />
+   <column name="published" value="2002-10-13 21:22:40" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="Magic hour" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="image" />
+   <column name="contenttype" value="Template" />
+   <column name="contentgroup" value="Asbru" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="image/Magic hour.jpg" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="199" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-06-11 04:03:54" />
+   <column name="updated" value="2002-10-13 21:22:49" />
+   <column name="published" value="2002-10-13 21:22:49" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Magic hour (oranges)" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+	.hidden{
+		position:absolute;
+		left:-10000px;
+		top:auto;
+		width:1px;
+		height:1px;
+		overflow:hidden;
+}
+
+	.alignleft{
+		float:left;
+}
+
+	.alignright{
+		float:right;
+		text-align:right;
+}
+
+	.clearalign{
+		clear:both;
+}
+
+	.templatedesign01 {
+		background:#d67542;    	/* Top background colour */
+}
+
+	#maincontentbox {
+		padding-top:8px;
+}
+
+	.left_centre_right .colleft, .left_centre{
+		background:#f49d1a;    	/* Left column background colour */
+}
+
+
+	#wrapper_outer, #maincontentbox, .centre, .centre_right, .centre_right .colleft, .left_centre .colright, .left_centre_right, .left_centre_right .colmid, .left_right, .left_right .colleft{
+		background-color:#fdf5e6;    	/* Content background colour */
+}
+
+
+/* Needed to expand width for ecommerce toolbar */
+	#wrapper_outer{
+	   /* YOU CAN USE px, em OR % */
+		width:1060px;               
+}
+
+
+	#wrapper_inner{
+		padding:0 35px;
+}
+
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;div id=&quot;wrapper_outer&quot;&gt;
+   &lt;div id=&quot;wrapper_inner&quot;&gt;
+   &lt;a href=&quot;#maincontent&quot; class=&quot;hidden&quot;&gt;Skip to main content&lt;/a&gt; 
+&lt;table class=&quot;templatedesign01&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td colspan=&quot;1&quot; rowspan=&quot;2&quot; valign=&quot;top&quot; width=&quot;187&quot;&gt;&lt;img style=&quot;width: 187px; height: 117px;&quot; src=&quot;/image.jsp?id=424&quot; border=&quot;0&quot;&gt;&lt;br&gt;
+&lt;/td&gt;
+&lt;td width=&quot;5&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;
+&lt;!-- START OF HEADER AREA --&gt;
+            &lt;div id=&quot;header&quot;&gt;
+                        &lt;div class=&quot;alignright&quot;&gt;
+                           @@@utilities.content@@@
+                        &lt;/div&gt;
+@@@logo.content@@@
+            &lt;/div&gt;
+            &lt;!-- END OF HEADER AREA --&gt;
+&lt;br&gt;
+&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td width=&quot;5&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;           &lt;!-- START OF TOOLBAR NAVIGATION --&gt;
+                  @@@toolbar.content@@@
+            &lt;!-- END OF TOOLBAR NAVIGATION --&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+            &lt;!-- START OF MAIN CONTENT AREA --&gt;
+&lt;div id=&quot;maincontentbox&quot;&gt;
+@@@content@@@
+&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;
+            &lt;!-- END OF MAIN CONTENT AREA --&gt;
+            &lt;!-- START OF FOOTER AREA --&gt;
+                        &lt;div id=&quot;footer&quot;&gt;
+                              &lt;div class=&quot;alignright&quot;&gt;&lt;a class=&quot;footerlink&quot; href=&quot;#&quot;&gt;
+                                    Skip to top&lt;/a&gt;&lt;/div&gt;
+                                    &lt;div class=&quot;hr_footer clearalign&quot;&gt;&lt;/div&gt;
+                              &lt;div class=&quot;alignleft&quot;&gt;
+@@@footer.content@@@
+                              &lt;/div&gt;
+                              &lt;div class=&quot;alignright copyright&quot;&gt;
+                                    © All rights reserved.
+                              &lt;/div&gt;
+                        &lt;div style=&quot;clear: both;&quot;&gt;&lt;/div&gt;
+&lt;br&gt;
+                        &lt;/div&gt;
+                        &lt;div style=&quot;clear: both;&quot;&gt;&lt;/div&gt;
+            &lt;!-- END OF FOOTER AREA --&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="template" />
+   <column name="contenttype" value="General" />
+   <column name="contentgroup" value="Asbru" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+  </row>
+  <row>
+   <column name="id" value="424" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-10-13 21:22:40" />
+   <column name="updated" value="2002-10-13 21:22:40" />
+   <column name="published" value="2002-10-13 21:22:40" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="Magic hour" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="image" />
+   <column name="contenttype" value="Template" />
+   <column name="contentgroup" value="Asbru" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="image/Magic hour.jpg" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+  </row>
+ </table>
+ <folder name="image/">
+  <file name="Magic hour.jpg">
+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
+  </file>
+ </folder>
+</database>

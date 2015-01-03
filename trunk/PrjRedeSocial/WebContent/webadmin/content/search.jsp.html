@@ -1,0 +1,2296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= page_name %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function doHeatmapAlignUpdate(input) {
+	var id = input.id.replace(/^WCMheatmapalign_([0-9]+)$/, "$1");
+	var align = input.value;
+	var heatmap_data = GET('/<%= mytext.display("adminpath") %>/content/heatmap.jsp?id='+id+'&align='+align+'&'+Math.random());
+}
+
+function doStockUpdate(input) {
+	var id = input.id.replace(/^WCMstockupdate_([0-9]+)$/, "$1");
+	var product_stock_amount_update = "";
+	var product_stock_amount = "";
+	if (input.value.match(/^=([-]?[0-9]+)$/)) {
+		product_stock_amount_update = "set";
+		product_stock_amount = input.value.replace(/^=([-]?[0-9]+)$/, "$1");
+	} else if (input.value.match(/^[+]([0-9]+)$/)) {
+		product_stock_amount_update = "add";
+		product_stock_amount = input.value.replace(/^[+]([0-9]+)$/, "$1");
+	} else if (input.value.match(/^[-]([0-9]+)$/)) {
+		product_stock_amount_update = "subtract";
+		product_stock_amount = input.value.replace(/^[-]([0-9]+)$/, "$1");
+	} else if (input.value.match(/^([? ]+)$/)) {
+		// refresh
+	} else {
+		alert("<%= mytext.display("content.stockupdate.error") %>");
+	}
+	input.value = "";
+	var product_stock_data = GET('/<%= mytext.display("adminpath") %>/content/stockupdate.jsp?id='+id+'&product_stock_amount_update='+product_stock_amount_update+'&product_stock_amount='+product_stock_amount+'&'+Math.random());
+	if (product_stock_data.match(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/)) {
+		id = "" + product_stock_data.replace(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/, "$1");
+		var stockamount = "" + product_stock_data.replace(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/, "$2");
+		var stockstatus = "" + product_stock_data.replace(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/, "$3");
+		var stockcomment = "" + product_stock_data.replace(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/, "$4");
+		if (id) {
+			var node = document.getElementById("WCMstock_"+id);
+			if (node) {
+				node.innerHTML = stockamount;
+				node.className = "WCMstock_"+stockstatus;
+			}
+			node = document.getElementById("WCMstockcomment_"+id);
+			if (node) {
+				node.innerHTML = stockcomment;
+				node.className = "WCMstock_"+stockstatus;
+			}
+		}
+	}
+}
+
+function doRestockedUpdate(input) {
+	var id = input.id.replace(/^WCMrestockedupdate_([0-9]+)$/, "$1");
+	var product_restocked_amount_update = "";
+	var product_restocked_amount = "";
+	if (input.value.match(/^=([-]?[0-9]+)$/)) {
+		product_restocked_amount_update = "set";
+		product_restocked_amount = input.value.replace(/^=([-]?[0-9]+)$/, "$1");
+	} else if (input.value.match(/^[+]([0-9]+)$/)) {
+		product_restocked_amount_update = "add";
+		product_restocked_amount = input.value.replace(/^[+]([0-9]+)$/, "$1");
+	} else if (input.value.match(/^[-]([0-9]+)$/)) {
+		product_restocked_amount_update = "subtract";
+		product_restocked_amount = input.value.replace(/^[-]([0-9]+)$/, "$1");
+	} else if (input.value.match(/^([? ]+)$/)) {
+		// refresh
+	} else {
+		alert("<%= mytext.display("content.stockupdate.error") %>");
+	}
+	input.value = "";
+	var product_stock_data = GET('/<%= mytext.display("adminpath") %>/content/stockupdate.jsp?id='+id+'&product_restocked_amount_update='+product_restocked_amount_update+'&product_restocked_amount='+product_restocked_amount+'&'+Math.random());
+	if (product_stock_data.match(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/)) {
+		id = "" + product_stock_data.replace(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/, "$1");
+		var stockamount = "" + product_stock_data.replace(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/, "$2");
+		var stockstatus = "" + product_stock_data.replace(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/, "$3");
+		var stockcomment = "" + product_stock_data.replace(/^([0-9]+):::([-]?[0-9]+):::([a-z]+):::(.*)$/, "$4");
+		if (id) {
+			var node = document.getElementById("WCMrestocked_"+id);
+			if (node) {
+				node.innerHTML = stockamount;
+				node.className = "WCMstock_"+stockstatus;
+			}
+		}
+	}
+}
+
+function initOptions() {
+	var inputnode = document.getElementById('createoptions');
+	if (inputnode && inputnode.options) {
+		var inputoptions = '';
+		if (document.location.search) {
+			inputoptions = GET('/<%= mytext.display("adminpath") %>/content/search.create.jsp'+document.location.search+'&<%= Math.random() %>');
+		} else {
+			inputoptions = GET('/<%= mytext.display("adminpath") %>/content/search.create.jsp'+'?<%= Math.random() %>');
+		}
+		// MSIE may not set OPTIONS correctly through innerHTML - clear and add OPTIONS through DOM
+		inputnode.innerHTML = "";
+		var myoptions = inputoptions.split("\n");
+		for (var i=0; i<myoptions.length; i++) {
+			var regexpOption = new RegExp('<option value="(.*)">(.*)</option>', "gi");
+			var mymatch = regexpOption.exec(myoptions[i]);
+			if (mymatch) {
+				var myvalue = "" + mymatch[1];
+				var mytext = "" + mymatch[2];
+				myoption = document.createElement("option");
+				//myoption.appendChild(document.createTextNode(mytext));
+				myoption.innerHTML = mytext; // use innerHTML instead of CreateTextNode to handle special characters
+				myoption.setAttribute("value", myvalue);
+				inputnode.appendChild(myoption);
+			}
+		}
+		if (document.all) inputnode.outerHTML = inputnode.outerHTML;
+	}
+}
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contenttitle;
+		var contentid;
+		var contenthref;
+		if (inputnode.selectedIndex >= 0) {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		contenttitle = encodeURIComponent(contenttitle);
+		if (! webeditor.window_close) {
+			webeditor.window_close = function(mywindow) {
+				if (webeditor_custom_window_close) {
+					try {
+						webeditor_custom_window_close(mywindow);
+					} catch(e) {
+					}
+				} else {
+					mywindow.close();
+				}
+			}
+		}
+		if (! webeditor.window_open) {
+			webeditor.window_open = function(url, name, width, height, specs, replacehistory) {
+				if (webeditor_custom_window) {
+					try {
+						return webeditor_custom_window(url, name, width, height, specs, replacehistory);
+					} catch(e) {
+					}
+				} else {
+					return window.open(url, name, specs, replacehistory);
+				}
+			}
+		}
+		if (! webeditor.window_proxy) webeditor.window_proxy = {};
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		inputnode.options[0].text = contenttitle;
+		inputnode.options[0].value = contentid;
+		inputnode.selectedIndex = 0;
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+var workflowoptions = new Array();
+function refreshWorkflow(myform) {
+	if (document.getElementById("status")) {
+		if (! workflowoptions[0]) {
+			workflowoptions[0] = document.getElementById("status").innerHTML;
+		}
+		var myoptions = workflowoptions[0].match(new RegExp("<option.*?<\/option>", "gim"));
+		for (var i=0; i<myform.elements.length; i++) {
+			if ((myform.elements[i].name == "id") && (myform.elements[i].checked || (myform.elements[i].type == "hidden"))) {
+				for (var j=0; j<myoptions.length; j++) {
+					myoptions[j] = myoptions[j].replace(new RegExp('&quot;', 'gim'), '"');
+					myoptions[j] = myoptions[j].replace(new RegExp('&gt;', 'gim'), '>');
+					myoptions[j] = myoptions[j].replace(new RegExp('&lt;', 'gim'), '<');
+					if (myoptions[j].match(new RegExp('<option.*?value="?([0-9]+)"?.*?>(.*?)</option>', 'gim'))) {
+						myoptions[j] = myoptions[j].replace(new RegExp('<option.*?value="?([0-9]+)"?.*?>(.*?)</option>', 'gim'), '<option value="$1">$2</option>');
+						var myoption = myoptions[j].replace(new RegExp(" \\[.*\\]", 'gim'), '');
+						workflowoptions[myform.elements[i].value] = workflowoptions[myform.elements[i].value].replace(new RegExp('&quot;', 'gim'), '"');
+						workflowoptions[myform.elements[i].value] = workflowoptions[myform.elements[i].value].replace(new RegExp('&gt;', 'gim'), '>');
+						workflowoptions[myform.elements[i].value] = workflowoptions[myform.elements[i].value].replace(new RegExp('&lt;', 'gim'), '<');
+						workflowoptions[myform.elements[i].value] = workflowoptions[myform.elements[i].value].replace(new RegExp(" \\[.*\\]", 'gim'), '');
+						if (workflowoptions[myform.elements[i].value].toLowerCase().indexOf(myoption.toLowerCase()) < 0) {
+							// myoptions[j] = myoptions[j].replace(/<option value/i, "<option disabled value");
+							myoptions[j] = "";
+						}
+					}
+				}
+			}
+		}
+		var myhtmloptions = myoptions.join("\n").replace("\n\n","\n");
+		if (document.getElementById("status").outerHTML) {
+			document.getElementById("status").outerHTML = '<select id="status" name="status">' + myhtmloptions + '</select>';
+		} else {
+			document.getElementById("status").innerHTML = myhtmloptions;
+		}
+	}
+}
+
+function selectAll(myform) {
+	var myelements = new Array();
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id") {
+			if (! myform.elements[i].checked) myform.elements[i].click();
+			myform.elements[i].checked = true;
+		} else if (myform.elements[i].name == "dummy") {
+			if (! myform.elements[i].checked) myform.elements[i].click();
+			myform.elements[i].checked = true;
+			myelements[myelements.length] = myform.elements[i].value;
+		}
+	}
+	for (var i=0; i<myelements.length; i++) {
+		if (toggleCheckbox) toggleCheckbox( myelements[i], true );
+	}
+}
+
+function unselectAll(myform) {
+	var myelements = new Array();
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id") {
+			myform.elements[i].checked = false;
+		} else if (myform.elements[i].name == "dummy") {
+			myform.elements[i].checked = false;
+			myelements[myelements.length] = myform.elements[i].value;
+		}
+	}
+	for (var i=0; i<myelements.length; i++) {
+		if (toggleCheckbox) toggleCheckbox( myelements[i], false );
+	}
+}
+
+function selectedItems(myform) {
+	for (var i=0; i<myform.elements.length; i++) {
+		if ((myform.elements[i].name == "id") || (myform.elements[i].name == "dummy")) {
+			if ((myform.elements[i].type == "checkbox") && (myform.elements[i].checked)) {
+				return true;
+			}
+		}
+	}
+}
+
+function checklinksSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "checklinks.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function validatemarkupSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "validatemarkup_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function publishSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "publish_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function deleteSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "delete_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function archiveSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "archive_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function checkoutSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "checkout_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function checkinSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "checkin_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function moveSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "move_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function printSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "print.jsp";
+	myform.target = "_blank";
+	myform.submit();
+}
+
+function changeBundle(myinput) {
+	if (myinput.value == "-") {
+		myinput.selectedIndex = 0;
+		var mybundle = prompt("<%= mytext.display("content.bundle.new") %>");
+		mybundle = mybundle.replace(/^ */g, "").replace(/ *$/g, "");
+		if (! mybundle) {
+			myinput.selectedIndex = 0;
+		} else {
+			myinput.options[myinput.options.length] = new Option(mybundle, mybundle);
+			myinput.selectedIndex = myinput.options.length-1;
+		}
+	}
+}
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<script type="text/javascript">
+
+function validateScheduledDateTime(input) {
+	var now = '<%= new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()) %>';
+	if (input && (input.value != "") && (input.value < now)) {
+		alert('<%= mytext.display("content.scheduled.invalid") %>');
+	}
+}
+
+$(function(){
+
+	$('#scheduled_publish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_publish').attr('value').length >= 10) ? $('#scheduled_publish').attr('value').substring(0,10) : $('#scheduled_publish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish_trigger').datepicker( "option", "defaultDate", $('#scheduled_publish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish').attr('value', dateText + $('#scheduled_publish').attr('value').substring(10));
+				} else {
+					$('#scheduled_publish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+				validateScheduledDateTime($('#scheduled_publish')[0]);
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#scheduled_unpublish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_unpublish').attr('value').length >= 10) ? $('#scheduled_unpublish').attr('value').substring(0,10) : $('#scheduled_unpublish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish_trigger').datepicker( "option", "defaultDate", $('#scheduled_unpublish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish').attr('value', dateText + $('#scheduled_unpublish').attr('value').substring(10));
+				} else {
+					$('#scheduled_unpublish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+				validateScheduledDateTime($('#scheduled_unpublish')[0]);
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+});
+
+</script>
+
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+<%@ include file="livegrid.search.jsp" %>
+<% } else { %>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/sorttable.js"></script>
+<% } %>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= page_name %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <div align="right">
+<% if (! mysession.get("admin_heatmap").equals("")) { %>
+        <form method="GET" action="heatmap.jsp">
+          <input type="hidden" name="log" value="click">
+<% } else { %>
+        <form method="GET" action="create.jsp">
+<% } %>
+          <input type="hidden" name="redirect" value="<%= myrequest.getServletPath() + "?search=" + mysession.get("search").replaceAll("\"", "&quot;") %>">
+<% if (true) { %>
+          <select id="createoptions" name="id" style="max-width: 500px;">
+            <% if ((mysession.get("username") != null) && (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+            <option value=""><%= mytext.display("blank") %>
+            <% } else { %>
+            <option value="" disabled>&nbsp;
+            <% } %>
+            <option value=""><%= mytext.display("wait.data.loading") %>
+          </select>
+<% if ((! mysession.get("admin_segment").equals("")) || (! mysession.get("admin_usertest").equals("")) || (! mysession.get("admin_heatmap").equals(""))) { %>
+          <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('createoptions', '', '', '', '');">
+<% } %>
+          <input type="submit" value="<%= mytext.display("addnew") %>">
+<% } else { %>
+          <nobr>
+          <select id="addnew" name="id" style="width: 400px;">
+            <% if ((mysession.get("username") != null) && (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+            <option value=""><%= mytext.display("blank") %>
+            <% } %>
+          </select>
+          <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('addnew', 'Pages', '', 'Pages', 'page');">
+          <input type="submit" value="<%= mytext.display("addnew") %>">
+          </nobr>
+<% } %>
+        </form>
+      </div>
+
+<form method="GET" action="search.jsp">
+<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+<tr>
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+<td valign="bottom" align="left">
+<a id="bookmark" style="margin-bottom:3px;font-size:12px;text-decoration:none;"></a>
+</td>
+<td valign="bottom" align="center">
+<span style="margin-bottom:3px;font-size:12px"><%= mytext.display("content.index.page") %></span>
+<a id="first" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.first") %></a> -
+<a id="back" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.back") %></a> -
+<span style="margin-bottom:3px;font-size:12px" id="pages"></span>
+- <a id="next" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.next") %></a>
+- <a id="last" style="margin-bottom:3px;font-size:12px;text-decoration:none;" href="#"><%= mytext.display("content.index.last") %></a>
+</td>
+<% } %>
+<td valign="bottom" align="right">
+          <select name="pagesize" onChange="this.form.submit();">
+            <option value="all"<% if (! mysession.get("admin_pagesize").equals("")) { %> selected<% } %>><%= mytext.display("content.index.pagesize.all") %>
+            <option value=" "<% if (mysession.get("admin_pagesize").equals("")) { %> selected<% } %>><%= mytext.display("content.index.pagesize.auto") %>
+          </select>
+</td>
+</table>
+</form>
+
+<form id="contentform" method="POST">
+<input type="hidden" name="redirect" value="<%= myrequest.getServletPath() + "?search=" + mysession.get("search").replaceAll("\"", "&quot;") %>">
+<% String workflowoptions = ""; %>
+<div id="container" class="WCMindex">
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+      <table style="width: 92%;" class="fixedTable WCMindex" id="data_grid_header">
+<% } else { %>
+      <table style="width: 100%;" class="sortable" id="contents">
+<% } %>
+        <tr class="WCMindex"> 
+<%
+	String myadminindex = "";
+	myadminindex = myconfig.get(db, "index_search");
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals(""))) {
+		myadminindex = adminuser.getIndexWorkspace();
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("content"))) {
+		myadminindex = adminuser.getIndexContent();
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("library"))) {
+		myadminindex = adminuser.getIndexLibrary();
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce")) && (myrequest.getRequestURI().indexOf("stock.jsp") >= 0)) {
+		myadminindex = adminuser.getIndexStock();
+	} else if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce"))) {
+		myadminindex = adminuser.getIndexProduct();
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_segment").equals(""))) {
+		myadminindex = adminuser.getIndexSegments();
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_usertest").equals(""))) {
+		myadminindex = adminuser.getIndexUsertests();
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_heatmap").equals(""))) {
+		myadminindex = adminuser.getIndexHeatmaps();
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals(""))) {
+		myadminindex = myconfig.get(db, "index_workspace");
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("content"))) {
+		myadminindex = myconfig.get(db, "index_content");
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("library"))) {
+		myadminindex = myconfig.get(db, "index_library");
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce")) && (myrequest.getRequestURI().indexOf("stock.jsp") >= 0)) {
+		myadminindex = myconfig.get(db, "index_stock");
+	} else if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce"))) {
+		myadminindex = myconfig.get(db, "index_product");
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_segment").equals(""))) {
+		myadminindex = myconfig.get(db, "index_usersegments");
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_usertest").equals(""))) {
+		myadminindex = myconfig.get(db, "index_usertests");
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_heatmap").equals(""))) {
+		myadminindex = myconfig.get(db, "index_heatmaps");
+		if (myadminindex.equals("")) {
+			myadminindex = "package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px webviewicon:20px heatmapicon:20px heatmapalign:50px heatmaponoff:50px heatmapclear:50px BLANK:10px";
+		}
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "use_adminindex");
+	}
+	if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce")) && (myrequest.getRequestURI().indexOf("stock.jsp") >= 0)) {
+		myadminindex = "group:50px type:50px admin:200px id:25px stocklow:25px stock:25px stockupdate:25px stockcomment:200px";
+	} else if (myadminindex.equals("")) {
+		//myadminindex = "checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin id:25px previewicon:20px archivedicon:20px scheduledicon:20px status:250px";
+		//myadminindex = "checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px title:200px id:25px position:25px search:200px replace:200px preview:50px view:50px update:50px delete:50px";
+		myadminindex = "checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px status:250px";
+	}
+
+	String[] columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " width: " + mycolumnwidth + ";";
+		}
+%>
+<% if (mycolumnname.equals("BLANK")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("checkbox")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("package")) { %>
+          <% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+          <th id="column_contentpackage" name="contentpackage" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.package") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("bundle")) { %>
+          <% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+          <th id="column_contentbundle" name="contentbundle" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.bundle") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("class")) { %>
+          <% if ((mysession.get("admin_contentclass") != null) && ((mysession.get("admin_contentclass").indexOf(",") > 0) || (mysession.get("admin_contentclass").equals("element")) || (mysession.get("admin_contentclass").equals("")))) { %>
+          <th id="column_contentclass" name="contentclass" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.class") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("group")) { %>
+          <% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet")) && (! mysession.get("admin_contentclass").equals("script"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <th id="column_contentgroup" name="contentgroup" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.group") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("type")) { %>
+          <% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet")) && (! mysession.get("admin_contentclass").equals("script"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <th id="column_contenttype" name="contenttype" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.type") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("version")) { %>
+          <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <th id="column_version" name="version" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.version") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("device")) { %>
+          <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <th id="column_device" name="device" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.device") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("usersegment")) { %>
+          <% if (License.valid(db, myconfig, "experience") && (myconfig.get(db, "use_versions").equals("yes"))) { %>
+          <th id="column_usersegment" name="usersegment" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.usersegment") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("usertest")) { %>
+          <% if (License.valid(db, myconfig, "experience") && (myconfig.get(db, "use_versions").equals("yes"))) { %>
+          <th id="column_usertest" name="usertest" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.usertest") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("permission")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.permission") %></th>
+<% } else if (mycolumnname.equals("permissionicon")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("admin")) { %>
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+          <th id="column_title" name="title" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>" id="titles"><%= column_name %></th>
+<% } else { %>
+          <th id="titles" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= column_name %></th>
+          <th class="WCMindex unsortable" style="width: 20px; text-align: center;"><a title="<%= mytext.display("content.thread.all") %>" href="javascript:onloadSortTable();"><img src="/<%= mytext.display("adminpath") %>/indent.gif" border="0"></a></th>
+<% } %>
+<% } else if (mycolumnname.equals("title")) { %>
+<% if (mysession.get("admin_pagesize").equals("")) { %>
+          <th id="column_title" name="title" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= column_name %></th>
+<% } else { %>
+          <th id="titles" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= column_name %></th>
+          <th class="WCMindex unsortable" style="width: 20px; text-align: center;"><a title="<%= mytext.display("content.thread.all") %>" href="javascript:onloadSortTable();"><img src="/<%= mytext.display("adminpath") %>/indent.gif" border="0"></a></th>
+<% } %>
+<% } else if (mycolumnname.equals("id")) { %>
+          <th id="column_id" name="id" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.id") %></th>
+<% } else if (mycolumnname.equals("position")) { %>
+<% } else if (mycolumnname.equals("search")) { %>
+<% } else if (mycolumnname.equals("replace")) { %>
+<% } else if (mycolumnname.equals("webviewicon")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("webview")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("previewicon")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("preview")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("view")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("update")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("create")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("archivedicon")) { %>
+          <% if (! myconfig.get(db, "use_archive").equals("none")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+          <% } %>
+<% } else if (mycolumnname.equals("scheduledicon")) { %>
+          <% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+          <% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+          <% } %>
+          <% } %>
+<% } else if (mycolumnname.equals("archived")) { %>
+          <% if (! myconfig.get(db, "use_archive").equals("none")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+          <% } %>
+<% } else if (mycolumnname.equals("scheduled")) { %>
+          <% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+          <% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+          <% } %>
+          <% } %>
+<% } else if (mycolumnname.equals("checkout")) { %>
+          <th id="column_checkedout" name="checkedout" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("status")) { %>
+          <% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <th id="column_status" name="status" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.status") %></th>
+          <% } %>
+<% } else if (mycolumnname.equals("statusicon")) { %>
+          <% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <th id="column_statusicon" name="statusicon" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+          <% } %>
+<% } else if (mycolumnname.equals("heatmapicon")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("heatmap")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.heatmap") %></th>
+<% } else if (mycolumnname.equals("heatmapclear")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.heatmapclear") %></th>
+<% } else if (mycolumnname.equals("heatmaponoff")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.heatmaponoff") %></th>
+<% } else if (mycolumnname.equals("heatmapalign")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.heatmapalign") %></th>
+<% } else if (mycolumnname.equals("productcode")) { %>
+          <th id="column_product_code" name="product_code" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.code") %></th>
+<% } else if (mycolumnname.equals("weight")) { %>
+          <th id="column_product_weight" name="product_weight" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.weight") %> (<%= mytext.display("content.productdetails.weight.unit") %>)</th>
+<% } else if (mycolumnname.equals("volume")) { %>
+          <th id="column_product_volume" name="product_volume" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.volume") %> (<%= mytext.display("content.productdetails.volume.unit") %>)</th>
+<% } else if (mycolumnname.equals("width")) { %>
+          <th id="column_product_width" name="product_width" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.width") %> (<%= mytext.display("content.productdetails.width.unit") %>)</th>
+<% } else if (mycolumnname.equals("height")) { %>
+          <th id="column_product_height" name="product_height" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.height") %> (<%= mytext.display("content.productdetails.height.unit") %>)</th>
+<% } else if (mycolumnname.equals("depth")) { %>
+          <th id="column_product_depth" name="product_depth" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.depth") %> (<%= mytext.display("content.productdetails.depth.unit") %>)</th>
+<% } else if (mycolumnname.equals("currency")) { %>
+          <th id="column_product_currency" name="product_currency" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.currency") %></th>
+<% } else if (mycolumnname.equals("price")) { %>
+          <th id="column_product_price" name="product_price" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.price") %></th>
+<% } else if (mycolumnname.equals("cost")) { %>
+          <th id="column_product_cost" name="product_cost" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.cost") %></th>
+<% } else if (mycolumnname.equals("period")) { %>
+          <th id="column_product_period" name="product_period" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.period") %></th>
+<% } else if (mycolumnname.equals("stock")) { %>
+          <th id="column_stock" name="stock" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stock") %></th>
+<% } else if (mycolumnname.equals("stockcomment")) { %>
+          <th id="column_stockcomment" name="stockcomment" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stockcomment") %></th>
+<% } else if (mycolumnname.equals("stocklow")) { %>
+          <th id="column_stocklow" name="stocklow" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stocklow") %></th>
+<% } else if (mycolumnname.equals("restocked")) { %>
+          <th id="column_restocked" name="restocked" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.restocked") %></th>
+<% } else if (mycolumnname.equals("stockupdate")) { %>
+          <th id="column_stockupdate" name="stockupdate" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stockupdate") %></th>
+<% } else if (mycolumnname.equals("restockedupdate")) { %>
+          <th id="column_restockedupdate" name="restockedupdate" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.restockedupdate") %></th>
+<% } else if (mycolumnname.equals("created")) { %>
+          <th id="column_created" name="created" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.created") %></th>
+<% } else if (mycolumnname.equals("createdby")) { %>
+          <th id="column_created_by" name="created_by" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.createdby") %></th>
+<% } else if (mycolumnname.equals("updated")) { %>
+          <th id="column_updated" name="updated" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.updated") %></th>
+<% } else if (mycolumnname.equals("updatedby")) { %>
+          <th id="column_updated_by" name="updated" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.updatedby") %></th>
+<% } else if (mycolumnname.equals("published")) { %>
+          <th id="column_published" name="published" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.published") %></th>
+<% } else if (mycolumnname.equals("publishedby")) { %>
+          <th id="column_published_by" name="published_by" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.publishedby") %></th>
+<% } else if (mycolumnname.equals("scheduledpublish")) { %>
+          <th id="column_scheduled_publish" name="scheduled_publish" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.publishscheduled") %></th>
+<% } else if (mycolumnname.equals("scheduledunpublish")) { %>
+          <th id="column_scheduled_unpublish" name="scheduled_unpublish" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.unpublishscheduled") %></th>
+<% } else if (mycolumnname.equals("unpublished")) { %>
+          <th id="column_unpublished" name="unpublished" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.unpublished") %></th>
+<% } else if (mycolumnname.equals("unpublishedby")) { %>
+          <th id="column_unpublished_by" name="unpublished_by" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.unpublishedby") %></th>
+<% } else if (mycolumnname.equals("filename")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.filename") %></th>
+<% } else if (mycolumnname.equals("template")) { %>
+          <th id="column_template" name="template" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.template") %></th>
+<% } else if (mycolumnname.equals("stylesheet")) { %>
+          <th id="column_stylesheet" name="stylesheet" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stylesheet") %></th>
+<% } else if (mycolumnname.equals("top")) { %>
+          <th id="column_page_top" name="page_top" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.contentrelations.top") %></th>
+<% } else if (mycolumnname.equals("up")) { %>
+          <th id="column_page_up" name="page_up" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.contentrelations.up") %></th>
+<% } else if (mycolumnname.equals("first")) { %>
+          <th id="column_page_first" name="page_first" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.contentrelations.first") %></th>
+<% } else if (mycolumnname.equals("previous")) { %>
+          <th id="column_page_previous" name="page_previous" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.contentrelations.previous") %></th>
+<% } else if (mycolumnname.equals("next")) { %>
+          <th id="column_page_next" name="page_next" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.contentrelations.next") %></th>
+<% } else if (mycolumnname.equals("last")) { %>
+          <th id="column_page_last" name="page_last" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.contentrelations.last") %></th>
+<% } else if (mycolumnname.equals("stockcost")) { %>
+          <th id="column_stockcost" name="stockcost" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stockcost") %></th>
+<% } else if (mycolumnname.equals("restockcost")) { %>
+          <th id="column_restockcost" name="restockcost" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.restockcost") %></th>
+<% } else if (mycolumnname.equals("stockvalue")) { %>
+          <th id="column_stockvalue" name="stockvalue" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stockvalue") %></th>
+<% } else if (mycolumnname.equals("stockprofit")) { %>
+          <th id="column_stockprofit" name="stockprofit" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stockprofit") %></th>
+<% } else if (mycolumnname.equals("stocklocation")) { %>
+          <th id="column_product_location" name="product_location" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.stocklocation") %></th>
+<% } else if (mycolumnname.startsWith("metainfo_")) { %>
+          <th id="column_metainfo_<%= html.encode(mycolumnname.substring(9)).replaceAll(" ", "_") %>" name="metainfo_<%= html.encode(mycolumnname.substring(9)) %>" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= html.encode(mycolumnname.substring(9)) %></th>
+<% } else if (mycolumnname.startsWith("productinfo_")) { %>
+          <th id="column_product_info_<%= html.encode(mycolumnname.substring(12)) %>" name="product_info_<%= html.encode(mycolumnname.substring(12)) %>" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= html.encode(mycolumnname.substring(12).replaceAll("_", " ")) %></th>
+<% } else if (mycolumnname.equals("brand")) { %>
+          <th id="column_product_brand" name="product_brand" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.brand") %></th>
+<% } else if (mycolumnname.equals("colour")) { %>
+          <th id="column_product_colour" name="product_colour" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.colour") %></th>
+<% } else if (mycolumnname.equals("size")) { %>
+          <th id="column_product_size" name="product_size" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("content.productdetails.size") %></th>
+<% } else if (! mycolumnname.equals("")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	HashMap pageMaster = new HashMap();
+	HashMap pageRoot = new HashMap();
+	HashMap pageTop = new HashMap();
+	HashMap pageUp = new HashMap();
+	HashMap pageChildren = new HashMap();
+	HashMap pagePrevious = new HashMap();
+	HashMap pageNext = new HashMap();
+	boolean administrator = false;
+if (! mysession.get("admin_pagesize").equals("")) {
+	while (pageEdit.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		if (pageEdit.getUser()) {
+			if (pageEdit.getAdministrator()) {
+				administrator = true;
+			}
+			if ((myconfig.get(db, "use_workflow").equals("yes")) && (! pageEdit.getAdministrator()) && (! workflow.permissions(db, pageEdit.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), pageEdit.getContentClass(), pageEdit.getContentGroup(), pageEdit.getContentType(), pageEdit.getVersion(), (pageEdit.getStatusBy().equals(mysession.get("username")))))) {
+				pageEdit.setEditor(false);
+				pageEdit.setPublisher(false);
+			}
+			if ((! pageEdit.getVersionMaster().equals("0")) && (! pageEdit.getVersionMaster().equals(""))) {
+				pageMaster.put("" + pageEdit.getId(), pageEdit.getVersionMaster());
+			} else {
+				pageEdit.setVersionMaster("");
+			}
+			if ((! pageEdit.getPageTop().equals("0")) && (! pageEdit.getPageTop().equals(""))) {
+				pageTop.put("" + pageEdit.getId(), "" + pageEdit.getPageTop());
+				if ((pageEdit.getPageUp().equals("0")) || (pageEdit.getPageUp().equals(""))) {
+					pageEdit.setPageUp("" + pageEdit.getPageTop());
+				}
+			} else {
+				pageEdit.setPageTop("");
+			}
+			if ((! pageEdit.getPageUp().equals("0")) && (! pageEdit.getPageUp().equals(""))) {
+				pageUp.put("" + pageEdit.getId(), "" + pageEdit.getPageUp());
+				if (pageChildren.get("" + pageEdit.getPageUp()) == null) {
+					pageChildren.put("" + pageEdit.getPageUp(), new HashMap());
+				}
+				((HashMap)pageChildren.get("" + pageEdit.getPageUp())).put("" + pageEdit.getId(), "" + pageEdit.getId());
+			} else {
+				pageEdit.setPageUp("");
+			}
+			if ((! pageEdit.getPageFirst().equals("0")) && (! pageEdit.getPageFirst().equals(""))) {
+			} else {
+				pageEdit.setPageFirst("");
+			}
+			if ((! pageEdit.getPageLast().equals("0")) && (! pageEdit.getPageLast().equals(""))) {
+			} else {
+				pageEdit.setPageLast("");
+			}
+			if ((! pageEdit.getPagePrevious().equals("0")) && (! pageEdit.getPagePrevious().equals(""))) {
+				pagePrevious.put("" + pageEdit.getId(), "" + pageEdit.getPagePrevious());
+				pageNext.put("" + pageEdit.getPagePrevious(), "" + pageEdit.getId());
+			} else {
+				pageEdit.setPagePrevious("");
+			}
+			if ((! pageEdit.getPageNext().equals("0")) && (! pageEdit.getPageNext().equals(""))) {
+				pageNext.put("" + pageEdit.getId(), "" + pageEdit.getPageNext());
+				pagePrevious.put("" + pageEdit.getPageNext(), "" + pageEdit.getId());
+			} else {
+				pageEdit.setPageNext("");
+			}
+			if ((pageEdit.getPageUp().equals("")) && (pageEdit.getPagePrevious().equals(""))) {
+				pageRoot.put("" + pageEdit.getId(), "" + pageEdit.getId());
+			} else {
+				pageRoot.put("" + pageEdit.getId(), "-1");
+			}
+			if ((! pageEdit.getPageTop().equals("")) && ((pageRoot.get("" + pageEdit.getPageTop()) == null) || (! pageRoot.get("" + pageEdit.getPageTop()).equals("-1")))) {
+				pageRoot.put("" + pageEdit.getPageTop(), "" + pageEdit.getPageTop());
+			}
+			if ((! pageEdit.getPageUp().equals("")) && ((pageRoot.get("" + pageEdit.getPageUp()) == null) || (! pageRoot.get("" + pageEdit.getPageUp()).equals("-1")))) {
+				pageRoot.put("" + pageEdit.getPageUp(), "" + pageEdit.getPageUp());
+			}
+			if (pageEdit.getCheckoutPermissions(mysession.get("username"), db, myconfig)) {
+				workflowoptions += "workflowoptions[" + pageEdit.getId() + "] = '" + workflow.workflow_action_select_options(db, pageEdit.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), pageEdit.getContentClass(), pageEdit.getContentGroup(), pageEdit.getContentType(), pageEdit.getVersion(), pageEdit.getAdministrator(), (pageEdit.getStatusBy().equals(mysession.get("username")))).replaceAll("\\r","\\\\r").replaceAll("\\n","\\\\n") + "';" + "\r\n";
+			} else {
+				workflowoptions += "workflowoptions[" + pageEdit.getId() + "] = '';" + "\r\n";
+			}
+%>
+        <tr class="WCMindex" onMouseOver="highlight(this)" onMouseOut="unhighlight(this)" id="row<%= pageEdit.getId() %>"> 
+<%
+	columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+		}
+%>
+<% if (mycolumnname.equals("BLANK")) { %>
+          <td class="WCMindex">&nbsp;</td>
+<% } else if (mycolumnname.equals("checkbox")) { %>
+          <td class="WCMindex"><input type="checkbox" onclick="refreshWorkflow(this.form)" name="id" value="<%= pageEdit.getId() %>"></td>
+<% } else if (mycolumnname.equals("package")) { %>
+          <% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+          <td class="WCMindex">
+            <nobr><%= pageEdit.getContentPackage() %></nobr>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("bundle")) { %>
+          <% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+          <td class="WCMindex">
+            <nobr><%= pageEdit.getContentBundle() %></nobr>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("class")) { %>
+          <% if ((mysession.get("admin_contentclass") != null) && ((mysession.get("admin_contentclass").indexOf(",") > 0) || (mysession.get("admin_contentclass").equals("element")) || (mysession.get("admin_contentclass").equals("")))) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getContentClass() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("group")) { %>
+          <% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet")) && (! mysession.get("admin_contentclass").equals("script"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getContentGroup() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("type")) { %>
+          <% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet")) && (! mysession.get("admin_contentclass").equals("script"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getContentType() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("version")) { %>
+          <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getVersion() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("device")) { %>
+          <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getDevice() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("usersegment")) { %>
+          <% if (License.valid(db, myconfig, "experience") && (myconfig.get(db, "use_versions").equals("yes"))) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getUsersegment() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("usertest")) { %>
+          <% if (License.valid(db, myconfig, "experience") && (myconfig.get(db, "use_versions").equals("yes"))) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getUsertest() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("created")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getCreated() %>
+          </td>
+<% } else if (mycolumnname.equals("createdby")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getCreatedBy() %>
+          </td>
+<% } else if (mycolumnname.equals("updated")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getUpdated() %>
+          </td>
+<% } else if (mycolumnname.equals("updatedby")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getUpdatedBy() %>
+          </td>
+<% } else if (mycolumnname.equals("published")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getPublished() %>
+          </td>
+<% } else if (mycolumnname.equals("publishedby")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getPublishedBy() %>
+          </td>
+<% } else if (mycolumnname.equals("scheduledpublish")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getScheduledPublish() %>
+          </td>
+<% } else if (mycolumnname.equals("scheduledunpublish")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getScheduledUnpublish() %>
+          </td>
+<% } else if (mycolumnname.equals("unpublished")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getUnpublished() %>
+          </td>
+<% } else if (mycolumnname.equals("unpublishedby")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getUnpublishedBy() %>
+          </td>
+<% } else if (mycolumnname.equals("filename")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getServerFilename() %>
+          </td>
+<% } else if (mycolumnname.equals("template")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getTemplate() %>
+          </td>
+<% } else if (mycolumnname.equals("stylesheet")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getStyleSheet() %>
+          </td>
+<% } else if (mycolumnname.equals("top")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getPageTop() %>
+          </td>
+<% } else if (mycolumnname.equals("up")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getPageUp() %>
+          </td>
+<% } else if (mycolumnname.equals("first")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getPageFirst() %>
+          </td>
+<% } else if (mycolumnname.equals("previous")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getPagePrevious() %>
+          </td>
+<% } else if (mycolumnname.equals("next")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getPageNext() %>
+          </td>
+<% } else if (mycolumnname.equals("last")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getPageLast() %>
+          </td>
+<% } else if (mycolumnname.equals("permission")) { %>
+          <td class="WCMindex"> 
+            	<% if (pageEdit.getAdministrator()) { %>
+            		<%= mytext.display("content.permission.administrator") %>
+            	<% } else if (pageEdit.getPublisher()) { %>
+            		<%= mytext.display("content.permission.publisher") %>
+            	<% } else if (pageEdit.getCreator()) { %>
+            		<%= mytext.display("content.permission.creator") %>
+            	<% } else if (pageEdit.getDeveloper()) { %>
+            		<%= mytext.display("content.permission.developer") %>
+            	<% } else if (pageEdit.getEditor()) { %>
+            		<%= mytext.display("content.permission.editor") %>
+            	<% } else if (pageEdit.getUser()) { %>
+            		<%= mytext.display("content.permission.user") %>
+            	<% } else { %>
+            		<%= mytext.display("content.permission.none") %>
+		<% } %>
+          </td>
+<% } else if (mycolumnname.equals("permissionicon")) { %>
+          <td class="WCMindex"> 
+            <div align="center">
+            	<% if (pageEdit.getAdministrator()) { %>
+            		<img src="permission.administrator.gif" border="0">
+            	<% } else if (pageEdit.getPublisher()) { %>
+            		<img src="permission.publisher.gif" border="0">
+            	<% } else if (pageEdit.getCreator()) { %>
+            		<img src="permission.creator.gif" border="0">
+            	<% } else if (pageEdit.getDeveloper()) { %>
+            		<img src="permission.developer.gif" border="0">
+            	<% } else if (pageEdit.getEditor()) { %>
+            		<img src="permission.editor.gif" border="0">
+            	<% } else if (pageEdit.getUser()) { %>
+            		<img src="permission.user.gif" border="0">
+            	<% } else { %>
+            		<img src="permission.none.gif" border="0">
+		<% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("admin")) { %>
+<% if (pageEdit.getUser()) { %>
+          <td class="WCMindex WCMindex_title<% if (((! mysession.get("admin_segment").equals("")) && (pageEdit.getUsersegment().equals(""))) || ((! mysession.get("admin_usertest").equals("")) && (pageEdit.getUsertest().equals(""))) || ((pageEdit.getVersion().equals("")) && (pageEdit.getDevice().equals("")) && (pageEdit.getUsersegment().equals("")) && (pageEdit.getUsertest().equals("")))) { %>_master<% } %>" id="title_cell_<%= pageEdit.getId() %>" colspan="2">
+            <span id="title_<%= pageEdit.getId() %>" class="contentitem">
+            <a href="admin.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>" class="title"><%= pageEdit.getTitle() %><% if (pageEdit.getTitle().equals("")) { %>-<% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %>
+              (<%= pageEdit.getVersion() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %>
+              (<%= pageEdit.getDevice() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getUsersegment().equals(""))) { %>
+              (<%= pageEdit.getUsersegment() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getUsertest().equals(""))) { %>
+              (<%= pageEdit.getUsertest() %>)
+            <% } %>
+            </a>
+            </span>
+            <input type="hidden" id="page_top_<%= pageEdit.getId() %>" name="page_top_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageTop() %>">
+            <input type="hidden" id="page_up_<%= pageEdit.getId() %>" name="page_up_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageUp() %>">
+            <input type="hidden" id="page_previous_<%= pageEdit.getId() %>" name="page_previous_<%= pageEdit.getId() %>" value="<%= pageEdit.getPagePrevious() %>">
+            <input type="hidden" id="page_next_<%= pageEdit.getId() %>" name="page_next_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageNext() %>">
+          </td>
+<% } else { %>
+          <td class="WCMindex WCMindex_title<% if (((! mysession.get("admin_segment").equals("")) && (pageEdit.getUsersegment().equals(""))) || ((! mysession.get("admin_usertest").equals("")) && (pageEdit.getUsertest().equals(""))) || ((pageEdit.getVersion().equals("")) && (pageEdit.getDevice().equals("")) && (pageEdit.getUsersegment().equals("")) && (pageEdit.getUsertest().equals("")))) { %>_master<% } %>" id="title_cell_<%= pageEdit.getId() %>" colspan="2">
+            <span id="title_<%= pageEdit.getId() %>" class="contentitem">
+            <%= pageEdit.getTitle() %><% if (pageEdit.getTitle().equals("")) { %>-<% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %>
+              (<%= pageEdit.getVersion() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %>
+              (<%= pageEdit.getDevice() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getUsersegment().equals(""))) { %>
+              (<%= pageEdit.getUsersegment() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getUsertest().equals(""))) { %>
+              (<%= pageEdit.getUsertest() %>)
+            <% } %>
+            </span>
+            <input type="hidden" id="page_top_<%= pageEdit.getId() %>" name="page_top_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageTop() %>">
+            <input type="hidden" id="page_up_<%= pageEdit.getId() %>" name="page_up_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageUp() %>">
+            <input type="hidden" id="page_previous_<%= pageEdit.getId() %>" name="page_previous_<%= pageEdit.getId() %>" value="<%= pageEdit.getPagePrevious() %>">
+            <input type="hidden" id="page_next_<%= pageEdit.getId() %>" name="page_next_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageNext() %>">
+          </td>
+<% } %>
+<% } else if (mycolumnname.equals("title")) { %>
+          <td class="WCMindex WCMindex_title<% if (((! mysession.get("admin_segment").equals("")) && (pageEdit.getUsersegment().equals(""))) || ((! mysession.get("admin_usertest").equals("")) && (pageEdit.getUsertest().equals(""))) || ((pageEdit.getVersion().equals("")) && (pageEdit.getDevice().equals("")) && (pageEdit.getUsersegment().equals("")) && (pageEdit.getUsertest().equals("")))) { %>_master<% } %>" id="title_cell_<%= pageEdit.getId() %>" colspan="2">
+            <span id="title_<%= pageEdit.getId() %>" class="contentitem">
+            <%= pageEdit.getTitle() %><% if (pageEdit.getTitle().equals("")) { %>-<% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %>
+              (<%= pageEdit.getVersion() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %>
+              (<%= pageEdit.getDevice() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getUsersegment().equals(""))) { %>
+              (<%= pageEdit.getUsersegment() %>)
+            <% } %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getUsertest().equals(""))) { %>
+              (<%= pageEdit.getUsertest() %>)
+            <% } %>
+            </span>
+            <input type="hidden" id="page_top_<%= pageEdit.getId() %>" name="page_top_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageTop() %>">
+            <input type="hidden" id="page_up_<%= pageEdit.getId() %>" name="page_up_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageUp() %>">
+            <input type="hidden" id="page_previous_<%= pageEdit.getId() %>" name="page_previous_<%= pageEdit.getId() %>" value="<%= pageEdit.getPagePrevious() %>">
+            <input type="hidden" id="page_next_<%= pageEdit.getId() %>" name="page_next_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageNext() %>">
+          </td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td class="WCMindex" style="text-align: right;"><%= pageEdit.getId() %></td>
+<% } else if (mycolumnname.equals("position")) { %>
+<% } else if (mycolumnname.equals("search")) { %>
+<% } else if (mycolumnname.equals("replace")) { %>
+<% } else if (mycolumnname.equals("webviewicon")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><% if (pageEdit.getUser()) { %><a target="_blank" href="/<% if ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")) || (pageEdit.getContentClass().equals("template")) || (pageEdit.getContentClass().equals("stylesheet")) || (pageEdit.getContentClass().equals("script")) || (pageEdit.getContentClass().equals("image")) || (pageEdit.getContentClass().equals("file")) || (pageEdit.getContentClass().equals("link"))) { %><%= pageEdit.getContentClass() %><% } else { %>element<% } %>.jsp?mode=+&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>" title="<%= mytext.display("webview") %>"><img src="webview.gif" border="0"></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("webview")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getUser()) { %><a target="_blank" href="/<% if ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")) || (pageEdit.getContentClass().equals("template")) || (pageEdit.getContentClass().equals("stylesheet")) || (pageEdit.getContentClass().equals("script")) || (pageEdit.getContentClass().equals("image")) || (pageEdit.getContentClass().equals("file")) || (pageEdit.getContentClass().equals("link"))) { %><%= pageEdit.getContentClass() %><% } else { %>element<% } %>.jsp?mode=+&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>"><%= mytext.display("webview") %></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("previewicon")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><% if (pageEdit.getUser()) { %><a target="_blank" href="/<% if ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")) || (pageEdit.getContentClass().equals("template")) || (pageEdit.getContentClass().equals("stylesheet")) || (pageEdit.getContentClass().equals("script")) || (pageEdit.getContentClass().equals("image")) || (pageEdit.getContentClass().equals("file")) || (pageEdit.getContentClass().equals("link"))) { %><%= pageEdit.getContentClass() %><% } else { %>element<% } %>.jsp?mode=preview&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>" title="<%= mytext.display("preview") %>"><img src="preview.gif" border="0"></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("preview")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getUser()) { %><a target="_blank" href="/<% if ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")) || (pageEdit.getContentClass().equals("template")) || (pageEdit.getContentClass().equals("stylesheet")) || (pageEdit.getContentClass().equals("script")) || (pageEdit.getContentClass().equals("image")) || (pageEdit.getContentClass().equals("file")) || (pageEdit.getContentClass().equals("link"))) { %><%= pageEdit.getContentClass() %><% } else { %>element<% } %>.jsp?mode=preview&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>"><%= mytext.display("preview") %></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getUser()) { %><a href="view.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= mytext.display("view") %></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (((pageEdit.getEditor()) && ((pageEdit.getScheduledPublish().equals("")) || pageEdit.getPublisher())) || (pageEdit.getPublisher() && (! myconfig.get(db, "inherit_accessrestrictions").equals("no"))) || ((pageEdit.getEditor()) && (myconfig.get(db, "use_scheduled_publish").equals("yes")) && (myconfig.get(db, "use_schedule").equals("yes")) && (pageEdit.getUser()) && (pageEdit.isScheduled(db)))) { %><a href="update.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= mytext.display("update") %></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("create")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getCreator()) { %><a href="create.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td class="WCMindex">
+            <% if (pageEdit.getLocked() == 0) { %>
+            <div align="center"><% if (pageEdit.getPublisher()) { %><a href="delete.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= mytext.display("delete") %></a><% } %>
+            </div>
+            <% } %>
+          </td>
+<% } else if (mycolumnname.equals("archivedicon")) { %>
+          <% if (! myconfig.get(db, "use_archive").equals("none")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getUser() && pageEdit.isArchived(db)) { %><a href="archive.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>" title="<%= mytext.display("archived") %>"><img src="archive.gif" border="0"></a><% } %></div>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("scheduledicon")) { %>
+          <% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+          <% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><% if (pageEdit.getUser() && pageEdit.isScheduled(db)) { %><a href="schedule.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>" title="<%= mytext.display("scheduled") %>"><img src="schedule.gif" border="0"></a><% } %></div>
+          </td>
+          <% } %>
+          <% } %>
+<% } else if (mycolumnname.equals("archived")) { %>
+          <% if (! myconfig.get(db, "use_archive").equals("none")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><% if (pageEdit.getUser() && pageEdit.isArchived(db)) { %><a href="archive.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= mytext.display("archived") %></a><% } %></div>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("scheduled")) { %>
+          <% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+          <% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><% if (pageEdit.getUser() && pageEdit.isScheduled(db)) { %><a href="schedule.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= mytext.display("scheduled") %></a><% } %></div>
+          </td>
+          <% } %>
+          <% } %>
+<% } else if (mycolumnname.equals("status")) { %>
+          <% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.display_status() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("statusicon")) { %>
+          <% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.display_status_icon() %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.equals("heatmapicon")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %><a target="_blank" href="/<%= pageEdit.getContentClass() %>.jsp?mode=heatmap&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>" title="<%= mytext.display("content.heatmap") %>"><img src="heatmap.gif" border="0"></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("heatmap")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %><a target="_blank" href="/<%= pageEdit.getContentClass() %>.jsp?mode=heatmap&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>"><%= mytext.display("content.heatmap") %></a><% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("heatmapclear")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %><a href="heatmap.jsp?id=<%= pageEdit.getId() %>&log=delete&<%= Math.random() %>"><%= mytext.display("content.heatmapclear") %></a><% } %></div>
+          </td>
+<% } else if (mycolumnname.equals("heatmaponoff")) { %>
+          <td class="WCMindex">
+            <div align="center"><% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %><% if (pageEdit.getHeatmap().equals("")) { %><a href="heatmap.jsp?id=<%= pageEdit.getId() %>&log=click&<%= Math.random() %>"><%= mytext.display("content.heatmapon") %></a><% } else { %><a href="heatmap.jsp?id=<%= pageEdit.getId() %>&log=&<%= Math.random() %>"><%= mytext.display("content.heatmapoff") %></a><% } %><% } %></div>
+          </td>
+<% } else if (mycolumnname.equals("heatmapalign")) { %>
+          <td class="WCMindex">
+            <div align="center">
+|	<% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %>
+              <select class="WCMheatmapalign" id="WCMheatmapalign_<%= pageEdit.getId() %>" name="WCMheatmapalign_<%= pageEdit.getId() %>" onchange="doHeatmapAlignUpdate(this)">
+          		<option value=""<% if (pageEdit.getHeatmapAlign().equals("")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.default") %></option>
+          		<option value="c"<% if (pageEdit.getHeatmapAlign().equals("c")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.center") %></option>
+          		<option value="l"<% if (pageEdit.getHeatmapAlign().equals("l")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.left") %></option>
+          		<option value="r"<% if (pageEdit.getHeatmapAlign().equals("r")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.right") %></option>
+          		<option value="f"<% if (pageEdit.getHeatmapAlign().equals("f")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.full") %></option>
+              </select>
+	<% } %>
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("productcode")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getProductCode() %>
+          </td>
+<% } else if (mycolumnname.equals("weight")) { %>
+          <td class="WCMindex" style="text-align: right;">
+            <%= pageEdit.getProductWeight() %>
+          </td>
+<% } else if (mycolumnname.equals("volume")) { %>
+          <td class="WCMindex" style="text-align: right;">
+            <%= pageEdit.getProductVolume() %>
+          </td>
+<% } else if (mycolumnname.equals("width")) { %>
+          <td class="WCMindex" style="text-align: right;">
+            <%= pageEdit.getProductWidth() %>
+          </td>
+<% } else if (mycolumnname.equals("height")) { %>
+          <td class="WCMindex" style="text-align: right;">
+            <%= pageEdit.getProductHeight() %>
+          </td>
+<% } else if (mycolumnname.equals("depth")) { %>
+          <td class="WCMindex" style="text-align: right;">
+            <%= pageEdit.getProductDepth() %>
+          </td>
+<% } else if (mycolumnname.equals("currency")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %>
+          </td>
+<% } else if (mycolumnname.equals("price")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getProductPrice() %>
+          </td>
+<% } else if (mycolumnname.equals("cost")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getProductCost() %>
+          </td>
+<% } else if (mycolumnname.equals("period")) { %>
+          <td class="WCMindex">
+            <% if (pageEdit.getProductPeriod().equals("")) { %><%= mytext.display("content.productdetails.period.once") %><% } else { %><%= mytext.display("content.productdetails.period." + pageEdit.getProductPeriod()) %><% } %>
+          </td>
+<% } else if (mycolumnname.equals("stock")) { %>
+          <td class="WCMindex" style="text-align: right;">
+<%
+	String stock_status = "WCMstock";
+	if (pageEdit.getContentClass().equals("product")) {
+		int stock_amount = Common.intnumber(pageEdit.getProductStockAmount(db));
+		if (stock_amount < 0) {
+			stock_status = "WCMstock_ordered";
+		} else if (stock_amount == 0) {
+			stock_status = "WCMstock_no";
+		} else if (stock_amount <= Common.intnumber(pageEdit.getProductLowStockAmount())) {
+			stock_status = "WCMstock_low";
+		} else {
+			stock_status = "WCMstock_in";
+		}
+%>
+            <span id="WCMstock_<%= pageEdit.getId() %>" class="<%= stock_status %>"><%= stock_amount %></span>
+<%
+	} else {
+%>
+            &nbsp;
+<%
+	}
+%>
+          </td>
+<% } else if (mycolumnname.equals("stockcomment")) { %>
+<%
+	String stock_status = "WCMstock";
+	String stock_comment = "&nbsp;";
+	if (pageEdit.getContentClass().equals("product")) {
+		int stock_amount = Common.intnumber(pageEdit.getProductStockAmount(db));
+		if (stock_amount < 0) {
+			stock_status = "WCMstock_ordered";
+			stock_comment = pageEdit.getProductNoStockText();
+		} else if (stock_amount == 0) {
+			stock_status = "WCMstock_no";
+			stock_comment = pageEdit.getProductNoStockText();
+		} else if (stock_amount <= Common.intnumber(pageEdit.getProductLowStockAmount())) {
+			stock_status = "WCMstock_low";
+			stock_comment = pageEdit.getProductLowStockText();
+		} else {
+			stock_status = "WCMstock_in";
+			stock_comment = pageEdit.getProductStockText();
+		}
+	}
+%>
+          <td class="WCMindex">
+            <span id="WCMstockcomment_<%= pageEdit.getId() %>" class="<%= stock_status %>"><%= stock_comment %></span>
+          </td>
+<% } else if (mycolumnname.equals("stocklow")) { %>
+          <td class="WCMindex" style="text-align: right;">
+	<% if (pageEdit.getContentClass().equals("product")) { %>
+            <%= pageEdit.getProductLowStockAmount() %>
+	<% } else { %>
+            &nbsp;
+	<% } %>
+          </td>
+<% } else if (mycolumnname.equals("restocked")) { %>
+          <td class="WCMindex" style="text-align: right;">
+<%
+	if (pageEdit.getContentClass().equals("product")) {
+		int restocked_amount = Common.intnumber(pageEdit.getProductRestockedAmount(db));
+%>
+            <span id="WCMrestocked_<%= pageEdit.getId() %>" class="WCMstock_restocked"><%= restocked_amount %></span>
+<%
+	} else {
+%>
+            &nbsp;
+<%
+	}
+%>
+          </td>
+<% } else if (mycolumnname.equals("stockupdate")) { %>
+          <td class="WCMindex" style="text-align: center;">
+	<% if (pageEdit.getEditor() && (pageEdit.getContentClass().equals("product"))) { %>
+            <input type="text" size="5" class="WCMstockupdate" id="WCMstockupdate_<%= pageEdit.getId() %>" name="WCMstockupdate_<%= pageEdit.getId() %>" value="" onchange="doStockUpdate(this)">
+	<% } else { %>
+            &nbsp;
+	<% } %>
+          </td>
+<% } else if (mycolumnname.equals("restockedupdate")) { %>
+          <td class="WCMindex" style="text-align: center;">
+	<% if (pageEdit.getEditor() && (pageEdit.getContentClass().equals("product"))) { %>
+            <input type="text" size="5" class="WCMrestockedupdate" id="WCMrestockedupdate_<%= pageEdit.getId() %>" name="WCMrestockedupdate_<%= pageEdit.getId() %>" value="" onchange="doRestockedUpdate(this)">
+	<% } else { %>
+            &nbsp;
+	<% } %>
+          </td>
+<% } else if (mycolumnname.equals("stockcost")) { %>
+          <td class="WCMindex" style="text-align: right;">
+	<% if ((pageEdit.getContentClass().equals("product")) && (pageEdit.getProductPeriod().equals("")) && (Common.intnumber(pageEdit.getProductStockAmount(db)) >= 0) && (Common.intnumber(pageEdit.getProductCost()) > 0)) { %>
+            <% if (pageEdit.getProductCurrency().equals("")) { %><%= pageEdit.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %><% } %>
+            <%= Common.numberformat(Common.intnumber(pageEdit.getProductStockAmount(db)) * Common.intnumber(pageEdit.getProductCost()), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>
+	<% } else { %>
+            &nbsp;
+	<% } %>
+          </td>
+<% } else if (mycolumnname.equals("restockcost")) { %>
+          <td class="WCMindex" style="text-align: right;">
+	<% if ((pageEdit.getContentClass().equals("product")) && (pageEdit.getProductPeriod().equals("")) && (Common.intnumber(pageEdit.getProductLowStockAmount()) > Common.intnumber(pageEdit.getProductStockAmount(db))) && (Common.intnumber(pageEdit.getProductLowStockAmount()) > 0) && (Common.intnumber(pageEdit.getProductCost()) > 0)) { %>
+            <% if (pageEdit.getProductCurrency().equals("")) { %><%= pageEdit.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %><% } %>
+            <%= Common.numberformat((Common.intnumber(pageEdit.getProductLowStockAmount()) - Common.intnumber(pageEdit.getProductStockAmount(db))) * Common.intnumber(pageEdit.getProductCost()), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>
+	<% } else { %>
+            &nbsp;
+	<% } %>
+          </td>
+<% } else if (mycolumnname.equals("stockvalue")) { %>
+          <td class="WCMindex" style="text-align: right;">
+	<% if ((pageEdit.getContentClass().equals("product")) && (pageEdit.getProductPeriod().equals("")) && (Common.intnumber(pageEdit.getProductStockAmount(db)) >= 0) && (Common.intnumber(pageEdit.getProductPrice()) > 0)) { %>
+            <% if (pageEdit.getProductCurrency().equals("")) { %><%= pageEdit.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %><% } %>
+            <%= Common.numberformat(Common.intnumber(pageEdit.getProductStockAmount(db)) * Common.intnumber(pageEdit.getProductPrice()), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>
+	<% } else { %>
+            &nbsp;
+	<% } %>
+          </td>
+<% } else if (mycolumnname.equals("stockprofit")) { %>
+          <td class="WCMindex" style="text-align: right;">
+	<% if ((pageEdit.getContentClass().equals("product")) && (pageEdit.getProductPeriod().equals("")) && (Common.intnumber(pageEdit.getProductStockAmount(db)) >= 0) && (Common.intnumber(pageEdit.getProductPrice()) > 0) && (Common.intnumber(pageEdit.getProductCost()) > 0)) { %>
+            <% if (pageEdit.getProductCurrency().equals("")) { %><%= pageEdit.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %><% } %>
+            <%= Common.numberformat(Common.intnumber(pageEdit.getProductStockAmount(db)) * (Common.intnumber(pageEdit.getProductPrice()) - Common.intnumber(pageEdit.getProductCost())), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>
+	<% } else { %>
+            &nbsp;
+	<% } %>
+          </td>
+<% } else if (mycolumnname.equals("stocklocation")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getProductLocation() %>
+          </td>
+<% } else if (mycolumnname.equals("checkout")) { %>
+          <% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+          <td class="WCMindex"> 
+            <% if (pageEdit.getCheckedOut().equals(mysession.get("username"))) { %>
+            <div align="center"><a href="checkin.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= mytext.display("checkin") %></a></div>
+            <% } else if ((! pageEdit.getCheckedOut().equals("")) && (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+            <div align="center"><a href="checkin.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= pageEdit.getCheckedOut() %></a></div>
+            <% } else if (pageEdit.getCheckedOut().equals("-creators-")) { %>
+            <div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.creators") %></a></nobr></div>
+            <% } else if (pageEdit.getCheckedOut().equals("-editors-")) { %>
+            <div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.editors") %></a></nobr></div>
+            <% } else if (pageEdit.getCheckedOut().equals("-developers-")) { %>
+            <div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.developers") %></a></nobr></div>
+            <% } else if (pageEdit.getCheckedOut().equals("-publishers-")) { %>
+            <div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.publishers") %></a></nobr></div>
+            <% } else if (pageEdit.getCheckedOut().equals("-administrators-")) { %>
+            <div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.administrators") %></a></nobr></div>
+            <% } else if (! pageEdit.getCheckedOut().equals("")) { %>
+            <div align="center"><a href="#"><%= pageEdit.getCheckedOut() %></a></div>
+            <% } else { %>
+            <div align="center"><% if (((pageEdit.getEditor()) && ((pageEdit.getScheduledPublish().equals("")) || pageEdit.getPublisher())) || (pageEdit.getPublisher() && (! myconfig.get(db, "inherit_accessrestrictions").equals("no"))) || ((pageEdit.getEditor()) && (myconfig.get(db, "use_scheduled_publish").equals("yes")) && (myconfig.get(db, "use_schedule").equals("yes")) && (pageEdit.getUser()) && (pageEdit.isScheduled(db)))) { %><a href="checkout.jsp?id=<%= pageEdit.getId() %>&redirect=<%= URLEncoder.encode(myrequest.getServletPath() + "?search=" + mysession.get("search"), myconfig.get(db, "charset")) %>&<%= Math.random() %>"><%= mytext.display("checkout") %></a><% } %>
+            </div>
+            <% } %>
+          </td>
+          <% } %>
+<% } else if (mycolumnname.startsWith("metainfo_")) { %>
+          <td class="WCMindex">
+            <% if (! pageEdit.getMetaInfo(mycolumnname.substring(9)).equals("")) { %><%= pageEdit.getMetaInfo(mycolumnname.substring(9)) %><% } else { %><%= pageEdit.getMetaInfo(mycolumnname.substring(9).replaceAll("_"," ")) %><% } %>
+          </td>
+<% } else if (mycolumnname.startsWith("productinfo_")) { %>
+          <td class="WCMindex">
+            <% if (! pageEdit.getProductInfo(mycolumnname.substring(12)).equals("")) { %><%= pageEdit.getProductInfo(mycolumnname.substring(12)) %><% } else { %><%= pageEdit.getProductInfo(mycolumnname.substring(12).replaceAll("_"," ")) %><% } %>
+          </td>
+<% } else if (mycolumnname.equals("brand")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getProductBrand() %>
+          </td>
+<% } else if (mycolumnname.equals("colour")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getProductColour() %>
+          </td>
+<% } else if (mycolumnname.equals("size")) { %>
+          <td class="WCMindex">
+            <%= pageEdit.getProductSize() %>
+          </td>
+<% } else if (! mycolumnname.equals("")) { %>
+          <td class="WCMindex">
+            <div align="center"><a href="<%= mycolumnhref + pageEdit.getId() %>&<%= Math.random() %>"><%= mycolumnname %></a></div>
+          </td>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+		}
+	}
+}
+%>
+      </table>
+<div>&nbsp;</div>
+<% if (mysession.get("admin_heatmap").equals("")) { %>
+<input type="button" value="<%= mytext.display("selectall") %>" onClick="selectAll(this.form);refreshWorkflow(this.form);">
+&nbsp;
+<input type="button" value="<%= mytext.display("unselectall") %>" onClick="unselectAll(this.form);refreshWorkflow(this.form);">
+<% if ((! mysession.get("admin_contentclass").equals("stylesheet")) && (! mysession.get("admin_contentclass").equals("script")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("link"))) { %>
+&nbsp;
+<input type="button" value="<%= mytext.display("checklinks") %>" onClick="checklinksSelected(this.form)">
+<input type="button" value="<%= mytext.display("validatemarkup") %>" onClick="validatemarkupSelected(this.form)">
+<% } %>
+<% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+&nbsp;
+<input type="button" value="<%= mytext.display("checkoutselected") %>" onClick="checkoutSelected(this.form)">
+&nbsp;
+<input type="button" value="<%= mytext.display("checkinselected") %>" onClick="checkinSelected(this.form)">
+<% } %>
+<% if (! myconfig.get(db, "use_archive").equals("none")) { %>
+&nbsp;
+<input type="button" value="<%= mytext.display("archiveselected") %>" onClick="archiveSelected(this.form)">
+<% } %>
+&nbsp;
+<input type="button" value="<%= mytext.display("deleteselected") %>" onClick="deleteSelected(this.form)">
+<% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+<!-- MSIE may not break between NOBR tags -->
+<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %><br><% } else { %>&nbsp;<% } %>
+<nobr>
+<input type="button" name="publish" value="<%= mytext.display("publishselected") %>" onClick="publishSelected(this.form)">
+		<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+		<% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+          <input type="checkbox" name="schedule" value="schedule"><%= mytext.display("schedule") %>
+		<% } %>
+		<% } %>
+		<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+	          - <%= mytext.display("content.scheduledpublish") %>
+	          <input type="text" size="20" id="scheduled_publish" name="scheduled_publish" value=""><input type="button" value="..." id="scheduled_publish_trigger">
+		<% } %>
+		<% if (myconfig.get(db, "use_scheduled_unpublish").equals("yes")) { %>
+	          - <%= mytext.display("content.scheduledunpublish") %>
+	          <input type="text" size="20" id="scheduled_unpublish" name="scheduled_unpublish" value=""><input type="button" value="..." id="scheduled_unpublish_trigger">
+		<% } %>
+</nobr>
+<% } %>
+<% if ((((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) || (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product"))))) { %>
+	<br>
+	<input type="button" value="<%= mytext.display("moveselected") %>" onClick="moveSelected(this.form)">
+	<% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+		&#032;
+		<nobr>
+		<%= mytext.display("content.contentcategories.bundle") %>
+		<select name="contentbundle" style="width: 150px" onchange="changeBundle(this)">
+		<option value="">
+		<option value=" "><%= mytext.display("none") %>
+                <%= Common.select_options_where(db, "content", "contentbundle", mysession.get("admin_contentbundle"), "where " + db.is_not_blank("contentbundle")) %> 
+		<option value="-"><%= mytext.display("new") %>
+		</select>
+		</nobr>
+	<% } %>
+	<% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+		&#032;
+		<nobr>
+          	<%= mytext.display("content.contentcategories.group") %>
+		<select name="contentgroup" style="width: 150px">
+		<option value="">
+		<option value=" "><%= mytext.display("none") %>
+		<% if ((mysession.get("admin_contentclass").equals("file")) || (myrequest.getParameter("section").equals("file"))) { %>
+                <%= Filegroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("image")) || (myrequest.getParameter("section").equals("image"))) { %>
+                <%= Imagegroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("link")) || (myrequest.getParameter("section").equals("link"))) { %>
+                <%= Linkgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("product")) || (myrequest.getParameter("section").equals("product"))) { %>
+                <%= Productgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("content")) || (myrequest.getParameter("section").equals("content"))) { %>
+                <%= Contentgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("library")) || (myrequest.getParameter("section").equals("library"))) { %>
+                <%= Imagegroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession, " (image)") %> 
+                <%= Filegroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession, " (file)") %> 
+                <%= Linkgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession, " (link)") %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("ecommerce")) || (myrequest.getParameter("section").equals("ecommerce"))) { %>
+                <%= Productgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession) %> 
+		<% } else if ((! mysession.get("admin_contentclass").equals("")) || ((! myrequest.getParameter("section").equals("")) && (! myrequest.getParameter("section").equals(" ")))) { %>
+                <%= Contentgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("")) && ((! myrequest.getParameter("section").equals("")) || (! myrequest.getParameter("section").equals(" ")))) { %>
+                <%= Contentgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession) %> 
+		<% } else { %>
+                <%= Contentgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession, " (content)") %> 
+                <%= Imagegroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession, " (image)") %> 
+                <%= Filegroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession, " (file)") %> 
+                <%= Linkgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession, " (link)") %> 
+                <%= Productgroup.select_options(mysession.get("admin_contentgroup"), db, myconfig, mysession, " (product)") %> 
+		<% } %>
+		</select>
+		</nobr>
+	<% } %>
+	<% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+		&#032;
+		<nobr>
+          	<%= mytext.display("content.contentcategories.type") %>
+		<select name="contenttype" style="width: 150px">
+		<option value="">
+		<option value=" "><%= mytext.display("none") %>
+		<% if ((mysession.get("admin_contentclass").equals("file")) || (myrequest.getParameter("section").equals("file"))) { %>
+                <%= Filetype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("image")) || (myrequest.getParameter("section").equals("image"))) { %>
+                <%= Imagetype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("link")) || (myrequest.getParameter("section").equals("link"))) { %>
+                <%= Linktype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("product")) || (myrequest.getParameter("section").equals("product"))) { %>
+                <%= Producttype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("content")) || (myrequest.getParameter("section").equals("content"))) { %>
+                <%= Contenttype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("library")) || (myrequest.getParameter("section").equals("library"))) { %>
+                <%= Imagetype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession, " (image)") %> 
+                <%= Filetype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession, " (file)") %> 
+                <%= Linktype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession, " (link)") %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("ecommerce")) || (myrequest.getParameter("section").equals("ecommerce"))) { %>
+                <%= Producttype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession) %> 
+		<% } else if ((! mysession.get("admin_contentclass").equals("")) || ((! myrequest.getParameter("section").equals("")) && (! myrequest.getParameter("section").equals(" ")))) { %>
+                <%= Contenttype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession) %> 
+		<% } else if ((mysession.get("admin_contentclass").equals("")) && ((! myrequest.getParameter("section").equals("")) || (! myrequest.getParameter("section").equals(" ")))) { %>
+                <%= Contenttype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession) %> 
+		<% } else { %>
+                <%= Contenttype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession, " (content)") %> 
+                <%= Imagetype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession, " (image)") %> 
+                <%= Filetype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession, " (file)") %> 
+                <%= Linktype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession, " (link)") %> 
+                <%= Producttype.select_options(mysession.get("admin_contenttype"), db, myconfig, mysession, " (product)") %> 
+		<% } %>
+		</select>
+		</nobr>
+	<% } %>
+	<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+		&#032;
+		<nobr>
+		<%= mytext.display("content.workflow") %>
+		<select id="status" name="status" style="width: 150px" onchange="document.getElementById('workflowcomments').style.display='block';document.getElementById('comments').focus()">
+		<option value="">&nbsp;</option>
+		<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>
+		<option value="0"><%= mytext.display("end") %></option>
+		<% } %>
+		<%
+		String fromstate = "*";
+		String usergroup = mysession.get("usergroup")+"|"+mysession.get("usergroups");
+		String usertype = mysession.get("usertype")+"|"+mysession.get("usertypes");
+		String contentclass = "*";
+		if (! mysession.get("admin_contentclass").equals("")) {
+		        contentclass = mysession.get("admin_contentclass");
+		}
+		String contentgroup = "*";
+		if (! mysession.get("admin_contentgroup").equals("")) {
+		        contentgroup = mysession.get("admin_contentgroup");
+		}
+		String contenttype = "*";
+		if (! mysession.get("admin_contenttype").equals("")) {
+		        contenttype = mysession.get("admin_contenttype");
+		}
+		String version = "*";
+		if (! mysession.get("admin_version").equals("")) {
+		        version = mysession.get("admin_version");
+		}
+		administrator = true;
+		%>
+		<%= workflow.workflow_action_select_options(db, fromstate, usergroup, usertype, contentclass, contentgroup, contenttype, version, administrator) %>
+		</select>
+		</nobr>
+
+<script type="text/javascript">
+<%= workflowoptions %>
+refreshWorkflow(document.getElementById("contentform"));
+</script>
+
+	<% } %>
+	<% if (myconfig.get(db, "use_static_filenames").equals("yes")) { %>
+		&#032;
+		<nobr>
+		<%= mytext.display("content.folder") %>
+		<input type="text" size="20" id="folder" name="folder" style="width: 150px">
+		</nobr>
+	<% } %>
+<% } %>
+<% if ((mysession.get("menu").equals("ecommerce")) || ((mysession.get("admin_contentclass").equals("product")))) { %>
+	<% if (! myconfig.get(db, "print_products").equals("")) { %>
+		&nbsp;
+		<nobr>
+		<input type="button" value="<%= mytext.display("print") %>" onClick="printSelected(this.form)">
+		<select id="print" name="print">
+		  <%= mypage.select_options_ids(db, "", myconfig.get(db, "print_products").replaceAll(",", "|")) %>
+		</select>
+		</nobr>
+	<% } %>
+<% } else { %>
+	<% if (! myconfig.get(db, "print_contents").equals("")) { %>
+		&nbsp;
+		<nobr>
+		<input type="button" value="<%= mytext.display("print") %>" onClick="printSelected(this.form)">
+		<select id="print" name="print">
+		  <%= mypage.select_options_ids(db, "", myconfig.get(db, "print_contents").replaceAll(",", "|")) %>
+		</select>
+		</nobr>
+	<% } %>
+<% } %>
+<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+<div id="workflowcomments" style="display:none;"><%= mytext.display("content.workflow.comments") %><textarea rows="3" cols="75" id="comments" name="comments" style="vertical-align: text-top;"></textarea></div>
+<% } %>
+<% } %>
+</div>
+</form>
+
+<% if (! mysession.get("admin_pagesize").equals("")) { %>
+
+<script type="text/javascript">
+function preSortTable(column) {
+	unindentRows();
+}
+var cachedIndentation = new Array();
+function onloadSortTable() {
+	if (cachedIndentation.length > 0) {
+		restoreIndentation();
+	} else {
+		indentRows(true,true);
+		setPageRelations();
+		saveIndentation();
+	}
+}
+function saveIndentation() {
+	cachedIndentation = new Array();
+	var rows = document.getElementById('contents').getElementsByTagName('tr');
+	for (var i=0; i<rows.length; i++) {
+		cachedIndentation[i] = new Object();
+		cachedIndentation[i].id = rows[i].id;
+		cachedIndentation[i].indentation = getIndentation(rows[i].id);
+	}
+}
+function restoreIndentation() {
+	var previous_row = document.getElementById('contents').getElementsByTagName('tr')[0];
+	for (var i=1; i<cachedIndentation.length; i++) {
+		if (previous_row.nextSibling) {
+			previous_row.parentNode.insertBefore(document.getElementById(cachedIndentation[i].id), previous_row.nextSibling);
+			previous_row = document.getElementById(cachedIndentation[i].id);
+			setIndentation(cachedIndentation[i].id, cachedIndentation[i].indentation);
+		} else {
+			previous_row.parentNode.appendChild(document.getElementById(cachedIndentation[i].id));
+			previous_row = document.getElementById(cachedIndentation[i].id);
+			setIndentation(cachedIndentation[i].id, cachedIndentation[i].indentation);
+		}
+	}
+}
+function unindentRows() {
+	var rows = document.getElementById('contents').getElementsByTagName('tr');
+	for (var i=0; i<rows.length; i++) {
+		// MSIE may handle className changes very slowly - set style directly instead
+		//rows[i].className = rows[i].className.replace(/ WCMindex_indent(\d+)/g, "");
+		var id = rows[i].id.replace(/^row/,"");
+		if (id && document.getElementById("title_cell_"+id) && document.getElementById("title_cell_"+id).style) {
+			document.getElementById("title_cell_"+id).style.paddingLeft = "0px";
+		}
+	}
+}
+function rowSubrows(rows, row, pageParent) {
+	rows[rows.length] = row;
+	var nextrow = row.nextSibling;
+	while (nextrow && (pageParent[nextrow.id.substring(3)] == row.id.substring(3))) {
+		rows = rowSubrows(rows, nextrow, pageParent);
+		nextrow = rows[rows.length-1].nextSibling;
+	}
+	return rows;
+}
+function pageRootArray() {
+	var pageRoot = new Array();
+	var pageTop = pageTopArray();
+	for (var id in pageTop) if (typeof(pageTop[id]) != "function") {
+		if ((! document.getElementById("row"+pageTop[id])) && ((! document.getElementById("page_previous_"+pageTop[id])) || (! document.getElementById("page_previous_"+pageTop[id]).value))) {
+			pageRoot[id] = pageTop[id];
+		}
+		if (pageTop[id] && (! document.getElementById("row"+pageTop[pageTop[id]])) && ((! document.getElementById("page_previous_"+pageTop[id])) || (! document.getElementById("page_previous_"+pageTop[id]).value))) {
+			pageRoot[pageTop[id]] = pageTop[pageTop[id]];
+		}
+	}
+	var pageUp = pageUpArray();
+	for (var id in pageUp) if (typeof(pageUp[id]) != "function") {
+		if ((! document.getElementById("row"+pageUp[id])) && ((! document.getElementById("page_previous_"+pageUp[id])) || (! document.getElementById("page_previous_"+pageUp[id]).value))) {
+			pageRoot[id] = pageUp[id];
+		}
+		if (pageUp[id] && (! document.getElementById("row"+pageUp[pageUp[id]])) && ((! document.getElementById("page_previous_"+pageUp[id])) || (! document.getElementById("page_previous_"+pageUp[id]).value))) {
+			pageRoot[pageUp[id]] = pageUp[pageUp[id]];
+		}
+	}
+	var table = document.getElementById("contents");
+	if (table) {
+		var rows = table.getElementsByTagName("TR");
+		for (var i=0; i<rows.length; i++) {
+			if (rows[i].id && rows[i].id.match(/^row(\d+)/)) {
+				id = "" + RegExp.$1;
+				break;
+			}
+		}
+		while (id) {
+			if (((! pageTop[id]) || (! document.getElementById("row"+pageTop[id]))) && ((! pageUp[id]) || (! document.getElementById("row"+pageUp[pageUp[id]]))) && ((! document.getElementById("page_previous_"+id)) || (! document.getElementById("page_previous_"+id).value))) {
+				pageRoot[id] = id;
+			}
+			if (document.getElementById("row"+id) && document.getElementById("row"+id).nextSibling) {
+				id = document.getElementById("row"+id).nextSibling.id.replace(/^row/,"");
+			} else {
+				id = false;
+			}
+		}
+	}
+	return pageRoot;
+}
+function pageTopArray() {
+	var pageTop = new Array();
+<%
+	Iterator pageTops = pageTop.keySet().iterator();
+	while (pageTops.hasNext()) {
+		String id = "" + pageTops.next();
+		String topid = ("" + pageTop.get(id)).replaceAll("undefined", "");
+		%><%= "pageTop[" + id + "] = " + topid + ";" + "\r\n" %><%
+	}
+%>
+	return pageTop;
+}
+function pageChildrenArray() {
+	var pageChildren = new Array();
+<%
+	Iterator pageChildrens = pageChildren.keySet().iterator();
+	while (pageChildrens.hasNext()) {
+		String parentid = "" + pageChildrens.next();
+		Iterator childrens = ((HashMap)pageChildren.get(parentid)).keySet().iterator();
+		%><%= "pageChildren[" + parentid + "] = new Array();" + "\r\n" %><%
+		while (childrens.hasNext()) {
+			String id = "" + childrens.next();
+			String childid = ("" + ((HashMap)pageChildren.get(parentid)).get(id)).replaceAll("undefined", "");
+			%><%= "pageChildren[" + parentid + "][" + childid + "] = " + childid + ";" + "\r\n" %><%
+		}
+	}
+%>
+	return pageChildren;
+}
+function pageUpArray() {
+	var pageUp = new Array();
+<%
+	Iterator pageUps = pageUp.keySet().iterator();
+	while (pageUps.hasNext()) {
+		String id = "" + pageUps.next();
+		String upid = ("" + pageUp.get(id)).replaceAll("undefined", "");
+		%><%= "pageUp[" + id + "] = " + upid + ";" + "\r\n" %><%
+	}
+%>
+	return pageUp;
+}
+function pagePreviousArray() {
+	var pagePrevious = new Array();
+<%
+	Iterator pagePreviouss = pagePrevious.keySet().iterator();
+	while (pagePreviouss.hasNext()) {
+		String id = "" + pagePreviouss.next();
+		String previousid = ("" + pagePrevious.get(id)).replaceAll("undefined", "");
+		%><%= "pagePrevious[" + id + "] = " + previousid + ";" + "\r\n" %><%
+	}
+%>
+	return pagePrevious;
+}
+function pageNextArray() {
+	var pageNext = new Array();
+<%
+	Iterator pageNexts = pageNext.keySet().iterator();
+	while (pageNexts.hasNext()) {
+		String id = "" + pageNexts.next();
+		String nextid = ("" + pageNext.get(id)).replaceAll("undefined", "");
+		%><%= "pageNext[" + id + "] = " + nextid + ";" + "\r\n" %><%
+	}
+%>
+	return pageNext;
+}
+
+
+
+function indentRows(byPageRelations, byVersion) {
+	unindentRows();
+	document.getElementById('titles').getElementsByTagName('span')[0].setAttribute('sortdir','up');
+	ts_resortTable(document.getElementById('titles').firstChild);
+	document.getElementById('titles').getElementsByTagName('span')[0].setAttribute('sortdir','up');
+	document.getElementById('titles').getElementsByTagName("span")[0].innerHTML = '&nbsp;&nbsp;&nbsp;';
+//	document.getElementById('titles').innerHTML = '<%= column_name %>';
+	if (byPageRelations) {
+		var pageRoot = pageRootArray();
+		var pageChildren = pageChildrenArray();
+		var pagePrevious = new pagePreviousArray();
+		var pageNext = new pageNextArray();
+		// order root rows sequentially
+		for (var rootid in pageRoot) if (typeof(pageRoot[rootid]) != "function") {
+			var ids = new Array();
+			var id = rootid;
+			while (id && pageNext[id] && (! ids[id])) {
+				ids[id] = true;
+				indentRow(false, id, pageNext[id]);
+				id = pageNext[id];
+			}
+		}
+		// order and indent subrows
+		for (var rootid in pageRoot) if (typeof(pageRoot[rootid]) != "function") {
+			indentSubRows(rootid, pageChildren, pagePrevious, pageNext);
+			var ids = new Array();
+			var id = rootid;
+			while (id && (! ids[id])) {
+				ids[id] = true;
+				indentSubRows(id, pageChildren, pagePrevious, pageNext);
+				id = pageNext[id];
+			}
+		}
+	}
+	if (byVersion) {
+<%
+	Iterator pageMasters = pageMaster.keySet().iterator();
+	while (pageMasters.hasNext()) {
+		String id = "" + pageMasters.next();
+		String master = "" + pageMaster.get(id);
+		%><%= "indentRow(" + master + "," + master + "," + id + ");" + "\r\n" %><%
+	}
+%>
+	}
+}
+function indentSubRows(id, pageChildren, pagePrevious, pageNext) {
+	var insert_after_id = id;
+	// order child rows sequentially
+	for (var childid in pageChildren[id]) if (typeof(pageChildren[id][childid]) != "function") {
+		if (! pagePrevious[childid]) {
+			var myids = new Array();
+			var myid = childid;
+			while (myid && (! myids[myid])) {
+				myids[myid] = true;
+				indentRow(id, insert_after_id, myid);
+				insert_after_id = myid;
+				myid = pageNext[myid];
+			}
+		}
+	}
+	// order and indent subrows
+	for (var childid in pageChildren[id]) if (typeof(pageChildren[id][childid]) != "function") {
+		indentSubRows(childid, pageChildren, pagePrevious, pageNext);
+	}
+}
+function indentRow(parentid, previousid, childid) {
+	// order two rows sequentially - optionally indented under parent
+	var parentrow = document.getElementById("row"+parentid);
+	var previousrow = document.getElementById("row"+previousid);
+	var childrow = document.getElementById("row"+childid);
+	if (previousrow && childrow) {
+		if (parentrow) {
+			// set indentation
+			var indent = 1;
+			// MSIE may handle className changes very slowly - set style directly instead
+			//if (parentrow.className.match(/WCMindex_indent(\d+)/)) {
+			//	indent += parseInt(RegExp.$1);
+			//	if (indent > 20) indent = 20;
+			//}
+			//childrow.className = "WCMindex WCMindex_indent" + indent;
+			indent += parseInt(document.getElementById("title_cell_"+parentid).style.paddingLeft)/10;
+			document.getElementById("title_cell_"+childid).style.paddingLeft = "" + (indent*10) + "px";
+		}
+		// move row
+		if (previousrow && previousrow.nextSibling) {
+			previousrow.parentNode.insertBefore(childrow, previousrow.nextSibling);
+		} else if (previousrow) {
+			previousrow.parentNode.appendChild(childrow);
+		} else if (parentrow.nextSibling) {
+			parentrow.parentNode.insertBefore(childrow, parentrow.nextSibling);
+		} else {
+			parentrow.parentNode.appendChild(childrow);
+		}
+	}
+}
+</script>
+<script type="text/javascript">
+
+function togglePageTop(checkbox,id) {
+	var page_top;
+	var row = document.getElementById("row"+id);
+	if (checkbox.checked) {
+		row.className += " WCMindex_top";
+		page_top = id;
+	} else {
+		var row = document.getElementById("row"+id);
+		row.className = row.className.replace(" WCMindex_top","");
+		page_top = document.getElementById("page_top_"+id).value;
+	}
+	var indent = getIndentation(id);
+	var next_row = row;
+	var set_page_top = true;
+	while (next_row = next_row.nextSibling) {
+		var next_row_id = next_row.id.replace(/^row/,"");
+		var next_row_indent = getIndentation(next_row_id);
+		if (indent >= next_row_indent) {
+			// indented same as toggled row - end reached - stop
+			break;
+		} else {
+			document.getElementById("page_top_"+next_row_id).value = page_top;
+			if (document.getElementById("top_"+next_row_id) && document.getElementById("top_"+next_row_id).checked) {
+				// child row is its own top - skip its children
+				var skip_row = next_row;
+				while (skip_row = skip_row.nextSibling) {
+					var skip_row_id = skip_row.id.replace(/^row/,"");
+					var skip_row_indent = getIndentation(skip_row_id);
+					if (next_row_indent >= skip_row_indent) {
+						break;
+					} else {
+						next_row = skip_row;
+					}
+				}
+			}
+		}
+	}
+}
+
+function setOldPageRelations(id, indent, old_page_top, old_page_up, page_top, page_up) {
+	if (indent == 0) {
+		if (old_page_top[id] && (! document.getElementById("row"+old_page_top[id]))) {
+			document.getElementById("page_top_"+id).value = old_page_top[id];
+			page_top[indent] = old_page_top[id];
+			page_top[indent+1] = old_page_top[id];
+		} else {
+			document.getElementById("page_top_"+id).value = "";
+			page_top[indent] = "";
+			page_top[indent+1] = "";
+		}
+		if (old_page_up[id] && (! document.getElementById("row"+old_page_up[id]))) {
+			document.getElementById("page_up_"+id).value = old_page_up[id];
+			page_up[indent] = old_page_up[id];
+			page_up[indent+1] = old_page_up[id];
+		} else {
+			document.getElementById("page_up_"+id).value = "";
+			page_up[indent] = "";
+			page_up[indent+1] = "";
+		}
+	}
+}
+
+function setPageRelations(id) {
+	var initial_id = id;
+	if (! id) {
+		// find id for first content row in contents table
+		var table = document.getElementById("contents");
+		if (table) {
+			var rows = table.getElementsByTagName("TR");
+			for (var i=0; i<rows.length; i++) {
+				if (rows[i].id && rows[i].id.match(/^row(\d+)/)) {
+					id = "" + RegExp.$1;
+					break;
+				}
+			}
+			if (id) {
+				if (document.getElementById("page_previous_"+id)) document.getElementById("page_previous_"+id).value = "";
+			}
+		}
+	}
+	if (! id ) return;
+	var indent = getIndentation(id);
+	var page_top = new Array();
+	var page_up = new Array();
+	var old_page_top = pageTopArray();
+	var old_page_up = pageUpArray();
+
+	// find parent+previous rows
+	if (document.getElementById("page_previous_"+id)) document.getElementById("page_previous_"+id).value = "";
+	var previous_row = document.getElementById("row"+id);
+	while (previous_row = previous_row.previousSibling) {
+		if (! previous_row.id) break;
+		var previous_row_id = previous_row.id.replace(/^row/,"");
+		if (indent > getIndentation(previous_row_id)) {
+			// found parent
+			document.getElementById("page_up_"+id).value = previous_row_id;
+			if (document.getElementById("top_"+previous_row_id) && document.getElementById("top_"+previous_row_id).checked) {
+				document.getElementById("page_top_"+id).value = previous_row_id;
+			} else {
+				document.getElementById("page_top_"+id).value = document.getElementById("page_top_"+previous_row_id).value;
+			}
+			break;
+		} else if ((indent == getIndentation(previous_row_id)) && (document.getElementById("page_previous_"+id)) && (document.getElementById("page_previous_"+id).value == "")) {
+			// found previous
+			if (document.getElementById("page_previous_"+id)) document.getElementById("page_previous_"+id).value = previous_row_id;
+			if (indent == 0) break;
+		}
+	}
+
+	setOldPageRelations(id, indent, old_page_top, old_page_up, page_top, page_up);
+
+	if (document.getElementById("top_"+id) && document.getElementById("top_"+id).checked) {
+		page_top[indent] = id;
+		page_top[indent+1] = id;
+	} else {
+		page_top[indent] = document.getElementById("page_top_"+id).value || "";
+		page_top[indent+1] = document.getElementById("page_top_"+id).value || "";
+	}
+	page_up[indent] = document.getElementById("page_up_"+id).value;
+	page_up[indent+1] = id;
+	var page_previous = new Array();
+	page_previous[indent] = id;
+
+	var previous_row_id;
+	var previous_row_indent;
+	var next_row_id;
+	var next_row_indent;
+	var next_row = document.getElementById("row"+id);
+	var adjust_indent = -1;
+	while (next_row = next_row.nextSibling) {
+		previous_row_id = next_row_id;
+		previous_row_indent = next_row_indent;
+		next_row_id = next_row.id.replace(/^row/,"");
+		next_row_indent = getIndentation(next_row_id);
+
+		// adjust indent
+		if (adjust_indent == -1) {
+			// adjust indentation if the first next row is indented more than one level
+			adjust_indent = next_row_indent - indent - 1;
+		}
+		if (adjust_indent > 0) {
+			if (next_row_indent <= indent+1) {
+				// stop adjust indent for remaining rows
+				adjust_indent = 0;
+			} else {
+				setIndentation(next_row_id, next_row_indent - adjust_indent);
+			}
+		}
+		if (adjust_indent < 0) adjust_indent = 0;
+
+		if (previous_row_indent > next_row_indent) {
+			// this row is outdented - clear page_next for terminated previous rows
+			document.getElementById("page_next_"+previous_row_id).value = "";
+			for (var i=previous_row_indent; i>next_row_indent; i--) {
+				if (page_previous[i]) document.getElementById("page_next_"+page_previous[i]).value = "";
+			}
+		}
+		if (indent > next_row_indent) {
+			// outdented relative to initial indentiation - end reached - stop
+			document.getElementById("page_next_"+id).value = "";
+			break;
+		} else {
+			// check page top for this row
+			var top = document.getElementById("page_top_"+next_row_id).value;
+			if (top) {
+				if (document.getElementById("top_"+top) && (! document.getElementById("top_"+top).checked)) {
+					document.getElementById("top_"+top).checked = true;
+					document.getElementById("row"+top).className += " WCMindex_top";
+					page_top[next_row_indent - adjust_indent] = top;
+				}
+			}
+
+			// set page relations for this row
+			setOldPageRelations(next_row_id, next_row_indent, old_page_top, old_page_up, page_top, page_up);
+			document.getElementById("page_top_"+next_row_id).value = page_top[next_row_indent - adjust_indent];
+			if (document.getElementById("top_"+next_row_id) && document.getElementById("top_"+next_row_id).checked) {
+				page_top[next_row_indent - adjust_indent + 1] = next_row_id;
+			} else {
+				page_top[next_row_indent - adjust_indent + 1] = page_top[next_row_indent - adjust_indent];
+			}
+			document.getElementById("page_up_"+next_row_id).value = page_up[next_row_indent - adjust_indent];
+			page_up[next_row_indent - adjust_indent + 1] = next_row_id;
+			if (page_previous[next_row_indent - adjust_indent]) {
+				document.getElementById("page_previous_"+next_row_id).value = page_previous[next_row_indent - adjust_indent];
+				if (page_previous[next_row_indent - adjust_indent]) document.getElementById("page_next_"+page_previous[next_row_indent - adjust_indent]).value = next_row_id;
+			} else {
+				document.getElementById("page_previous_"+next_row_id).value = "";
+			}
+			page_previous[next_row_indent - adjust_indent] = next_row_id;
+
+			if (! next_row.nextSibling) {
+				// end reached - clear page_next for terminated previous rows
+				document.getElementById("page_next_"+next_row_id).value = "";
+				for (var i=0; i<(next_row_indent - adjust_indent); i++) {
+					if (page_previous[i] && document.getElementById("page_next_"+page_previous[i])) document.getElementById("page_next_"+page_previous[i]).value = "";
+				}
+			}
+
+			// clear previous page handles for outdented levels
+			for (var i=(next_row_indent - adjust_indent + 1); i<page_previous.length; i++) {
+				page_previous[i] = "";
+			}
+		}
+		if (initial_id && (indent == next_row_indent)) {
+			// sibling to initial id - end reached - stop
+			break;
+		}
+	}
+}
+
+</script>
+<script type="text/javascript">
+
+function highlight(row) {
+	row.style.backgroundColor = "#fcffd2";
+}
+
+function unhighlight(row) {
+	var id = row.id.replace(/^row/,"");
+	if (document.getElementById("top_"+id) && document.getElementById("top_"+id).checked) {
+		row.style.backgroundColor = "#dddddd";
+	} else {
+		row.style.backgroundColor = "#eeeeee";
+	}
+}
+
+
+
+function getIndentation(id) {
+	var indent = 0;
+	id = (""+id).replace(/^row/,"");
+	// MSIE may handle className changes very slowly - set style directly instead
+	//if (id && document.getElementById("row"+id) && document.getElementById("row"+id).className.match(/WCMindex_indent(\d+)/)) {
+	//	indent += parseInt(RegExp.$1);
+	//}
+	if (id && document.getElementById("title_cell_"+id) && document.getElementById("title_cell_"+id).style) {
+		indent += parseInt(document.getElementById("title_cell_"+id).style.paddingLeft)/10;
+	}
+	return indent;
+}
+
+function setIndentation(id,indent) {
+	if (indent < 0) indent = 0;
+	if (indent > 20) indent = 20;
+	id = (""+id).replace(/^row/,"");
+	// MSIE may handle className changes very slowly - set style directly instead
+	//document.getElementById("row"+id).className = document.getElementById("row"+id).className.replace(/WCMindex_indent(\d+)/,"") + " WCMindex_indent" + indent;
+	if (id && document.getElementById("title_cell_"+id) && document.getElementById("title_cell_"+id).style) {
+		document.getElementById("title_cell_"+id).style.paddingLeft = "" + (parseInt(indent)*10) + "px";
+	}
+}
+
+</script>
+
+<% } %>
+
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

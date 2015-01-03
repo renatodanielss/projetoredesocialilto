@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("content.metadata.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("content.metadata.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.metadata.heading") %></th>
+          </tr>
+        </table>
+<% while (content.records("", "", "", "", "", "", "", db, myconfig, "")) if (content.getUser()) { %>
+        <table width="100%">
+          <tr>
+	    <th colspan="2" align="left"><%= content.getTitle() %><% if (! content.getVersion().equals("")) { %> (<%= content.getVersion() %>)<% } %><% if (! content.getContentGroup().equals("")) { %> (<%= content.getContentGroup() %>)<% } %><% if (! content.getContentType().equals("")) { %> (<%= content.getContentType() %>)<% } %> (<%= content.getContentClass() %>) (<%= content.getId() %>)</td>
+          </tr>
+          <tr>
+	    <td><%= mytext.display("content.metadata.author") %></td>
+	    <td width="100%"><%= content.getAuthor() %><% if (content.getAuthor().equals("")) { %><%= mytext.display("content.metadata.none") %><% } %></td>
+          </tr>
+          <tr>
+	    <td><%= mytext.display("content.metadata.description") %></td>
+	    <td width="100%"><%= content.getDescription() %><% if (content.getDescription().equals("")) { %><%= mytext.display("content.metadata.none") %><% } %></td>
+          </tr>
+          <tr>
+	    <td><%= mytext.display("content.metadata.keywords") %></td>
+	    <td width="100%"><%= content.getKeywords() %><% if (content.getKeywords().equals("")) { %><%= mytext.display("content.metadata.none") %><% } %></td>
+          </tr>
+<%
+	if (! content.getMetaInfo().equals("")) {
+		String[] metainfo = content.getMetaInfo().split("\r?\n");
+		for (int i=0; i<metainfo.length; i++) {
+			Pattern p = Pattern.compile("^<([^<>]+)>(.*)</([^<>]+)>$");
+			Matcher m = p.matcher(metainfo[i]);
+			if (m.find()) {
+				String name = m.group(1);
+				String value = m.group(2);
+%>
+          <tr>
+	    <td><%= name %></td>
+	    <td width="100%"><%= value %></td>
+          </tr>
+<%
+			}
+		}
+	}
+%>
+        </table>
+        <p>
+<% } %>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

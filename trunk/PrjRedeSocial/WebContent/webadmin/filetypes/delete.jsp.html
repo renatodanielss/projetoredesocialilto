@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("filetypes.delete.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("filetypes.delete.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="delete_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("delete") %>">
+        </p>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("filetypes.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("filetypes.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("filetypes.title") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("filetypes.parenttype") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="50%"><%= filetype.getFiletype() %>&nbsp;</td>
+            <td class="WCMinnerContentInputValue" width="50%"><% if (filetype.getParenttype().equals("")) { %><%= mytext.display("none") %><% } else { %><%= filetype.getParenttype() %><% } %>&nbsp;</td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.intro") %></td>
+          </tr>
+	<% if (! myconfig.get(db, "use_accessrestrictions").equals("none")) { %>
+		<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.users") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (filetype.getUsersGroup().equals("")) { %><%= mytext.display("public") %><% } else if (filetype.getUsersGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= filetype.getUsersGroup() %> &nbsp;<% } %></td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><% if (filetype.getUsersType().equals("")) { %><%= mytext.display("public") %><% } else if (filetype.getUsersType().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= filetype.getUsersType() %> &nbsp;<% } %></td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = filetype.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+			<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.creators") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getCreatorsGroup() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getCreatorsType() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = filetype.getCreatorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+				<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.editors") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getEditorsGroup() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getEditorsType() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = filetype.getEditorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+				<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.publishers") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getPublishersGroup() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getPublishersType() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = filetype.getPublishersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+				<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.developers") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getDevelopersGroup() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getDevelopersType() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = filetype.getDevelopersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+				<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.administrators") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getAdministratorsGroup() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top"><%= filetype.getAdministratorsType() %> &nbsp; </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+		<%
+		String[] myusers = filetype.getAdministratorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+				<% } %>
+          </tr>
+			<% } %>
+		<% } else { %>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.users") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top"><% if (filetype.getUsersType().equals("")) { %><%= mytext.display("public") %><% } else if (filetype.getUsersType().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= filetype.getUsersType() %><% } %> &nbsp; </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+		<%
+		String[] myusers = filetype.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><%= User.Username(db, myconfig, myuser) %> &nbsp;<br><%
+			}
+		}
+		%> &nbsp;
+            </td>
+			<% } %>
+          </tr>
+		<% } %>
+        <% } else { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("content.accessrestrictions.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("content.accessrestrictions.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("content.accessrestrictions.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+	<% } %>
+        </table>
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

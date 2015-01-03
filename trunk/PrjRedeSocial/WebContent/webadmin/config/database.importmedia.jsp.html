@@ -1,0 +1,48 @@
+      <form id="importmedia" action="database.jsp?<%= Math.random() %>" method="POST" enctype="multipart/form-data">
+<% if (! wizard.equals("")) { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+<% } else { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/config/database.jsp">
+<% } %>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("config.database.media.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2">
+              <%= mytext.display("config.database.media.intro") %>
+              <p>
+                <input type="submit" value="<%= mytext.display("config.database.media.submit") %>" onclick="enableAll(this.form);">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="insertwebsite" value="yes"><%= mytext.display("config.database.media.insertwebsite") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.media.insertwebsite.text") %>
+              <br><% if (db != null) { %><%= db.import_website_options(out, mytext, myconfig, DOCUMENT_ROOT, "/") %><% } %>
+              <script>document.getElementById("titleelement").disabled = false;</script>
+              <script>document.getElementById("contentelement").disabled = false;</script>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="insertimages" value="yes"><%= mytext.display("config.database.media.insertimages") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.media.insertimages.text") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr><input type="checkbox" name="insertfiles" value="yes"><%= mytext.display("config.database.media.insertfiles") %></nobr>
+            </th>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("config.database.media.insertfiles.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+      </form>

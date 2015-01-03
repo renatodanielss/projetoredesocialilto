@@ -1,0 +1,627 @@
+<script type="text/javascript">
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contenttitle = inputnode.options[inputnode.selectedIndex].text;
+		var contentid = inputnode.options[inputnode.selectedIndex].value;
+		var contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		window.open('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		inputnode.options[0].text = contenttitle;
+		inputnode.options[0].value = contentid;
+		inputnode.selectedIndex = 0;
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+function showall(section) {
+	if (document.getElementById(section+'_importparams')) {
+		document.getElementById(section+'_importparams').firstChild.innerHTML = '';
+	}
+	if (document.getElementById(section+'_importoptions') && (document.getElementById(section+'_importoptions').style.display == "none")) {
+		document.getElementById(section+'_importoptions').style.display = "block";
+	}
+	if (document.getElementById(section+'_importupload') && (document.getElementById(section+'_importupload').style.display == "none")) {
+		document.getElementById(section+'_importupload').style.display = "block";
+	}
+}
+function doSubmit(input,value,section,submittext) {
+	doPreviewFix = new Object();
+	input.form.importfile.value = value;
+	if (document.getElementById(section+'_importparams')) {
+		try {
+			// Mozilla/Firefox may not register DIV when setting TD innerHTML
+			document.getElementById(section+'_importparams').innerHTML = '<td>' + input.parentNode.innerHTML + '<div><input id="submitimport" type="submit" value="' + submittext + '" onclick="enableAll(this.form);"></div></td>';
+		} catch(e) {
+			// Microsoft Internet Explorer may fail when setting TR innerHTML
+			try {
+				var mycontainer = document.getElementById(section+'_importparams').firstChild;
+				while (mycontainer && (mycontainer.nodeName == "#text")) mycontainer = mycontainer.nextSibling;
+				if (mycontainer) mycontainer.innerHTML = input.parentNode.innerHTML + '<div><input id="submitimport" type="submit" value="' + submittext + '" onclick="enableAll(this.form);"></div>';
+			} catch(e) {
+			}
+		}
+		window.scrollTo(0,0);
+		document.getElementById(section+'_importparams').scrollIntoView();
+		if (document.getElementById("submitimport")) document.getElementById("submitimport").focus();
+		var nodes = document.getElementById(section+'_importparams').getElementsByTagName('DIV');
+		for (var i=0; i<nodes.length; i++) {
+			if (nodes[i].className == 'import_parameters') {
+				nodes[i].style.display = "block";
+			}
+		}
+		var nodes = document.getElementById(section+'_importparams').getElementsByTagName('INPUT');
+		for (var i=0; i<nodes.length; i++) {
+			while (nodes[i] && nodes[i].className == 'importfileselect') {
+				nodes[i].parentNode.removeChild(nodes[i]);
+			}
+		}
+		var nodes = document.getElementById(section+'_importparams').getElementsByTagName('INPUT');
+		for (var i=0; i<nodes.length; i++) {
+			nodes[i].disabled = false;
+		}
+		var nodes = document.getElementById(section+'_importparams').getElementsByTagName('SELECT');
+		for (var i=0; i<nodes.length; i++) {
+			nodes[i].disabled = false;
+		}
+		var nodes = document.getElementById(section+'_importparams').getElementsByTagName('TEXTAREA');
+		for (var i=0; i<nodes.length; i++) {
+			nodes[i].disabled = false;
+		}
+	}
+	if (document.getElementById(section+'_importoptions')) {
+		document.getElementById(section+'_importoptions').style.display = "none";
+	}
+	if (document.getElementById(section+'_importupload')) {
+		document.getElementById(section+'_importupload').style.display = "none";
+	}
+}
+function doDownload(input,value,section,submittext) {
+	window.open('/<%= mytext.display("adminpath") %>/database/backup_download.jsp?backup=' + value, 'download_window', 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+}
+function doDelete(input,value,section,submittext) {
+	if (confirm('<%= mytext.display("config.database.restore.delete.confirm") %>\r\n\r\n'+value)) {
+		document.location.href = '/<%= mytext.display("adminpath") %>/database/backup_delete.jsp?backup=' + value;
+	}
+}
+function createNewWebsiteFromExample(form) {
+	if (form.elements["preselectCreateNewWebsiteFromExample"]) form.elements["preselectCreateNewWebsiteFromExample"].checked = true;
+	if (form.elements["drop"]) form.elements["drop"].disabled = true;
+	if (form.elements["create"]) form.elements["create"].disabled = true;
+	if (form.elements["delete"]) form.elements["delete"].disabled = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].disabled = true;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].disabled = true;
+	if (form.elements["insert"]) form.elements["insert"].disabled = true;
+	if (form.elements["drop"]) form.elements["drop"].checked = true;
+	if (form.elements["create"]) form.elements["create"].checked = true;
+	if (form.elements["delete"]) form.elements["delete"].checked = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].checked = false;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].checked = false;
+	if (form.elements["insert"]) form.elements["insert"].checked = true;
+	if (form.elements["importfile"] && form.elements["importfile"].options) {
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+		for (var myoption=0; myoption<form.elements["importfile"].options.length; myoption++) {
+			var datafile = "" + form.elements["importfile"].options[myoption].text;
+			if (datafile.match("^(basic|blank|empty)$")) {
+				// blank/empty
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+				// add-on
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+				// backup file
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else {
+				// data file
+				form.elements["importfile"].options[myoption].disabled = false;
+				form.elements["importfile"].options[myoption].style.color = "menutext";
+			}
+		}
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+	} else {
+		var inputs = form.getElementsByTagName("INPUT");
+		for (var myinput=0; myinput<inputs.length; myinput++) {
+			if ((inputs[myinput].type == "radio") && (inputs[myinput].className == "importfile")) {
+				var tablerow = inputs[myinput].parentNode;
+				while (tablerow && (tablerow.tagName != "TR")) {
+					tablerow = tablerow.parentNode;
+				}
+				var datafile = "" + inputs[myinput].value.replace(new RegExp("^(database|hardcore)\."), "").replace(new RegExp("\.xml$"), "");
+				if (datafile.match("^(basic|blank|empty)$")) {
+					// blank/empty
+					tablerow.style.display = "none";
+				} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+					// add-on
+					tablerow.style.display = "none";
+				} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+					// backup file
+					tablerow.style.display = "none";
+				} else {
+					// data file
+					tablerow.style.display = "block";
+				}
+			}
+		}
+	}
+}
+function createNewWebsiteFromScratchWithImagesAndFiles(form) {
+	if (form.elements["preselectCreateNewWebsiteFromScratchWithImagesAndFiles"]) form.elements["preselectCreateNewWebsiteFromScratchWithImagesAndFiles"].checked = true;
+	if (form.elements["drop"]) form.elements["drop"].disabled = true;
+	if (form.elements["create"]) form.elements["create"].disabled = true;
+	if (form.elements["delete"]) form.elements["delete"].disabled = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].disabled = true;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].disabled = true;
+	if (form.elements["insert"]) form.elements["insert"].disabled = true;
+	if (form.elements["drop"]) form.elements["drop"].checked = true;
+	if (form.elements["create"]) form.elements["create"].checked = true;
+	if (form.elements["delete"]) form.elements["delete"].checked = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].checked = true;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].checked = true;
+	if (form.elements["insert"]) form.elements["insert"].checked = true;
+	if (form.elements["importfile"] && form.elements["importfile"].options) {
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+		for (var myoption=0; myoption<form.elements["importfile"].options.length; myoption++) {
+			var datafile = "" + form.elements["importfile"].options[myoption].text;
+			if (datafile.match("^(basic|blank|empty)$")) {
+				// blank/empty
+				form.elements["importfile"].options[myoption].disabled = false;
+				form.elements["importfile"].options[myoption].style.color = "menutext";
+				if (form.elements["importfile"].options[0].selected) {
+					form.elements["importfile"].options[myoption].selected = true;
+				}
+			} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+				// add-on
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+				// backup file
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else {
+				// data file
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			}
+		}
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+	} else {
+		var inputs = form.getElementsByTagName("INPUT");
+		for (var myinput=0; myinput<inputs.length; myinput++) {
+			if ((inputs[myinput].type == "radio") && (inputs[myinput].className == "importfile")) {
+				var tablerow = inputs[myinput].parentNode;
+				while (tablerow && (tablerow.tagName != "TR")) {
+					tablerow = tablerow.parentNode;
+				}
+				var datafile = "" + inputs[myinput].value.replace(new RegExp("^(database|hardcore)\."), "").replace(new RegExp("\.xml$"), "");
+				if (datafile.match("^(basic|blank|empty)$")) {
+					// blank/empty
+					tablerow.style.display = "block";
+				} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+					// add-on
+					tablerow.style.display = "none";
+				} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+					// backup file
+					tablerow.style.display = "none";
+				} else {
+					// data file
+					tablerow.style.display = "none";
+				}
+			}
+		}
+	}
+}
+function createNewWebsiteFromScratch(form) {
+	if (form.elements["preselectCreateNewWebsiteFromScratch"]) form.elements["preselectCreateNewWebsiteFromScratch"].checked = true;
+	if (form.elements["drop"]) form.elements["drop"].disabled = true;
+	if (form.elements["create"]) form.elements["create"].disabled = true;
+	if (form.elements["delete"]) form.elements["delete"].disabled = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].disabled = true;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].disabled = true;
+	if (form.elements["insert"]) form.elements["insert"].disabled = true;
+	if (form.elements["drop"]) form.elements["drop"].checked = true;
+	if (form.elements["create"]) form.elements["create"].checked = true;
+	if (form.elements["delete"]) form.elements["delete"].checked = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].checked = false;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].checked = false;
+	if (form.elements["insert"]) form.elements["insert"].checked = true;
+	if (form.elements["importfile"] && form.elements["importfile"].options) {
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+		for (var myoption=0; myoption<form.elements["importfile"].options.length; myoption++) {
+			var datafile = "" + form.elements["importfile"].options[myoption].text;
+			if (datafile.match("^(basic|blank|empty)$")) {
+				// blank/empty
+				form.elements["importfile"].options[myoption].disabled = false;
+				form.elements["importfile"].options[myoption].style.color = "menutext";
+				if (form.elements["importfile"].options[0].selected) {
+					form.elements["importfile"].options[myoption].selected = true;
+				}
+			} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+				// add-on
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+				// backup file
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else {
+				// data file
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			}
+		}
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+	} else {
+		var inputs = form.getElementsByTagName("INPUT");
+		for (var myinput=0; myinput<inputs.length; myinput++) {
+			if ((inputs[myinput].type == "radio") && (inputs[myinput].className == "importfile")) {
+				var tablerow = inputs[myinput].parentNode;
+				while (tablerow && (tablerow.tagName != "TR")) {
+					tablerow = tablerow.parentNode;
+				}
+				var datafile = "" + inputs[myinput].value.replace(new RegExp("^(database|hardcore)\."), "").replace(new RegExp("\.xml$"), "");
+				if (datafile.match("^(basic|blank|empty)$")) {
+					// blank/empty
+					tablerow.style.display = "block";
+				} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+					// add-on
+					tablerow.style.display = "none";
+				} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+					// backup file
+					tablerow.style.display = "none";
+				} else {
+					// data file
+					tablerow.style.display = "none";
+				}
+			}
+		}
+	}
+}
+function restoreWebsiteBackup(form) {
+	if (! form) return;
+	if (form.elements["preselectRestoreWebsiteBackup"]) form.elements["preselectRestoreWebsiteBackup"].checked = true;
+	if (form.elements["drop"]) form.elements["drop"].disabled = true;
+	if (form.elements["create"]) form.elements["create"].disabled = true;
+	if (form.elements["delete"]) form.elements["delete"].disabled = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].disabled = true;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].disabled = true;
+	if (form.elements["insert"]) form.elements["insert"].disabled = true;
+	if (form.elements["drop"]) form.elements["drop"].checked = true;
+	if (form.elements["create"]) form.elements["create"].checked = true;
+	if (form.elements["delete"]) form.elements["delete"].checked = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].checked = false;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].checked = false;
+	if (form.elements["insert"]) form.elements["insert"].checked = true;
+	if (form.elements["importfile"] && form.elements["importfile"].options) {
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+		for (var myoption=0; myoption<form.elements["importfile"].options.length; myoption++) {
+			var datafile = "" + form.elements["importfile"].options[myoption].text;
+			if (datafile.match("^(basic|blank|empty)$")) {
+				// blank/empty
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+				// add-on
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+				// backup file
+				form.elements["importfile"].options[myoption].disabled = false;
+				form.elements["importfile"].options[myoption].style.color = "menutext";
+			} else {
+				// data file
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			}
+		}
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+	} else {
+		var inputs = form.getElementsByTagName("INPUT");
+		for (var myinput=0; myinput<inputs.length; myinput++) {
+			if ((inputs[myinput].type == "radio") && (inputs[myinput].className == "importfile")) {
+				var tablerow = inputs[myinput].parentNode;
+				while (tablerow && (tablerow.tagName != "TR")) {
+					tablerow = tablerow.parentNode;
+				}
+				var datafile = "" + inputs[myinput].value.replace(new RegExp("^(database|hardcore)\."), "").replace(new RegExp("\.xml$"), "");
+				if (datafile.match("^(basic|blank|empty)$")) {
+					// blank/empty
+					tablerow.style.display = "none";
+				} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+					// add-on
+					tablerow.style.display = "none";
+				} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+					// backup file
+					tablerow.style.display = "block";
+				} else {
+					// data file
+					tablerow.style.display = "none";
+				}
+			}
+		}
+	}
+}
+function importWebsiteAddOnModule(form) {
+	if (! form) return;
+	if (form.elements["preselectImportWebsiteAddOnModule"]) form.elements["preselectImportWebsiteAddOnModule"].checked = true;
+	if (form.elements["drop"]) form.elements["drop"].disabled = true;
+	if (form.elements["create"]) form.elements["create"].disabled = true;
+	if (form.elements["delete"]) form.elements["delete"].disabled = true;
+	if (form.elements["insertimages"]) form.elements["insertimages"].disabled = true;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].disabled = true;
+	if (form.elements["insert"]) form.elements["insert"].disabled = true;
+	if (form.elements["drop"]) form.elements["drop"].checked = false;
+	if (form.elements["create"]) form.elements["create"].checked = false;
+	if (form.elements["delete"]) form.elements["delete"].checked = false;
+	if (form.elements["insertimages"]) form.elements["insertimages"].checked = false;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].checked = false;
+	if (form.elements["insert"]) form.elements["insert"].checked = true;
+	if (form.elements["importfile"] && form.elements["importfile"].options) {
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+		for (var myoption=0; myoption<form.elements["importfile"].options.length; myoption++) {
+			var datafile = "" + form.elements["importfile"].options[myoption].text;
+			if (datafile.match("^(basic|blank|empty)$")) {
+				// blank/empty
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+				// add-on
+				form.elements["importfile"].options[myoption].disabled = false;
+				form.elements["importfile"].options[myoption].style.color = "menutext";
+			} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+				// backup file
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			} else {
+				// data file
+				form.elements["importfile"].options[myoption].disabled = true;
+				form.elements["importfile"].options[myoption].style.color = "graytext";
+			}
+		}
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+	} else {
+		var inputs = form.getElementsByTagName("INPUT");
+		for (var myinput=0; myinput<inputs.length; myinput++) {
+			if ((inputs[myinput].type == "radio") && (inputs[myinput].className == "importfile")) {
+				var tablerow = inputs[myinput].parentNode;
+				while (tablerow && (tablerow.tagName != "TR")) {
+					tablerow = tablerow.parentNode;
+				}
+				var datafile = "" + inputs[myinput].value.replace(new RegExp("^(database|hardcore)\."), "").replace(new RegExp("\.xml$"), "");
+				if (datafile.match("^(basic|blank|empty)$")) {
+					// blank/empty
+					tablerow.style.display = "none";
+				} else if ((datafile.match("Add-On")) || (datafile.match("Website Design"))) {
+					// add-on
+					tablerow.style.display = "block";
+				} else if (datafile.match(".*[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]( |_)[0-9][0-9]-[0-9][0-9]-[0-9][0-9].*")) {
+					// backup file
+					tablerow.style.display = "none";
+				} else {
+					// data file
+					tablerow.style.display = "none";
+				}
+			}
+		}
+	}
+}
+function enableAll(form) {
+	if (form.id == "website") {
+		form.action = 'database.jsp';
+		form.enctype = 'multipart/form-data';
+	}
+	if (form.elements["preselectEnableAll"]) form.elements["preselectEnableAll"].checked = true;
+	if (form.elements["drop"]) form.elements["drop"].disabled = false;
+	if (form.elements["create"]) form.elements["create"].disabled = false;
+	if (form.elements["delete"]) form.elements["delete"].disabled = false;
+	if (form.elements["insertimages"]) form.elements["insertimages"].disabled = false;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].disabled = false;
+	if (form.elements["insert"]) form.elements["insert"].disabled = false;
+	if (form.elements["importfile"] && form.elements["importfile"].options) {
+		for (var myoption=0; myoption<form.elements["importfile"].options.length; myoption++) {
+			form.elements["importfile"].options[myoption].disabled = false;
+			form.elements["importfile"].options[myoption].style.color = "menutext";
+		}
+	} else {
+		var inputs = form.getElementsByTagName("INPUT");
+		for (var myinput=0; myinput<inputs.length; myinput++) {
+			if ((inputs[myinput].type == "radio") && (inputs[myinput].className == "importfile")) {
+				var tablerow = inputs[myinput].parentNode;
+				while (tablerow && (tablerow.tagName != "TR")) {
+					tablerow = tablerow.parentNode;
+				}
+				tablerow.style.display = "block";
+			}
+		}
+	}
+}
+function clearAll(form) {
+	if (! form) return;
+	if (form.elements["preselectClearAll"]) form.elements["preselectClearAll"].checked = true;
+	if (form.elements["drop"]) form.elements["drop"].disabled = false;
+	if (form.elements["create"]) form.elements["create"].disabled = false;
+	if (form.elements["delete"]) form.elements["delete"].disabled = false;
+	if (form.elements["insertimages"]) form.elements["insertimages"].disabled = false;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].disabled = false;
+	if (form.elements["insert"]) form.elements["insert"].disabled = false;
+	if (form.elements["drop"]) form.elements["drop"].checked = false;
+	if (form.elements["create"]) form.elements["create"].checked = false;
+	if (form.elements["delete"]) form.elements["delete"].checked = false;
+	if (form.elements["insertimages"]) form.elements["insertimages"].checked = false;
+	if (form.elements["insertfiles"]) form.elements["insertfiles"].checked = false;
+	if (form.elements["insert"]) form.elements["insert"].checked = false;
+	if (form.elements["importfile"] && form.elements["importfile"].options) {
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+		for (var myoption=0; myoption<form.elements["importfile"].options.length; myoption++) {
+			form.elements["importfile"].options[myoption].disabled = false;
+			form.elements["importfile"].options[myoption].style.color = "menutext";
+		}
+		form.elements["importfile"].options[0].disabled = false;
+		form.elements["importfile"].options[0].style.color = "menutext";
+		form.elements["importfile"].options[0].selected = true;
+	} else {
+		var inputs = form.getElementsByTagName("INPUT");
+		for (var myinput=0; myinput<inputs.length; myinput++) {
+			if ((inputs[myinput].type == "radio") && (inputs[myinput].className == "importfile")) {
+				var tablerow = inputs[myinput].parentNode;
+				while (tablerow && (tablerow.tagName != "TR")) {
+					tablerow = tablerow.parentNode;
+				}
+				tablerow.style.display = "block";
+			}
+		}
+	}
+}
+</script>
+<script type="text/javascript">
+
+// website template layout preview functions
+
+var selectColourInput;
+function selectColour(input) {
+	selectColourInput = input;
+	window.open('/webadmin/webeditor/colour.html?editor=dummy&attribute=dummy', 'colour_window', ',width=400,height=325,scrollbars=yes,resizable=yes,status=yes', true);
+}
+function setColour(value) {
+	if (selectColourInput) {
+		selectColourInput.value = value;
+		if (selectColourInput.onchange) selectColourInput.onchange();
+	}
+}
+
+var doPreviewFix = new Object();
+var doPreviewWidth = 150;
+var doPreviewHeight = 100;
+var doPreviewScreenWidth = 600;
+var doPreviewScreenHeight = 400;
+function doPreview(param) {
+	if (param.nextSibling && (param.nextSibling.nodeName ==  "IMG")) {
+		param.nextSibling.style.backgroundColor = param.value;
+	}
+
+	if (param.name == "import_pagebackcol") {
+		$("#preview_page").css('backgroundColor', param.value);
+	} else if (param.name == "import_headerbackcol") {
+		$("#preview_header").css('backgroundColor', param.value);
+	} else if (param.name == "import_leftbackcol") {
+		$("#preview_left").css('backgroundColor', param.value);
+	} else if (param.name == "import_leftcenterbackcol") {
+		$("#preview_leftcenter").css('backgroundColor', param.value);
+	} else if (param.name == "import_centerbackcol") {
+		$("#preview_center").css('backgroundColor', param.value);
+	} else if (param.name == "import_rightcenterbackcol") {
+		$("#preview_rightcenter").css('backgroundColor', param.value);
+	} else if (param.name == "import_rightbackcol") {
+		$("#preview_right").css('backgroundColor', param.value);
+	} else if (param.name == "import_footerbackcol") {
+		$("#preview_footer").css('backgroundColor', param.value);
+
+	} else if (param.name == "import_pagetextcol") {
+		$("#preview_page").css('color', param.value);
+	} else if (param.name == "import_headertextcol") {
+		$("#preview_header").css('color', param.value);
+	} else if (param.name == "import_lefttextcol") {
+		$("#preview_left").css('color', param.value);
+	} else if (param.name == "import_leftcentertextcol") {
+		$("#preview_leftcenter").css('color', param.value);
+	} else if (param.name == "import_centertextcol") {
+		$("#preview_center").css('color', param.value);
+	} else if (param.name == "import_rightcentertextcol") {
+		$("#preview_rightcenter").css('color', param.value);
+	} else if (param.name == "import_righttextcol") {
+		$("#preview_right").css('color', param.value);
+	} else if (param.name == "import_footertextcol") {
+		$("#preview_footer").css('color', param.value);
+
+	} else if (param.name == "import_headerheight") {
+		$("#preview_header").css('height', getPreviewHeight(param.value));
+	} else if (param.name == "import_leftwidth") {
+		$("#preview_left").css('width', getPreviewWidth(param.value));
+	} else if (param.name == "import_leftcenterwidth") {
+		$("#preview_leftcenter").css('width', getPreviewWidth(param.value));
+	} else if (param.name == "import_centerwidth") {
+		$("#preview_center").css('width', getPreviewWidth(param.value));
+		if (doPreviewFix.centerwidth || ($("#preview_left").length && ($("#preview_left").css('width') == "auto") && $("#preview_right").length && ($("#preview_right").css('width') == "auto"))) {
+			doPreviewFix.centerwidth = true;
+			$("#preview_left").css('width', Math.round((doPreviewWidth-getPreviewWidth(param.value))/2));
+			$("#preview_right").css('width', Math.round((doPreviewWidth-getPreviewWidth(param.value))/2));
+		}
+	} else if (param.name == "import_centermargin") {
+		if ($("#preview_left")) {
+			$("#preview_left").css('width', getPreviewWidth(param.value));
+		}
+		if ($("#preview_right")) {
+			$("#preview_right").css('width', getPreviewWidth(param.value));
+		}
+		if ($("#preview_center")) {
+			$("#preview_center").css('width', doPreviewWidth-2*getPreviewWidth(param.value));
+		}
+	} else if (param.name == "import_rightcenterwidth") {
+		$("#preview_rightcenter").css('width', getPreviewWidth(param.value));
+	} else if (param.name == "import_rightwidth") {
+		$("#preview_right").css('width', getPreviewWidth(param.value));
+	} else if (param.name == "import_footerheight") {
+		$("#preview_footer").css('height', getPreviewHeight(param.value));
+	}
+}
+
+function getPreviewHeight(value) {
+	if (value.match(/^[0-9]+px$/)) {
+		return Math.ceil(parseInt(value.substring(0,value.length-1))*doPreviewHeight/doPreviewScreenHeight);
+	} else if (value.match(/^[0-9]+$/)) {
+		return Math.ceil(parseInt(value)*doPreviewHeight/doPreviewScreenHeight);
+	} else if (value.match(/^[0-9]+%$/)) {
+		return Math.ceil(parseInt(value.substring(0,value.length-1))*doPreviewHeight/100);
+	} else {
+		return "";
+	}
+}
+
+function getPreviewWidth(value) {
+	if (value.match(/^[0-9]+px$/)) {
+		return Math.ceil(parseInt(value.substring(0,value.length-1))*doPreviewWidth/doPreviewScreenWidth);
+	} else if (value.match(/^[0-9]+$/)) {
+		return Math.ceil(parseInt(value)*doPreviewWidth/doPreviewScreenWidth);
+	} else if (value.match(/^[0-9]+%$/)) {
+		return Math.ceil(parseInt(value.substring(0,value.length-1))*doPreviewWidth/100);
+	} else {
+		return "";
+	}
+}
+
+</script>

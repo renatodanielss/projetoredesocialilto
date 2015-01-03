@@ -1,0 +1,2095 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="content">
+  <row>
+   <column name="id" value="8" />
+   <column name="created" value="2004-05-26 11:12:03" />
+   <column name="updated" value="2012-09-13 15:56:22" />
+   <column name="published" value="2012-09-13 15:56:22" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog" />
+   <column name="searchable" value="no" />
+   <column name="metainfo" value="
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+" />
+   <column name="content" value="&lt;h2&gt;Blog&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Welcome to our blog. Please let us know what you think.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+@@@condition:preview:if:(@@@user_mode@@@=preview)@@@
+&lt;p&gt;Category: @@@extension:keywords(id!=10:up=@@@id@@@:all=All:selected=###category###:count= (#):separator= - :url=/page.xxx?id=@@@id@@@&amp;amp;category=)@@@&lt;/p&gt;
+@@@condition:preview:else@@@
+&lt;p&gt;Category: @@@extension:keywords(published:id!=10:up=@@@id@@@:all=All:selected=###category###:count= (#):separator= - :url=/page.xxx?id=@@@id@@@&amp;amp;category=)@@@&lt;/p&gt;
+@@@condition:preview:endif@@@
+&lt;p&gt;Archive: @@@list:distinct:entry=21:order=published desc:id!=10:up=@@@id@@@@@@&lt;/p&gt;
+@@@condition:administrator:if:(@@@user_class@@@=administrator)@@@
+&lt;hr&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;Admin:
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=19&amp;amp;top=13&amp;amp;up=10&amp;amp;name=@@@title@@@&quot;&gt;Add New Entry&lt;/a&gt;]
+ - 
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=@@@id@@@&amp;amp;mode=preview&amp;amp;&quot;&gt;View Scheduled/Unpublished Entries&lt;/a&gt;]
+ - 
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=@@@id@@@&amp;amp;mode=+&amp;amp;&quot;&gt;Hide Scheduled/Unpublished Entries&lt;/a&gt;]
+ - 
+[&lt;a class=&quot;emphasis&quot; href=&quot;/logout.jsp?redirect=/page.jsp?id%3D@@@id@@@&quot;&gt;Logout&lt;/a&gt;]
+&lt;/div&gt;
+@@@condition:administrator:endif@@@
+&lt;p&gt;@@@list:entry=9:limit=10:order=published|scheduled_publish|created desc:id!=10:up=@@@id@@@:keywords in ###category###@@@&lt;/p&gt;
+@@@condition:login:if:(@@@user_class@@@=)@@@
+&lt;hr&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;Admin: [&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=22&quot;&gt;Login&lt;/a&gt;]&lt;/div&gt;
+@@@condition:login:endif@@@" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="9" />
+   <column name="created" value="2004-05-26 11:14:03" />
+   <column name="updated" value="2012-09-13 15:55:21" />
+   <column name="published" value="2012-09-13 15:55:21" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - List Entry" />
+   <column name="searchable" value="no" />
+   <column name="content" value="@@@condition:administrator:if:(@@@user_username@@@=@@@created_by@@@)@@@@@@condition:administrator2:if:(@@@user_class@@@=administrator)@@@
+&lt;hr&gt;
+&lt;div&gt;
+Admin:
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=25&amp;amp;top=13&amp;amp;up=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Copy Entry&lt;/a&gt;]
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=23&amp;amp;top=13&amp;amp;up=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Update Entry&lt;/a&gt;]
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=26&amp;amp;top=13&amp;amp;up=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Delete Entry&lt;/a&gt;]
+@@@condition:unpublished:if:(@@@published@@@=)@@@
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/webadmin/module/blog/publish.jsp?id=@@@id@@@&amp;amp;redirect=/page.jsp%3Fid%3D@@@page_up@@@%26mode%3Dpreview%26&quot;&gt;Publish Entry&lt;/a&gt;]
+@@@condition:unpublished:else@@@
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/webadmin/module/blog/delete.jsp?unpublish=yes&amp;amp;id=@@@id@@@&amp;amp;redirect=/page.jsp%3Fid%3D@@@page_up@@@%26mode%3Dpreview%26&quot;&gt;Unpublish Entry&lt;/a&gt;]
+@@@condition:unpublished:endif@@@
+&lt;/div&gt;&lt;br&gt;
+@@@condition:administrator2:endif@@@@@@condition:administrator:endif@@@
+&lt;div class=&quot;box&quot;&gt;&lt;a name=&quot;@@@id@@@&quot;&gt;&lt;/a&gt;
+&lt;div style=&quot;text-align: right;&quot;&gt;
+&lt;/div&gt;
+&lt;p style=&quot;text-align: right;&quot; class=&quot;guestbookauthoritem&quot;&gt;@@@published@@@&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;br&gt;
+&lt;/p&gt;@@@content@@@&lt;br&gt;
+&lt;br&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;div style=&quot;text-align: right;&quot;&gt;
+@@@condition:trackback:if:(@@@metainfo_Trackback@@@!=no)@@@
+&lt;a href=&quot;/webadmin/module/blog/trackback.jsp?id=20&amp;amp;top=@@@page_top@@@&amp;amp;up=@@@id@@@&quot;&gt;Trackback&lt;/a&gt;
+@@@condition:trackback:endif@@@
+@@@condition:separator:if:(@@@metainfo_Trackback@@@!=no)@@@
+@@@condition:separator2:if:(@@@metainfo_Comments@@@!=no)@@@
+ - 
+@@@condition:separator2:endif@@@
+@@@condition:separator:endif@@@
+@@@condition:comments:if:(@@@metainfo_Comments@@@!=no)@@@
+&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=13&amp;amp;up=@@@id@@@&quot;&gt;@@@count:up=@@@id@@@@@@ Comments&lt;/a&gt;
+@@@condition:comments:endif@@@
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="10" />
+   <column name="created" value="2004-05-26 11:15:18" />
+   <column name="updated" value="2012-09-13 16:13:49" />
+   <column name="published" value="2012-09-13 16:13:49" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Entry" />
+   <column name="content" value="Do not delete this content item. This content item is copied to add a new entry to your blog.&lt;br&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="creators_type" value="0" />
+   <column name="creators_group" value="0" />
+   <column name="publishers_type" value="0" />
+   <column name="publishers_group" value="0" />
+   <column name="page_top" value="8" />
+   <column name="page_up" value="8" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="11" />
+   <column name="created" value="2004-05-26 15:59:40" />
+   <column name="updated" value="2004-05-27 09:43:43" />
+   <column name="published" value="2004-05-27 09:43:43" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Comment" />
+   <column name="content" value="&lt;p class=&quot;guestbookauthoritem&quot;&gt;@@@created@@@ @@@name@@@ @@@company@@@ &lt;a class=&quot;guestbookauthoritem&quot; href=&quot;mailto:@@@email@@@&quot;&gt;@@@email@@@&lt;/a&gt; &lt;a class=&quot;guestbookauthoritem&quot; href=&quot;http://@@@website@@@&quot; target=&quot;_blank&quot;&gt;@@@website@@@&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;br&gt;@@@content@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="creators_type" value="0" />
+   <column name="creators_group" value="0" />
+   <column name="publishers_type" value="0" />
+   <column name="publishers_group" value="0" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="12" />
+   <column name="created" value="2004-05-26 16:00:18" />
+   <column name="updated" value="2012-09-13 16:11:36" />
+   <column name="published" value="2012-09-13 16:11:36" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - List Comment" />
+   <column name="searchable" value="no" />
+   <column name="content" value="@@@condition:administrator:if:(@@@user_username@@@=@@@include:###up###.created_by@@@)@@@@@@condition:administrator2:if:(@@@user_class@@@=administrator)@@@
+&lt;hr&gt;
+&lt;div&gt;
+Admin:
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=28&amp;amp;top=13&amp;amp;up=###up###&amp;amp;comment=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Update Blog Comment&lt;/a&gt;]
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=29&amp;amp;top=13&amp;amp;up=###up###&amp;amp;comment=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Delete Blog Comment&lt;/a&gt;]
+@@@condition:unpublished:if:(@@@published@@@=)@@@
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/webadmin/module/blog/publish.jsp?id=@@@id@@@&amp;amp;redirect=/page.jsp%3Fid%3D###id###%26up=###up###%26mode%3Dpreview%26&quot;&gt;Publish Blog Comment&lt;/a&gt;]
+@@@condition:unpublished:else@@@
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/webadmin/module/blog/delete.jsp?unpublish=yes&amp;amp;id=@@@id@@@&amp;amp;redirect=/page.jsp%3Fid%3D###id###%26up=###up###%26mode%3Dpreview%26&quot;&gt;Unpublish Blog Comment&lt;/a&gt;]
+@@@condition:unpublished:endif@@@
+&lt;/div&gt;&lt;br&gt;
+@@@condition:administrator2:endif@@@@@@condition:administrator:endif@@@
+&lt;div class=&quot;box&quot;&gt;
+@@@content@@@
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="13" />
+   <column name="created" value="2004-05-26 16:28:18" />
+   <column name="updated" value="2012-09-07 17:42:25" />
+   <column name="published" value="2012-09-07 17:42:25" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Comments" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;div style=&quot;text-align: right;&quot;&gt;&lt;a href=&quot;/page.jsp?id=@@@include:###up###.page_top@@@&quot;&gt;Back to blog&lt;/a&gt;&lt;br&gt;
+&lt;/div&gt;
+&lt;h2&gt;&lt;strong&gt;@@@include:###up###.title@@@&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;@@@include:###up###.content@@@&lt;br&gt;
+&lt;/p&gt;&lt;p&gt;&lt;small&gt;&lt;a href=&quot;/webadmin/module/blog/trackback.jsp?id=137&amp;amp;top=@@@include:###up###.page_top@@@&amp;amp;up=###up###&amp;amp;redirect=%2Fpage%2Ejsp%3Fid=@@@id@@@%26up=###up###&quot;&gt;Trackback&lt;/a&gt;&lt;/small&gt;&lt;/p&gt;
+&lt;p&gt;&lt;br&gt;
+@@@list:up!=:up!=0:up=###up###:entry=12:order=created@@@&lt;br&gt;
+&lt;/p&gt;
+&lt;div class=&quot;box&quot;&gt;
+&lt;h2&gt;&amp;nbsp;&lt;/h2&gt;
+&lt;h2&gt;Add Comment&lt;br&gt;
+&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;&lt;form action=&quot;/post.jsp?id=11&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;page_top&quot; value=&quot;@@@include:###up###.page_top@@@&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;page_up&quot; value=&quot;###up###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;ready_to_publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_template&quot; value=&quot;18&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=@@@id@@@&amp;amp;up=###up###&quot; type=&quot;hidden&quot;&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;400&quot; align=&quot;center&quot; border=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Subject&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;title&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Message&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;textarea style=&quot;width: 300px; font-family: verdana;&quot; name=&quot;content&quot; rows=&quot;10&quot; cols=&quot;40&quot;&gt;&lt;/textarea&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td colspan=&quot;2&quot; align=&quot;left&quot;&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h4&gt;Contact Details&lt;/h4&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Name&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;name&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;From&lt;br&gt;(company/location) &amp;nbsp;&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;company&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Website&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;website&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Email&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;email&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td colspan=&quot;2&quot; align=&quot;center&quot;&gt;&amp;nbsp; 
+&lt;div style=&quot;text-align: center;&quot;&gt;&lt;input class=&quot;buttonbox&quot; value=&quot;Post&quot; type=&quot;submit&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/form&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br&gt;
+&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="14" />
+   <column name="created" value="2004-06-02 07:32:25" />
+   <column name="updated" value="2004-07-07 21:56:18" />
+   <column name="published" value="2004-07-07 21:56:18" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - News" />
+   <column name="content" value="&lt;p class=&quot;boxheading&quot;&gt;Latest Entries&lt;/p&gt;
+&lt;div class=&quot;newselementbox&quot;&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+@@@list:top=8:up=8:entry=15:limit=5:order=created desc@@@
+&amp;nbsp;
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+
+&lt;p class=&quot;boxheading&quot;&gt;Latest Comments&lt;/p&gt;
+&lt;div class=&quot;newselementbox&quot;&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+@@@list:top=8:up!=8:entry=16:limit=5:order=created desc@@@
+&amp;nbsp;
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+
+&lt;p class=&quot;boxheading&quot;&gt;Archives&lt;/p&gt;
+&lt;div class=&quot;newselementbox&quot;&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-01&quot;&gt;January&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-02&quot;&gt;February&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-03&quot;&gt;March&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-04&quot;&gt;April&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-05&quot;&gt;May&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-06&quot;&gt;June&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-07&quot;&gt;July&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-08&quot;&gt;August&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-09&quot;&gt;September&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-10&quot;&gt;October&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-11&quot;&gt;November&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-12&quot;&gt;December&lt;/a&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;" />
+   <column name="contentclass" value="news" />
+   <column name="contenttype" value="News" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="15" />
+   <column name="created" value="2004-06-02 07:39:27" />
+   <column name="updated" value="2004-06-02 11:30:37" />
+   <column name="published" value="2004-06-02 11:30:37" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - List Entry Title" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;p&gt;&lt;a href=&quot;/page.jsp?id=13&amp;amp;up=@@@id@@@&quot;&gt;@@@title@@@&lt;/a&gt;&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="16" />
+   <column name="created" value="2004-06-02 08:24:28" />
+   <column name="updated" value="2004-06-02 11:29:25" />
+   <column name="published" value="2004-06-02 11:29:25" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - List Comment Title" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;p&gt;&lt;a href=&quot;/page.jsp?id=13&amp;amp;up=@@@page_up@@@&quot;&gt;@@@title@@@&lt;/a&gt;&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="17" />
+   <column name="created" value="2004-06-02 11:18:31" />
+   <column name="updated" value="2004-06-02 11:27:27" />
+   <column name="published" value="2004-06-02 11:27:27" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Archive" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;div style=&quot;text-align: right;&quot;&gt;&lt;a href=&quot;/page.jsp?id=8&quot;&gt;Back to blog&lt;/a&gt;&lt;/div&gt;
+&lt;h2&gt;Archive&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;@@@list:up=8:entry=9:published=###published###:order=published desc@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="18" />
+   <column name="created" value="2004-06-02 15:12:13" />
+   <column name="updated" value="2004-06-02 16:25:14" />
+   <column name="published" value="2004-06-02 16:25:14" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Comment Posted:" />
+   <column name="searchable" value="no" />
+   <column name="content" value="The following comment has been posted to the weblog:&lt;br&gt;
+&lt;br&gt;
+&lt;span style=&quot;font-weight: bold;&quot;&gt;@@@title@@@&lt;/span&gt;&lt;br&gt;
+@@@content@@@&lt;br&gt;
+&lt;br&gt;
+&lt;a href=&quot;/webadmin/content/view.php?id=@@@id@@@&quot;&gt;View&lt;/a&gt; - &lt;a href=&quot;/webadmin/content/update.php?id=@@@id@@@&quot;&gt;Update&lt;/a&gt; - &lt;a href=&quot;/webadmin/content/delete.php?id=@@@id@@@&quot;&gt;Delete&lt;/a&gt;&lt;br&gt;
+&lt;br&gt;" />
+   <column name="template" value="0" />
+   <column name="stylesheet" value="0" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Emails" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="19" />
+   <column name="created" value="2007-02-26 21:11:30" />
+   <column name="updated" value="2012-09-07 17:53:02" />
+   <column name="published" value="2012-09-07 17:53:02" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Post" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/webadmin/module/blog/post.jsp?id=###up###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=8&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;template&quot; value=&quot;0&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;stylesheet&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Categories Keywords:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;keywords&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot; border=&quot;1&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content','','',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;Summary:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; name=&quot;summary&quot; style=&quot;width: 100%;&quot;&gt;&lt;/textarea&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; Comments, Trackback&lt;br&gt;
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; Comments, No Trackback&lt;br&gt;
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; No Comments, Trackback&lt;br&gt;
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; No Comments, No Trackback&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;In reply to Trackback URL (optional):&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;trackback&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Post Scheduled:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;scheduled_publish&quot; value=&quot;@@@now:format=%Y-%m-%d %H:%M:%S@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;input name=&quot;publish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save (draft)&quot; onclick=&quot;document.weblogform.publish.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Post&quot; onclick=&quot;document.weblogform.publish.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="20" />
+   <column name="created" value="2007-02-27 17:07:34" />
+   <column name="updated" value="2007-02-27 17:07:34" />
+   <column name="published" value="2007-02-27 17:07:34" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Trackback Comment" />
+   <column name="content" value="&lt;p class=&quot;guestbookauthoritem&quot;&gt;@@@created@@@ &lt;a class=&quot;guestbookauthoritem&quot; href=&quot;@@@blog_url@@@&quot; target=&quot;_blank&quot;&gt;@@@blog_name@@@&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;br&gt;@@@content@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="creators_type" value="0" />
+   <column name="creators_group" value="0" />
+   <column name="publishers_type" value="0" />
+   <column name="publishers_group" value="0" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="21" />
+   <column name="created" value="2012-09-07 10:09:48" />
+   <column name="updated" value="2012-09-07 10:09:48" />
+   <column name="published" value="2012-09-07 10:09:48" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Archive Dates List Entry" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;a href=&quot;/page.jsp?id=17&amp;amp;published=@@@published:format=%Y-%m@@@&quot;&gt;@@@published:format=%Y-%m@@@&lt;/a&gt;&amp;nbsp;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="22" />
+   <column name="created" value="2012-09-08 13:05:59" />
+   <column name="updated" value="2012-09-08 13:09:03" />
+   <column name="published" value="2012-09-08 13:09:03" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Login" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;form name=&quot;login&quot; action=&quot;/login_post.jsp&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=8&amp;amp;mode=preview&amp;amp;&quot; type=&quot;hidden&quot;&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;div align=&quot;center&quot;&gt;
+&lt;div style=&quot;border: 1px solid rgb(0, 0, 0); padding: 30px; width: 300px; height: 250px;&quot;&gt;
+&lt;h2 align=&quot;left&quot;&gt;Login&lt;/h2&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;table border=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;strong&gt;Username&lt;/strong&gt;:&lt;/td&gt;&lt;td&gt;&lt;input maxlength=&quot;50&quot; style=&quot;width: 120px; height: 22px;&quot; size=&quot;50&quot; name=&quot;username&quot; type=&quot;text&quot;&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td rowspan=&quot;1&quot; width=&quot;20%&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;strong&gt;Password&lt;/strong&gt;: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input style=&quot;width: 120px; height: 22px;&quot; size=&quot;16&quot; name=&quot;password&quot; type=&quot;password&quot;&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot; width=&quot;20%&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;br&gt;
+  &lt;br&gt;
+  &lt;div align=&quot;center&quot;&gt;&lt;input value=&quot;Login&quot; type=&quot;submit&quot;&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;  
+ &lt;input onclick=&quot;history.back(-1);&quot; value=&quot;Cancel&quot; type=&quot;button&quot;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;/form&gt;&lt;br&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="23" />
+   <column name="created" value="2012-09-13 14:29:52" />
+   <column name="updated" value="2012-09-13 16:12:49" />
+   <column name="published" value="2012-09-13 16:12:49" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Update Entry" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/webadmin/module/blog/update.jsp?id=###up###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=8&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;template&quot; value=&quot;0&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;stylesheet&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Categories Keywords:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;keywords&quot; value=&quot;@@@include:###up###.keywords@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###up###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###up###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;Summary:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; name=&quot;summary&quot; style=&quot;width: 100%;&quot;&gt;@@@include:###up###.summary@@@&lt;/textarea&gt;
+&lt;/p&gt;
+&lt;p&gt;
+@@@condition:commentstrackback:if:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; Comments, Trackback&lt;br&gt;
+@@@condition:commentstrackback:elseif:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=yesyes)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; Comments, Trackback&lt;br&gt;
+@@@condition:commentstrackback:else@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; Comments, Trackback&lt;br&gt;
+@@@condition:commentstrackback:endif@@@
+@@@condition:commentsnotrackback:if:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=yesno)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; Comments, No Trackback&lt;br&gt;
+@@@condition:commentsnotrackback:else@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; Comments, No Trackback&lt;br&gt;
+@@@condition:commentsnotrackback:endif@@@
+@@@condition:nocommentstrackback:if:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=noyes)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; No Comments, Trackback&lt;br&gt;
+@@@condition:nocommentstrackback:else@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; No Comments, Trackback&lt;br&gt;
+@@@condition:nocommentstrackback:endif@@@
+@@@condition:nocommentsnotrackback:if:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=nono)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; No Comments, No Trackback&lt;br&gt;
+@@@condition:nocommentsnotrackback:else@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; No Comments, No Trackback&lt;br&gt;
+@@@condition:nocommentsnotrackback:endif@@@
+&lt;/p&gt;
+&lt;p&gt;In reply to Trackback URL (optional):&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;trackback&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Created:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;created&quot; value=&quot;@@@include:###up###.created@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Updated:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;updated&quot; value=&quot;@@@now:format=%Y-%m-%d %H:%M:%S@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Published:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;published&quot; value=&quot;@@@include:###up###.published@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Post Scheduled:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;scheduled_publish&quot; value=&quot;@@@include:###up###.scheduled_publish@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;input name=&quot;publish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save (draft)&quot; onclick=&quot;document.weblogform.publish.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Post&quot; onclick=&quot;document.weblogform.publish.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="25" />
+   <column name="created" value="2012-09-13 15:21:23" />
+   <column name="updated" value="2012-09-13 16:13:14" />
+   <column name="published" value="2012-09-13 16:13:14" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Add New Copy Entry" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/webadmin/module/blog/post.jsp?id=###up###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=8&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Categories Keywords:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;keywords&quot; value=&quot;@@@include:###up###.keywords@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###up###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###up###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;Summary:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; name=&quot;summary&quot; style=&quot;width: 100%;&quot;&gt;@@@include:###up###.summary@@@&lt;/textarea&gt;
+&lt;/p&gt;
+&lt;p&gt;Trackback URL (optional):&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;trackback&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Post Scheduled:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;scheduled_publish&quot; value=&quot;@@@include:###up###.scheduled_publish@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;input name=&quot;publish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save (draft)&quot; onclick=&quot;document.weblogform.publish.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Post&quot; onclick=&quot;document.weblogform.publish.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="26" />
+   <column name="created" value="2012-09-13 15:23:17" />
+   <column name="updated" value="2012-09-13 16:13:07" />
+   <column name="published" value="2012-09-13 16:13:07" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Delete Entry" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; action=&quot;/webadmin/module/blog/delete.jsp?id=###up###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=8&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Categories Keywords:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;keywords&quot; value=&quot;@@@include:###up###.keywords@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###up###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###up###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;Summary:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; name=&quot;summary&quot; style=&quot;width: 100%;&quot;&gt;@@@include:###up###.summary@@@&lt;/textarea&gt;
+&lt;/p&gt;
+&lt;p&gt;Trackback URL (optional):&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;trackback&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Created:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;created&quot; value=&quot;@@@include:###up###.created@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Updated:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;updated&quot; value=&quot;@@@include:###up###.updated@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Published:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;published&quot; value=&quot;@@@include:###up###.published@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Post Scheduled:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;scheduled_publish&quot; value=&quot;@@@include:###up###.scheduled_publish@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;input name=&quot;unpublish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;delete&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Unpublish&quot; onclick=&quot;document.weblogform.unpublish.value='yes';document.weblogform.delete.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Delete&quot; onclick=&quot;document.weblogform.unpublish.value='';document.weblogform.delete.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="28" />
+   <column name="created" value="2012-09-13 15:59:22" />
+   <column name="updated" value="2012-09-13 16:12:57" />
+   <column name="published" value="2012-09-13 16:12:57" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Update Comment" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/webadmin/module/blog/update.jsp?id=###comment###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=13&amp;amp;up=###up###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;template&quot; value=&quot;0&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;stylesheet&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###comment###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###comment###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;input name=&quot;publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="29" />
+   <column name="created" value="2012-09-13 16:00:20" />
+   <column name="updated" value="2012-09-13 16:13:23" />
+   <column name="published" value="2012-09-13 16:13:23" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Delete Comment" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; action=&quot;/webadmin/module/blog/delete.jsp?id=###comment###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=13&amp;amp;up=###up###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###comment###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###comment###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;input name=&quot;unpublish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;delete&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Unpublish&quot; onclick=&quot;document.weblogform.unpublish.value='yes';document.weblogform.delete.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Delete&quot; onclick=&quot;document.weblogform.unpublish.value='';document.weblogform.delete.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="8" />
+   <column name="created" value="2004-05-26 11:12:03" />
+   <column name="updated" value="2012-09-13 15:56:22" />
+   <column name="published" value="2012-09-13 15:56:22" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog" />
+   <column name="searchable" value="no" />
+   <column name="metainfo" value="
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+" />
+   <column name="content" value="&lt;h2&gt;Blog&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;Welcome to our blog. Please let us know what you think.&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+@@@condition:preview:if:(@@@user_mode@@@=preview)@@@
+&lt;p&gt;Category: @@@extension:keywords(id!=10:up=@@@id@@@:all=All:selected=###category###:count= (#):separator= - :url=/page.xxx?id=@@@id@@@&amp;amp;category=)@@@&lt;/p&gt;
+@@@condition:preview:else@@@
+&lt;p&gt;Category: @@@extension:keywords(published:id!=10:up=@@@id@@@:all=All:selected=###category###:count= (#):separator= - :url=/page.xxx?id=@@@id@@@&amp;amp;category=)@@@&lt;/p&gt;
+@@@condition:preview:endif@@@
+&lt;p&gt;Archive: @@@list:distinct:entry=21:order=published desc:id!=10:up=@@@id@@@@@@&lt;/p&gt;
+@@@condition:administrator:if:(@@@user_class@@@=administrator)@@@
+&lt;hr&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;Admin:
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=19&amp;amp;top=13&amp;amp;up=10&amp;amp;name=@@@title@@@&quot;&gt;Add New Entry&lt;/a&gt;]
+ - 
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=@@@id@@@&amp;amp;mode=preview&amp;amp;&quot;&gt;View Scheduled/Unpublished Entries&lt;/a&gt;]
+ - 
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=@@@id@@@&amp;amp;mode=+&amp;amp;&quot;&gt;Hide Scheduled/Unpublished Entries&lt;/a&gt;]
+ - 
+[&lt;a class=&quot;emphasis&quot; href=&quot;/logout.jsp?redirect=/page.jsp?id%3D@@@id@@@&quot;&gt;Logout&lt;/a&gt;]
+&lt;/div&gt;
+@@@condition:administrator:endif@@@
+&lt;p&gt;@@@list:entry=9:limit=10:order=published|scheduled_publish|created desc:id!=10:up=@@@id@@@:keywords in ###category###@@@&lt;/p&gt;
+@@@condition:login:if:(@@@user_class@@@=)@@@
+&lt;hr&gt;
+&lt;div style=&quot;text-align: left;&quot;&gt;Admin: [&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=22&quot;&gt;Login&lt;/a&gt;]&lt;/div&gt;
+@@@condition:login:endif@@@" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="9" />
+   <column name="created" value="2004-05-26 11:14:03" />
+   <column name="updated" value="2012-09-13 15:55:21" />
+   <column name="published" value="2012-09-13 15:55:21" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - List Entry" />
+   <column name="searchable" value="no" />
+   <column name="content" value="@@@condition:administrator:if:(@@@user_username@@@=@@@created_by@@@)@@@@@@condition:administrator2:if:(@@@user_class@@@=administrator)@@@
+&lt;hr&gt;
+&lt;div&gt;
+Admin:
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=25&amp;amp;top=13&amp;amp;up=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Copy Entry&lt;/a&gt;]
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=23&amp;amp;top=13&amp;amp;up=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Update Entry&lt;/a&gt;]
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=26&amp;amp;top=13&amp;amp;up=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Delete Entry&lt;/a&gt;]
+@@@condition:unpublished:if:(@@@published@@@=)@@@
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/webadmin/module/blog/publish.jsp?id=@@@id@@@&amp;amp;redirect=/page.jsp%3Fid%3D@@@page_up@@@%26mode%3Dpreview%26&quot;&gt;Publish Entry&lt;/a&gt;]
+@@@condition:unpublished:else@@@
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/webadmin/module/blog/delete.jsp?unpublish=yes&amp;amp;id=@@@id@@@&amp;amp;redirect=/page.jsp%3Fid%3D@@@page_up@@@%26mode%3Dpreview%26&quot;&gt;Unpublish Entry&lt;/a&gt;]
+@@@condition:unpublished:endif@@@
+&lt;/div&gt;&lt;br&gt;
+@@@condition:administrator2:endif@@@@@@condition:administrator:endif@@@
+&lt;div class=&quot;box&quot;&gt;&lt;a name=&quot;@@@id@@@&quot;&gt;&lt;/a&gt;
+&lt;div style=&quot;text-align: right;&quot;&gt;
+&lt;/div&gt;
+&lt;p style=&quot;text-align: right;&quot; class=&quot;guestbookauthoritem&quot;&gt;@@@published@@@&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;br&gt;
+&lt;/p&gt;@@@content@@@&lt;br&gt;
+&lt;br&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;div style=&quot;text-align: right;&quot;&gt;
+@@@condition:trackback:if:(@@@metainfo_Trackback@@@!=no)@@@
+&lt;a href=&quot;/webadmin/module/blog/trackback.jsp?id=20&amp;amp;top=@@@page_top@@@&amp;amp;up=@@@id@@@&quot;&gt;Trackback&lt;/a&gt;
+@@@condition:trackback:endif@@@
+@@@condition:separator:if:(@@@metainfo_Trackback@@@!=no)@@@
+@@@condition:separator2:if:(@@@metainfo_Comments@@@!=no)@@@
+ - 
+@@@condition:separator2:endif@@@
+@@@condition:separator:endif@@@
+@@@condition:comments:if:(@@@metainfo_Comments@@@!=no)@@@
+&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=13&amp;amp;up=@@@id@@@&quot;&gt;@@@count:up=@@@id@@@@@@ Comments&lt;/a&gt;
+@@@condition:comments:endif@@@
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="10" />
+   <column name="created" value="2004-05-26 11:15:18" />
+   <column name="updated" value="2012-09-13 16:13:49" />
+   <column name="published" value="2012-09-13 16:13:49" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Entry" />
+   <column name="content" value="Do not delete this content item. This content item is copied to add a new entry to your blog.&lt;br&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="creators_type" value="0" />
+   <column name="creators_group" value="0" />
+   <column name="publishers_type" value="0" />
+   <column name="publishers_group" value="0" />
+   <column name="page_top" value="8" />
+   <column name="page_up" value="8" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="11" />
+   <column name="created" value="2004-05-26 15:59:40" />
+   <column name="updated" value="2004-05-27 09:43:43" />
+   <column name="published" value="2004-05-27 09:43:43" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Comment" />
+   <column name="content" value="&lt;p class=&quot;guestbookauthoritem&quot;&gt;@@@created@@@ @@@name@@@ @@@company@@@ &lt;a class=&quot;guestbookauthoritem&quot; href=&quot;mailto:@@@email@@@&quot;&gt;@@@email@@@&lt;/a&gt; &lt;a class=&quot;guestbookauthoritem&quot; href=&quot;http://@@@website@@@&quot; target=&quot;_blank&quot;&gt;@@@website@@@&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;br&gt;@@@content@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="creators_type" value="0" />
+   <column name="creators_group" value="0" />
+   <column name="publishers_type" value="0" />
+   <column name="publishers_group" value="0" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="12" />
+   <column name="created" value="2004-05-26 16:00:18" />
+   <column name="updated" value="2012-09-13 16:11:36" />
+   <column name="published" value="2012-09-13 16:11:36" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - List Comment" />
+   <column name="searchable" value="no" />
+   <column name="content" value="@@@condition:administrator:if:(@@@user_username@@@=@@@include:###up###.created_by@@@)@@@@@@condition:administrator2:if:(@@@user_class@@@=administrator)@@@
+&lt;hr&gt;
+&lt;div&gt;
+Admin:
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=28&amp;amp;top=13&amp;amp;up=###up###&amp;amp;comment=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Update Blog Comment&lt;/a&gt;]
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/page.jsp?id=29&amp;amp;top=13&amp;amp;up=###up###&amp;amp;comment=@@@id@@@&amp;amp;name=@@@title@@@&quot;&gt;Delete Blog Comment&lt;/a&gt;]
+@@@condition:unpublished:if:(@@@published@@@=)@@@
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/webadmin/module/blog/publish.jsp?id=@@@id@@@&amp;amp;redirect=/page.jsp%3Fid%3D###id###%26up=###up###%26mode%3Dpreview%26&quot;&gt;Publish Blog Comment&lt;/a&gt;]
+@@@condition:unpublished:else@@@
+-
+[&lt;a class=&quot;emphasis&quot; href=&quot;/webadmin/module/blog/delete.jsp?unpublish=yes&amp;amp;id=@@@id@@@&amp;amp;redirect=/page.jsp%3Fid%3D###id###%26up=###up###%26mode%3Dpreview%26&quot;&gt;Unpublish Blog Comment&lt;/a&gt;]
+@@@condition:unpublished:endif@@@
+&lt;/div&gt;&lt;br&gt;
+@@@condition:administrator2:endif@@@@@@condition:administrator:endif@@@
+&lt;div class=&quot;box&quot;&gt;
+@@@content@@@
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="13" />
+   <column name="created" value="2004-05-26 16:28:18" />
+   <column name="updated" value="2012-09-07 17:42:25" />
+   <column name="published" value="2012-09-07 17:42:25" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Comments" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;div style=&quot;text-align: right;&quot;&gt;&lt;a href=&quot;/page.jsp?id=@@@include:###up###.page_top@@@&quot;&gt;Back to blog&lt;/a&gt;&lt;br&gt;
+&lt;/div&gt;
+&lt;h2&gt;&lt;strong&gt;@@@include:###up###.title@@@&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;@@@include:###up###.content@@@&lt;br&gt;
+&lt;/p&gt;&lt;p&gt;&lt;small&gt;&lt;a href=&quot;/webadmin/module/blog/trackback.jsp?id=137&amp;amp;top=@@@include:###up###.page_top@@@&amp;amp;up=###up###&amp;amp;redirect=%2Fpage%2Ejsp%3Fid=@@@id@@@%26up=###up###&quot;&gt;Trackback&lt;/a&gt;&lt;/small&gt;&lt;/p&gt;
+&lt;p&gt;&lt;br&gt;
+@@@list:up!=:up!=0:up=###up###:entry=12:order=created@@@&lt;br&gt;
+&lt;/p&gt;
+&lt;div class=&quot;box&quot;&gt;
+&lt;h2&gt;&amp;nbsp;&lt;/h2&gt;
+&lt;h2&gt;Add Comment&lt;br&gt;
+&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;
+&lt;/p&gt;&lt;form action=&quot;/post.jsp?id=11&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;page_top&quot; value=&quot;@@@include:###up###.page_top@@@&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;page_up&quot; value=&quot;###up###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;ready_to_publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_template&quot; value=&quot;18&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=@@@id@@@&amp;amp;up=###up###&quot; type=&quot;hidden&quot;&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;400&quot; align=&quot;center&quot; border=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Subject&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;title&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Message&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;textarea style=&quot;width: 300px; font-family: verdana;&quot; name=&quot;content&quot; rows=&quot;10&quot; cols=&quot;40&quot;&gt;&lt;/textarea&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td colspan=&quot;2&quot; align=&quot;left&quot;&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h4&gt;Contact Details&lt;/h4&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Name&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;name&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;From&lt;br&gt;(company/location) &amp;nbsp;&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;company&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Website&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;website&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td align=&quot;left&quot;&gt;
+&lt;h5&gt;Email&lt;/h5&gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&lt;input style=&quot;width: 300px; font-family: verdana;&quot; size=&quot;40&quot; name=&quot;email&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr valign=&quot;top&quot;&gt;
+&lt;td colspan=&quot;2&quot; align=&quot;center&quot;&gt;&amp;nbsp; 
+&lt;div style=&quot;text-align: center;&quot;&gt;&lt;input class=&quot;buttonbox&quot; value=&quot;Post&quot; type=&quot;submit&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/form&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br&gt;
+&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="14" />
+   <column name="created" value="2004-06-02 07:32:25" />
+   <column name="updated" value="2004-07-07 21:56:18" />
+   <column name="published" value="2004-07-07 21:56:18" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - News" />
+   <column name="content" value="&lt;p class=&quot;boxheading&quot;&gt;Latest Entries&lt;/p&gt;
+&lt;div class=&quot;newselementbox&quot;&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+@@@list:top=8:up=8:entry=15:limit=5:order=created desc@@@
+&amp;nbsp;
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+
+&lt;p class=&quot;boxheading&quot;&gt;Latest Comments&lt;/p&gt;
+&lt;div class=&quot;newselementbox&quot;&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+@@@list:top=8:up!=8:entry=16:limit=5:order=created desc@@@
+&amp;nbsp;
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+
+&lt;p class=&quot;boxheading&quot;&gt;Archives&lt;/p&gt;
+&lt;div class=&quot;newselementbox&quot;&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-01&quot;&gt;January&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-02&quot;&gt;February&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-03&quot;&gt;March&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-04&quot;&gt;April&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-05&quot;&gt;May&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-06&quot;&gt;June&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-07&quot;&gt;July&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-08&quot;&gt;August&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-09&quot;&gt;September&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-10&quot;&gt;October&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-11&quot;&gt;November&lt;/a&gt;&lt;br&gt;
+&lt;a href=&quot;/page.jsp?id=17&amp;amp;created=____-12&quot;&gt;December&lt;/a&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;" />
+   <column name="contentclass" value="news" />
+   <column name="contenttype" value="News" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="15" />
+   <column name="created" value="2004-06-02 07:39:27" />
+   <column name="updated" value="2004-06-02 11:30:37" />
+   <column name="published" value="2004-06-02 11:30:37" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - List Entry Title" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;p&gt;&lt;a href=&quot;/page.jsp?id=13&amp;amp;up=@@@id@@@&quot;&gt;@@@title@@@&lt;/a&gt;&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="16" />
+   <column name="created" value="2004-06-02 08:24:28" />
+   <column name="updated" value="2004-06-02 11:29:25" />
+   <column name="published" value="2004-06-02 11:29:25" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - List Comment Title" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;p&gt;&lt;a href=&quot;/page.jsp?id=13&amp;amp;up=@@@page_up@@@&quot;&gt;@@@title@@@&lt;/a&gt;&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="17" />
+   <column name="created" value="2004-06-02 11:18:31" />
+   <column name="updated" value="2004-06-02 11:27:27" />
+   <column name="published" value="2004-06-02 11:27:27" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Archive" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;div style=&quot;text-align: right;&quot;&gt;&lt;a href=&quot;/page.jsp?id=8&quot;&gt;Back to blog&lt;/a&gt;&lt;/div&gt;
+&lt;h2&gt;Archive&lt;/h2&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;@@@list:up=8:entry=9:published=###published###:order=published desc@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="18" />
+   <column name="created" value="2004-06-02 15:12:13" />
+   <column name="updated" value="2004-06-02 16:25:14" />
+   <column name="published" value="2004-06-02 16:25:14" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Comment Posted:" />
+   <column name="searchable" value="no" />
+   <column name="content" value="The following comment has been posted to the weblog:&lt;br&gt;
+&lt;br&gt;
+&lt;span style=&quot;font-weight: bold;&quot;&gt;@@@title@@@&lt;/span&gt;&lt;br&gt;
+@@@content@@@&lt;br&gt;
+&lt;br&gt;
+&lt;a href=&quot;/webadmin/content/view.php?id=@@@id@@@&quot;&gt;View&lt;/a&gt; - &lt;a href=&quot;/webadmin/content/update.php?id=@@@id@@@&quot;&gt;Update&lt;/a&gt; - &lt;a href=&quot;/webadmin/content/delete.php?id=@@@id@@@&quot;&gt;Delete&lt;/a&gt;&lt;br&gt;
+&lt;br&gt;" />
+   <column name="template" value="0" />
+   <column name="stylesheet" value="0" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Emails" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="19" />
+   <column name="created" value="2007-02-26 21:11:30" />
+   <column name="updated" value="2012-09-07 17:53:02" />
+   <column name="published" value="2012-09-07 17:53:02" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Post" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/webadmin/module/blog/post.jsp?id=###up###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=8&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;template&quot; value=&quot;0&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;stylesheet&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Categories Keywords:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;keywords&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot; border=&quot;1&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content','','',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;Summary:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; name=&quot;summary&quot; style=&quot;width: 100%;&quot;&gt;&lt;/textarea&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; Comments, Trackback&lt;br&gt;
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; Comments, No Trackback&lt;br&gt;
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; No Comments, Trackback&lt;br&gt;
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; No Comments, No Trackback&lt;br&gt;
+&lt;/p&gt;
+&lt;p&gt;In reply to Trackback URL (optional):&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;trackback&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Post Scheduled:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;scheduled_publish&quot; value=&quot;@@@now:format=%Y-%m-%d %H:%M:%S@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;input name=&quot;publish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save (draft)&quot; onclick=&quot;document.weblogform.publish.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Post&quot; onclick=&quot;document.weblogform.publish.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="20" />
+   <column name="created" value="2007-02-27 17:07:34" />
+   <column name="updated" value="2007-02-27 17:07:34" />
+   <column name="published" value="2007-02-27 17:07:34" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Trackback Comment" />
+   <column name="content" value="&lt;p class=&quot;guestbookauthoritem&quot;&gt;@@@created@@@ &lt;a class=&quot;guestbookauthoritem&quot; href=&quot;@@@blog_url@@@&quot; target=&quot;_blank&quot;&gt;@@@blog_name@@@&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;@@@title@@@&lt;/strong&gt;&lt;br&gt;@@@content@@@&lt;/p&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="creators_type" value="0" />
+   <column name="creators_group" value="0" />
+   <column name="publishers_type" value="0" />
+   <column name="publishers_group" value="0" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="21" />
+   <column name="created" value="2012-09-07 10:09:48" />
+   <column name="updated" value="2012-09-07 10:09:48" />
+   <column name="published" value="2012-09-07 10:09:48" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Archive Dates List Entry" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;a href=&quot;/page.jsp?id=17&amp;amp;published=@@@published:format=%Y-%m@@@&quot;&gt;@@@published:format=%Y-%m@@@&lt;/a&gt;&amp;nbsp;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="22" />
+   <column name="created" value="2012-09-08 13:05:59" />
+   <column name="updated" value="2012-09-08 13:09:03" />
+   <column name="published" value="2012-09-08 13:09:03" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Login" />
+   <column name="searchable" value="no" />
+   <column name="content" value="&lt;form name=&quot;login&quot; action=&quot;/login_post.jsp&quot; method=&quot;post&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=8&amp;amp;mode=preview&amp;amp;&quot; type=&quot;hidden&quot;&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;div align=&quot;center&quot;&gt;
+&lt;div style=&quot;border: 1px solid rgb(0, 0, 0); padding: 30px; width: 300px; height: 250px;&quot;&gt;
+&lt;h2 align=&quot;left&quot;&gt;Login&lt;/h2&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;table border=&quot;0&quot; width=&quot;100%&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;strong&gt;Username&lt;/strong&gt;:&lt;/td&gt;&lt;td&gt;&lt;input maxlength=&quot;50&quot; style=&quot;width: 120px; height: 22px;&quot; size=&quot;50&quot; name=&quot;username&quot; type=&quot;text&quot;&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td rowspan=&quot;1&quot; width=&quot;20%&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;strong&gt;Password&lt;/strong&gt;: &lt;br&gt;
+&lt;/td&gt;&lt;td&gt;&lt;input style=&quot;width: 120px; height: 22px;&quot; size=&quot;16&quot; name=&quot;password&quot; type=&quot;password&quot;&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot; width=&quot;20%&quot;&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;br&gt;
+  &lt;br&gt;
+  &lt;div align=&quot;center&quot;&gt;&lt;input value=&quot;Login&quot; type=&quot;submit&quot;&gt; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;  
+ &lt;input onclick=&quot;history.back(-1);&quot; value=&quot;Cancel&quot; type=&quot;button&quot;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;/form&gt;&lt;br&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Special" />
+   <column name="contentgroup" value="Blog" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="23" />
+   <column name="created" value="2012-09-13 14:29:52" />
+   <column name="updated" value="2012-09-13 16:12:49" />
+   <column name="published" value="2012-09-13 16:12:49" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Update Entry" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/webadmin/module/blog/update.jsp?id=###up###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=8&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;template&quot; value=&quot;0&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;stylesheet&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Categories Keywords:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;keywords&quot; value=&quot;@@@include:###up###.keywords@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###up###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###up###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;Summary:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; name=&quot;summary&quot; style=&quot;width: 100%;&quot;&gt;@@@include:###up###.summary@@@&lt;/textarea&gt;
+&lt;/p&gt;
+&lt;p&gt;
+@@@condition:commentstrackback:if:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; Comments, Trackback&lt;br&gt;
+@@@condition:commentstrackback:elseif:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=yesyes)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; Comments, Trackback&lt;br&gt;
+@@@condition:commentstrackback:else@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; Comments, Trackback&lt;br&gt;
+@@@condition:commentstrackback:endif@@@
+@@@condition:commentsnotrackback:if:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=yesno)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; Comments, No Trackback&lt;br&gt;
+@@@condition:commentsnotrackback:else@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;yes&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; Comments, No Trackback&lt;br&gt;
+@@@condition:commentsnotrackback:endif@@@
+@@@condition:nocommentstrackback:if:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=noyes)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; No Comments, Trackback&lt;br&gt;
+@@@condition:nocommentstrackback:else@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;yes&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; No Comments, Trackback&lt;br&gt;
+@@@condition:nocommentstrackback:endif@@@
+@@@condition:nocommentsnotrackback:if:(@@@include:###up###.metainfo_Comments@@@@@@include:###up###.metainfo_Trackback@@@=nono)@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; checked=&quot;checked&quot; type=&quot;radio&quot;&gt; No Comments, No Trackback&lt;br&gt;
+@@@condition:nocommentsnotrackback:else@@@
+&lt;input name=&quot;metainfo&quot; value=&quot;
+&lt;_Comments&gt;no&lt;/_Comments&gt;
+&lt;_Trackback&gt;no&lt;/_Trackback&gt;
+&quot; type=&quot;radio&quot;&gt; No Comments, No Trackback&lt;br&gt;
+@@@condition:nocommentsnotrackback:endif@@@
+&lt;/p&gt;
+&lt;p&gt;In reply to Trackback URL (optional):&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;trackback&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Created:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;created&quot; value=&quot;@@@include:###up###.created@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Updated:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;updated&quot; value=&quot;@@@now:format=%Y-%m-%d %H:%M:%S@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Published:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;published&quot; value=&quot;@@@include:###up###.published@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Post Scheduled:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;scheduled_publish&quot; value=&quot;@@@include:###up###.scheduled_publish@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;input name=&quot;publish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save (draft)&quot; onclick=&quot;document.weblogform.publish.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Post&quot; onclick=&quot;document.weblogform.publish.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="25" />
+   <column name="created" value="2012-09-13 15:21:23" />
+   <column name="updated" value="2012-09-13 16:13:14" />
+   <column name="published" value="2012-09-13 16:13:14" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Add New Copy Entry" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/webadmin/module/blog/post.jsp?id=###up###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=8&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Categories Keywords:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;keywords&quot; value=&quot;@@@include:###up###.keywords@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###up###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###up###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;Summary:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; name=&quot;summary&quot; style=&quot;width: 100%;&quot;&gt;@@@include:###up###.summary@@@&lt;/textarea&gt;
+&lt;/p&gt;
+&lt;p&gt;Trackback URL (optional):&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;trackback&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Post Scheduled:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;scheduled_publish&quot; value=&quot;@@@include:###up###.scheduled_publish@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;input name=&quot;publish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save (draft)&quot; onclick=&quot;document.weblogform.publish.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Post&quot; onclick=&quot;document.weblogform.publish.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="26" />
+   <column name="created" value="2012-09-13 15:23:17" />
+   <column name="updated" value="2012-09-13 16:13:07" />
+   <column name="published" value="2012-09-13 16:13:07" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Delete Entry" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; action=&quot;/webadmin/module/blog/delete.jsp?id=###up###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=8&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Categories Keywords:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;keywords&quot; value=&quot;@@@include:###up###.keywords@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###up###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###up###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;p&gt;Summary:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; name=&quot;summary&quot; style=&quot;width: 100%;&quot;&gt;@@@include:###up###.summary@@@&lt;/textarea&gt;
+&lt;/p&gt;
+&lt;p&gt;Trackback URL (optional):&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;trackback&quot; value=&quot;&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Created:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;created&quot; value=&quot;@@@include:###up###.created@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Updated:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;updated&quot; value=&quot;@@@include:###up###.updated@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Published:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;published&quot; value=&quot;@@@include:###up###.published@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Post Scheduled:&lt;br&gt;
+&lt;input size=&quot;20&quot; name=&quot;scheduled_publish&quot; value=&quot;@@@include:###up###.scheduled_publish@@@&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;input name=&quot;unpublish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;delete&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Unpublish&quot; onclick=&quot;document.weblogform.unpublish.value='yes';document.weblogform.delete.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Delete&quot; onclick=&quot;document.weblogform.unpublish.value='';document.weblogform.delete.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="28" />
+   <column name="created" value="2012-09-13 15:59:22" />
+   <column name="updated" value="2012-09-13 16:12:57" />
+   <column name="published" value="2012-09-13 16:12:57" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Update Comment" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/webadmin/module/blog/update.jsp?id=###comment###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=13&amp;amp;up=###up###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;contentclass&quot; value=&quot;page&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;template&quot; value=&quot;0&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;stylesheet&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###comment###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###comment###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;input name=&quot;publish&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Save&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+  <row>
+   <column name="id" value="29" />
+   <column name="created" value="2012-09-13 16:00:20" />
+   <column name="updated" value="2012-09-13 16:13:23" />
+   <column name="published" value="2012-09-13 16:13:23" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Blog - Delete Comment" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js.jsp&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function webeditor_custom_preview() {
+  var myform = document.weblogform;
+  var save_target = myform.target;
+  var save_action = myform.action;
+  myform.target = '_preview';
+  myform.action = '/webadmin/content/preview.jsp?mode=preview&amp;id=&amp;redirect=&amp;preview=';
+  mywindow = window.open('',myform.target,&quot;scrollbars=yes,width=800,height=600,resizable=yes,status=yes&quot;);
+  if (typeof(mywindow.focus) == &quot;function&quot;) mywindow.focus();
+  WebEditorSubmit();
+  myform.submit();
+  myform.target = save_target;
+  myform.action = save_action;
+}
+&lt;/script&gt;" />
+   <column name="content" value="&lt;form id=&quot;weblogform&quot; name=&quot;weblogform&quot; method=&quot;post&quot; action=&quot;/webadmin/module/blog/delete.jsp?id=###comment###&quot;&gt;
+&lt;input name=&quot;redirect&quot; value=&quot;/page.jsp?id=13&amp;amp;up=###up###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;blog_name&quot; value=&quot;###name###&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;url&quot; value=&quot;/page.jsp?id=###top###&amp;amp;up=&quot; type=&quot;hidden&quot;&gt;
+&lt;p&gt;Title:&lt;br&gt;
+&lt;input size=&quot;80&quot; name=&quot;title&quot; value=&quot;@@@include:###comment###.title@@@&quot; style=&quot;width: 100%;&quot; type=&quot;text&quot;&gt;
+&lt;/p&gt;
+&lt;p&gt;Content:&lt;br&gt;
+&lt;textarea cols=&quot;80&quot; rows=&quot;5&quot; id=&quot;mycontent&quot; name=&quot;mycontent&quot; style=&quot;display: none;&quot;&gt;@@@include:###comment###.content@@@&lt;/textarea&gt;
+&lt;table width=&quot;100%&quot; border=&quot;1&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;&lt;script&gt;WebEditorToolbar('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;HardCoreWebEditor('/webadmin/webeditor/','@@@webeditor:language@@@','content',document.getElementById('mycontent').value,'',document.getElementsByTagName('link')[0].href,true,'manager_wcm','','','','',false,'800','400','','');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;script&gt;WebEditorDOMInspector('content');&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/p&gt;
+&lt;input name=&quot;unpublish&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;delete&quot; value=&quot;&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;Unpublish&quot; onclick=&quot;document.weblogform.unpublish.value='yes';document.weblogform.delete.value='';&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;Delete&quot; onclick=&quot;document.weblogform.unpublish.value='';document.weblogform.delete.value='yes';&quot; type=&quot;submit&quot;&gt;
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/form&gt;" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="Postings" />
+   <column name="contentgroup" value="Blog" />
+   <column name="users_type" value="*" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+  </row>
+ </table>
+ <table name="contentgroups">
+  <row>
+   <column name="id" value="1" />
+   <column name="contentgroup" value="Blog" />
+  </row>
+ </table>
+</database>
