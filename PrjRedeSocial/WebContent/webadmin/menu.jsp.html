@@ -1,0 +1,431 @@
+<%
+	String _id = myrequest.getParameter("id");
+	String _menu = myrequest.getParameter("menu");
+	String _root = myrequest.getParameter("root");
+	String _contentpackage = myrequest.getParameter("contentpackage");
+	String _contentclass = myrequest.getParameter("contentclass");
+	String _contentbundle = myrequest.getParameter("contentbundle");
+	String _contentgroup = myrequest.getParameter("contentgroup");
+	String _contenttype = myrequest.getParameter("contenttype");
+	String _version = myrequest.getParameter("version");
+	String _status = myrequest.getParameter("status");
+	String _stock = myrequest.getParameter("stock");
+	String _workflow = myrequest.getParameter("workflow");
+	String _hostingclass = myrequest.getParameter("hostingclass");
+	String _hostinggroup = myrequest.getParameter("hostinggroup");
+	String _hostingtype = myrequest.getParameter("hostingtype");
+	String _userclass = myrequest.getParameter("userclass");
+	String _usergroup = myrequest.getParameter("usergroup");
+	String _usertype = myrequest.getParameter("usertype");
+	String _database = myrequest.getParameter("database");
+	String _databaseexport = myrequest.getParameter("export");
+	String _databaseimport = myrequest.getParameter("import");
+	String _segment = myrequest.getParameter("segment");
+	String _usertest = myrequest.getParameter("usertest");
+	String _heatmap = myrequest.getParameter("heatmap");
+	if (! myrequest.parameterExists("menu")) _menu = mysession.get("menu");
+	if (! myrequest.parameterExists("contentpackage")) _contentpackage = mysession.get("admin_contentpackage");
+	if (! myrequest.parameterExists("contentclass")) _contentclass = mysession.get("admin_contentclass");
+	if (! myrequest.parameterExists("contentbundle")) _contentbundle = mysession.get("admin_contentbundle");
+	if (! myrequest.parameterExists("contentgroup")) _contentgroup = mysession.get("admin_contentgroup");
+	if (! myrequest.parameterExists("contenttype")) _contenttype = mysession.get("admin_contenttype");
+	if (! myrequest.parameterExists("version")) _version = mysession.get("admin_version");
+	if (! myrequest.parameterExists("status")) _status = mysession.get("admin_status");
+	if (! myrequest.parameterExists("stock")) _stock = mysession.get("admin_stock");
+	if (! myrequest.parameterExists("userclass")) _userclass = mysession.get("admin_userclass");
+	if (! myrequest.parameterExists("usergroup")) _usergroup = mysession.get("admin_usergroup");
+	if (! myrequest.parameterExists("usertype")) _usertype = mysession.get("admin_usertype");
+	if (! myrequest.parameterExists("hostingclass")) _hostingclass = mysession.get("admin_hostingclass");
+	if (! myrequest.parameterExists("hostinggroup")) _hostinggroup = mysession.get("admin_hostinggroup");
+	if (! myrequest.parameterExists("hostingtype")) _hostingtype = mysession.get("admin_hostingtype");
+	if (! myrequest.parameterExists("segment")) _segment = mysession.get("admin_segment");
+	if (! myrequest.parameterExists("usertest")) _usertest = mysession.get("admin_usertest");
+	if (! myrequest.parameterExists("heatmap")) _heatmap = mysession.get("admin_heatmap");
+	if (_contentpackage.equals("")) _contentpackage = " ";
+	if (_contentclass.equals("")) _contentclass = " ";
+	if (_contentbundle.equals("")) _contentbundle = " ";
+	if (_contentgroup.equals("")) _contentgroup = " ";
+	if (_contenttype.equals("")) _contenttype = " ";
+	if (_version.equals("")) _version = " ";
+	if (_status.equals("")) _status = " ";
+	if (_stock.equals("")) _stock = " ";
+	if (_userclass.equals("")) _userclass = " ";
+	if (_usergroup.equals("")) _usergroup = " ";
+	if (_usertype.equals("")) _usertype = " ";
+	if (_segment.equals("")) _segment = " ";
+	if (_usertest.equals("")) _usertest = " ";
+	if (_heatmap.equals("")) _heatmap = " ";
+
+	String selected_id = _id;
+	String selected_menu = _menu;
+	String selected_root = _root;
+	String selected_contentpackage = _contentpackage;
+	String selected_contentclass = _contentclass;
+	String selected_contentbundle = _contentbundle;
+	String selected_contentgroup = _contentgroup;
+	String selected_contenttype = _contenttype;
+	String selected_version = _version;
+	String selected_status = _status;
+	String selected_stock = _stock;
+	String selected_workflow = _workflow;
+	String selected_hostingclass = _hostingclass;
+	String selected_hostinggroup = _hostinggroup;
+	String selected_hostingtype = _hostingtype;
+	String selected_userclass = _userclass;
+	String selected_usergroup = _usergroup;
+	String selected_usertype = _usertype;
+	String selected_database = _database;
+	String selected_databaseexport = _databaseexport;
+	String selected_databaseimport = _databaseimport;
+	String selected_segment = _segment;
+	String selected_usertest = _usertest;
+	String selected_heatmap = _heatmap;
+
+	boolean single_menu_selection = false;
+	if (! adminuser.getMenuSelection().equals("")) {
+		single_menu_selection = adminuser.getMenuSelection().equals("single");
+	} else if (! myconfig.get(db, "use_menu_selection").equals("")) {
+		single_menu_selection = myconfig.get(db, "use_menu_selection").equals("single");
+	}
+	if (single_menu_selection) {
+		_contentpackage = " ";
+		_contentclass = " ";
+		_contentbundle = " ";
+		_contentgroup = " ";
+		_contenttype = " ";
+		_version = " ";
+		_status = " ";
+		_stock = " ";
+		_hostingclass = " ";
+		_hostinggroup = " ";
+		_hostingtype = " ";
+		_userclass = " ";
+		_usergroup = " ";
+		_usertype = " ";
+	}
+//	if (! _id.equals("")) {
+//		_contentpackage = " ";
+//		_contentclass = " ";
+//		_contentbundle = " ";
+//		_contentgroup = " ";
+//		_contenttype = " ";
+//		_status = " ";
+//		_stock = " ";
+//		_version = " ";
+//		_hostingclass = " ";
+//		_hostinggroup = " ";
+//		_hostingtype = " ";
+//		_userclass = " ";
+//		_usergroup = " ";
+//		_usertype = " ";
+//	}
+%>
+<% if (MenuContent.outputformat == MenuContent.jstree) { %>
+
+<script type="text/javascript">
+
+function getmenus() {
+	if ($("#homeMenu").length) initMenu('#homeMenu', '/<%= mytext.display("adminpath") %>/blank.txt', []);
+	if ($('#contentStructureMenu').length) initMenu('#contentStructureMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+
+	if ($('#contentMenu').length) initMenu('#contentMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&contentpackage=<%= URLEncoder.encode(selected_contentpackage, myconfig.get(db, "charset")) %>&contentclass=<%= URLEncoder.encode(selected_contentclass, myconfig.get(db, "charset")) %>&contentbundle=<%= URLEncoder.encode(selected_contentbundle, myconfig.get(db, "charset")) %>&contentgroup=<%= URLEncoder.encode(selected_contentgroup, myconfig.get(db, "charset")) %>&contenttype=<%= URLEncoder.encode(selected_contenttype, myconfig.get(db, "charset")) %>&status=<%= URLEncoder.encode(selected_status, myconfig.get(db, "charset")) %>&stock=<%= URLEncoder.encode(selected_stock, myconfig.get(db, "charset")) %>&version=<%= URLEncoder.encode(selected_version, myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+
+	if ($('#libraryMenu').length) initMenu('#libraryMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&contentpackage=<%= URLEncoder.encode(selected_contentpackage, myconfig.get(db, "charset")) %>&contentclass=<%= URLEncoder.encode(selected_contentclass, myconfig.get(db, "charset")) %>&contentbundle=<%= URLEncoder.encode(selected_contentbundle, myconfig.get(db, "charset")) %>&contentgroup=<%= URLEncoder.encode(selected_contentgroup, myconfig.get(db, "charset")) %>&contenttype=<%= URLEncoder.encode(selected_contenttype, myconfig.get(db, "charset")) %>&status=<%= URLEncoder.encode(selected_status, myconfig.get(db, "charset")) %>&stock=<%= URLEncoder.encode(selected_stock, myconfig.get(db, "charset")) %>&version=<%= URLEncoder.encode(selected_version, myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+	if ($('#ecommerceMenu').length) initMenu('#ecommerceMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.ecommerce.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&contentpackage=<%= URLEncoder.encode(selected_contentpackage, myconfig.get(db, "charset")) %>&contentclass=<%= URLEncoder.encode(selected_contentclass, myconfig.get(db, "charset")) %>&contentbundle=<%= URLEncoder.encode(selected_contentbundle, myconfig.get(db, "charset")) %>&contentgroup=<%= URLEncoder.encode(selected_contentgroup, myconfig.get(db, "charset")) %>&contenttype=<%= URLEncoder.encode(selected_contenttype, myconfig.get(db, "charset")) %>&status=<%= URLEncoder.encode(selected_status, myconfig.get(db, "charset")) %>&stock=<%= URLEncoder.encode(selected_stock, myconfig.get(db, "charset")) %>&version=<%= URLEncoder.encode(selected_version, myconfig.get(db, "charset")) %>&usergroup=<%= URLEncoder.encode(selected_usergroup, myconfig.get(db, "charset")) %>&usertype=<%= URLEncoder.encode(selected_usertype, myconfig.get(db, "charset")) %>&url='+document.location.pathname+'&<%= Math.random() %>&', []);
+	if ($('#databasesMenu').length) initMenu('#databasesMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.databases.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&contentpackage=<%= URLEncoder.encode(selected_contentpackage, myconfig.get(db, "charset")) %>&contentclass=<%= URLEncoder.encode(selected_contentclass, myconfig.get(db, "charset")) %>&contentbundle=<%= URLEncoder.encode(selected_contentbundle, myconfig.get(db, "charset")) %>&contentgroup=<%= URLEncoder.encode(selected_contentgroup, myconfig.get(db, "charset")) %>&contenttype=<%= URLEncoder.encode(selected_contenttype, myconfig.get(db, "charset")) %>&status=<%= URLEncoder.encode(selected_status, myconfig.get(db, "charset")) %>&stock=<%= URLEncoder.encode(selected_stock, myconfig.get(db, "charset")) %>&version=<%= URLEncoder.encode(selected_version, myconfig.get(db, "charset")) %>&database=<%= URLEncoder.encode(selected_database, myconfig.get(db, "charset")) %>&export=<%= URLEncoder.encode(selected_databaseexport, myconfig.get(db, "charset")) %>&import=<%= URLEncoder.encode(selected_databaseimport, myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+	if ($('#experienceMenu').length) initMenu('#experienceMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.experience.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&segment=<%= URLEncoder.encode(selected_segment, myconfig.get(db, "charset")) %>&usertest=<%= URLEncoder.encode(selected_usertest, myconfig.get(db, "charset")) %>&heatmap=<%= URLEncoder.encode(selected_heatmap, myconfig.get(db, "charset")) %>&url=<%= URLEncoder.encode(myrequest.getServletPath(), myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+	if ($('#userMenu').length) initMenu('#userMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.user.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&contentpackage=<%= URLEncoder.encode(selected_contentpackage, myconfig.get(db, "charset")) %>&userclass=<%= URLEncoder.encode(selected_userclass, myconfig.get(db, "charset")) %>&usergroup=<%= URLEncoder.encode(selected_usergroup, myconfig.get(db, "charset")) %>&usertype=<%= URLEncoder.encode(selected_usertype, myconfig.get(db, "charset")) %>&status=<%= URLEncoder.encode(selected_status, myconfig.get(db, "charset")) %>&stock=<%= URLEncoder.encode(selected_stock, myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+	if ($('#statisticsMenu').length) initMenu('#statisticsMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.statistics.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&contentpackage=<%= URLEncoder.encode(selected_contentpackage, myconfig.get(db, "charset")) %>&contentclass=<%= URLEncoder.encode(selected_contentclass, myconfig.get(db, "charset")) %>&contentgroup=<%= URLEncoder.encode(selected_contentgroup, myconfig.get(db, "charset")) %>&contenttype=<%= URLEncoder.encode(selected_contenttype, myconfig.get(db, "charset")) %>&userclass=<%= URLEncoder.encode(selected_userclass, myconfig.get(db, "charset")) %>&usergroup=<%= URLEncoder.encode(selected_usergroup, myconfig.get(db, "charset")) %>&usertype=<%= URLEncoder.encode(selected_usertype, myconfig.get(db, "charset")) %>&status=<%= URLEncoder.encode(selected_status, myconfig.get(db, "charset")) %>&stock=<%= URLEncoder.encode(selected_stock, myconfig.get(db, "charset")) %>&database=<%= URLEncoder.encode(selected_database, myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+	if ($('#configMenu').length) initMenu('#configMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.config.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&contentpackage=<%= URLEncoder.encode(selected_contentpackage, myconfig.get(db, "charset")) %>&workflow=<%= URLEncoder.encode(selected_workflow, myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+	if ($('#clientsMenu').length) initMenu('#clientsMenu', '/<%= mytext.display("adminpath") %>/menu.subtree.clients.jsp?mode=menu&menu=<%= URLEncoder.encode(selected_menu, myconfig.get(db, "charset")) %>&root=<%= URLEncoder.encode(selected_root, myconfig.get(db, "charset")) %>&contentpackage=<%= URLEncoder.encode(selected_contentpackage, myconfig.get(db, "charset")) %>&hostingclass=<%= URLEncoder.encode(selected_hostingclass, myconfig.get(db, "charset")) %>&hostinggroup=<%= URLEncoder.encode(selected_hostinggroup, myconfig.get(db, "charset")) %>&hostingtype=<%= URLEncoder.encode(selected_hostingtype, myconfig.get(db, "charset")) %>&status=<%= URLEncoder.encode(selected_status, myconfig.get(db, "charset")) %>&stock=<%= URLEncoder.encode(selected_stock, myconfig.get(db, "charset")) %>&<%= Math.random() %>&', []);
+}
+
+function initMenu(rootid, ajaxurl, selectedids) {
+	if (typeof($) != 'function') return;
+	if (! $(rootid)) return;
+
+	//	ajaxurl = window.location.href.replace(/[^\/]*$/, '') + ajaxurl;
+
+	$(rootid).bind("click.jstree", function (e) {
+		var targetnode = false;
+		if (e && e.target && e.target.nodeName) targetnode = e.target;
+		var parentnode = false;
+		if (e && e.target && e.target.parentNode && e.target.parentNode.nodeName) parentnode = e.target.parentNode;
+		if (((targetnode.nodeName == "NOBR")) && (targetnode.parentNode)) targetnode = targetnode.parentNode;
+		if (((parentnode.nodeName == "A") || (parentnode.nodeName == "NOBR")) && (parentnode.parentNode)) parentnode = parentnode.parentNode;
+		if (targetnode && (targetnode.nodeName == "A") && parentnode && parentnode.id) {
+			$(rootid).jstree('open_node', "#" + parentnode.id.replace(/\//, "\\/"));
+			var menuhref = '';
+			if (parentnode.id.match(/^content_([0-9]+)$/)) {
+				menuhref = '/<%= mytext.display("adminpath") %>/content/admin.jsp?id=' + parentnode.id.replace(/^content_([0-9]+)$/, "$1") + "&" + Math.random();
+			} else {
+				menuhref = targetnode.href;
+			}
+			if (menuhref.match(/\/#$/)) menuhref = '';
+			if (menuhref) document.location.href = menuhref;
+		} else if (targetnode && (targetnode.nodeName == "INS") && parentnode && parentnode.id) {
+			var mycookiename = rootid.substring(1);
+			var mycookievalue = $.cookie(mycookiename) ? "" + $.cookie(mycookiename) : "";
+			if (parentnode.className.indexOf('jstree-open')>=0) {
+				// open menu node
+				if (mycookievalue.indexOf(" "+parentnode.id+" ")<0) {
+					mycookievalue += " "+parentnode.id+" ";
+				}
+			} else if (parentnode.className.indexOf('jstree-closed')>=0) {
+				// close menu node
+				mycookievalue = mycookievalue.replace(" "+parentnode.id+" ", "");
+			}
+			$.cookie(mycookiename, mycookievalue, { expires: 7, path: '/' } );
+		}
+	});
+
+	var myjstree = $(rootid).jstree({
+		core : {
+//			initially_open : [ initially_open_ids ]
+		},
+		themes : {
+			dots : true,
+			icons : true,
+			theme : 'wcm'
+		},
+		html_data : {
+			data : $(rootid).html(),
+			ajax : {
+				url : ajaxurl,
+				data : function (n) { 
+					return { id : n.attr ? n.attr("id") : 0 };
+				}
+			}
+		},
+		ui : {
+//			select_multiple_modifier : 'on',
+			selected_parent_close : false,
+			initially_select : selectedids
+		},
+		cookies : {
+			auto_save : true,
+			save_opened : rootid.substring(1)+"_open",
+			save_selected : rootid.substring(1)+"_select",
+			cookie_options : {
+				expires : 7,
+				domain : '',
+				path : '/',
+				secure : false
+			}
+		},
+		"types" : {
+			"max_depth" : -2,
+			"max_children" : -2,
+			"valid_children" : [ "root", "rootroot", "rootleaf" ],
+			"types" : {
+				"default" : {
+					"valid_children" : "none",
+					"select_node" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/page.gif"
+					}
+				},
+				"page" : {
+					"valid_children" : "none",
+					"select_node" : false,
+					"open_node" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/page.gif"
+					}
+				},
+				"pagefolder" : {
+					"valid_children" : [ "default", "pagefolder", "folder" ],
+					"select_node" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/imgfolder.gif"
+					}
+				},
+				"folder" : {
+					"valid_children" : [ "default", "folder", "pagefolder", "page" ],
+					"select_node" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/folder.gif"
+					}
+				},
+				"root" : {
+					"valid_children" : [ "default", "page", "pagefolder", "folder" ],
+					"start_drag" : false,
+					"move_node" : false,
+					"delete_node" : false,
+					"remove" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/base.gif"
+					}
+				},
+				"rootroot" : {
+					"valid_children" : [ "root" ],
+					"start_drag" : false,
+					"move_node" : false,
+					"delete_node" : false,
+					"remove" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/base.gif"
+					}
+				},
+				"rootleaf" : {
+					"valid_children" : "none",
+					"select_node" : false,
+					"open_node" : false,
+					"icon" : {
+						"image" : "/<%= mytext.display("adminpath") %>/dtree/base.gif"
+					}
+				}
+			}
+		},
+		plugins : [ 'themes', 'html_data', 'ui', 'cookies', 'callback', 'types' ]
+	});
+
+	var DEBUG = false;
+	var mycookiename = rootid.substring(1);
+	var mycookievalue = $.cookie(mycookiename) ? "" + $.cookie(mycookiename) : "";
+	var mycookieids = mycookievalue.split(' ');
+	if (mycookievalue == "") {
+		mycookievalue = $.cookie(mycookiename+"_open") ? "" + $.cookie(mycookiename+"_open") : "";
+		mycookieids = mycookievalue.split(',');
+	}
+	if (DEBUG) console.debug("INITMENU:INIT:"+rootid+":::"+mycookiename+":::"+mycookievalue+":::"+mycookieids);
+	var mycookiefunction = function(_mycookieids, _mycookiefunction, _mycaller) {
+		var mycookieids = _mycookieids;
+		var mycookiefunction = _mycookiefunction;
+		if (DEBUG) console.debug("INITMENU:CALLED:"+rootid+":::"+mycookieids+":::"+typeof(mycookiefunction)+":::"+_mycaller);
+		for (var i=0; i<mycookieids.length; i++) {
+			var mycookieid = mycookieids[i].replace(/^#/, "");
+			if (mycookieid != "") if (DEBUG) console.debug("INITMENU:FIND:"+rootid+":::"+mycookieid+":::"+ ($("#"+mycookieid).size()) +":::"+ ($("#"+mycookieid).hasClass("jstree-closed")) +":::"+mycookieids+":::"+typeof(mycookiefunction));
+			if ((mycookieid != "") && $("#"+mycookieid).size()) {
+				mycookieids[i] = "";
+				if ($("#"+mycookieid).hasClass("jstree-closed")) {
+					if (DEBUG) console.debug("INITMENU:OPEN:"+rootid+":::"+mycookieid+":::"+mycookieids+":::"+typeof(mycookiefunction));
+					try {
+						$(rootid).jstree('open_node', "#"+mycookieid,     { call: function(){if (DEBUG) console.debug("INITMENU:CALLBACK1:");mycookiefunction(mycookieids, mycookiefunction, "FROMCALLBACK1:"+mycookieid)} }     );
+					} catch (e) {
+					}
+				}
+			}
+		}
+		if (document.location.href.search("/content/") && document.location.href.search(/[^a-zA-Z0-9]id=([0-9]+)[^0-9]/)) {
+			var myid = document.location.href.replace(/^.*[^a-zA-Z0-9]id=([0-9]+)[^0-9].*$/, "$1");
+			try {
+				if ($("#content_"+myid+" a:first").size()) {
+					$("#content_"+myid+" a:first").addClass("jstree-wcm-menu-selected");
+				}
+			} catch (e) {
+
+			}
+		}
+	};
+//	mycookiefunction(mycookieids,mycookiefunction,"FROMINIT");
+
+	var initially_open_ids = rootid ? $(rootid).find(".initopen").map(function() { return "" + this.id }).toArray() : [ '0' ];
+	var initially_closed_ids = rootid ? $(rootid).find(".initclosed").map(function() { return "" + this.id }).toArray() : [ ];
+	var open_ids = rootid ? $(rootid).find(".jstree-open").map(function() { return "" + this.id }).toArray() : [ ];
+	if ((! open_ids.length) || (rootid == "configMenu")) {
+		for (var i=0; i<initially_open_ids.length; i++) {
+			try {
+				if ($("#"+initially_open_ids[i]).find("ul").size()) {
+					if (DEBUG) console.debug("INITMENU:INITOPEN:"+i+":::"+initially_open_ids[i]);
+					$(rootid).jstree('open_node', "#"+initially_open_ids[i], { call: function() { if (DEBUG) console.debug("INITMENU:CALLBACK2:"); mycookiefunction(mycookieids, mycookiefunction,"FROMCALLBACK2"); } } );
+				}
+			} catch (e) {
+			}
+		}
+		for (var i=0; i<initially_closed_ids.length; i++) {
+			try {
+				if ($("#"+initially_closed_ids[i]).find("ul").size()) {
+					if (DEBUG) console.debug("INITMENU:INITCLOSE:"+i+":::"+initially_open_ids[i]);
+					$(rootid).jstree('close_node', "#"+initially_closed_ids[i]);
+				}
+			} catch (e) {
+			}
+		}
+	}
+
+	mycookiefunction(mycookieids,mycookiefunction,"FROMINIT2");
+
+	var mycookietimerfunction = function(_mycookieids, _mycookiefunction) {
+		var mycookieids = _mycookieids;
+		var mycookiefunction = _mycookiefunction;
+		if (DEBUG) console.debug("INITMENU:TIMERFUNCTION:");
+		mycookiefunction(mycookieids, mycookiefunction,"FROMTIMERFUNCTION");
+		if ((""+mycookieids).search(/^,*$/)<0) {
+			setTimeout( function(){mycookietimerfunction(mycookieids, mycookiefunction)}, 1000);
+		}
+	}
+	setTimeout( function(){mycookietimerfunction(mycookieids, mycookiefunction)}, 1000);
+
+	$(rootid).css("display", "block");
+
+	return myjstree;
+}
+
+</script>
+
+<% } %>
+
+      <% if (((mysession.get("menu").equals("")) || (mysession.get("menu").equals("content")) || (mysession.get("menu").equals("library")) || (mysession.get("menu").equals("ecommerce"))) && (! myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/login.jsp")) && (! myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/password/")) && (! myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/orders/"))) { %>
+      <p>
+        <form id="searchform" name="searchform" action="/<%= mytext.display("adminpath") %>/content/search.jsp" method="get">
+        <input type="hidden" name="section" value="<% if (! mysession.get("menu").equals("")) { %><%= mysession.get("menu") %><% } else { %> <% } %>">
+        <div class="dtree"><img src="/<%= mytext.display("adminpath") %>/dtree/base.gif"><%= mytext.display("search") %><br>
+        <img src="/<%= mytext.display("adminpath") %>/dtree/joinbottom.gif"><input style="font-size: 10px; margin: 0px;" type="text" size="10" name="search" value="<%= html.encodeHtmlEntities(mysession.get("search")).replaceAll("&shy;", "&amp;shy;") %>">
+        <input style="vertical-align: bottom;" type="image" src="/<%= mytext.display("adminpath") %>/search.gif" onclick="this.form.submit();">
+        </div>
+        <div class="dtree"><img src="/<%= mytext.display("adminpath") %>/dtree/empty.gif"><a href="javascript:document.searchform.action='/<%= mytext.display("adminpath") %>/content/searchadvanced.jsp';document.searchform.submit();" style="font-size: smaller;"><%= mytext.display("searchadvanced") %></a></div>
+        <div class="dtree"><img src="/<%= mytext.display("adminpath") %>/dtree/empty.gif"><a href="javascript:document.searchform.action='/<%= mytext.display("adminpath") %>/content/searchreplace.jsp';document.searchform.submit();" style="font-size: smaller;"><%= mytext.display("searchreplace") %></a></div>
+	</form>
+      </p>
+      <% } %>
+      <% if (mysession.get("menu").equals("user")) { %>
+      <p>
+        <form action="/<%= mytext.display("adminpath") %>/users/search.jsp" method="get">
+        <input type="hidden" name="section" value="<%= mysession.get("menu") %>">
+        <div class="dtree"><img src="/<%= mytext.display("adminpath") %>/dtree/base.gif"><%= mytext.display("search") %><br>
+        <img src="/<%= mytext.display("adminpath") %>/dtree/joinbottom.gif"><input style="font-size: 10px; margin: 0px;" type="text" size="10" name="search" value="<%= html.encodeHtmlEntities(mysession.get("search")).replaceAll("&shy;", "&amp;shy;") %>">
+        <input style="vertical-align: bottom;" type="image" src="/<%= mytext.display("adminpath") %>/search.gif" onclick="this.form.submit();">
+        </div>
+        </form>
+      </p>
+      <% } %>
+      <% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/orders/")) { %>
+      <p>
+        <form id="searchform" name="searchform" action="/<%= mytext.display("adminpath") %>/orders/search.jsp" method="get">
+        <input type="hidden" name="section" value="<%= mysession.get("menu") %>">
+        <div class="dtree"><img src="/<%= mytext.display("adminpath") %>/dtree/base.gif"><%= mytext.display("search") %><br>
+        <img src="/<%= mytext.display("adminpath") %>/dtree/joinbottom.gif"><input style="font-size: 10px; margin: 0px;" type="text" size="10" name="search" value="<%= html.encodeHtmlEntities(mysession.get("search")).replaceAll("&shy;", "&amp;shy;") %>">
+        <input style="vertical-align: bottom;" type="image" src="/<%= mytext.display("adminpath") %>/search.gif" onclick="this.form.submit();">
+        </div>
+<!--
+        <div class="dtree"><img src="/<%= mytext.display("adminpath") %>/dtree/empty.gif"><a href="javascript:document.searchform.action='/<%= mytext.display("adminpath") %>/orders/searchadvanced.jsp';document.searchform.submit();" style="font-size: smaller;"><%= mytext.display("searchadvanced") %></a></div>
+-->
+	</form>
+      </p>
+      <% } %>
+      <% if ((mysession.get("menu").equals("databases")) && (! myrequest.getParameter("database").equals(""))) { %>
+      <p>
+        <form action="/<%= mytext.display("adminpath") %>/data/search.jsp" method="get">
+        <input type="hidden" name="section" value="<%= mysession.get("menu") %>">
+        <input type="hidden" name="database" value="<%= myrequest.getParameter("database") %>">
+        <div class="dtree"><img src="/<%= mytext.display("adminpath") %>/dtree/base.gif"><%= mytext.display("search") %><br>
+        <img src="/<%= mytext.display("adminpath") %>/dtree/joinbottom.gif"><input style="font-size: 10px; margin: 0px;" type="text" size="10" name="search" value="<%= html.encodeHtmlEntities(mysession.get("search")).replaceAll("&shy;", "&amp;shy;") %>">
+        <input style="vertical-align: bottom;" type="image" src="/<%= mytext.display("adminpath") %>/search.gif" onclick="this.form.submit();">
+        </div>
+        </form>
+      </p>
+      <% } %>
+<% if ((mysession.get("menu").equals("")) && (! myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/login.jsp")) && (! myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/password/"))) { %>
+	<br>
+	<div id="homeMenu" style="display: none;">
+		<ul><li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_home"><a href="#"><%= mytext.display("menu.home") %></a></li>
+	<% for (int i=0; i<module.size(); i++) { %>
+		<% if ((moduleHomeMenuTitle.size()>i) && (! moduleHomeMenuTitle.get(i).equals(""))) { %>
+			<li rel="page" class="jstree-leaf" id="menuitem_content_module<%= i %>"><a href="<%= moduleHomeMenuLink.get(i) %>"><%= moduleHomeMenuTitle.get(i) %></a></li>
+		<% } %>
+	<% } %>
+		</ul>
+	</div>
+	<br>
+<% } %>

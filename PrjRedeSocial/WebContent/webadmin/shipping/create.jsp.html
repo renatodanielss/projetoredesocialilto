@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("shipping.create.title") %></title>
+<script type="text/javascript">
+
+$(function(){
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	$('#tabs').find('[rel=Shipping_Rate]').click();
+});
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contentid = '';
+		var contenttitle = '';
+		var contenthref = '';
+		if (inputnode.type != "select-multiple") {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + encodeURIComponent(inputid) + '&section=' + encodeURIComponent(section) + '&category=' + encodeURIComponent(category) + '&title=' + encodeURIComponent(title) + '&id=' + encodeURIComponent(contentid) + '&link=' + encodeURIComponent(contenttitle) + '&href=' + encodeURIComponent(contenthref), 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		if (inputnode.type == "select-multiple") {
+			var newoption = new Option();
+			newoption.text = contenttitle;
+			newoption.value = contentid;
+			newoption.selected = true;
+			inputnode.options[inputnode.options.length] = newoption;
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+		}
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("shipping.create.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="create_post.jsp" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Shipping_Rate" rel="Shipping_Rate"><%= mytext.display("shipping.rate.tab") %></a></li>
+                <li><a href="#Shipping" rel="Shipping"><%= mytext.display("shipping.shipping.tab") %></a></li>
+                <li><a href="#Applies_To_Orders" rel="Applies_To_Orders"><%= mytext.display("shipping.orders.tab") %></a></li>
+                <li><a href="#Applies_To_Products" rel="Applies_To_Products"><%= mytext.display("shipping.products.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Shipping_Rate" class="Shipping_Rate st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("shipping.rate.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("shipping.rate.title") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="60" maxlength="250" name="title" value="<%= shipping.getTitle() %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="4" align="left"><%= mytext.display("shipping.rate.description") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4"> 
+              <input type="text" size="60" maxlength="250" name="ship_description" value="<%= shipping.getShipDescription() %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Shipping" class="Shipping st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="5" align="left"><%= mytext.display("shipping.shipping.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="5" align="left"></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("shipping.shipping.currency") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("shipping.shipping.perorder") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("shipping.shipping.peritem") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("shipping.shipping.percentage") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("shipping.shipping.total") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <select name="ship_currency">
+                <option value="<%= shipping.getShipCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="" <% if (shipping.getShipCurrency().equals("")) { %>selected<% } %>><%= mytext.display("default") %> (<%= shipping.currency_symbol(db, myconfig.get(db, "default_currency")) %>) 
+		<%= shipping.currency_options(db, shipping.getShipCurrency()) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="10" maxlength="50" name="ship_order" value="<%= shipping.getShipOrder() %>">
+            </td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="10" maxlength="50" name="ship_item" value="<%= shipping.getShipItem() %>">
+            </td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="10" maxlength="50" name="ship_percent" value="<%= shipping.getShipPercent() %>">
+            </td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="10" maxlength="50" name="ship_total" value="<%= shipping.getShipTotal() %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Applies_To_Orders" class="Applies_To_Orders st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("shipping.orders.heading") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.country") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.state") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="30" maxlength="50" name="country" value="<%= shipping.getCountry() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="30" maxlength="50" name="state" value="<%= shipping.getState() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.quantityfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.quantityto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="quantity_from" value="<%= shipping.getQuantityFrom() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="quantity_to" value="<%= shipping.getQuantityTo() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("shipping.orders.currency") %></th>
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("shipping.orders.totalfrom") %></th>
+            <th class="WCMinnerContentInputName" width="33%" colspan="2" align="left"><%= mytext.display("shipping.orders.totalto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <select name="total_currency">
+                <option value="<%= shipping.getTotalCurrency() %>"><%= mytext.display("pleaseselect") %> 
+		<option value="" <% if (shipping.getTotalCurrency().equals("")) { %>selected<% } %>><%= mytext.display("default") %> (<%= shipping.currency_symbol(db, myconfig.get(db, "default_currency")) %>) 
+		<%= shipping.currency_options(db, shipping.getTotalCurrency()) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <input type="text" size="10" maxlength="50" name="total_from" value="<%= shipping.getTotalFrom() %>">
+            </td>
+            <td class="WCMinnerContentInputValue" width="33%" colspan="2">
+              <input type="text" size="10" maxlength="50" name="total_to" value="<%= shipping.getTotalTo() %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.weightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.weightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_weight_from" value="<%= shipping.getTotalWeightFrom() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_weight_to" value="<%= shipping.getTotalWeightTo() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.volumefrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.volumeto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_volume_from" value="<%= shipping.getTotalVolumeFrom() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="total_volume_to" value="<%= shipping.getTotalVolumeTo() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Applies_To_Products" class="Applies_To_Products st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("shipping.products.heading") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("shipping.products.product") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <nobr>
+                <select id="product_id" name="product_id" style="width: 400px;">
+                  <option value="<%= shipping.getProductId() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + shipping.getProductId()) %><% if (! shipping.getProductId().equals("")) { %> [<%= shipping.getProductId() %>]<% } %></option>
+                  <option value=""<% if (shipping.getProductId().equals("")) { %> selected<% } %>><%= mytext.display("any") %></option>
+                </select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('product_id', 'Products', '', 'Products', 'product');">
+              </nobr>
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "professional")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.products.group") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.products.type") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <select name="product_group"><option value=""><%= mytext.display("any") %><%= shipping.productgroup_options(db, shipping.getProductGroup()) %></select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3">
+              <select name="product_type"><option value=""><%= mytext.display("any") %><%= shipping.producttype_options(db, shipping.getProductType()) %></select>
+            </td>
+          </tr>
+<% } else { %>
+          <input type="hidden" name="product_group" value="">
+          <input type="hidden" name="product_type" value="">
+<% } %>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.weightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.weightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_weight_from" value="<%= shipping.getProductWeightFrom() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_weight_to" value="<%= shipping.getProductWeightTo() %>"> <%= mytext.display("content.productdetails.weight.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.volumefrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.volumeto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_volume_from" value="<%= shipping.getProductVolumeFrom() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_volume_to" value="<%= shipping.getProductVolumeTo() %>"> <%= mytext.display("content.productdetails.volume.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.widthfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.widthto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_width_from" value="<%= shipping.getProductWidthFrom() %>"> <%= mytext.display("content.productdetails.width.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_width_to" value="<%= shipping.getProductWidthTo() %>"> <%= mytext.display("content.productdetails.width.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.heightfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.heightto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_height_from" value="<%= shipping.getProductHeightFrom() %>"> <%= mytext.display("content.productdetails.height.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_height_to" value="<%= shipping.getProductHeightTo() %>"> <%= mytext.display("content.productdetails.height.unit") %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.depthfrom") %></th>
+            <th class="WCMinnerContentInputName" width="50%" colspan="3" align="left"><%= mytext.display("shipping.orders.depthto") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_depth_from" value="<%= shipping.getProductDepthFrom() %>"> <%= mytext.display("content.productdetails.depth.unit") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="3"> 
+              <input type="text" size="10" maxlength="50" name="product_depth_to" value="<%= shipping.getProductDepthTo() %>"> <%= mytext.display("content.productdetails.depth.unit") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

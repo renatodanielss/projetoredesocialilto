@@ -1,0 +1,54 @@
+<html>
+<head>
+<title><%= mytext.display("content.compare.title") %></title>
+<script type="text/javascript" src="../diff_match_patch.js"></script>
+<script type="text/javascript">
+
+function compare(text1, text2, outputcontainer) {
+	var dmp = new diff_match_patch();
+	dmp.Diff_Timeout = 0; // unlimited number of seconds to optimize
+	var diffs = dmp.diff_main(text1, text2);
+	dmp.diff_cleanupSemantic(diffs);
+	var htmloutput = dmp.diff_prettyHtml(diffs);
+	outputcontainer.innerHTML = htmloutput;
+}
+
+function doCompare() {
+	compare(document.getElementById('title1').value, document.getElementById('title2').value, document.getElementById('titleoutput'));
+	compare(document.getElementById('content1').value, document.getElementById('content2').value, document.getElementById('contentoutput'));
+	compare(document.getElementById('summary1').value, document.getElementById('summary2').value, document.getElementById('summaryoutput'));
+}
+
+</script>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<link rel="stylesheet" type="text/css" href="/<%= mytext.display("adminpath") %>/webadmin.css" /> 
+<link rel="StyleSheet" type="text/css" href="/<%= mytext.display("adminpath") %>/dtree.css" />
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/dtree.js"></script>
+</head>
+<body bgcolor="#FFFFFF" text="#000000" link="#000000" vlink="#000000" alink="#000000" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10" onload="doCompare();">
+
+<table>
+<tbody>
+<tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.compare.title") %></th></tr>
+<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.title") %></th></tr>
+<tr><td class="WCMinnerContentInputValue"><span id="titleoutput"></span>&nbsp;</td></tr>
+<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.content") %></th></tr>
+<tr><td class="WCMinnerContentInputValue"><span id="contentoutput"></span>&nbsp;</td></tr>
+<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.summary") %></th></tr>
+<tr><td class="WCMinnerContentInputValue"><span id="summaryoutput"></span>&nbsp;</td></tr>
+</tbody>
+</table>
+
+<div style="display: none;">
+<textarea id="title1"><%= html.encode(mypage.getTitle()) %></textarea>
+<textarea id="title2"><%= html.encode(filepost.getParameter("title")) %></textarea>
+<textarea id="content1"><%= html.encode(mypage.getContent()) %></textarea>
+<textarea id="content2"><%= html.encode(filepost.getParameter("content")) %></textarea>
+<textarea id="summary1"><%= html.encode(mypage.getSummary()) %></textarea>
+<textarea id="summary2"><%= html.encode(filepost.getParameter("summary")) %></textarea>
+</div>
+
+</body>
+</html>

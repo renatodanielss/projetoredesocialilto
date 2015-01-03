@@ -1,0 +1,39 @@
+      <form id="restorebackup" action="database.jsp?<%= Math.random() %>" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="drop" value="yes">
+        <input type="hidden" name="create" value="yes">
+        <input type="hidden" name="delete" value="yes">
+        <input type="hidden" name="insert" value="yes">
+        <input type="hidden" name="importfile" value="">
+<% if (! wizard.equals("")) { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+<% } else { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/config/database.jsp">
+<% } %>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("config.database.restore.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2">
+              <%= mytext.display("config.database.restore.intro") %>
+            </td>
+          </tr>
+          <tr id="backups_importparams" class="WCMimportparams">
+            <td class="WCMinnerContentInputValue">
+            </td>
+          </tr>
+          <tr id="backups_importoptions" class="WCMimportoptions">
+            <td class="WCMinnerContentInputValue">
+                <%= DB.import_file_radio_buttons(mytext, "backups",3,DOCUMENT_ROOT, servername, db, myconfig) %>
+            </td>
+          </tr>
+          <tr id="backups_importupload" class="WCMimportupload">
+            <td class="WCMinnerContentInputValue" align="left" valign="top" colspan="2">
+              <%= mytext.display("config.database.restore.upload") %><br>
+              <input type="file" size="60" name="file" onchange="if (this.form.submitbutton) this.form.submitbutton.disabled = false;">
+              <input disabled name="submitbutton" type="submit" value="<%= mytext.display("config.database.restore.submit") %>" onclick="enableAll(this.form);">
+            </td>
+          </tr>
+        </table>
+        <br>
+      </form>

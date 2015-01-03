@@ -1,0 +1,128 @@
+	<% if (mypage.getContentClass().equals("product")) { %>
+
+<div id="Product Delivery" class="Product_Delivery st_view"><div class="st_view_inner">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.productdelivery.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("content.productdelivery.intro") %></td></tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<input type="radio" name="product_delivery" value="new"<% if (mypage.getProductDelivery().equals("new")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.new") %>
+				<input type="radio" name="product_delivery" value="renew"<% if (mypage.getProductDelivery().equals("renew")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.renew") %>
+				<input type="radio" name="product_delivery" value="addon"<% if (mypage.getProductDelivery().equals("addon")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.addon") %>
+			</td>
+		</tr>
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.email") %></th></tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<nobr>
+					<select id="product_email" name="product_email" style="width: 400px;">
+						<option value="<%= mypage.getProductEmail() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getProductEmail()) %></option> &nbsp;
+						<option value="" <% if (mypage.getProductEmail().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+					<input type="button" id="select_product_email" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('product_email', 'Pages', '', 'Pages', 'page');">
+				</nobr>
+			</td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getProductEmail()) %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.page") %></th></tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<nobr>
+					<select id="product_page" name="product_page" style="width: 400px;">
+						<option value="<%= mypage.getProductPage() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getProductPage()) %></option> &nbsp;
+						<option value="" <% if (mypage.getProductPage().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+					<input type="button" id="select_product_page" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('product_page', 'Pages', '', 'Pages', 'page');">
+				</nobr>
+			</td>
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getProductPage()) %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+
+		<% if (License.valid(db, myconfig, "professional")) { %>
+			<% if (update) { %>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.program") %></th></tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<select id="product_program" name="product_program" style="width: 400px;">
+					<option value="<%= mypage.getProductProgram() %>"><%= mypage.getProductProgram() %></option> &nbsp;
+					<option value="" <% if (mypage.getProductProgram().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					<%= mypage.productdelivery_select_options(DOCUMENT_ROOT, mypage.getProductProgram()) %>
+				</select>
+			</td>
+		</tr>
+
+			<% } else { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.program") %></th></tr>
+			<tr><td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.getProductProgram() %> &nbsp;</td></tr>
+
+			<% } %>
+		<% } %>
+		<% if (myconfig.get(db,"use_userdatabase").equals("yes")) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.user") %></th></tr>
+
+			<% if (update) { %>
+
+			<tr>
+				<td class="WCMinnerContentInputValue" align="left" colspan="2">
+					<select id="product_user" name="product_user" style="width: 400px;">
+						<option value="<%= mypage.getProductUser() %>"><%= mypage.getProductUser() %></option> &nbsp;
+						<option value="" <% if (mypage.getProductUser().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+						<%= mypage.User_template_select_options(db, mypage.getProductUser()) %>
+					</select>
+				</td>
+			</tr>
+
+			<% } else { %>
+
+			<tr><td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.getProductUser() %> &nbsp;</td></tr>
+
+			<% } %>
+		<% } %>
+		<% if (License.valid(db, myconfig, "hosting")) { %>
+
+			<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.hosting") %></th></tr>
+
+			<% if (update) { %>
+
+			<tr>
+				<td class="WCMinnerContentInputValue" align="left" colspan="2">
+					<select id="product_hosting" name="product_hosting" style="width: 400px;">
+						<option value="<%= mypage.getProductHosting() %>"><%= mypage.getProductHosting() %></option> &nbsp;
+						<option value="" <% if (mypage.getProductHosting().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+						<%= mypage.Hosting_template_select_options(db, mypage.getProductHosting()) %>
+					</select>
+				</td>
+			</tr>
+
+			<% } else { %>
+
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="2"><%= mypage.getProductHosting() %> &nbsp;</td></tr>
+
+			<% } %>
+		<% } %>
+
+        </table>
+        <br>
+</div></div>
+
+	<% } %>

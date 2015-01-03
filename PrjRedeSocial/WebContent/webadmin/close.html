@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>Close</title>
+<script type="text/javascript">
+
+function closewindow() {
+	var mywindow = null;
+	if (window && window.opener && window.opener.document) {
+		mywindow = window.opener;
+	} else if (parent && parent.document) {
+		mywindow = parent;
+	}
+	if (parent && parent.savewindow && parent.savewindow.close) {
+		parent.savewindow.close();
+	} else if (typeof(mywindow.webeditor_window_close) != "undefined") {
+        	mywindow.webeditor_window_close(window);
+	} else {
+		window.close();
+	}
+}
+
+</script>
+</head>
+<body onload="closewindow()">
+</body>
+</html>

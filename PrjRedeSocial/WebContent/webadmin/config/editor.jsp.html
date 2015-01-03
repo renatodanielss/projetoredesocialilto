@@ -1,0 +1,541 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.editor.title") %></title>
+<script type="text/javascript">
+
+$(function(){
+	if ((navigator.userAgent.indexOf("MSIE")>=0) || (navigator.userAgent.indexOf("Trident")>=0)) {
+		// MSIE may position tabs content incorrectly if called immediately
+		setTimeout(function(){
+			mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+			$('#tabs').find('[rel=Content_Editor]').click();
+		}, 1000);
+	} else {
+		mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+		$('#tabs').find('[rel=Content_Editor]').click();
+	}
+});
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.editor.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="editor.jsp" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Content_Editor" rel="Content_Editor"><%= mytext.display("config.editor.contenteditor.tab") %></a></li>
+                <li><a href="#Asbru_Web_Editor" rel="Asbru_Web_Editor"><%= mytext.display("config.editor.hardcore.tab") %></a></li>
+                <li><a href="#File_Upload" rel="File_Upload"><%= mytext.display("config.editor.fileupload.tab") %></a></li>
+                <li><a href="#Index_Pages" rel="Index_Pages"><%= mytext.display("config.editor.index.tab") %></a></li>
+                <li><a href="#Browse_Edit" rel="Browse_Edit"><%= mytext.display("config.editor.browseedit.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Content_Editor" class="Content_Editor st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.contenteditor.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" name="content_editor" value="HardCore" <% if (myconfig.get(db, "content_editor").equals("HardCore")) { %>checked<% } %> >
+              <%= mytext.display("config.editor.contenteditor.hardcore") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" name="content_editor" value="HardCore1" <% if (myconfig.get(db, "content_editor").equals("HardCore1")) { %>checked<% } %> >
+              <%= mytext.display("config.editor.contenteditor.hardcore1") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" name="content_editor" value="HardCore2" <% if (myconfig.get(db, "content_editor").equals("HardCore2")) { %>checked<% } %> >
+              <%= mytext.display("config.editor.contenteditor.hardcore2") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" name="content_editor" value="textarea" <% if (myconfig.get(db, "content_editor").equals("textarea")) { %>checked<% } %> >
+              <%= mytext.display("config.editor.contenteditor.textarea") %></td>
+          </tr>
+<%
+	java.io.File dir = new java.io.File(DOCUMENT_ROOT + "/" + mytext.display("adminpath") + "/webeditors/");
+	if (dir.exists()) {
+		String[] items = dir.list();
+		for (int i=0; i<items.length; i++) {
+			java.io.File item = new java.io.File(DOCUMENT_ROOT + "/" + mytext.display("adminpath") + "/webeditors/" + items[i] + "/webeditor.jsp");
+			if ((items[i].equals(".")) || (items[i].equals("..")) || (items[i].equals("HardCore")) || (items[i].equals("HardCore1")) || (items[i].equals("HardCore2")) || (items[i].equals("textarea")) || (items[i].equals("WebEditorAPI"))) {
+				// ignore
+			} else if (item.isFile()) {
+				String webeditor = "" + items[i];
+%>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" name="content_editor" value="<%= webeditor %>" <% if (myconfig.get(db, "content_editor").equals(webeditor)) { %>checked<% } %> >
+              <%= webeditor %></td>
+          </tr>
+<%
+			}
+		}
+	}
+%>
+        </table>
+        <br>
+</div></div>
+<div id="Asbru_Web_Editor" class="Asbru_Web_Editor st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.imageupload") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="2">
+              <input type="radio" name="hardcore_upload" value="yes" <% if (myconfig.get(db, "hardcore_upload").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.editor.hardcore.imageupload.enable") %></td>
+            <td class="WCMinnerContentInputValue" width="50%" colspan="4">
+              <input type="radio" name="hardcore_upload" value="" <% if (myconfig.get(db, "hardcore_upload").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.editor.hardcore.imageupload.disable") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.format") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="radio" name="hardcore_format" value=""<% if (myconfig.get(db, "hardcore_format").equals("")) { %> checked<% } %>>
+              <%= mytext.display("config.editor.hardcore.format.default") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="radio" name="hardcore_format" value="html"<% if (myconfig.get(db, "hardcore_format").equals("html")) { %> checked<% } %>>
+              <%= mytext.display("config.editor.hardcore.format.html") %>
+              &nbsp; <input type="radio" name="hardcore_format" value="html4"<% if (myconfig.get(db, "hardcore_format").equals("html4")) { %> checked<% } %>>
+              <%= mytext.display("config.editor.hardcore.format.html4") %>
+              &nbsp; <input type="radio" name="hardcore_format" value="html5"<% if (myconfig.get(db, "hardcore_format").equals("html5")) { %> checked<% } %>>
+              <%= mytext.display("config.editor.hardcore.format.html5") %>
+              &nbsp; <input type="radio" name="hardcore_format" value="xhtml"<% if (myconfig.get(db, "hardcore_format").equals("xhtml")) { %> checked<% } %>>
+              <%= mytext.display("config.editor.hardcore.format.xhtml") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.size") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.size.width") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <input type="text" size="5" maxlength="5" name="hardcore_width" value="<%= myconfig.get(db, "hardcore_width") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.size.height") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="3" width="50%">
+              <input type="text" size="5" maxlength="5" name="hardcore_height" value="<%= myconfig.get(db, "hardcore_height") %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.enter") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.enter.onEnter") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <input type="text" size="5" maxlength="5" name="hardcore_onenter" value="<%= myconfig.get(db, "hardcore_onenter") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.enter.onCtrlEnter") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="3" width="50%">
+              <input type="text" size="5" maxlength="5" name="hardcore_onctrlenter" value="<%= myconfig.get(db, "hardcore_onctrlenter") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.enter.onShiftEnter") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <input type="text" size="5" maxlength="5" name="hardcore_onshiftenter" value="<%= myconfig.get(db, "hardcore_onshiftenter") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.enter.onAltEnter") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="3" width="50%">
+              <input type="text" size="5" maxlength="5" name="hardcore_onaltenter" value="<%= myconfig.get(db, "hardcore_onaltenter") %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.toolbar") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="1"><%= mytext.display("config.editor.hardcore.toolbar.default") %></td>
+            <td class="WCMinnerContentInputValue" colspan="5">
+              <input type="radio" name="hardcore_toolbar" value=""<% if (myconfig.get(db, "hardcore_toolbar").equals("")) { %> checked<% } %>> <%= mytext.display("config.editor.hardcore.toolbar.default.default") %>
+              &nbsp; <input type="radio" name="hardcore_toolbar" value="-COMPACT2-"<% if (myconfig.get(db, "hardcore_toolbar").equals("-COMPACT2-")) { %> checked<% } %>> <%= mytext.display("config.editor.hardcore.toolbar.default.compact") %>
+              &nbsp; <input type="radio" name="hardcore_toolbar" value="-FULL-"<% if (myconfig.get(db, "hardcore_toolbar").equals("-FULL-")) { %> checked<% } %>> <%= mytext.display("config.editor.hardcore.toolbar.default.full") %>
+              &nbsp; <input type="radio" name="hardcore_toolbar" value="-MINIMAL-"<% if (myconfig.get(db, "hardcore_toolbar").equals("-MINIMAL-")) { %> checked<% } %>> <%= mytext.display("config.editor.hardcore.toolbar.default.minimal") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar1" value="<%= myconfig.get(db, "hardcore_toolbar1") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar2" value="<%= myconfig.get(db, "hardcore_toolbar2") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar3" value="<%= myconfig.get(db, "hardcore_toolbar3") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar4" value="<%= myconfig.get(db, "hardcore_toolbar4") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar5" value="<%= myconfig.get(db, "hardcore_toolbar5") %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.formatblock") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <textarea rows="10" cols="70" style="width: 100%;" name="hardcore_formatblock"><%= html.encode(myconfig.get(db, "hardcore_formatblock")) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.fontname") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <textarea rows="10" cols="70" style="width: 100%;" name="hardcore_fontname"><%= html.encode(myconfig.get(db, "hardcore_fontname")) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.fontsize") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <textarea rows="10" cols="70" style="width: 100%;" name="hardcore_fontsize"><%= html.encode(myconfig.get(db, "hardcore_fontsize")) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.customscript") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <textarea rows="20" cols="70" style="width: 100%;" name="hardcore_customscript"><%= html.encode(myconfig.get(db, "hardcore_customscript")) %></textarea>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.about.heading") %></th></tr>
+          <tr><td align="left" colspan="6"><%= mytext.display("config.editor.hardcore.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<div id="File_Upload" class="File_Upload st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.fileupload.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="file_upload" value="" <% if (myconfig.get(db, "file_upload").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.editor.fileupload.hardcore") %></td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Index_Pages" class="Index_Pages st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.workspace.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="workspace_sections" value="<% if (myconfig.get(db, "workspace_sections").equals("")) { %>intro checkedout updated created expired workflow actions<% } else { %><%= html.encode(myconfig.get(db, "workspace_sections")) %><% } %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.index.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.workspace") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_workspace" value="<% if (myconfig.get(db, "index_workspace").equals("")) { %>checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin id:25px previewicon:20px status:250px search:200px replace:200px<% } else { %><%= html.encode(myconfig.get(db, "index_workspace")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.content") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_content" value="<% if (myconfig.get(db, "index_content").equals("")) { %>checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px status:250px<% } else { %><%= html.encode(myconfig.get(db, "index_content")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.library") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_library" value="<% if (myconfig.get(db, "index_library").equals("")) { %>checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px status:250px<% } else { %><%= html.encode(myconfig.get(db, "index_library")) %><% } %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.search") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_search" value="<% if (myconfig.get(db, "index_search").equals("")) { %>checkbox:25px class:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px statusicon:20px<% } else { %><%= html.encode(myconfig.get(db, "index_search")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.searchadvanced") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_searchadvanced" value="<% if (myconfig.get(db, "index_searchadvanced").equals("")) { %>checkbox:25px class:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px statusicon:20px<% } else { %><%= html.encode(myconfig.get(db, "index_searchadvanced")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.searchreplace") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_searchreplace" value="<% if (myconfig.get(db, "index_searchreplace").equals("")) { %>checkbox:25px class:50px group:50px type:50px version:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px statusicon:20px<% } else { %><%= html.encode(myconfig.get(db, "index_searchreplace")) %><% } %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.product") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_product" value="<% if (myconfig.get(db, "index_product").equals("")) { %>checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px status:250px<% } else { %><%= html.encode(myconfig.get(db, "index_product")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.stock") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_stock" value="<% if (myconfig.get(db, "index_stock").equals("")) { %>group:50px type:50px admin:200px id:25px stock:25px stockupdate:25px stockcomment:200px stocklow:25px restocked:25px restockedupdate:25px<% } else { %><%= html.encode(myconfig.get(db, "index_stock")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.order") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_order" value="<% if (myconfig.get(db, "index_order").equals("")) { %>checkbox:25px id:25px created:100px paid:100px closed:100px delivery_email:200px status:50px checkout:50px view:50px update:50px delete:50px<% } else { %><%= html.encode(myconfig.get(db, "index_order")) %><% } %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.usersegments") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_usersegments" value="<% if (myconfig.get(db, "index_usersegments").equals("")) { %>checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px status:250px<% } else { %><%= html.encode(myconfig.get(db, "index_usersegments")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.usertests") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_usertests" value="<% if (myconfig.get(db, "index_usertests").equals("")) { %>checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px status:250px<% } else { %><%= html.encode(myconfig.get(db, "index_usertests")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.heatmaps") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_heatmaps" value="<% if (myconfig.get(db, "index_heatmaps").equals("")) { %>package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px webviewicon:20px heatmapicon:20px heatmapalign:50px heatmaponoff:50px heatmapclear:50px BLANK:10px<% } else { %><%= html.encode(myconfig.get(db, "index_heatmaps")) %><% } %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.user") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_user" value="<% if (myconfig.get(db, "index_user").equals("")) { %>checkbox:25px class:50px group:50px type:50px name username id:25px view:50px update:50px delete:50px<% } else { %><%= html.encode(myconfig.get(db, "index_user")) %><% } %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.websites") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_websites" value="<% if (myconfig.get(db, "index_websites").equals("")) { %>id:25px remote language domain useragent referrer keywords view:50px update:50px delete:50px<% } else { %><%= html.encode(myconfig.get(db, "index_websites")) %><% } %>">
+            </td>
+          </tr>
+<% if ((License.valid(db, myconfig, "hosting") || (myconfig.get(db, "hosting_license").equals("TRIAL"))) && ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) || (myconfig.get(db, "superadmin").equals("")))) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.hosting") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="index_hosting" value="<% if (myconfig.get(db, "index_hosting").equals("")) { %>checkbox:25px group:50px type:50px address:150px status:50px website:50px webadmin:50px view:50px update:50px delete:50px<% } else { %><%= html.encode(myconfig.get(db, "index_hosting")) %><% } %>">
+            </td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.index.menu.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="radio" name="use_menu_selection" value="multi"<% if (! myconfig.get(db, "use_menu_selection").equals("single")) { %> checked<% } %>> <%= mytext.display("config.editor.index.menu.multi") %><br>
+              <input type="radio" name="use_menu_selection" value="single"<% if (myconfig.get(db, "use_menu_selection").equals("single")) { %> checked<% } %>> <%= mytext.display("config.editor.index.menu.single") %><br>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="6"><%= mytext.display("config.editor.index.about.heading") %></th></tr>
+          <tr><td align="left" colspan="6"><%= mytext.display("config.editor.index.about.text") %></td></tr>
+	</table>
+</div></div>
+<div id="Browse_Edit" class="Browse_Edit st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="6"><%= mytext.display("config.editor.browseedit.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.browseedit.toolbar") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="1"><%= mytext.display("config.editor.browseedit.toolbar.default") %></td>
+            <td class="WCMinnerContentInputValue" colspan="5">
+              <input type="radio" name="hardcore_toolbar_browseedit" value=""<% if (myconfig.get(db, "hardcore_toolbar_browseedit").equals("")) { %> checked<% } %>> <%= mytext.display("config.editor.browseedit.toolbar.default.default") %>
+              &nbsp; <input type="radio" name="hardcore_toolbar_browseedit" value="-COMPACT2-"<% if (myconfig.get(db, "hardcore_toolbar_browseedit").equals("-COMPACT2-")) { %> checked<% } %>> <%= mytext.display("config.editor.browseedit.toolbar.default.compact") %>
+              &nbsp; <input type="radio" name="hardcore_toolbar_browseedit" value="-FULL-"<% if (myconfig.get(db, "hardcore_toolbar_browseedit").equals("-FULL-")) { %> checked<% } %>> <%= mytext.display("config.editor.browseedit.toolbar.default.full") %>
+              &nbsp; <input type="radio" name="hardcore_toolbar_browseedit" value="-MINIMAL-"<% if (myconfig.get(db, "hardcore_toolbar_browseedit").equals("-MINIMAL-")) { %> checked<% } %>> <%= mytext.display("config.editor.browseedit.toolbar.default.minimal") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar1_browseedit" value="<%= myconfig.get(db, "hardcore_toolbar1_browseedit") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar2_browseedit" value="<%= myconfig.get(db, "hardcore_toolbar2_browseedit") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar3_browseedit" value="<%= myconfig.get(db, "hardcore_toolbar3_browseedit") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar4_browseedit" value="<%= myconfig.get(db, "hardcore_toolbar4_browseedit") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input type="text" size="80" style="width: 100%;" name="hardcore_toolbar5_browseedit" value="<%= myconfig.get(db, "hardcore_toolbar5_browseedit") %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

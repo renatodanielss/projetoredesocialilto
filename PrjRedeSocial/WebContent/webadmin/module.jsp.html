@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= title %></title>
+<script type="text/javascript">
+
+function selectAll(myform) {
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id[]") {
+			myform.elements[i].checked = true;
+		}
+	}
+}
+
+function unselectAll(myform) {
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id[]") {
+			myform.elements[i].checked = false;
+		}
+	}
+}
+
+function publishSelected(myform) {
+	myform.action = "/<%= mytext.display("adminpath") %>/content/publish_multiple.jsp";
+	myform.submit();
+}
+
+function deleteSelected(myform) {
+	myform.action = "/<%= mytext.display("adminpath") %>/content/delete_multiple.jsp";
+	myform.submit();
+}
+
+function archiveSelected(myform) {
+	myform.action = "/<%= mytext.display("adminpath") %>/content/archive_multiple.jsp";
+	myform.submit();
+}
+
+function checkoutSelected(myform) {
+	myform.action = "/<%= mytext.display("adminpath") %>/content/checkout_multiple.jsp";
+	myform.submit();
+}
+
+function checkinSelected(myform) {
+	myform.action = "/<%= mytext.display("adminpath") %>/content/checkin_multiple.jsp";
+	myform.submit();
+}
+
+function moveSelected(myform) {
+	myform.action = "/<%= mytext.display("adminpath") %>/content/move_multiple.jsp";
+	myform.submit();
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= title %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+      <%= menu %>
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="left" valign="top">
+            <%= content %>
+          </td>
+        </tr>
+      </table>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

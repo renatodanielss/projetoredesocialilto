@@ -1,0 +1,338 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.statistics.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.statistics.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <p>
+      <form action="statistics.jsp" method="POST">
+        <p> 
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.statistics.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.statistics.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.statistics.logperiod") %></th>
+          </tr>
+          <tr> 
+            <td colspan="2"><%= mytext.display("config.statistics.logperiod.intro") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("config.statistics.logperiod.detailed") %></td>
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("config.statistics.summaryperiod") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue">
+              <select name="summarise_period" onchange="document.getElementById('summarise').disabled=true">
+	              <option value="<%= myconfig.get(db, "summarise_period") %>"><%= mytext.display("config.statistics.logperiod.select") %>
+	              <option value="86400"<% if (myconfig.get(db, "summarise_period").equals("86400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.1day") %>
+	              <option value="604800"<% if (myconfig.get(db, "summarise_period").equals("604800")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.1week") %>
+	              <option value="1209600"<% if (myconfig.get(db, "summarise_period").equals("1209600")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.2weeks") %>
+	              <option value="1814400"<% if (myconfig.get(db, "summarise_period").equals("1814400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.3weeks") %>
+	              <option value="2678400"<% if (myconfig.get(db, "summarise_period").equals("2678400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.1month") %>
+	              <option value="5356800"<% if (myconfig.get(db, "summarise_period").equals("5356800")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.2months") %>
+	              <option value="7948800"<% if (myconfig.get(db, "summarise_period").equals("7948800")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.3months") %>
+	              <option value="15897600"<% if (myconfig.get(db, "summarise_period").equals("15897600")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.6months") %>
+	              <option value="31622400"<% if (myconfig.get(db, "summarise_period").equals("31622400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.1year") %>
+	              <option value="63158400"<% if (myconfig.get(db, "summarise_period").equals("63158400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.2years") %>
+	              <option value=""<% if (myconfig.get(db, "summarise_period").equals("")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.all") %>
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" style="vertical-align: top;">
+              <select name="summarised_period" onchange="document.getElementById('summarise').disabled=true">
+	              <option value="<%= myconfig.get(db, "summarised_period") %>"><%= mytext.display("config.statistics.summaryperiod.select") %>
+	              <option value="hourly"<% if ((myconfig.get(db, "summarised_period").equals("hourly")) || (myconfig.get(db, "summarised_period").equals(""))) { %> selected<% } %>><%= mytext.display("config.statistics.summaryperiod.hourly") %>
+	              <option value="daily"<% if (myconfig.get(db, "summarised_period").equals("daily")) { %> selected<% } %>><%= mytext.display("config.statistics.summaryperiod.daily") %>
+	              <option value="monthly"<% if (myconfig.get(db, "summarised_period").equals("monthly")) { %> selected<% } %>><%= mytext.display("config.statistics.summaryperiod.monthly") %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("config.statistics.logperiod.summarised") %></td>
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("config.statistics.summarydetails") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue">
+              <select name="log_period" onchange="document.getElementById('summarise').disabled=true">
+	              <option value="<%= myconfig.get(db, "log_period") %>"><%= mytext.display("config.statistics.logperiod.select") %>
+	              <option value="86400"<% if (myconfig.get(db, "log_period").equals("86400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.1day") %>
+	              <option value="604800"<% if (myconfig.get(db, "log_period").equals("604800")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.1week") %>
+	              <option value="1209600"<% if (myconfig.get(db, "log_period").equals("1209600")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.2weeks") %>
+	              <option value="1814400"<% if (myconfig.get(db, "log_period").equals("1814400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.3weeks") %>
+	              <option value="2678400"<% if (myconfig.get(db, "log_period").equals("2678400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.1month") %>
+	              <option value="5356800"<% if (myconfig.get(db, "log_period").equals("5356800")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.2months") %>
+	              <option value="7948800"<% if (myconfig.get(db, "log_period").equals("7948800")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.3months") %>
+	              <option value="15897600"<% if (myconfig.get(db, "log_period").equals("15897600")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.6months") %>
+	              <option value="31622400"<% if (myconfig.get(db, "log_period").equals("31622400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.1year") %>
+	              <option value="63158400"<% if (myconfig.get(db, "log_period").equals("63158400")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.2years") %>
+	              <option value=""<% if (myconfig.get(db, "log_period").equals("")) { %> selected<% } %>><%= mytext.display("config.statistics.logperiod.all") %>
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" style="vertical-align: top;">
+              <select name="summarised_details" onchange="document.getElementById('summarise').disabled=true">
+<!--
+	              <option value="<%= myconfig.get(db, "summarised_details") %>"><%= mytext.display("config.statistics.summaryperiod.select") %>
+-->
+	              <option value="pageviews,hits"<% if ((myconfig.get(db, "summarised_details").equals("pageviews,hits")) || (myconfig.get(db, "summarised_details").equals(""))) { %> selected<% } %>><%= mytext.display("config.statistics.summarydetails.hits") %>
+<!--
+	              <option value="visitors,pageviews,hits"<% if (myconfig.get(db, "summarised_details").equals("visitors,pageviews,hits")) { %> selected<% } %>><%= mytext.display("config.statistics.summarydetails.visitors") %>
+	              <option value="visits,pageviews,hits"<% if (myconfig.get(db, "summarised_details").equals("visits,pageviews,hits")) { %> selected<% } %>><%= mytext.display("config.statistics.summarydetails.visits") %>
+	              <option value="visitors,visits,pageviews,hits"<% if (myconfig.get(db, "summarised_details").equals("visitors,visits,pageviews,hits")) { %> selected<% } %>><%= mytext.display("config.statistics.summarydetails.all") %>
+-->
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.statistics.log.status") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.statistics.log.count") %>: <%= UsageLog.getCount(db) %></td>
+            <td class="WCMinnerContentInputValue" rowspan="4" style="text-align: center; vertical-align: middle;">
+            	<input type="button" id="summarise" name="summarise" value="<%= mytext.display("config.statistics.log.summarise.link") %>" onclick="document.location.href='../usage/summarise.jsp'"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.statistics.log.details") %>: <%= UsageLog.getOldestDetailed(db) %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.statistics.log.summary") %>: <%= UsageLog.getOldestSummarised(db) %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.statistics.log.summarised") %>: <%= UsageLog.getNewestSummarised(db) %></td>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue"><%= mytext.display("config.statistics.log.summarise.text") %></td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.statistics.logcontent") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_page" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_page").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.page.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_page" value="" <% if (myconfig.get(db, "do_log_page").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.page.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_image" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_image").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.image.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_image" value="" <% if (myconfig.get(db, "do_log_image").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.image.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_file" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_file").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.file.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_file" value="" <% if (myconfig.get(db, "do_log_file").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.file.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_link" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_link").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.link.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_link" value="" <% if (myconfig.get(db, "do_log_link").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.link.disable") %></td>
+          </tr>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_product" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_product").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.product.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_product" value="" <% if (myconfig.get(db, "do_log_product").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.product.disable") %></td>
+          </tr>
+<% } %>
+<% if (License.valid(db, myconfig, "databases")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_data" value="yes" <% if (! License.valid(db, myconfig, "databases")) { %>disabled<% } else if (myconfig.get(db, "do_log_data").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.data.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_data" value="" <% if (myconfig.get(db, "do_log_data").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.data.disable") %></td>
+          </tr>
+<% } %>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_stylesheet" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_stylesheet").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.stylesheet.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_stylesheet" value="" <% if (myconfig.get(db, "do_log_stylesheet").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.stylesheet.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_script" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_script").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.script.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_script" value="" <% if (myconfig.get(db, "do_log_script").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.script.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_contact" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_contact").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.contact.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_contact" value="" <% if (myconfig.get(db, "do_log_contact").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.contact.disable") %></td>
+          </tr>
+<% if (License.valid(db, myconfig, "community")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_post" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_post").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.post.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_post" value="" <% if (myconfig.get(db, "do_log_post").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.post.disable") %></td>
+          </tr>
+<% } %>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_login" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_login").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.login.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_login" value="" <% if (myconfig.get(db, "do_log_login").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.login.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="do_log_logout" value="yes" <% if (! License.valid(db, myconfig, "statistics")) { %>disabled<% } else if (myconfig.get(db, "do_log_logout").equals("yes")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.logout.enable") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="do_log_logout" value="" <% if (myconfig.get(db, "do_log_logout").equals("")) { %>checked<% } %>>
+              <%= mytext.display("config.statistics.logout.disable") %></td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.statistics.index.report") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="100" maxlength="250" style="width:100%;" name="statistics_index_report" value="<% if (myconfig.get(db, "statistics_index_report").equals("")) { %>usage:summary:all:today usage:summary:all:thisweek usage:summary:all:thismonth<% } else { %><%= html.encode(myconfig.get(db, "statistics_index_report")) %><% } %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.statistics.index.reports") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <textarea cols="80" rows="10" style="width:100%;" name="statistics_reports"><% if (myconfig.get(db, "statistics_reports").equals("")) { %>
+Example = "usage:summary:all:today usage:summary:all:thisweek usage:summary:all:thismonth"
+<% } else { %>
+<%= html.encode(myconfig.get(db, "statistics_reports")) %>
+<% } %>
+</textarea>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.statistics.accessrestrictions.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.statistics.accessrestrictions.intro") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("config.statistics.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("config.statistics.accessrestrictions.group") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="statistics_admin_users_type">
+                <option value="<%= myconfig.get(db, "statistics_admin_users_type") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "statistics_admin_users_type").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usertype_select_options(db, myconfig.get(db, "statistics_admin_users_type")) %> 
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="statistics_admin_users_group">
+                <option value="<%= myconfig.get(db, "statistics_admin_users_group") %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (myconfig.get(db, "statistics_admin_users_group").equals("")) { %>selected<% } %>><%= mytext.display("any") %> 
+                <%= myuser.usergroup_select_options(db, myconfig.get(db, "statistics_admin_users_group")) %> 
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="6"><%= mytext.display("config.statistics.about.heading") %></th></tr>
+          <tr><td align="left" colspan="6"><%= mytext.display("config.statistics.about.text") %></td></tr>
+        </table>
+        <br>
+      </form>
+      <p>&nbsp;</p>
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

@@ -1,0 +1,160 @@
+<% if ((myrequest.getParameter("workflow").equals("")) && (! mytext.display("workflows.diagram.combined").equals("workflows.diagram.combined"))) { %>
+<div id="diagramlink">
+<p>
+<hr>
+<p>
+	<a href="#" onclick="document.getElementById('diagramlink').style.display='none';document.getElementById('diagram').style.display='block';"><%= mytext.display("workflows.diagram.combined") %></a>
+</div>
+<div id="diagram" style="display: none">
+<% } else { %>
+<div id="diagram">
+<% } %>
+<%
+if (true || (! myrequest.getParameter("workflow").equals(""))) {
+	// add start state
+	String[] state = new String[1];
+	state[0] = "";
+	// order states from start
+	for (int i=0; i<state.length; i++) {
+		workflow = maintainWorkflows.getIndex(mysession, myrequest, myresponse, myconfig, db);
+		while (workflow.records(db, "")) {
+			String mystate = workflow.getFromState();
+			if (state[i].equals(mystate)) {
+				mystate = workflow.getToState();
+				boolean newstate = true;
+				for (int j=0; j<state.length; j++) {
+					if (state[j].equals(mystate)) {
+						newstate = false;
+					}
+				}
+				if (newstate) {
+					state = Common.array_redim(state, state.length+1);
+					state[state.length-1] = mystate;
+				}
+			}
+		}
+	}
+	// append unconnected states
+	workflow = maintainWorkflows.getIndex(mysession, myrequest, myresponse, myconfig, db);
+	while (workflow.records(db, "")) {
+		String mystate = workflow.getFromState();
+		boolean newstate = true;
+		for (int j=0; j<state.length; j++) {
+			if (state[j].equals(mystate)) {
+				newstate = false;
+			}
+		}
+		if (newstate) {
+			state = Common.array_redim(state, state.length+1);
+			state[state.length-1] = mystate;
+		}
+		mystate = workflow.getToState();
+		newstate = true;
+		for (int j=0; j<state.length; j++) {
+			if (state[j].equals(mystate)) {
+				newstate = false;
+			}
+		}
+		if (newstate) {
+			state = Common.array_redim(state, state.length+1);
+			state[state.length-1] = mystate;
+		}
+	}
+	// add end state
+	state = Common.array_redim(state, state.length+1);
+	state[state.length-1] = "";
+%>
+<p>
+<hr>
+<p>
+<table class="resizable WCMindex WCMindexcompact" border="0" width="100%" id="data_grid_header">
+<tr class="WCMindex">
+<th class="WCMindex"><%= mytext.display("workflows.usergroup") %></th>
+<th class="WCMindex"><%= mytext.display("workflows.usertype") %></th>
+<th align="left" class="WCMindex"><%= mytext.display("workflows.start") %></th>
+<%
+	for (int i=1; i<state.length-1; i++) {
+%>
+		<th align="left" class="WCMindex"><%= state[i] %></th>
+<%
+	}
+%>
+<th align="left" class="WCMindex"><%= mytext.display("workflows.end") %></th>
+</tr>
+<%
+	for (int i=0; i<state.length-1; i++) {
+		String output_forwards = "";
+		String output_unchanged = "";
+		String output_backwards = "";
+		workflow = maintainWorkflows.getIndex(mysession, myrequest, myresponse, myconfig, db);
+		while (workflow.records(db, "")) {
+			workflow.read(db, workflow.getId());
+			int fromcolumn = 0;
+			int tocolumn = state.length-1;
+			String fromstate = workflow.getFromState();
+			String usergroup = workflow.getUserGroup();
+			if (usergroup.equals("")) {
+				usergroup = mytext.display("all");
+			}
+			String usertype = workflow.getUserType();
+			if (usertype.equals("")) {
+				usertype = mytext.display("all");
+			}
+			if (fromstate.equals(state[i])) {
+				for (int j=0; j<state.length-1; j++) {
+					if (state[j].equals(fromstate)) {
+						fromcolumn = j;
+					}
+				}
+				String tostate = workflow.getToState();
+				for (int j=1; j<state.length; j++) {
+					if (state[j].equals(tostate)) {
+						tocolumn = j;
+					}
+				}
+				if (fromcolumn < tocolumn) {
+					output_forwards += "<tr class=\"WCMindex\">" + "\r\n";
+					output_forwards += "<td class=\"WCMindex\">" + usergroup + "</td><td class=\"WCMindex\">" + usertype + "</td>" + "\r\n";
+					if (fromcolumn > 0) {
+						output_forwards += "<td style=\"background: white;\" class=\"WCMindex\" colspan=\"" + fromcolumn + "\"></td>" + "\r\n";
+					}
+					output_forwards += "<td align=\"left\" style=\"text-align: center\" class=\"WCMindex\" colspan=\"" + (tocolumn-fromcolumn+1) + "\"><span style=\"float: left;\">" + workflow.getAction() + "</span> <span style=\"float: right; margin-right: " + ((700/(state.length-1))/2) + "px;\"><b>&bull;</b></span> ==></td>" + "\r\n";
+					if (tocolumn < state.length-1) {
+						output_forwards += "<td style=\"background: white;\" class=\"WCMindex\" colspan=\"" + (state.length-tocolumn) + "\"></td>" + "\r\n";
+					}
+					output_forwards += "</tr>" + "\r\n";
+				} else if (fromcolumn == tocolumn) {
+					output_unchanged += "<tr class=\"WCMindex\">" + "\r\n";
+					output_unchanged += "<td class=\"WCMindex\">" + usergroup + "</td><td class=\"WCMindex\">" + usertype + "</td>" + "\r\n";
+					if (tocolumn > 0) {
+						output_unchanged += "<td style=\"background: white;\" class=\"WCMindex\" colspan=\"" + tocolumn + "\"></td>" + "\r\n";
+					}
+					output_unchanged += "<td align=\"right\" style=\"text-align: center\" class=\"WCMindex\" colspan=\"" + (fromcolumn-tocolumn+1) + "\">" + workflow.getAction() + "</td>" + "\r\n";
+					if (fromcolumn < state.length-1) {
+						output_unchanged += "<td style=\"background: white;\" class=\"WCMindex\" colspan=\"" + (state.length-fromcolumn) + "\"></td>" + "\r\n";
+					}
+					output_unchanged += "</tr>" + "\r\n";
+				} else {
+					output_backwards += "<tr class=\"WCMindex\">" + "\r\n";
+					output_backwards += "<td class=\"WCMindex\">" + usergroup + "</td><td class=\"WCMindex\">" + usertype + "</td>" + "\r\n";
+					if (tocolumn > 0) {
+						output_backwards += "<td style=\"background: white;\" class=\"WCMindex\" colspan=\"" + tocolumn + "\"></td>" + "\r\n";
+					}
+					output_backwards += "<td align=\"right\" style=\"text-align: center\" class=\"WCMindex\" colspan=\"" + (fromcolumn-tocolumn+1) + "\"><span style=\"float: left; margin-left: " + ((700/(state.length-1))/4) + "px;\"><b>&bull;</b></span> <span style=\"float: right;\">" + workflow.getAction() + "</span> <==</td>" + "\r\n";
+					if (fromcolumn < state.length-1) {
+						output_backwards += "<td style=\"background: white;\" class=\"WCMindex\" colspan=\"" + (state.length-fromcolumn) + "\"></td>" + "\r\n";
+					}
+					output_backwards += "</tr>" + "\r\n";
+				}
+			}
+		}
+		%><%= output_backwards %><%
+		%><%= output_unchanged %><%
+		%><%= output_forwards %><%
+	}
+%>
+</table>
+<%
+}
+%>
+</div>

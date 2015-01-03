@@ -1,0 +1,195 @@
+
+<% if (mysession.get("menu").startsWith("config")) { %>
+	<% if ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) || (myconfig.get(db, "superadmin").equals(""))) { %>
+	<br>
+	<div id="configMenu" style="display: none;">
+		<ul>
+			<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_configuration"><a href="#"><%= mytext.display("menu.config") %></a>
+				<ul>
+					<li rel="pagefolder" class="jstree-closed" id="menu_configuration_system"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configsystem"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configsystem"><%= mytext.display("menu.config.system") %></a>
+						<ul>
+							<li rel="page" id="menuitem_configuration_system_database"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/database.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/database.jsp?menu=configsystem"><%= mytext.display("menu.config.system.database") %></a></li>
+							<li rel="page" id="menuitem_configuration_system_license"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/licenses.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/licenses.jsp?menu=configsystem"><%= mytext.display("menu.config.system.license") %></a></li>
+							<li rel="page" id="menuitem_configuration_system_superadmin"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/superadmin.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/superadmin.jsp?menu=configsystem"><%= mytext.display("menu.config.system.superadmin") %></a></li>
+							<li rel="page" id="menuitem_configuration_system_website"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/website.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/website.jsp?menu=configsystem"><%= mytext.display("menu.config.system.website") %></a></li>
+		<% if (License.valid(db, myconfig, "ecommerce")) { %>
+							<li rel="page" id="menuitem_configuration_system_ecommerce"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/ecommerce.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/ecommerce.jsp?menu=configsystem"><%= mytext.display("menu.config.system.ecommerce") %></a></li>
+		<% } %>
+		<% if (License.valid(db, myconfig, "professional")) { %>
+							<li rel="page" id="menuitem_configuration_system_microwebsites"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/websites/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/websites/index.jsp?menu=configsystem"><%= mytext.display("menu.config.system.microwebsites") %></a></li>
+		<% } %>
+		<% if (License.valid(db, myconfig, "statistics")) { %>
+							<li rel="page" id="menuitem_configuration_system_statistics"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/statistics.jsp")) || (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usage/summarise.jsp"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/statistics.jsp?menu=configsystem"><%= mytext.display("menu.config.system.statistics") %></a></li>
+		<% } %>
+		<% if (License.valid(db, myconfig, "hosting")) { %>
+							<li rel="page" id="menuitem_configuration_system_hosting"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/hosting.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/hosting.jsp?menu=configsystem"><%= mytext.display("menu.config.system.hosting") %></a></li>
+		<% } %>
+						</ul>
+					</li>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_features"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configfeatures"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configfeatures"><%= mytext.display("menu.config.features") %></a>
+						<ul>
+							<li rel="page" id="menuitem_configuration_features_accessrestrictions"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/accessrestrictions.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/accessrestrictions.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.accessrestrictions") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_additionalcontent"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/additionalcontent.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/additionalcontent.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.additionalcontent") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_advancedscripting"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/advancedscripting.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/advancedscripting.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.advancedscripting") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_archiving"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/archive.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/archive.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.archiving") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_checkoutcheckin"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/checkout.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/checkout.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.checkoutcheckin") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_contentcategories"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/contentdefinition.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/contentdefinition.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.contentcategories") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_contentdependencies"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/contentdependencies.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/contentdependencies.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.contentdependencies") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_contenteditor"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/editor.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/editor.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.contenteditor") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_contentrelations"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/contentrelations.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/contentrelations.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.contentrelations") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_contentversions"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/versions.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/versions.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.contentversions") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_metainformation"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/metainformation.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/metainformation.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.metainformation") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_presentation"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/presentation.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/presentation.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.presentation") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_publishing"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/publish.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/publish.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.publishing") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_revisionhistory"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/revisionhistory.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/revisionhistory.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.revisionhistory") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_useractivation"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/useractivation.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/useractivation.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.useractivation") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_usercategories"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/userdefinition.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/userdefinition.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.usercategories") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_userdatabase"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/userdatabase.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/userdatabase.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.userdatabase") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_userdetails"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/userdetails.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/userdetails.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.userdetails") %></a></li>
+							<li rel="page" id="menuitem_configuration_features_userpreferences"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/config/userpreferences.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/config/userpreferences.jsp?menu=configfeatures"><%= mytext.display("menu.config.features.userpreferences") %></a></li>
+						</ul>
+					</li>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_content"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configcontent"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configcontent"><%= mytext.display("menu.config.content") %></a>
+						<ul>
+							<li rel="page" id="menuitem_configuration_content_all"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/content/")) && (_contentclass.equals(" "))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?menu=configcontent&contentpackage=%20&contentclass=%20&contentbundle=%20&contentgroup=%20&contenttype=%20&version=%20"><%= mytext.display("menu.content.all") %></a></li>
+							<li rel="page" id="menuitem_configuration_content_templates"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/content/")) && (_contentclass.equals("template"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?menu=configcontent&contentpackage=%20&contentclass=template&contentbundle=%20&contentgroup=%20&contenttype=%20&version=%20"><%= mytext.display("menu.content.templates") %></a></li>
+							<li rel="page" id="menuitem_configuration_content_stylesheets"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/content/")) && (_contentclass.equals("stylesheet"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?menu=configcontent&contentpackage=%20&contentclass=stylesheet&contentbundle=%20&contentgroup=%20&contenttype=%20&version=%20"><%= mytext.display("menu.content.stylesheets") %></a></li>
+							<li rel="page" id="menuitem_configuration_content_scripts"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/content/")) && (_contentclass.equals("script"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?menu=configcontent&contentpackage=%20&contentclass=script&contentbundle=%20&contentgroup=%20&contenttype=%20&version=%20"><%= mytext.display("menu.content.scripts") %></a></li>
+		<% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+			<% if (! myconfig.get(db, "use_contentclasses").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_content_classes"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/elements/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/elements/index.jsp?menu=configcontent"><%= mytext.display("menu.classes") %></a></li>
+			<% } %>
+			<% if (! myconfig.get(db, "use_contentgroups").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_content_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/contentgroups/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/contentgroups/index.jsp?menu=configcontent"><%= mytext.display("menu.groups") %></a></li>
+			<% } %>
+			<% if (! myconfig.get(db, "use_contenttypes").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_content_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/contenttypes/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/contenttypes/index.jsp?menu=configcontent"><%= mytext.display("menu.types") %></a></li>
+			<% } %>
+		<% } %>
+							<li rel="page" id="menuitem_configuration_content_metadata"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/content/metadata.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/metadata.jsp?menu=configcontent"><%= mytext.display("menu.content.metadata") %></a></li>
+						</ul>
+					</li>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_images"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configimages"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configimages"><%= mytext.display("menu.config.images") %></a>
+						<ul>
+							<li rel="page" id="menuitem_configuration_images_formats"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/imageformats/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/imageformats/index.jsp?menu=configimages"><%= mytext.display("menu.formats") %></a></li>
+		<% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+			<% if (! myconfig.get(db, "use_imagegroups").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_images_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/imagegroups/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/imagegroups/index.jsp?menu=configimages"><%= mytext.display("menu.groups") %></a></li>
+			<% } %>
+			<% if (! myconfig.get(db, "use_imagetypes").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_images_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/imagetypes/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/imagetypes/index.jsp?menu=configimages"><%= mytext.display("menu.types") %></a></li>
+			<% } %>
+		<% } %>
+						</ul>
+					</li>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_files"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configfiles"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configfiles"><%= mytext.display("menu.config.files") %></a>
+						<ul>
+							<li rel="page" id="menuitem_configuration_files_formats"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/fileformats/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/fileformats/index.jsp?menu=configfiles"><%= mytext.display("menu.formats") %></a></li>
+		<% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+			<% if (! myconfig.get(db, "use_filegroups").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_files_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/filegroups/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/filegroups/index.jsp?menu=configfiles"><%= mytext.display("menu.groups") %></a></li>
+			<% } %>
+			<% if (! myconfig.get(db, "use_filetypes").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_files_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/filetypes/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/filetypes/index.jsp?menu=configfiles"><%= mytext.display("menu.types") %></a></li>
+			<% } %>
+		<% } %>
+						</ul>
+					</li>
+		<% if ((! myconfig.get(db, "use_contentdefinition").equals("")) && ((! myconfig.get(db, "use_linkgroups").equals("")) || (! myconfig.get(db, "use_linktypes").equals("")))) { %>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_links"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configlinks"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configlinks"><%= mytext.display("menu.config.links") %></a>
+						<ul>
+			<% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+				<% if (! myconfig.get(db, "use_linkgroups").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_links_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/linkgroups/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/linkgroups/index.jsp?menu=configlinks"><%= mytext.display("menu.groups") %></a></li>
+				<% } %>
+				<% if (! myconfig.get(db, "use_linktypes").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_links_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/linktypes/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/linktypes/index.jsp?menu=configlinks"><%= mytext.display("menu.types") %></a></li>
+				<% } %>
+			<% } %>
+						</ul>
+					</li>
+		<% } %>
+		<% if (! myconfig.get(db, "use_userdatabase").equals("")) { %>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_users"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configusers"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configusers"><%= mytext.display("menu.config.users") %></a>
+						<ul>
+							<li rel="page" id="menuitem_configuration_users_export"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/users/export.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/export.jsp?menu=configusers"><%= mytext.display("menu.config.users.export") %></a></li>
+							<li rel="page" id="menuitem_configuration_users_import"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/users/import.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/import.jsp?menu=configusers"><%= mytext.display("menu.config.users.import") %></a></li>
+			<% if (! myconfig.get(db, "use_userdefinition").equals("")) { %>
+				<% if (! myconfig.get(db, "use_usergroups").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_users_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usergroups/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usergroups/index.jsp?menu=configusers"><%= mytext.display("menu.groups") %></a></li>
+				<% } %>
+				<% if (! myconfig.get(db, "use_usertypes").equals("")) { %>
+							<li rel="page" id="menuitem_configuration_users_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usertypes/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usertypes/index.jsp?menu=configusers"><%= mytext.display("menu.types") %></a></li>
+				<% } %>
+			<% } %>
+			<% if (License.valid(db, myconfig, "experience")) { %>
+							<li rel="page" id="menuitem_configuration_users_segments"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/segments/")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/segments/index.jsp?menu=configusers"><%= mytext.display("menu.segments") %></a></li>
+							<li rel="page" id="menuitem_configuration_users_usertests"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/usertests/")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/usertests/index.jsp?menu=configusers"><%= mytext.display("menu.usertests") %></a></li>
+			<% } %>
+						</ul>
+					</li>
+		<% } %>
+		<% if ((myconfig.get(db, "use_workflow").equals("yes")) || (myconfig.get(db, "use_workflow_orders").equals("yes"))) { %>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_workflows"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/workflows/index.jsp")) && (myrequest.getParameter("workflow").equals(""))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/workflows/index.jsp?menu=config<% if (! myconfig.get(db, "use_workflow").equals("yes")) { %>&workflow=<%= URLEncoder.encode("-orders-", myconfig.get(db, "charset")) %>&<%= Math.random() %>&<% } %>"><%= mytext.display("menu.config.workflows") %></a></li>
+		<% } %>
+		<% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+					<li rel="page" id="menuitem_configuration_versions"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/versions/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/versions/index.jsp?menu=config"><%= mytext.display("menu.config.versions") %></a></li>
+		<% } %>
+		<% if ((License.valid(db, myconfig, "hosting") || (myconfig.get(db, "hosting_license").equals("TRIAL"))) && ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) || (myconfig.get(db, "superadmin").equals("")))) { %>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_hosting"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("confighosting"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=confighosting"><%= mytext.display("menu.config.hosting") %></a>
+						<ul>
+							<li rel="page" id="menuitem_configuration_hosting_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/hostinggroups/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hostinggroups/index.jsp?menu=confighosting"><%= mytext.display("menu.groups") %></a></li>
+							<li rel="page" id="menuitem_configuration_hosting_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/hostingtypes/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hostingtypes/index.jsp?menu=confighosting"><%= mytext.display("menu.types") %></a></li>
+						</ul>
+					</li>
+		<% } %>
+		<% if (License.valid(db, myconfig, "ecommerce")) { %>
+					<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_ecommerce"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configecommerce"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configecommerce"><%= mytext.display("menu.config.ecommerce") %></a>
+						<ul>
+							<li rel="pagefolder" class="jstree-closed" id="menuitem_configuration_ecommerce_currencies"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/currency/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/currency/index.jsp?menu=configecommerce"><%= mytext.display("menu.config.ecommerce.currencies") %></a>
+								<ul>
+									<li rel="page" id="menuitem_configuration_ecommerce_currencies_export"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/currency/export.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/currency/export.jsp?menu=configecommerce"><%= mytext.display("menu.config.ecommerce.export") %></a></li>
+									<li rel="page" id="menuitem_configuration_ecommerce_currencies_import"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/currency/import.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/currency/import.jsp?menu=configecommerce"><%= mytext.display("menu.config.ecommerce.import") %></a></li>
+								</ul>
+							</li>
+							<li rel="folder" class="jstree-closed" id="menuitem_configuration_ecommerce_products"><a class="<% if ((myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/index.config.jsp")) && (myrequest.getParameter("menu").equals("configecommerceproducts"))) { %>jstree-wcm-menu-selected<% } %>" href="#"><%= mytext.display("menu.config.ecommerce.products") %></a>
+								<ul>
+									<li rel="page" id="menuitem_configuration_ecommerce_currencies_export"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/products/export.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/products/export.jsp?menu=configecommerceproducts"><%= mytext.display("menu.config.ecommerce.export") %></a></li>
+									<li rel="page" id="menuitem_configuration_ecommerce_currencies_import"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/products/import.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/products/import.jsp?menu=configecommerceproducts"><%= mytext.display("menu.config.ecommerce.import") %></a></li>
+			<% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+				<% if (! myconfig.get(db, "use_productgroups").equals("")) { %>
+									<li rel="page" id="menuitem_configuration_ecommerce_products_groups"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/productgroups/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/productgroups/index.jsp?menu=configecommerce"><%= mytext.display("menu.groups") %></a></li>
+				<% } %>
+				<% if (! myconfig.get(db, "use_producttypes").equals("")) { %>
+									<li rel="page" id="menuitem_configuration_ecommerce_products_types"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/producttypes/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/producttypes/index.jsp?menu=configecommerce"><%= mytext.display("menu.types") %></a></li>
+				<% } %>
+			<% } %>
+								</ul>
+							</li>
+							<li rel="page" id="menuitem_configuration_ecommerce_discounts"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/discounts/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/discounts/index.jsp?menu=configecommerce"><%= mytext.display("menu.config.ecommerce.discounts") %></a></li>
+							<li rel="page" id="menuitem_configuration_ecommerce_shipping"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/shipping/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/shipping/index.jsp?menu=configecommerce"><%= mytext.display("menu.config.ecommerce.shipping") %></a></li>
+							<li rel="page" id="menuitem_configuration_ecommerce_tax"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/tax/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/tax/index.jsp?menu=configecommerce"><%= mytext.display("menu.config.ecommerce.tax") %></a></li>
+						</ul>
+					</li>
+		<% } %>
+		<% if (License.valid(db, myconfig, "databases")) { %>
+					<li rel="page" id="menuitem_configuration_databases"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/databases/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/databases/index.jsp?menu=config"><%= mytext.display("menu.config.databases") %></a></li>
+		<% } %>
+		<% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+					<li rel="page" id="menuitem_configuration_packages"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/contentpackages/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/contentpackages/index.jsp?menu=config"><%= mytext.display("menu.packages") %></a></li>
+		<% } %>
+		<% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+					<li rel="page" id="menuitem_configuration_bundles"><a class="<% if (myrequest.getRequestURI().startsWith("/" + mytext.display("adminpath") + "/contentbundles/index.jsp")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/contentbundles/index.jsp?menu=config"><%= mytext.display("menu.bundles") %></a></li>
+		<% } %>
+				</ul>
+			</li>
+	<% for (int i=0; i<module.size(); i++) { %>
+		<% if ((moduleConfigMenuTitle.size()>i) && (! moduleConfigMenuTitle.get(i).equals(""))) { %>
+			<li rel="page" class="jstree-leaf" id="menuitem_configuration_module<%= i %>"><a href="<%= moduleConfigMenuLink.get(i) %>"><%= moduleConfigMenuTitle.get(i) %></a></li>
+		<% } %>
+	<% } %>
+		</ul>
+	</div>
+	<br>
+	<% } %>
+<% } %>

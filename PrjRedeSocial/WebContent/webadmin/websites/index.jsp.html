@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("websites.index.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("websites.index.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <div align="right">
+        <form method="GET" action="create.jsp">
+          <select name="id">
+            <option value=""><%= mytext.display("blank") %>
+          </select>
+          <input type="submit" value="<%= mytext.display("addnew") %>">
+        </form>
+      </div>
+      <br>
+
+      <table style="width: 100%;" class="sortable" id="clients">
+        <tr class="WCMindex"> 
+<%
+	String myadminindex = adminuser.getIndexWebsites();
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "index_websites");
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = myconfig.get(db, "use_adminindex");
+	}
+	if (myadminindex.equals("")) {
+		myadminindex = "id:25px remote language domain useragent referrer keywords view:50px update:50px delete:50px";
+	}
+	String[] columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "#";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " width: " + mycolumnwidth + ";";
+		}
+%>
+<% if (mycolumnname.equals("domain")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.website") %></th>
+<% } else if (mycolumnname.equals("remote")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.remote") %></th>
+<% } else if (mycolumnname.equals("useragent")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.useragent") %></th>
+<% } else if (mycolumnname.equals("language")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.language") %></th>
+<% } else if (mycolumnname.equals("referrer")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.referrer") %></th>
+<% } else if (mycolumnname.equals("keywords")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.keywords") %></th>
+<% } else if (mycolumnname.equals("version")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.version") %></th>
+<% } else if (mycolumnname.equals("price")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.price") %></th>
+<% } else if (mycolumnname.equals("country")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.country") %></th>
+<% } else if (mycolumnname.equals("state")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.state") %></th>
+<% } else if (mycolumnname.equals("template")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.template") %></th>
+<% } else if (mycolumnname.equals("stylesheet")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.stylesheet") %></th>
+<% } else if (mycolumnname.equals("id")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("websites.id") %></th>
+<% } else if (mycolumnname.equals("create")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("view")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("update")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <th class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	while (mywebsite.records(db, "")) {
+%>
+        <tr class="WCMindex" onMouseOver="this.className='WCMindex_highlight'" onMouseOut="this.className='WCMindex'"> 
+<%
+	columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "#";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+		}
+%>
+<% if (mycolumnname.equals("domain")) { %>
+          <td class="WCMindex"><%= mywebsite.getDomain() %></td>
+<% } else if (mycolumnname.equals("remote")) { %>
+          <td class="WCMindex"><%= mywebsite.getRemote() %></td>
+<% } else if (mycolumnname.equals("useragent")) { %>
+          <td class="WCMindex"><%= mywebsite.getUserAgent() %></td>
+<% } else if (mycolumnname.equals("language")) { %>
+          <td class="WCMindex"><%= mywebsite.getLanguage() %></td>
+<% } else if (mycolumnname.equals("referrer")) { %>
+          <td class="WCMindex"><%= mywebsite.getReferrer() %></td>
+<% } else if (mycolumnname.equals("keywords")) { %>
+          <td class="WCMindex"><%= mywebsite.getKeywords() %></td>
+<% } else if (mycolumnname.equals("version")) { %>
+          <td class="WCMindex"><%= mywebsite.getDefaultVersion() %></td>
+<% } else if (mycolumnname.equals("price")) { %>
+          <td class="WCMindex"><%= mywebsite.getDefaultPrice() %></td>
+<% } else if (mycolumnname.equals("country")) { %>
+          <td class="WCMindex"><%= mywebsite.getDefaultCountry() %></td>
+<% } else if (mycolumnname.equals("state")) { %>
+          <td class="WCMindex"><%= mywebsite.getDefaultState() %></td>
+<% } else if (mycolumnname.equals("template")) { %>
+          <td class="WCMindex"><%= mywebsite.getDefaultTemplateTitle(db, myconfig) %></td>
+<% } else if (mycolumnname.equals("stylesheet")) { %>
+          <td class="WCMindex"><%= mywebsite.getDefaultStylesheetTitle(db, myconfig) %></td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td class="WCMindex"><%= mywebsite.getId() %></td>
+<% } else if (mycolumnname.equals("create")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="create.jsp?id=<%= mywebsite.getId() %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="view.jsp?id=<%= mywebsite.getId() %>&<%= Math.random() %>"><%= mytext.display("view") %></a> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="update.jsp?id=<%= mywebsite.getId() %>&<%= Math.random() %>"><%= mytext.display("update") %></a> 
+            </div>
+          </td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="delete.jsp?id=<%= mywebsite.getId() %>&<%= Math.random() %>"><%= mytext.display("delete") %></a> 
+            </div>
+          </td>
+<% } else { %>
+          <td class="WCMindex"> 
+            <div align="center"><a href="<%= mycolumnhref + mywebsite.getId() %>&<%= Math.random() %>"><%= mycolumnname %></a></div>
+          </td>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	}
+%>
+      </table>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

@@ -1,0 +1,275 @@
+	<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("link"))) { %>
+
+<div id="Content Relations" class="Content_Relations st_view"><div class="st_view_inner">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.contentrelations.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("content.contentrelations.intro") %></td></tr>
+
+		<% if ((! myconfig.get(db, "use_contentrelations").equals("")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script"))) { %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.top") %></th></tr>
+
+			<% if (update) { %>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+				<nobr>
+					<select id="page_top" name="page_top" style="width: 400px;">
+						<option value="<%= mypage.getPageTop() %>"><%= mypage.getPageTopTitle() %> &nbsp;
+						<option value="0"><%= mytext.display("none") %>
+					</select>
+
+				<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+
+					<input type="button" id="select_page_top" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_top', 'Pages', '', 'Pages', 'page');">
+
+				<% } else { %>
+
+					<input type="button" id="select_page_top" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_top', '', '', '', '');">
+
+				<% } %>
+
+				</nobr>
+			</td>
+		</tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getPageTopTitle() %>&nbsp;</td></tr>
+
+			<% } %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.up") %></th></tr>
+
+			<% if (update) { %>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+				<nobr>
+					<select id="page_up" name="page_up" style="width: 400px;">
+						<option value="<%= mypage.getPageUp() %>"><%= mypage.getPageUpTitle() %> &nbsp;
+						<option value="0"><%= mytext.display("none") %>
+					</select>
+
+				<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+
+					<input type="button" id="select_page_up" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_up', 'Pages', '', 'Pages', 'page');">
+
+				<% } else { %>
+
+					<input type="button" id="select_page_up" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_up', '', '', '', '');">
+
+				<% } %>
+
+				</nobr>
+			</td>
+		</tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getPageUpTitle() %>&nbsp;</td></tr>
+
+			<% } %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.previous") %></th></tr>
+
+			<% if (update) { %>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+				<nobr>
+					<select id="page_previous" name="page_previous" style="width: 400px;">
+						<option value="<%= mypage.getPagePrevious() %>"><%= mypage.getPagePreviousTitle() %> &nbsp;
+						<option value="0"><%= mytext.display("none") %>
+					</select>
+
+				<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+
+					<input type="button" id="select_page_previous" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_previous', 'Pages', '', 'Pages', 'page');">
+
+				<% } else { %>
+
+					<input type="button" id="select_page_previous" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_previous', '', '', '', '');">
+
+				<% } %>
+
+				</nobr>
+			</td>
+		</tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getPagePreviousTitle() %>&nbsp;</td></tr>
+
+			<% } %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.next") %></th></tr>
+
+			<% if (update) { %>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+				<nobr>
+					<select id="page_next" name="page_next" style="width: 400px;">
+						<option value="<%= mypage.getPageNext() %>"><%= mypage.getPageNextTitle() %> &nbsp;
+						<option value="0"><%= mytext.display("none") %>
+					</select>
+
+				<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+
+					<input type="button" id="select_page_next" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_next', 'Pages', '', 'Pages', 'page');">
+
+				<% } else { %>
+
+					<input type="button" id="select_page_next" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_next', '', '', '', '');">
+
+				<% } %>
+
+				</nobr>
+			</td>
+		</tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getPageNextTitle() %>&nbsp;</td></tr>
+
+			<% } %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.first") %></th></tr>
+
+			<% if (update) { %>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+				<nobr>
+					<select id="page_first" name="page_first" style="width: 400px;">
+						<option value="<%= mypage.getPageFirst() %>"><%= mypage.getPageFirstTitle() %> &nbsp;
+						<option value="0"><%= mytext.display("none") %>
+					</select>
+
+				<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+
+					<input type="button" id="select_page_first" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_first', 'Pages', '', 'Pages', 'page');">
+
+				<% } else { %>
+
+					<input type="button" id="select_page_first" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_first', '', '', '', '');">
+
+				<% } %>
+
+				</nobr>
+			</td>
+		</tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getPageFirstTitle() %>&nbsp;</td></tr>
+
+			<% } %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.last") %></th></tr>
+
+			<% if (update) { %>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+				<nobr>
+					<select id="page_last" name="page_last" style="width: 400px;">
+						<option value="<%= mypage.getPageLast() %>"><%= mypage.getPageLastTitle() %> &nbsp;
+						<option value="0"><%= mytext.display("none") %>
+					</select>
+
+				<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+
+					<input type="button" id="select_page_last" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_last', 'Pages', '', 'Pages', 'page');">
+
+				<% } else { %>
+
+					<input type="button" id="select_page_last" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_last', '', '', '', '');">
+
+				<% } %>
+
+				</nobr>
+			</td>
+		</tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue"><%= mypage.getPageLastTitle() %>&nbsp;</td></tr>
+
+			<% } %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.related") %></th></tr>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+
+		<% if (update) { %>
+
+				<nobr>
+					<input type="hidden" id="relatedinput" name="related" value="<%= mypage.getRelated() %>">
+					<select multiple id="related" name="selectrelated" style="width: 400px;" onChange="changeRelated(this)">
+
+		<% } %>
+
+		<%
+		String[] myrelated = mypage.getRelated().split(",");
+		HashMap myselectedrelated = new HashMap();
+		for (int i=0; i<myrelated.length; i++) {
+			String mycontent = "" + myrelated[i];
+			myselectedrelated.put(mycontent, mycontent);
+		}
+		%>
+
+		<% if (update) { %>
+
+						<option value="" <% if (myselectedrelated.get("") != null) { %>selected<% } %>><%= mytext.display("none") %></option>
+
+		<% } else { %>
+			<% if (myselectedrelated.get("") != null) { %>
+
+						<%= mytext.display("none") %><br>
+
+			<% } %>
+		<% } %>
+		<%
+		for (int i=0; i<myrelated.length; i++) {
+			String mycontent = "" + myrelated[i];
+			if (! mycontent.equals("")) {
+				if (update) {
+
+						%><option value="<%= mycontent %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mycontent) %></option> &nbsp;<%
+
+				} else {
+
+						%><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mycontent) %> &nbsp;<br><%
+
+				}
+			}
+		}
+		%>
+		<% if (update) { %>
+
+					</select>
+					<input type="button" id="select_related" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('related', '', '', '', '');">
+				</nobr>
+
+		<% } %>
+
+			</td>
+		</tr>
+
+		<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.contentrelations.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.contentrelations.enableconfig") %><% } else { %><%= mytext.display("content.contentrelations.enablesuperadmin") %><% } %></td></tr>
+
+		<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.contentrelations.about.heading") %></th></tr>
+		<tr><td align="left" colspan="4"><%= mytext.display("content.contentrelations.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>
+
+	<% } %>

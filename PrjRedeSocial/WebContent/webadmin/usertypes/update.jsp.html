@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("usertypes.update.title") %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function checkName(name, id) {
+	var exists = "";
+	if (id) {
+		exists = GET("/<%= mytext.display("adminpath") %>/usertypes/exists.jsp?id=" + encodeURI(id) + "&usertype=" + encodeURI(name) + "&" + Math.random());
+	} else {
+		exists = GET("/<%= mytext.display("adminpath") %>/usertypes/exists.jsp?usertype=" + encodeURI(name) + "&" + Math.random());
+	}
+	if (exists == "YES") {
+		alert('<%= mytext.display("usertypes.title.exists") %>');
+	}
+}
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contenttitle = inputnode.options[inputnode.selectedIndex].text;
+		var contentid = inputnode.options[inputnode.selectedIndex].value;
+		var contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		contenttitle = encodeURIComponent(contenttitle);
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		inputnode.options[0].text = contenttitle;
+		inputnode.options[0].value = contentid;
+		inputnode.selectedIndex = 0;
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("usertypes.update.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="update_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("usertypes.heading") %></th>
+          </tr>
+<!--
+          <tr>
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("usertypes.intro") %></td>
+          </tr>
+-->
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("usertypes.title") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("usertypes.parenttype") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <input type="text" size="80" maxlength="250" name="usertype" value="<%= html.encode(usertype.getUsertype()) %>" onchange="checkName(this.value, <%= Common.intnumber(myrequest.getParameter("id")) %>)">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="parenttype">
+                <option value="<%= html.encode(usertype.getParenttype()) %>"><%= mytext.display("pleaseselect") %></option>
+                <option value="" <% if (usertype.getParenttype().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= usertype.select_options(db, usertype.getParenttype()) %>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("usertypes.subtypes") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("usertypes.supertypes") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="50%">
+<%
+	String thisusertype = usertype.getUsertype();
+	int j = 0;
+	while (usertype.records(db, "")) {
+		j++;
+		if (! thisusertype.equals(usertype.getUsertype())) {
+%> 
+              <input type="checkbox" name="subtype<%= j %>" value="<%= usertype.getUsertype() %>"<% if (subtypes.get(usertype.getUsertype()) != null) { %> checked<% } %>> <%= usertype.getUsertype() %><br>
+<%
+		}
+	}
+	usertype.readUsertype(db, thisusertype);
+%> 
+              &nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%"> 
+<%
+	thisusertype = usertype.getUsertype();
+	j = 0;
+	usertype.records(db, "select * from usertypes order by usertype");
+	while (usertype.records(db, "")) {
+		j++;
+		if (! thisusertype.equals(usertype.getUsertype())) {
+%> 
+              <input type="checkbox" name="supertype<%= j %>" value="<%= usertype.getUsertype() %>"<% if (supertypes.get(usertype.getUsertype()) != null) { %> checked<% } %>> <%= usertype.getUsertype() %><br>
+<%
+		}
+	}
+	usertype.readUsertype(db, thisusertype);
+%> 
+              &nbsp;
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("usertypes.subtypes.text") %></td>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("usertypes.supertypes.text") %></td>
+          </tr>
+<% if (! myconfig.get(db, "use_accessrestrictions").equals("none")) { %>
+        <br>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("usertypes.accessrestrictions.heading") %></th>
+          </tr>
+<!--
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2" align="left"><%= mytext.display("usertypes.accessrestrictions.intro") %></td>
+          </tr>
+-->
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("usertypes.loginpage") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <select id="login_page" name="login_page" style="width: 400px;">
+                <option value="<%= usertype.getLoginPage() %>"><%= Page.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + usertype.getLoginPage()) %> &nbsp;
+                <option value=""<% if (usertype.getLoginPage().equals("")) { %> selected<% } %>><%= mytext.display("default") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('login_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "community")) { %>
+<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("usertypes.accessrestrictions.subscribers") %></th>
+          </tr>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("usertypes.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <select name="subscribers_type">
+                <option value="<%= usertype.getSubscribersType() %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (usertype.getSubscribersType().equals("")) { %>selected<% } %>><%= mytext.display("none") %> 
+                <option value="*" <% if (usertype.getSubscribersType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <%= usertype.usertype_select_options(db, usertype.getSubscribersType()) %> 
+              </select>
+            </td>
+          </tr>
+<% } %>
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("usertypes.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <select name="subscribers_group">
+                <option value="<%= usertype.getSubscribersGroup() %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (usertype.getSubscribersGroup().equals("")) { %>selected<% } %>><%= mytext.display("none") %> 
+                <option value="*" <% if (usertype.getSubscribersGroup().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %> 
+                <%= usertype.usergroup_select_options(db, usertype.getSubscribersGroup()) %> 
+              </select>
+            </td>
+          </tr>
+<% } %>
+<% } %>
+<% } %>
+<% } %>
+        </table>
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

@@ -1,0 +1,413 @@
+<%
+if ((HashMap)usage.get("pagescountpageviews") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("pagescountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("pagescountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("pagescountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("pagescountpageviews"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("pagescountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("pagescountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("pagescountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("pagescountpageviews"));
+%>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><nobr><%= mytext.display("usage.pages.page") %></nobr></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.id") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator mypagescountpageviews = Common.LinkedHashMapKeysSortedByNumericValues(usage, "pagescountpageviews", "pagescountvisits", "pagescountvisitors", "pagescountclienthosts", false).keySet().iterator();
+	while (mypagescountpageviews.hasNext()) {
+		String mypage = "" + mypagescountpageviews.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentLink(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentName(mypage, myconfig, db) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.pageId(mypage) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountclienthosts")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountclienthosts")).get(mypage))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitors")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitors")).get(mypage))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisits")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisits")).get(mypage))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountpageviews")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountpageviews")).get(mypage))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthosts")).get(mypage))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthosts")).get(mypage))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitors")).get(mypage))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitors")).get(mypage))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisits")).get(mypage))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisits")).get(mypage))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviews")).get(mypage))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviews")).get(mypage))*100/maxpageviews) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviews")) %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>
+
+
+
+<%
+if ((HashMap)usage.get("pagescountpageviewssegment") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("pagescountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("pagescountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("pagescountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("pagescountpageviews"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("pagescountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("pagescountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("pagescountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("pagescountpageviews"));
+%>
+	<p>&nbsp;</p>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><nobr><%= mytext.display("usage.pages.page") %></nobr></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.id") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.segment") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator mypagescountpageviews = Common.LinkedHashMapKeysSortedByNumericValues(usage, "pagescountpageviewssegment", "pagescountvisitssegment", "pagescountvisitorssegment", "pagescountclienthostssegment", false).keySet().iterator();
+	while (mypagescountpageviews.hasNext()) {
+		String mypage = "" + mypagescountpageviews.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantLink(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantName(mypage, myconfig, db) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.pageVariantId(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariant(mypage) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountclienthostssegment")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountclienthostssegment")).get(mypage))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitorssegment")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitorssegment")).get(mypage))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitssegment")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitssegment")).get(mypage))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountpageviewssegment")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountpageviewssegment")).get(mypage))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthostssegment")).get(mypage))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthostssegment")).get(mypage))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorssegment")).get(mypage))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorssegment")).get(mypage))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitssegment")).get(mypage))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitssegment")).get(mypage))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewssegment")).get(mypage))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewssegment")).get(mypage))*100/maxpageviews) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviews")) %>&nbsp;</td>
+				<td align="right" width="50"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviewssegment")) %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>
+
+
+
+<%
+if ((HashMap)usage.get("pagescountpageviewstest") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("pagescountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("pagescountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("pagescountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("pagescountpageviews"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("pagescountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("pagescountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("pagescountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("pagescountpageviews"));
+%>
+	<p>&nbsp;</p>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><nobr><%= mytext.display("usage.pages.page") %></nobr></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.id") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.test") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator mypagescountpageviews = Common.LinkedHashMapKeysSortedByNumericValues(usage, "pagescountpageviewstest", "pagescountvisitstest", "pagescountvisitorstest", "pagescountclienthoststest", false).keySet().iterator();
+	while (mypagescountpageviews.hasNext()) {
+		String mypage = "" + mypagescountpageviews.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantLink(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantName(mypage, myconfig, db) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.pageVariantId(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariant(mypage) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountclienthoststest")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountclienthoststest")).get(mypage))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitorstest")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitorstest")).get(mypage))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitstest")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitstest")).get(mypage))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountpageviewstest")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountpageviewstest")).get(mypage))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthoststest")).get(mypage))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthoststest")).get(mypage))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorstest")).get(mypage))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorstest")).get(mypage))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitstest")).get(mypage))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitstest")).get(mypage))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewstest")).get(mypage))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewstest")).get(mypage))*100/maxpageviews) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviews")) %>&nbsp;</td>
+				<td align="right" width="50"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviewstest")) %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>
+
+
+
+<%
+if ((HashMap)usage.get("pagescountpageviewssegments") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("pagescountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("pagescountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("pagescountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("pagescountpageviews"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("pagescountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("pagescountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("pagescountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("pagescountpageviews"));
+%>
+	<p>&nbsp;</p>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><nobr><%= mytext.display("usage.pages.page") %></nobr></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.id") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.segments") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator mypagescountpageviews = Common.LinkedHashMapKeysSortedByNumericValues(usage, "pagescountpageviewssegments", "pagescountvisitssegments", "pagescountvisitorssegments", "pagescountclienthostssegments", false).keySet().iterator();
+	while (mypagescountpageviews.hasNext()) {
+		String mypage = "" + mypagescountpageviews.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantLink(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantName(mypage, myconfig, db) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.pageVariantId(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariant(mypage) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountclienthostssegments")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountclienthostssegments")).get(mypage))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitorssegments")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitorssegments")).get(mypage))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitssegments")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitssegments")).get(mypage))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountpageviewssegments")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountpageviewssegments")).get(mypage))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthostssegments")).get(mypage))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthostssegments")).get(mypage))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorssegments")).get(mypage))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorssegments")).get(mypage))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitssegments")).get(mypage))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitssegments")).get(mypage))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewssegments")).get(mypage))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewssegments")).get(mypage))*100/maxpageviews) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviews")) %>&nbsp;</td>
+				<td align="right" width="50"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviewssegments")) %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>
+
+
+
+<%
+if ((HashMap)usage.get("pagescountpageviewstests") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("pagescountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("pagescountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("pagescountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("pagescountpageviews"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("pagescountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("pagescountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("pagescountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("pagescountpageviews"));
+%>
+	<p>&nbsp;</p>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><nobr><%= mytext.display("usage.pages.page") %></nobr></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.id") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.tests") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator mypagescountpageviews = Common.LinkedHashMapKeysSortedByNumericValues(usage, "pagescountpageviewstests", "pagescountvisitstests", "pagescountvisitorstests", "pagescountclienthoststests", false).keySet().iterator();
+	while (mypagescountpageviews.hasNext()) {
+		String mypage = "" + mypagescountpageviews.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantLink(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantName(mypage, myconfig, db) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.pageVariantId(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariant(mypage) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountclienthoststests")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountclienthoststests")).get(mypage))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitorstests")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitorstests")).get(mypage))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitstests")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitstests")).get(mypage))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountpageviewstests")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountpageviewstests")).get(mypage))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthoststests")).get(mypage))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthoststests")).get(mypage))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorstests")).get(mypage))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorstests")).get(mypage))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitstests")).get(mypage))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitstests")).get(mypage))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewstests")).get(mypage))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewstests")).get(mypage))*100/maxpageviews) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviews")) %>&nbsp;</td>
+				<td align="right" width="50"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviewstests")) %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>
+
+
+
+<%
+if ((HashMap)usage.get("pagescountpageviewssegmentstests") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("pagescountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("pagescountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("pagescountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("pagescountpageviews"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("pagescountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("pagescountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("pagescountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("pagescountpageviews"));
+%>
+	<p>&nbsp;</p>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><nobr><%= mytext.display("usage.pages.page") %></nobr></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.id") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.pages.segmentstests") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator mypagescountpageviews = Common.LinkedHashMapKeysSortedByNumericValues(usage, "pagescountpageviewssegmentstests", "pagescountvisitssegmentstests", "pagescountvisitorssegmentstests", "pagescountclienthostssegmentstests", false).keySet().iterator();
+	while (mypagescountpageviews.hasNext()) {
+		String mypage = "" + mypagescountpageviews.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantLink(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariantName(mypage, myconfig, db) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.pageVariantId(mypage) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.contentVariant(mypage) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountclienthostssegmentstests")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountclienthostssegmentstests")).get(mypage))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitorssegmentstests")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitorssegmentstests")).get(mypage))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountvisitssegmentstests")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountvisitssegmentstests")).get(mypage))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("pagescountpageviewssegmentstests")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("pagescountpageviewssegmentstests")).get(mypage))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthostssegmentstests")).get(mypage))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountclienthostssegmentstests")).get(mypage))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorssegmentstests")).get(mypage))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitorssegmentstests")).get(mypage))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitssegmentstests")).get(mypage))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountvisitssegmentstests")).get(mypage))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewssegmentstests")).get(mypage))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("pagescountpageviewssegmentstests")).get(mypage))*100/maxpageviews) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviews")) %>&nbsp;</td>
+				<td align="right" width="50"><%= reportUsage.countValues((HashMap)usage.get("pagescountpageviewssegmentstests")) %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>

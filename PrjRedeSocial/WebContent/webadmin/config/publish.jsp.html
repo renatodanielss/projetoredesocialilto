@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.publish.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.publish.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <p> 
+      <form action="publish.jsp" method="POST">
+        <p> 
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.publish.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_publish" value="auto-on-save" <% if (myconfig.get(db, "use_publish").equals("auto-on-save")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.autoonsave") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_publish" value="manual-on" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_publish").equals("manual-on")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.manualon") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_publish" value="manual-off" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.manualoff") %></td>
+          </tr>
+          <tr> 
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_static_filenames" value="no" <% if (! myconfig.get(db, "use_static_filenames").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticfilenames.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_static_filenames" value="yes" <% if (myconfig.get(db, "use_static_filenames").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticfilenames.enable") %><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="use_static_content" value="" <% if (myconfig.get(db, "use_static_content").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticcontent.disable") %><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="use_static_content" value="yes" <% if (myconfig.get(db, "use_static_content").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticcontent.enable") %><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="use_static_content" value="no" <% if (myconfig.get(db, "use_static_content").equals("no")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticcontent.cloud") %><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= mytext.display("config.publish.staticcontent.info").replaceAll("\\.xxx", ".jsp") %></td>
+          </tr>
+          <tr> 
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_scheduled_publish" value="no" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (! myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.scheduled.publish.disable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_schedule" value="no" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (! myconfig.get(db, "use_schedule").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.scheduled.publish.schedule.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_scheduled_publish" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.scheduled.publish.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_schedule" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_schedule").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.scheduled.publish.schedule.enable") %></td>
+          </tr>
+          <tr> 
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_scheduled_unpublish" value="no" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (! myconfig.get(db, "use_scheduled_unpublish").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.scheduled.unpublish.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_scheduled_unpublish" value="yes" <% if (! License.valid(db, myconfig, "professional")) { %>disabled<% } else if (myconfig.get(db, "use_scheduled_unpublish").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.scheduled.unpublish.enable") %></td>
+          </tr>
+          <tr> 
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <%= mytext.display("config.publish.export") %>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <%= mytext.display("config.publish.export.rootpath") %> <input type="text" size="80" name="export_rootpath" value="<%= myconfig.get(db, "export_rootpath") %>">
+              <input<% if (myconfig.get(db, "export_rootpath").equals("")) { %> disabled<% } %> type="button" value="<%= mytext.display("config.publish.export.all") %>" onclick="javascript:window.open('/<%= mytext.display("adminpath") %>/content/export_all.jsp', 'export_window', 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);">
+            </td>
+          </tr>
+        </table>
+        <br>
+      </form>
+      <p>&nbsp;</p>
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

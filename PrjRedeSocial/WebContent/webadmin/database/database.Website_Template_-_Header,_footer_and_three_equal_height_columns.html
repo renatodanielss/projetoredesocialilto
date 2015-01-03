@@ -1,0 +1,65 @@
+<div style="float: left; padding: 0px; margin-right: 5px; margin-bottom: 5px; border: 1px solid #cccccc;">
+<table id="preview_page" style="width: 150px; height: 100px; background-color: #FFFFFF; border-collapse: collapse; border-style: none;">
+<tr>
+<td id="preview_header" colspan="3" style="height: 13px; background-color: #C0C0FF; border-style: none; margin: 0px; padding: 0px;"></td>
+</tr>
+<tr>
+<td id="preview_left" style="width: 25px; background-color: #FC8F74; border-style: none; margin: 0px; padding: 0px;"></td>
+<td id="preview_center" style="background-color: #FFFFFF; border-style: none;"></td>
+<td id="preview_right" style="width: 25px; background-color: #A9DE5B; border-style: none; margin: 0px; padding: 0px;"></td>
+</tr>
+<tr>
+<td id="preview_footer" colspan="3" style="height: 13px; background-color: #FFFFA0; border-style: none; margin: 0px; padding: 0px;"></td>
+</tr>
+</table>
+</div>
+
+Template layout with header, footer and three equal height columns.
+<br clear="all">
+
+<div class="import_parameters" style="display:none">
+
+<div>Adds a new template with the given template name, sizes and colours in the web content management system.</div>
+
+<div>Template name: <input disabled type="text" name="import_name" value="Header, footer and three equal height columns"></div>
+
+<table style=" padding: 0px; margin: 0px;">
+<tr><td colspan="3" style="background-color: #F0F0F0;"><div style="background-color: #F0F0F0; font-size: small; padding: 0px; margin: 0px;">Page - set width to less than 100% for centered header, columns and footer with margins</div></td></tr>
+<tr>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Page width:<br><input disabled type="text" size="5" name="import_pagewidth" value="100%" onchange="doPreview(this)"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Page background colour:<br><input disabled type="text" size="8" name="import_pagebackcol" value="#FFFFFF" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #FFFFFF;"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Page text colour:<br><input disabled type="text" size="8" name="import_pagetextcol" value="#000000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #000000;"></div></td>
+</tr>
+<tr><td colspan="3" style="background-color: #F0F0F0;"><div style="background-color: #F0F0F0; font-size: small; padding: 0px; margin: 0px;">Header</div></td></tr>
+<tr>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Header height:<br><input disabled type="text" size="5" name="import_headerheight" value="50px" onchange="doPreview(this)"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Header background colour:<br><input disabled type="text" size="8" name="import_headerbackcol" value="#C0C0FF" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #C0C0FF;"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Header text colour:<br><input disabled type="text" size="8" name="import_headertextcol" value="#000000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #000000;"></div></td>
+</tr>
+<tr><td colspan="3" style="background-color: #F0F0F0;"><div style="background-color: #F0F0F0; font-size: small; padding: 0px; margin: 0px;">Left column</div></td></tr>
+<tr>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Left column width:<br><input disabled type="text" size="5" name="import_leftwidth" value="150px" onchange="doPreview(this)"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Left column background colour:<br><input disabled type="text" size="8" name="import_leftbackcol" value="#FC8F74" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #FC8F74;"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Left column text colour:<br><input disabled type="text" size="8" name="import_lefttextcol" value="#000000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #000000;"></div></td>
+</tr>
+<tr><td colspan="3" style="background-color: #F0F0F0;"><div style="background-color: #F0F0F0; font-size: small; padding: 0px; margin: 0px;">Center column - set columns total width to less than 100% for centered columns with margins</div></td></tr>
+<tr>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Columns total width:<br><input disabled type="text" size="5" name="import_contentwidth" value="100%" onchange="doPreview(this)"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Center column background colour:<br><input disabled type="text" size="8" name="import_centerbackcol" value="#FFFFFF" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #FFFFFF;"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Center column text colour:<br><input disabled type="text" size="8" name="import_centertextcol" value="#000000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #000000;"></div></td>
+</tr>
+<tr><td colspan="3" style="background-color: #F0F0F0;"><div style="background-color: #F0F0F0; font-size: small; padding: 0px; margin: 0px;">Right column</div></td></tr>
+<tr>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Right column width:<br><input disabled type="text" size="5" name="import_rightwidth" value="150px" onchange="doPreview(this)"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Right column background colour:<br><input disabled type="text" size="8" name="import_rightbackcol" value="#A9DE5B" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #A9DE5B;"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Right column text colour:<br><input disabled type="text" size="8" name="import_righttextcol" value="#000000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #000000;"></div></td>
+</tr>
+<tr><td colspan="3" style="background-color: #F0F0F0;"><div style="background-color: #F0F0F0; font-size: small; padding: 0px; margin: 0px;">Footer</div></td></tr>
+<tr>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Footer height:<br><input disabled type="text" size="5" name="import_footerheight" value="50px" onchange="doPreview(this)"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Footer background colour:<br><input disabled type="text" size="8" name="import_footerbackcol" value="#FFFFA0" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #FFFFA0;"></div></td>
+<td><div style="font-size: small; padding: 0px; margin: 0px;">Footer text colour:<br><input disabled type="text" size="8" name="import_footertextcol" value="#000000" onchange="doPreview(this)"><img src="/webadmin/webeditor/spacer.gif" onclick="selectColour(this.previousSibling)" style="width: 20px; height: 20px; margin: 0px; padding: 0px; vertical-align: top; border: 1px solid #cccccc; background-color: #000000;"></div></td>
+</tr>
+</table>
+
+</div>

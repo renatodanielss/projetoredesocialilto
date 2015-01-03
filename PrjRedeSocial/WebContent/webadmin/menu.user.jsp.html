@@ -1,0 +1,73 @@
+
+<% if (mysession.get("menu").equals("user")) { %>
+	<br>
+	<div id="userMenu" style="display: none;">
+		<ul>
+			<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_user"><a href="#"><%= mytext.display("menu.users") %></a>
+				<ul>
+	<% if (! adminuser.permission(db, "forbid", "webadmin_user_administrators")) { %>
+		<% if (! myconfig.get(db, "use_userclasses").equals("")) { %>
+					<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_usergroups").equals("")) || (! myconfig.get(db, "use_usertypes").equals("")) || (! myconfig.get(db, "use_useractivation").equals(""))) { %>jstree-closed initopen<% } %>" id="menuitem_user_administrators"><a class="<% if (selected_userclass.equals("administrator") && selected_usergroup.equals(" ") && selected_usertype.equals(" ") && selected_status.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=administrator&usertype=%20&usergroup=%20&status=%20&menu=<%= _menu %>&"><%= mytext.display("menu.users.administrators") %></a>
+						<ul>
+		        <% if (! myconfig.get(db, "use_usergroups").equals("")) { %>
+							<li rel="folder" class="jstree-closed" id="menuitem_user_administrators_groups"><a href="#"><%= mytext.display("menu.group") %></a></li>
+		        <% } %>
+			<% if (! myconfig.get(db, "use_usertypes").equals("")) { %>
+							<li rel="folder" class="jstree-closed" id="menuitem_user_administrators_types"><a href="#"><%= mytext.display("menu.type") %></a></li>
+			<% } %>
+			<% if (! myconfig.get(db, "use_useractivation").equals("")) { %>
+							<li rel="folder" class="jstree-closed" id="menuitem_user_administrators_status"><a href="#"><%= mytext.display("menu.status") %></a>
+								<ul>
+				<% if (! single_menu_selection) { %>
+									<li rel="page" id="menuitem_user_administrators_status_all"><a class="<% if ((selected_userclass.equals("administrator")) && (selected_status.equals(" "))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=administrator&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status= &menu=<%= _menu %>&"><%= mytext.display("all") %></a></li>
+				<% } %>
+									<li rel="page" id="menuitem_user_administrators_status_pending"><a class="<% if ((selected_userclass.equals("administrator")) && (selected_status.equals("pending"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=administrator&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status=pending&menu=<%= _menu %>&"><%= mytext.display("menu.status.pending") %></a></li>
+									<li rel="page" id="menuitem_user_administrators_status_active"><a class="<% if ((selected_userclass.equals("administrator")) && (selected_status.equals("active"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=administrator&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status=active&menu=<%= _menu %>&"><%= mytext.display("menu.status.active") %></a></li>
+									<li rel="page" id="menuitem_user_administrators_status_expiring"><a class="<% if ((selected_userclass.equals("administrator")) && (selected_status.equals("expiring"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=administrator&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status=expiring&menu=<%= _menu %>&"><%= mytext.display("menu.status.expiring") %></a></li>
+									<li rel="page" id="menuitem_user_administrators_status_expired"><a class="<% if ((selected_userclass.equals("administrator")) && (selected_status.equals("expired"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=administrator&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status=expired&menu=<%= _menu %>&"><%= mytext.display("menu.status.expired") %></a></li>
+								</ul>
+							</li>
+			<% } %>
+						</ul>
+					</li>
+		<% } %>
+	<% } %>
+	<% if (! adminuser.permission(db, "forbid", "webadmin_user_templates")) { %>
+					<li rel="pagefolder" id="menuitem_user_templates"><a class="<% if (selected_userclass.equals("-")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=-&usertype=%20&usergroup=%20&status=%20&menu=<%= _menu %>&"><%= mytext.display("menu.users.templates") %></a></li>
+	<% } %>
+	<% if (! adminuser.permission(db, "forbid", "webadmin_user_users")) { %>
+					<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_usergroups").equals("")) || (! myconfig.get(db, "use_usertypes").equals("")) || (! myconfig.get(db, "use_useractivation").equals(""))) { %>jstree-closed initopen<% } %>" id="menuitem_user_users"><a class="<% if (selected_userclass.equals(" ") && selected_usergroup.equals(" ") && selected_usertype.equals(" ") && selected_status.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=%20&usertype=%20&usergroup=%20&status=%20&menu=<%= _menu %>&"><%= mytext.display("menu.users.users") %></a>
+						<ul>
+	        <% if (! myconfig.get(db, "use_usergroups").equals("")) { %>
+							<li rel="folder" class="jstree-closed" id="menuitem_user_groups"><a href="#"><%= mytext.display("menu.group") %></a></li>
+	        <% } %>
+		<% if (! myconfig.get(db, "use_usertypes").equals("")) { %>
+							<li rel="folder" class="jstree-closed" id="menuitem_user_types"><a href="#"><%= mytext.display("menu.type") %></a></li>
+		<% } %>
+		<% if (! myconfig.get(db, "use_useractivation").equals("")) { %>
+							<li rel="folder" class="jstree-closed" id="menuitem_user_status"><a href="#"><%= mytext.display("menu.status") %></a>
+								<ul>
+        			<% if (! single_menu_selection) { %>
+									<li rel="page" id="menuitem_user_status_all"><a class="<% if ((selected_userclass.equals(" ")) && (selected_status.equals(" "))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=%20&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status= &menu=<%= _menu %>&"><%= mytext.display("all") %></a></li>
+        			<% } %>
+									<li rel="page" id="menuitem_user_status_pending"><a class="<% if ((selected_userclass.equals(" ")) && (selected_status.equals("pending"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=%20&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status=pending&menu=<%= _menu %>&"><%= mytext.display("menu.status.pending") %></a></li>
+									<li rel="page" id="menuitem_user_status_active"><a class="<% if ((selected_userclass.equals(" ")) && (selected_status.equals("active"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=%20&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status=active&menu=<%= _menu %>&"><%= mytext.display("menu.status.active") %></a></li>
+									<li rel="page" id="menuitem_user_status_expiring"><a class="<% if ((selected_userclass.equals(" ")) && (selected_status.equals("expiring"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=%20&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status=expiring&menu=<%= _menu %>&"><%= mytext.display("menu.status.expiring") %></a></li>
+									<li rel="page" id="menuitem_user_status_expired"><a class="<% if ((selected_userclass.equals(" ")) && (selected_status.equals("expired"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/users/index.jsp?userclass=%20&usertype=<%= URLEncoder.encode(_usertype) %>&usergroup=<%= URLEncoder.encode(_usergroup) %>&status=expired&menu=<%= _menu %>&"><%= mytext.display("menu.status.expired") %></a></li>
+								</ul>
+							</li>
+		<% } %>
+						</ul>
+					</li>
+	<% } %>
+				</ul>
+			</li>
+	<% for (int i=0; i<module.size(); i++) { %>
+		<% if ((moduleUsersMenuTitle.size()>i) && (! moduleUsersMenuTitle.get(i).equals(""))) { %>
+			<li rel="page" class="jstree-leaf" id="menuitem_user_module<%= i %>"><a href="<%= moduleUsersMenuLink.get(i) %>"><%= moduleUsersMenuTitle.get(i) %></a></li>
+		<% } %>
+	<% } %>
+		</ul>
+	</div>
+	<br>
+<% } %>

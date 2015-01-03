@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('fileselectorinsert_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.webeditor && top.webeditor.window_proxy && top.webeditor.window_proxy[editor]) webeditor = top.webeditor.window_proxy[editor];
+request_callback = requestParameter("callback");
+request_focus = requestParameter("focus");
+
+function InitForm() {
+	document.myform.href.value = parent.tag["href"];
+}
+
+function insertFile() {
+	if (top && top.opener && top.opener[request_callback]) {
+		top.opener[request_callback](document.myform.href.value);
+	} else if (top && top[request_callback]) {
+		top[request_callback](document.myform.href.value);
+	}
+	webeditor.window_close(top);
+}
+
+</script>
+</head>
+<body onload="InitForm(); if (request_focus == 'true') self.focus();">
+
+<form action="" id="myform" name="myform" onSubmit="javascript:insertFile(); return false;">
+<table summary="" width="100%" border="0" class="dtree">
+	<tr><th colspan="6" align="left"><script type="text/javascript">document.write(Text('fileselectorinsert_text'));</script></th></tr>
+	<tr>
+		<td align="left" colspan="6"><script type="text/javascript">document.write(Text('fileselectorinsert_address'));</script></td>
+	</tr>
+	<tr>
+		<td colspan="3"><input type="text" size="60" name="href" value="" onChange="parent.tag['href']=this.value"></td>
+		<td rowspan="4" align="center">
+			<script type="text/javascript">document.write('<input type="button" name="insert_button" value="' + Text('ok') + '" onClick="javascript:insertFile();">');</script>
+			<script type="text/javascript">document.write('<input type="button" name="cancel_button" value="' + Text('cancel') + '" onClick="javascript:webeditor.window_close(top);">');</script>
+		</td>
+	</tr>
+	<tr><td></td><td></td><td></td><td width="100%"></td></tr>
+</table>
+</form>
+</body>
+</html>

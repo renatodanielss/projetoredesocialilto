@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('find_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+editor = requestParameter("editor");
+
+function initform() {
+	var request = "" + window.location;
+//	document.forms[0].find.value = unescape(request.match(new RegExp("^.*\?.*[?&]search=([^&]+).*$", "i"), "$1") ? request.replace(new RegExp("^.*?.*[?&]find=([^&]+).*$", "i"), "$1") : "");
+}
+
+function doFind(form) {
+	var searchstring = form.find.value;
+	if (searchstring != "") {
+		var searchdirection = 1000000000;
+		if ((form.searchdirection.length>0) && (form.searchdirection[0].checked) && (form.searchdirection[0].value == "up")) {
+			searchdirection = -1000000000;
+		} else if ((form.searchdirection.length>1) && (form.searchdirection[1].checked) && (form.searchdirection[1].value == "up")) {
+			searchdirection = -1000000000;
+		}
+		var searchmode = 0;
+		if (searchdirection<0) searchmode += 1;
+		if (form.matchword.checked) searchmode += 2;
+		if (form.matchcase.checked) searchmode += 4;
+
+		if (webeditor.contenteditable_focused_contentwindow && webeditor.contenteditable_focused_contentwindow() && webeditor.contenteditable_focused_contentwindow().find) {
+
+			webeditor.contenteditable_focused_contentwindow().find(searchstring, form.matchcase.checked, (searchdirection<0), true, form.matchword.checked, false, false);
+
+		} else {
+			var range = webeditor.contenteditable_selection().createRange();
+			if (searchdirection>0) {
+				range.collapse(false);
+			} else {
+				range.collapse(true);
+			}
+			if (range.findText(searchstring, searchdirection, searchmode)) {
+				range.select();
+			} else {
+				range.expand("textedit");
+				if (searchdirection>0) {
+					range.collapse(true);
+				} else {
+					range.collapse(false);
+				}
+				range.select();
+				if (range.findText(searchstring, searchdirection, searchmode)) {
+					range.select();
+				}
+			}
+		}
+	}
+}
+
+</script>
+</head>
+<body onLoad="initform();">
+<form action="#" onSubmit="javascript:doFind(this); return false;">
+<table summary="" style="height: 100%; width: 100%;" class="dtree">
+	<tr align="left" valign="bottom"> 
+		<td width="50%"></td>
+		<td colspan="3">
+			<span style="white-space: nowrap;"><script type="text/javascript">document.write(Text('find_text'));</script> <input type="text" name="find" size="30" value=""></span>
+		</td>
+		<td><script type="text/javascript">document.write('<input type="button" value="' + Text('find_next') + '" onClick="doFind(this.form);">');</script></td>
+		<td width="50%"></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="50%"></td>
+		<td>
+			<span style="white-space: nowrap;"><input type="checkbox" name="matchword" value=""> <script type="text/javascript">document.write(Text('find_matchword'));</script></span><br>
+			<span style="white-space: nowrap;"><input type="checkbox" name="matchcase" value=""> <script type="text/javascript">document.write(Text('find_matchcase'));</script></span><br>
+		</td>
+		<td></td>
+		<td>
+			<span style="white-space: nowrap;"><script type="text/javascript">document.write(Text('find_direction'));</script></span><br>
+			<span style="white-space: nowrap;"><input type="radio" name="searchdirection" value="up"> <script type="text/javascript">document.write(Text('find_direction_up'));</script>
+			<input type="radio" name="searchdirection" value="down" checked> <script type="text/javascript">document.write(Text('find_direction_down'));</script></span><br>
+		</td>
+		<td><script type="text/javascript">document.write('<input type="button" value="' + Text('cancel') + '" onClick="window.close();">');</script></td>
+		<td width="50%"></td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

@@ -1,0 +1,1116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.userdatabase.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.userdatabase.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <p> 
+      <form action="userdatabase.jsp" method="POST">
+        <p> 
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.userdatabase.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_userdatabase" value="yes" <% if (! License.valid(db, myconfig, "personal")) { %>disabled<% } else if (myconfig.get(db, "use_userdatabase").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.userdatabase.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_userdatabase" value="" <% if (myconfig.get(db, "use_userdatabase").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.userdatabase.disable") %></td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.userdatabase.directory") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_userdirectory" value="ldap" <% if (! License.valid(db, myconfig, "enterprise")) { %>disabled<% } else if ((myconfig.get(db, "use_userdatabase").equals("ldap")) || (myconfig.get(db, "use_userdirectory").equals("ldap"))) { %>checked<% } %> >
+              <%= mytext.display("config.userdatabase.directory.enable") %></td>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="radio" name="use_userdirectory" value="" <% if ((! myconfig.get(db, "use_userdatabase").equals("ldap")) && (! myconfig.get(db, "use_userdirectory").equals("ldap"))) { %>checked<% } %> >
+              <%= mytext.display("config.userdatabase.directory.disable") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.userdatabase.directory.url") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_url" value="<%= myconfig.get(db, "directory_url") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.userdatabase.directory.parameters") %></td>
+            <td class="WCMinnerContentInputValue">
+              <textarea rows="3" cols="80" style="width: 100%;" name="directory_parameters"><%= html.encode(myconfig.get(db, "directory_parameters")) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.userdatabase.directory.dn") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_dn" value="<%= myconfig.get(db, "directory_dn") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.userdatabase.directory.password") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_password" value="<%= myconfig.get(db, "directory_password") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.userdatabase.directory.root") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_root" value="<%= myconfig.get(db, "directory_root") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.login.username") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_username" value="<%= myconfig.get(db, "directory_username") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("users.details.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.details.title") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_title" value="<%= myconfig.get(db, "directory_title") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.details.name") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_name" value="<%= myconfig.get(db, "directory_name") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.details.organisation") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_organisation" value="<%= myconfig.get(db, "directory_organisation") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.details.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_email" value="<%= myconfig.get(db, "directory_email") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.details.gender") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_gender" value="<%= myconfig.get(db, "directory_gender") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.details.birthdate") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_birthdate" value="<%= myconfig.get(db, "directory_birthdate") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("users.details.birthdate.day") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_birthday" value="<%= myconfig.get(db, "directory_birthday") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("users.details.birthdate.month") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_birthmonth" value="<%= myconfig.get(db, "directory_birthmonth") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("users.details.birthdate.year") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_birthyear" value="<%= myconfig.get(db, "directory_birthyear") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.details.notes") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_notes" value="<%= myconfig.get(db, "directory_notes") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.userdatabase.directory.userinfo") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_userinfo" value="<%= myconfig.get(db, "directory_userinfo") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("users.categories.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.categories.class") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_userclass" value="<%= myconfig.get(db, "directory_userclass") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.categories.class") %>: <%= mytext.display("users.categories.administrator") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_userclass_admin" value="<%= myconfig.get(db, "directory_userclass_admin") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.categories.group") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_usergroups" value="<%= myconfig.get(db, "directory_usergroups") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.categories.type") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_usertypes" value="<%= myconfig.get(db, "directory_usertypes") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("users.activation.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.activation.activate") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_scheduled_publish" value="<%= myconfig.get(db, "directory_scheduled_publish") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.activation.activate.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_scheduled_publish_email" value="<%= myconfig.get(db, "directory_scheduled_publish_email") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.activation.notify") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_scheduled_notify" value="<%= myconfig.get(db, "directory_scheduled_notify") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.activation.notify.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_scheduled_notify_email" value="<%= myconfig.get(db, "directory_scheduled_notify_email") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.activation.expire") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_scheduled_unpublish" value="<%= myconfig.get(db, "directory_scheduled_unpublish") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.activation.expire.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_scheduled_unpublish_email" value="<%= myconfig.get(db, "directory_scheduled_unpublish_email") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("users.invoice.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.name") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_name" value="<%= myconfig.get(db, "directory_invoice_name") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.organisation") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_organisation" value="<%= myconfig.get(db, "directory_invoice_organisation") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.address") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_address" value="<%= myconfig.get(db, "directory_invoice_address") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.postalcode") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_postalcode" value="<%= myconfig.get(db, "directory_invoice_postalcode") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.city") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_city" value="<%= myconfig.get(db, "directory_invoice_city") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.state") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_state" value="<%= myconfig.get(db, "directory_invoice_state") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.country") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_country" value="<%= myconfig.get(db, "directory_invoice_country") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.phone") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_phone" value="<%= myconfig.get(db, "directory_invoice_phone") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.fax") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_fax" value="<%= myconfig.get(db, "directory_invoice_fax") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_email" value="<%= myconfig.get(db, "directory_invoice_email") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.invoice.website") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_invoice_website" value="<%= myconfig.get(db, "directory_invoice_website") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("users.delivery.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.name") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_name" value="<%= myconfig.get(db, "directory_delivery_name") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.organisation") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_organisation" value="<%= myconfig.get(db, "directory_delivery_organisation") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.address") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_address" value="<%= myconfig.get(db, "directory_delivery_address") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.postalcode") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_postalcode" value="<%= myconfig.get(db, "directory_delivery_postalcode") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.city") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_city" value="<%= myconfig.get(db, "directory_delivery_city") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.state") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_state" value="<%= myconfig.get(db, "directory_delivery_state") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.country") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_country" value="<%= myconfig.get(db, "directory_delivery_country") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.phone") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_phone" value="<%= myconfig.get(db, "directory_delivery_phone") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.fax") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_fax" value="<%= myconfig.get(db, "directory_delivery_fax") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_email" value="<%= myconfig.get(db, "directory_delivery_email") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.delivery.website") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_delivery_website" value="<%= myconfig.get(db, "directory_delivery_website") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("users.payment.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.type") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_type" value="<%= myconfig.get(db, "directory_payment_type") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.number") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_number" value="<%= myconfig.get(db, "directory_payment_number") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.issuedmonth") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_issuedmonth" value="<%= myconfig.get(db, "directory_payment_issuedmonth") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.issuedyear") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_issuedyear" value="<%= myconfig.get(db, "directory_payment_issuedyear") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.expirymonth") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_expirymonth" value="<%= myconfig.get(db, "directory_payment_expirymonth") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.expiryyear") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_expiryyear" value="<%= myconfig.get(db, "directory_payment_expiryyear") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.name") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_name" value="<%= myconfig.get(db, "directory_payment_name") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.cvc") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_cvc" value="<%= myconfig.get(db, "directory_payment_cvc") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.issue") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_issue" value="<%= myconfig.get(db, "directory_payment_issue") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("users.payment.postalcode") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_payment_postalcode" value="<%= myconfig.get(db, "directory_payment_postalcode") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("users.adminpreferences.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.contenteditor.heading") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_contenteditor" value="<%= myconfig.get(db, "directory_contenteditor") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.hardcore.imageupload") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_imageupload" value="<%= myconfig.get(db, "directory_imageupload") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.hardcore.format") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_format" value="<%= myconfig.get(db, "directory_format") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.hardcore.size") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.size.width") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_size_width" value="<%= myconfig.get(db, "directory_size_width") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.size.height") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_size_height" value="<%= myconfig.get(db, "directory_size_height") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.hardcore.enter") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.enter.onEnter") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_enter_onenter" value="<%= myconfig.get(db, "directory_enter_onenter") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.enter.onCtrlEnter") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_enter_onctrlenter" value="<%= myconfig.get(db, "directory_enter_onctrlenter") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.enter.onShiftEnter") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_enter_onshiftenter" value="<%= myconfig.get(db, "directory_enter_onshiftenter") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.enter.onAltEnter") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_enter_onaltenter" value="<%= myconfig.get(db, "directory_enter_onaltenter") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.hardcore.toolbar") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.toolbar") %> 1</td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_hardcore_toolbar1" value="<%= myconfig.get(db, "directory_hardcore_toolbar1") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.toolbar") %> 2</td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_hardcore_toolbar2" value="<%= myconfig.get(db, "directory_hardcore_toolbar2") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.toolbar") %> 3</td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_hardcore_toolbar3" value="<%= myconfig.get(db, "directory_hardcore_toolbar3") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.toolbar") %> 4</td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_hardcore_toolbar4" value="<%= myconfig.get(db, "directory_hardcore_toolbar4") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.hardcore.toolbar") %> 5</td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_hardcore_toolbar5" value="<%= myconfig.get(db, "directory_hardcore_toolbar5") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.webadmin.heading") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.browseedit") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_browseedit" value="<%= myconfig.get(db, "directory_webadmin_browseedit") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.structure") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_structure" value="<%= myconfig.get(db, "directory_webadmin_structure") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.content") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content" value="<%= myconfig.get(db, "directory_webadmin_content") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.content.structure") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content_structure" value="<%= myconfig.get(db, "directory_webadmin_content_structure") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.content.pages") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content_pages" value="<%= myconfig.get(db, "directory_webadmin_content_pages") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.content.elements") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content_elements" value="<%= myconfig.get(db, "directory_webadmin_content_elements") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.content.templates") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content_templates" value="<%= myconfig.get(db, "directory_webadmin_content_templates") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.content.stylesheets") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content_stylesheets" value="<%= myconfig.get(db, "directory_webadmin_content_stylesheets") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.content.scripts") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content_scripts" value="<%= myconfig.get(db, "directory_webadmin_content_scripts") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.content.packages") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content_packages" value="<%= myconfig.get(db, "directory_webadmin_content_packages") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.content.bundles") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_content_bundles" value="<%= myconfig.get(db, "directory_webadmin_content_bundles") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.library") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_library" value="<%= myconfig.get(db, "directory_webadmin_library") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.library.images") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_library_images" value="<%= myconfig.get(db, "directory_webadmin_library_images") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.library.files") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_library_files" value="<%= myconfig.get(db, "directory_webadmin_library_files") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.library.links") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_library_links" value="<%= myconfig.get(db, "directory_webadmin_library_links") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.library.packages") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_library_packages" value="<%= myconfig.get(db, "directory_webadmin_library_packages") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.library.bundles") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_library_bundles" value="<%= myconfig.get(db, "directory_webadmin_library_bundles") %>">
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.ecommerce") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_ecommerce" value="<%= myconfig.get(db, "directory_webadmin_ecommerce") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.ecommerce.products") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_ecommerce_products" value="<%= myconfig.get(db, "directory_webadmin_ecommerce_products") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.ecommerce.orders") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_ecommerce_orders" value="<%= myconfig.get(db, "directory_webadmin_ecommerce_orders") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.ecommerce.packages") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_ecommerce_packages" value="<%= myconfig.get(db, "directory_webadmin_ecommerce_packages") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.ecommerce.bundles") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_ecommerce_bundles" value="<%= myconfig.get(db, "directory_webadmin_ecommerce_bundles") %>">
+            </td>
+          </tr>
+<% } %>
+<% if (License.valid(db, myconfig, "databases")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.databases") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_databases" value="<%= myconfig.get(db, "directory_webadmin_databases") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.databases.data") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_databases_data" value="<%= myconfig.get(db, "directory_webadmin_databases_data") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.databases.export") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_databases_export" value="<%= myconfig.get(db, "directory_webadmin_databases_export") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.databases.import") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_databases_import" value="<%= myconfig.get(db, "directory_webadmin_databases_import") %>">
+            </td>
+          </tr>
+<% } %>
+<% if (License.valid(db, myconfig, "experience")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.experience") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_experience" value="<%= myconfig.get(db, "directory_webadmin_experience") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.experience.segments") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_experience_segments" value="<%= myconfig.get(db, "directory_webadmin_experience_segments") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.experience.usertests") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_experience_usertests" value="<%= myconfig.get(db, "directory_webadmin_experience_usertests") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.experience.heatmaps") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_experience_heatmaps" value="<%= myconfig.get(db, "directory_webadmin_experience_heatmaps") %>">
+            </td>
+          </tr>
+<% } %>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.users") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_users" value="<%= myconfig.get(db, "directory_webadmin_users") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.users.administrators") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_users_administrators" value="<%= myconfig.get(db, "directory_webadmin_users_administrators") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.users.templates") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_users_templates" value="<%= myconfig.get(db, "directory_webadmin_users_templates") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.users.users") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_users_users" value="<%= myconfig.get(db, "directory_webadmin_users_users") %>">
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "statistics")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.statistics") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics" value="<%= myconfig.get(db, "directory_webadmin_statistics") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.statistics.summary") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_summary" value="<%= myconfig.get(db, "directory_webadmin_statistics_summary") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.statistics.what") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_what" value="<%= myconfig.get(db, "directory_webadmin_statistics_what") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.what.websites") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_what_websites" value="<%= myconfig.get(db, "directory_webadmin_statistics_what_websites") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.what.content") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_what_content" value="<%= myconfig.get(db, "directory_webadmin_statistics_what_content") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.what.library") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_what_library" value="<%= myconfig.get(db, "directory_webadmin_statistics_what_library") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.what.ecommerce") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_what_ecommerce" value="<%= myconfig.get(db, "directory_webadmin_statistics_what_ecommerce") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.what.databases") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_what_databases" value="<%= myconfig.get(db, "directory_webadmin_statistics_what_databases") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.statistics.when") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when" value="<%= myconfig.get(db, "directory_webadmin_statistics_when") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.daily") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_daily" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_daily") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.weekly") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_weekly" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_weekly") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.monthly") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_monthly" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_monthly") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.yearly") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_yearly" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_yearly") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.hours") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_hours" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_hours") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.weekdays") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_weekdays" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_weekdays") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.days") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_days" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_days") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.weeks") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_weeks" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_weeks") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.when.months") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_when_months" value="<%= myconfig.get(db, "directory_webadmin_statistics_when_months") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.statistics.who") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_who" value="<%= myconfig.get(db, "directory_webadmin_statistics_who") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.who.countries") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_who_countries" value="<%= myconfig.get(db, "directory_webadmin_statistics_who_countries") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.who.visitors") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_who_visitors" value="<%= myconfig.get(db, "directory_webadmin_statistics_who_visitors") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.who.robots") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_who_robots" value="<%= myconfig.get(db, "directory_webadmin_statistics_who_robots") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.who.operatingsystems") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_who_operatingsystems" value="<%= myconfig.get(db, "directory_webadmin_statistics_who_operatingsystems") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.who.webbrowsers") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_who_webbrowsers" value="<%= myconfig.get(db, "directory_webadmin_statistics_who_webbrowsers") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.who.users") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_who_users" value="<%= myconfig.get(db, "directory_webadmin_statistics_who_users") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.statistics.why") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_why" value="<%= myconfig.get(db, "directory_webadmin_statistics_why") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.why.referers") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_why_referers" value="<%= myconfig.get(db, "directory_webadmin_statistics_why_referers") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.why.searchengines") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_why_searchengines" value="<%= myconfig.get(db, "directory_webadmin_statistics_why_searchengines") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.why.searchqueries") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_why_searchqueries" value="<%= myconfig.get(db, "directory_webadmin_statistics_why_searchqueries") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.why.searchwords") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_why_searchwords" value="<%= myconfig.get(db, "directory_webadmin_statistics_why_searchwords") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; - <%= mytext.display("menu.statistics.how") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_how" value="<%= myconfig.get(db, "directory_webadmin_statistics_how") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.how.entry") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_how_entry" value="<%= myconfig.get(db, "directory_webadmin_statistics_how_entry") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.how.paths") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_how_paths" value="<%= myconfig.get(db, "directory_webadmin_statistics_how_paths") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.how.exit") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_how_exit" value="<%= myconfig.get(db, "directory_webadmin_statistics_how_exit") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.how.duration") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_how_duration" value="<%= myconfig.get(db, "directory_webadmin_statistics_how_duration") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">&nbsp;&nbsp; &nbsp;&nbsp; - <%= mytext.display("menu.statistics.how.visits") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_statistics_how_visits" value="<%= myconfig.get(db, "directory_webadmin_statistics_how_visits") %>">
+            </td>
+          </tr>
+<% } %>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("menu.updates") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_webadmin_updates" value="<%= myconfig.get(db, "directory_webadmin_updates") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.workspace.heading") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_workspace_sections" value="<%= myconfig.get(db, "directory_workspace_sections") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.index.heading") %></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.workspace") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_workspace" value="<%= myconfig.get(db, "directory_index_workspace") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.content") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_content" value="<%= myconfig.get(db, "directory_index_content") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.library") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_library" value="<%= myconfig.get(db, "directory_index_library") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.product") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_product" value="<%= myconfig.get(db, "directory_index_product") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.stock") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_stock" value="<%= myconfig.get(db, "directory_index_stock") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.order") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_order" value="<%= myconfig.get(db, "directory_index_order") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.usersegments") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_segments" value="<%= myconfig.get(db, "directory_index_segments") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.usertests") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_usertests" value="<%= myconfig.get(db, "directory_index_usertests") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.heatmaps") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_heatmaps" value="<%= myconfig.get(db, "directory_index_heatmaps") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.user") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_user" value="<%= myconfig.get(db, "directory_index_user") %>">
+            </td>
+          </tr>
+<!--
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.databases") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_databases" value="<%= myconfig.get(db, "directory_index_databases") %>">
+            </td>
+          </tr>
+-->
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.websites") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_websites" value="<%= myconfig.get(db, "directory_index_websites") %>">
+            </td>
+          </tr>
+<% if ((License.valid(db, myconfig, "hosting") || (myconfig.get(db, "hosting_license").equals("TRIAL"))) && ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) || (myconfig.get(db, "superadmin").equals("")))) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue">- <%= mytext.display("config.editor.index.hosting") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_index_hosting" value="<%= myconfig.get(db, "directory_index_hosting") %>">
+            </td>
+          </tr>
+<% } %>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.editor.index.menu.heading") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_menu_selection" value="<%= myconfig.get(db, "directory_menu_selection") %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mytext.display("config.statistics.index.reports") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="directory_statistics_reports" value="<%= myconfig.get(db, "directory_statistics_reports") %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+      </form>
+      <p>&nbsp;</p>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

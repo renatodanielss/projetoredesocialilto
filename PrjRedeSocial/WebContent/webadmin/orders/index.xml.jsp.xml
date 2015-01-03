@@ -1,0 +1,225 @@
+<%= "<" + "?xml version=\"1.0\" encoding=\"" + myconfig.get(db, "charset") + "\" ?" + ">" %>
+<ajax-response><response type="object" id="data_grid_updater">
+<% if (! error.equals("")) { %>
+<rows update_ui="false" /><error><%= html.encode(error) %></error>
+<% } else { %>
+<rows update_ui="true">
+<%
+	while (order.records(db, "")) {
+		boolean administrator = true;
+		boolean creator = true;
+		boolean editor = true;
+		if ((myconfig.get(db, "use_workflow_orders").equals("yes")) && (! workflow.permissions(db, order.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), "-order-", "", "", "", ((order.getStatusBy().equals(mysession.get("username"))) || (order.getStatusBy().equals(""))))) && (! myconfig.get(db, "superadmin").equals(mysession.get("username")))) {
+			administrator = false;
+			creator = false;
+			editor = false;
+		}
+		if (! workflow.permissionEnd(db, order.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), "-order-", "", "", "", ((order.getStatusBy().equals(mysession.get("username"))) || (order.getStatusBy().equals(""))))) {
+			administrator = false;
+		}
+		if ((! order.getCheckedOut().equals("")) && (! order.getCheckedOut().equals(mysession.get("username")))) {
+			administrator = false;
+			creator = false;
+			editor = false;
+		}
+		if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) {
+			administrator = true;
+			creator = true;
+			editor = true;
+		}
+		String workflowoptions = "";
+		if (order.getCheckoutPermissions(mysession.get("username"), db, myconfig)) {
+			workflowoptions = "workflowoptions[" + order.getId() + "] = '" + workflow.workflow_action_select_options(db, order.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), "-order-", "", "", "", (myconfig.get(db, "superadmin").equals(mysession.get("username"))), (order.getStatusBy().equals(mysession.get("username")))).replaceAll("\\r","\\\\r").replaceAll("\\n","\\\\n").replaceAll("\"","&quot;") + "';";
+		} else {
+			workflowoptions = "workflowoptions[" + order.getId() + "] = '';";
+		}
+%>
+        <tr> 
+<%
+			String myadminindex = "";
+			if (myadminindex.equals("")) {
+				myadminindex = adminuser.getIndexOrder();
+			}
+			if (myadminindex.equals("")) {
+				myadminindex = myconfig.get(db, "index_order");
+			}
+			if (myadminindex.equals("")) {
+				myadminindex = myconfig.get(db, "use_adminindex");
+			}
+			if (myadminindex.equals("")) {
+				myadminindex = "checkbox:25px id:25px created:100px paid:100px closed:100px delivery_email:200px status:50px checkout:50px view:50px update:50px delete:50px";
+			}
+
+			String[] columns = myadminindex.split(" ");
+			for (int i=0; i<columns.length; i++) {
+				String mycolumn = columns[i];
+				String mycolumnname = "";
+				String mycolumnwidth = "";
+				String mycolumnhref = "";
+				if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+					mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+					mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+					mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+				} else if (mycolumn.matches("^(.+):(.+)$")) {
+					mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+					mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+				} else {
+					mycolumnname = mycolumn;
+				}
+				if (! mycolumnwidth.equals("")) {
+					mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+				}
+%>
+<% if (mycolumnname.equals("BLANK")) { %>
+          <td><![CDATA[&nbsp;]]></td>
+<% } else if (mycolumnname.equals("checkbox")) { %>
+          <td><![CDATA[<input type="checkbox" name="dummy" value="<%= order.getId() %>" onclick="toggleCheckbox(<%= order.getId() %>,this.checked);<%= workflowoptions %>;refreshWorkflow(this.form);">]]></td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td><![CDATA[<div style="text-align: right;"><%= order.getId() %>&nbsp;</div>]]></td>
+<% } else if (mycolumnname.equals("created")) { %>
+          <td><![CDATA[<span title="<%= order.getCreated() %>"><nobr><%= order.getCreated() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("createdby")) { %>
+          <td><![CDATA[<span title="<%= order.getCreatedBy() %>"><nobr><%= order.getCreatedBy() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("updated")) { %>
+          <td><![CDATA[<span title="<%= order.getUpdated() %>"><nobr><%= order.getUpdated() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("updatedby")) { %>
+          <td><![CDATA[<span title="<%= order.getUpdatedBy() %>"><nobr><%= order.getUpdatedBy() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("paid")) { %>
+          <td><![CDATA[<span title="<%= order.getPaid() %>"><nobr><%= order.getPaid() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("closed")) { %>
+          <td><![CDATA[<span title="<%= order.getPublished() %>"><nobr><%= order.getPublished() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("closedby")) { %>
+          <td><![CDATA[<span title="<%= order.getPublishedBy() %>"><nobr><%= order.getPublishedBy() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("status")) { %>
+          <td><![CDATA[<span title="<% if (! order.getStatus().equals("")) { %><%= order.getStatus() %><% } else if (! order.getPublished().equals("")) { %><%= mytext.display("orders.status.state.closed") %><% } else if (! order.getPaid().equals("")) { %><%= mytext.display("orders.status.state.paid") %><% } else if (! order.getCreated().equals(order.getUpdated())) { %><%= mytext.display("orders.status.state.open") %><% } else { %><%= mytext.display("orders.status.state.new") %><% } %>"><nobr><% if (! order.getStatus().equals("")) { %><%= order.getStatus() %><% } else if (! order.getPublished().equals("")) { %><%= mytext.display("orders.status.state.closed") %><% } else if (! order.getPaid().equals("")) { %><%= mytext.display("orders.status.state.paid") %><% } else if (! order.getCreated().equals(order.getUpdated())) { %><%= mytext.display("orders.status.state.open") %><% } else { %><%= mytext.display("orders.status.state.new") %><% } %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("statusby")) { %>
+          <td><![CDATA[<span title="<%= order.getStatusBy() %>"><nobr><%= order.getStatusBy() %></nobr></span>]]></td>
+
+<% } else if (mycolumnname.equals("currency")) { %>
+          <td><![CDATA[<span title="<%= order.getOrderCurrency() %>"><nobr><%= order.getOrderCurrency() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("order_quantity")) { %>
+          <td><![CDATA[<span title="<%= Common.integernumber(order.getOrderQuantity()) %>"><nobr><%= Common.integernumber(order.getOrderQuantity()) %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("order_subtotal")) { %>
+          <td><![CDATA[<div style="text-align: right;" title="<%= order.getOrderCurrency() %> <%= Common.numberformat(order.getOrderSubtotal(), 2) %>"><nobr><%= order.getOrderCurrency() %> <%= Common.numberformat(order.getOrderSubtotal(), 2) %></nobr></div>]]></td>
+<% } else if (mycolumnname.equals("order_total")) { %>
+          <td><![CDATA[<div style="text-align: right;" title="<%= order.getOrderCurrency() %> <%= Common.numberformat(order.getOrderTotal(), 2) %>"><nobr><%= order.getOrderCurrency() %> <%= Common.numberformat(order.getOrderTotal(), 2) %></nobr></div>]]></td>
+<% } else if (mycolumnname.equals("tax_description")) { %>
+          <td><![CDATA[<span title="<%= order.getTaxDescription().replaceAll("<span class=\"tax\">","").replaceAll("</span>","") %>"><nobr><%= order.getTaxDescription().replaceAll("<span class=\"tax\">","").replaceAll("</span>","") %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("tax_total")) { %>
+          <td><![CDATA[<div style="text-align: right;" title="<%= order.getOrderCurrency() %> <%= Common.numberformat(order.getTaxTotal(), 2) %>"><nobr><%= order.getOrderCurrency() %> <%= Common.numberformat(order.getTaxTotal(), 2) %></nobr></div>]]></td>
+<% } else if (mycolumnname.equals("shipping_description")) { %>
+          <td><![CDATA[<span title="<%= order.getShippingDescription().replaceAll("<span class=\"shipping\">","").replaceAll("</span>","") %>"><nobr><%= order.getShippingDescription().replaceAll("<span class=\"shiping\">","").replaceAll("</span>","") %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("shipping_total")) { %>
+          <td><![CDATA[<div style="text-align: right;" title="<%= order.getOrderCurrency() %> <%= Common.numberformat(order.getShippingTotal(), 2) %>"><nobr><%= order.getOrderCurrency() %> <%= Common.numberformat(order.getShippingTotal(), 2) %></nobr></div>]]></td>
+<% } else if (mycolumnname.equals("discount_description")) { %>
+          <td><![CDATA[<span title="<%= order.getDiscountDescription().replaceAll("<span class=\"discount\">","").replaceAll("</span>","") %>"><nobr><%= order.getDiscountDescription().replaceAll("<span class=\"discount\">","").replaceAll("</span>","") %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("discount_total")) { %>
+          <td><![CDATA[<div style="text-align: right;" title="<%= order.getOrderCurrency() %> <%= Common.numberformat(order.getDiscountTotal(), 2) %>"><nobr><%= order.getOrderCurrency() %> <%= Common.numberformat(order.getDiscountTotal(), 2) %></nobr></div>]]></td>
+
+<% } else if (mycolumnname.equals("delivery_name")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryName() %>"><%= order.getDeliveryName() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_organisation")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryOrganisation() %>"><%= order.getDeliveryOrganisation() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_address")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryAddress() %>"><%= order.getDeliveryAddress() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_postalcode")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryPostalcode() %>"><%= order.getDeliveryPostalcode() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_city")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryCity() %>"><%= order.getDeliveryCity() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_state")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryState() %>"><%= order.getDeliveryState() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_country")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryCountry() %>"><%= order.getDeliveryCountry() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_phone")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryPhone() %>"><%= order.getDeliveryPhone() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_fax")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryFax() %>"><%= order.getDeliveryFax() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_website")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryWebsite() %>"><%= order.getDeliveryWebsite() %></span>]]></td>
+<% } else if (mycolumnname.equals("delivery_email")) { %>
+          <td><![CDATA[<span title="<%= order.getDeliveryEmail() %>"><%= order.getDeliveryEmail() %></span>]]></td>
+
+<% } else if (mycolumnname.equals("invoice_name")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceName() %>"><%= order.getInvoiceName() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_organisation")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceOrganisation() %>"><%= order.getInvoiceOrganisation() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_address")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceAddress() %>"><%= order.getInvoiceAddress() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_postalcode")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoicePostalcode() %>"><%= order.getInvoicePostalcode() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_city")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceCity() %>"><%= order.getInvoiceCity() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_state")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceState() %>"><%= order.getInvoiceState() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_country")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceCountry() %>"><%= order.getInvoiceCountry() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_phone")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoicePhone() %>"><%= order.getInvoicePhone() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_fax")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceFax() %>"><%= order.getInvoiceFax() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_website")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceWebsite() %>"><%= order.getInvoiceWebsite() %></span>]]></td>
+<% } else if (mycolumnname.equals("invoice_email")) { %>
+          <td><![CDATA[<span title="<%= order.getInvoiceEmail() %>"><%= order.getInvoiceEmail() %></span>]]></td>
+
+<% } else if (mycolumnname.equals("card_type")) { %>
+          <td><![CDATA[<span title="<%= order.getCardType() %>"><nobr><%= order.getCardType() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_number")) { %>
+          <td><![CDATA[<span title="<%= order.getCardNumber() %>"><nobr><%= order.getCardNumber() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_issuedmonth")) { %>
+          <td><![CDATA[<span title="<%= order.getCardIssuedMonth() %>"><nobr><%= order.getCardIssuedMonth() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_issuedyear")) { %>
+          <td><![CDATA[<span title="<%= order.getCardIssuedYear() %>"><nobr><%= order.getCardIssuedYear() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_issued")) { %>
+          <td><![CDATA[<span title="<%= order.getCardIssuedMonth() %>/<%= order.getCardIssuedYear() %>"><nobr><%= order.getCardIssuedMonth() %>/<%= order.getCardIssuedYear() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_expirymonth")) { %>
+          <td><![CDATA[<span title="<%= order.getCardExpiryMonth() %>"><nobr><%= order.getCardExpiryMonth() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_expiryyear")) { %>
+          <td><![CDATA[<span title="<%= order.getCardExpiryYear() %>"><nobr><%= order.getCardExpiryYear() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_expiry")) { %>
+          <td><![CDATA[<span title="<%= order.getCardExpiryMonth() %>/<%= order.getCardExpiryYear() %>"><nobr><%= order.getCardExpiryMonth() %>/<%= order.getCardExpiryYear() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_name")) { %>
+          <td><![CDATA[<span title="<%= order.getCardName() %>"><nobr><%= order.getCardName() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_cvc")) { %>
+          <td><![CDATA[<span title="<%= order.getCardCVC() %>"><nobr><%= order.getCardCVC() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_issue")) { %>
+          <td><![CDATA[<span title="<%= order.getCardIssue() %>"><nobr><%= order.getCardIssue() %></nobr></span>]]></td>
+<% } else if (mycolumnname.equals("card_postalcode")) { %>
+          <td><![CDATA[<span title="<%= order.getCardPostalcode() %>"><nobr><%= order.getCardPostalcode() %></nobr></span>]]></td>
+
+<% } else if (mycolumnname.equals("create")) { %>
+          <td><![CDATA[<div align="center"><% if (creator) { %><a href="create.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a><% } else { %>&nbsp;<% } %></div>]]></td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td><![CDATA[<div align="center"><a href="view.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("view") %></a></div>]]></td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td><![CDATA[<div align="center"><% if (editor) { %><a href="update.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("update") %></a><% } else { %>&nbsp;<% } %></div>]]></td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td><![CDATA[<div align="center"><% if (administrator) { %><a href="delete.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("delete") %></a><% } else { %>&nbsp;<% } %></div>]]></td>
+<% } else if (mycolumnname.equals("checkout")) { %>
+          <% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+          <td><![CDATA[
+          	<% if (order.getCheckedOut().equals(mysession.get("username"))) { %>
+          		<div align="center"><a href="checkin.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("checkin") %></a></div>
+          	<% } else if ((! order.getCheckedOut().equals("")) && (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+          		<div align="center"><a href="checkin.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= order.getCheckedOut() %></a></div>
+          	<% } else if (! order.getCheckedOut().equals("")) { %>
+          		<div align="center"><a href="#"><%= order.getCheckedOut() %></a></div>
+          	<% } else { %>
+          		<div align="center"><a href="checkout.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("checkout") %></a></div>
+          	<% } %>
+          ]]></td>
+          <% } %>
+<% } else { %>
+          <td><![CDATA[<div align="center"><a href="<%= mycolumnhref + order.getId() %>&<%= Math.random() %>"><%= mycolumnname %></a></div>]]></td>
+<% } %>
+<%
+			}
+%>
+        </tr>
+<%
+	}
+%>
+</rows>
+<rowcount><%= recordCount %></rowcount>
+<% } %>
+</response></ajax-response>

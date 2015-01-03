@@ -1,0 +1,44 @@
+<script type="text/javascript">
+	if ((typeof(webeditor) == "undefined") && window.parent.opener && window.parent.opener) webeditor = window.parent.opener;
+	if ((typeof(webeditor) == "undefined") && window.opener && window.opener) webeditor = window.opener;
+	if ((typeof(webeditor) == "undefined") && top.opener && top.opener) webeditor = top.opener;
+	if ((typeof(webeditor) == "undefined") && top && top) webeditor = top;
+	if ((typeof(webeditor) == "undefined") && parent && parent) webeditor = parent;
+	if (typeof(webeditor) == "undefined") webeditor = {};
+
+	if (webeditor.contenteditable_preview_head) {
+		document.write(webeditor.contenteditable_preview_head);
+	} else {
+		if (webeditor.webeditor.format == "xhtml") {
+			document.writeln('<?xml version="1.0" encoding="' + webeditor.webeditor.encoding + '" ?>');
+			document.writeln('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">');
+			document.writeln('<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">');
+		} else {
+			document.writeln('<html>');
+		}
+		document.writeln('<head>');
+		document.writeln('<title>'+webeditor.Text('preview_title')+'</title>');
+		document.writeln('<link rel="stylesheet" type="text/css" href="' + webeditor.webeditor.stylesheet + '">');
+		document.writeln('</head>');
+	}
+	if (webeditor.contenteditable_preview_body) {
+		document.write('<body onload="document.body.innerHTML = webeditor.contenteditable_preview_content;' + webeditor.contenteditable_preview_body.substring(5));
+	} else {
+		if (webeditor.contenteditable_preview_direction) {
+			document.write('<body onload="document.body.innerHTML = webeditor.contenteditable_preview_content;" style="margin: 0px;" dir="' + webeditor.contenteditable_preview_direction + '">');
+		} else {
+			document.write('<body onload="document.body.innerHTML = webeditor.contenteditable_preview_content;" style="margin: 0px;">');
+		}
+	}
+</script>
+<!--
+<html>
+<head>
+<title>test</title>
+<link rel="stylesheet" type="text/css" href="">
+</head>
+<body style="margin: 0px;" onload="document.body.innerHTML = webeditor.contenteditable_preview_content;">
+-->
+</body>
+</html>
+

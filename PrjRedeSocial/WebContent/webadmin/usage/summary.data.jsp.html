@@ -1,0 +1,68 @@
+	<div align="center">
+		<table border="0" class="WCMstatsTable">
+			<tr>
+				<td align="center" class="WCMstatsTableName">&nbsp;</td>
+				<td align="center" width="50" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" width="50" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" width="50" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" width="50" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+				<td align="center" width="50" class="WCMstatsTableHits"><%= mytext.display("usage.hits") %></td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.total") %></td>
+				<td align="right"><%= Common.numberformat("" + usage.get("countclienthosts"), 0) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + usage.get("countvisitors"), 0) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + usage.get("countvisits"), 0) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + usage.get("countpageviews"), 0) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + usage.get("counthits"), 0) %>&nbsp;</td>
+			</tr>
+<% if (Common.integernumber("" + usage.get("countclienthosts")) > 0) { %>
+			<tr>
+				<td align="left"><%= mytext.display("usage.averageperclienthost") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("countvisitors"))/Common.number("" + usage.get("countclienthosts"))), 2) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("countvisits"))/Common.number("" + usage.get("countclienthosts"))), 2) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("countpageviews"))/Common.number("" + usage.get("countclienthosts"))), 2) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("counthits"))/Common.number("" + usage.get("countclienthosts"))), 2) %>&nbsp;</td>
+			</tr>
+<% } %>
+<% if (Common.integernumber("" + usage.get("countvisitors")) > 0) { %>
+			<tr>
+				<td align="left"><%= mytext.display("usage.averagepervisitor") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("countvisits"))/Common.number("" + usage.get("countvisitors"))), 2) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("countpageviews"))/Common.number("" + usage.get("countvisitors"))), 2) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("counthits"))/Common.number("" + usage.get("countvisitors"))), 2) %>&nbsp;</td>
+			</tr>
+<% } %>
+<% if (Common.integernumber("" + usage.get("countvisits")) > 0) { %>
+			<tr>
+				<td align="left"><%= mytext.display("usage.averagepervisit") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("countpageviews"))/Common.number("" + usage.get("countvisits"))), 2) %>&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("counthits"))/Common.number("" + usage.get("countvisits"))), 2) %>&nbsp;</td>
+			</tr>
+<% } %>
+<% if (Common.integernumber("" + usage.get("countpageviews")) > 0) { %>
+			<tr>
+				<td align="left"><%= mytext.display("usage.averageperpage") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right"><%= Common.numberformat("" + (Common.number("" + usage.get("counthits"))/Common.number("" + usage.get("countpageviews"))), 2) %>&nbsp;</td>
+			</tr>
+<% } %>
+			<tr>
+				<td align="left"><%= mytext.display("usage.averageduration") %></td>
+				<td align="right">-&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+				<td align="right"><%= Common.DateFormat("HH:mm:ss", Math.round(Common.number("0" + usage.get("averagevisitduration")))) %>&nbsp;</td>
+				<td align="right"><%= Common.DateFormat("HH:mm:ss", Math.round(Common.number("0" + usage.get("averagepageviewduration")))) %>&nbsp;</td>
+				<td align="right">-&nbsp;</td>
+			</tr>
+		</table>
+	</div>

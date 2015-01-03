@@ -1,0 +1,105 @@
+<%@ page buffer="256kb" %><%
+
+cms.ReadPage(adminpage.getId());
+cms.HttpHeaders(adminpage.getId());
+if (! myconfig.get(db, "charset").equals("")) myresponse.setContentType("text/html; charset=" + myconfig.get(db, "charset"));
+
+%><%= myconfig.get(db, "doctype") %>
+<html>
+<head><% if (! cms.Page(adminpage.getId()).getServerFilename().equals("")) { %><base href="<%= myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + myconfig.getTemp("URLrootpath") + cms.Page(adminpage.getId()).getServerFilename() %>"><% } %>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>"<%= cms.XHTMLclosed %>>
+<meta name="author" content="<%= cms.PageHeader(adminpage.getId(), "author", "") %>"<%= cms.XHTMLclosed %>>
+<meta name="description" content="<%= cms.PageHeader(adminpage.getId(), "description", "") %>"<%= cms.XHTMLclosed %>>
+<meta name="keywords" content="<%= cms.PageHeader(adminpage.getId(), "keywords", "") %>"<%= cms.XHTMLclosed %>>
+<title><%= cms.PageHeader(adminpage.getId(), "title", "") %></title>
+<%= cms.PageHeader(adminpage.getId(), "metainfo", "") %>
+<%= cms.CMSHeader(adminpage.getId()) %>
+<%= cms.PageStyleSheet(adminpage.getId()) %>
+<%= cms.PageScripts(adminpage.getId()) %>
+<%= cms.PageHeader(adminpage.getId(), "htmlheader", "") %>
+<script type="text/javascript">
+
+function doPreview(myform) {
+	var save_target = myform.target;
+	var save_action = myform.action;
+	myform.target = '_preview';
+	myform.action = 'preview.jsp?mode=preview&id=&redirect=&template='+myform.template.value+'&stylesheet='+myform.stylesheet.value;
+	mywindow = window.open('',myform.target,"scrollbars=yes,width=800,height=600,resizable=yes,status=yes");
+	if (typeof(mywindow.focus) == "function") mywindow.focus();
+	if (myform.onsubmit) {
+		myform.onsubmit();
+	} else if (WebEditorSubmit) {
+		WebEditorSubmit();
+	}
+	myform.submit();
+	myform.target = save_target;
+	myform.action = save_action;
+}
+function webeditor_custom_preview() {
+	doPreview(document.forms[0]);
+}
+
+</script>
+<% if (myconfig.get(db, "content_editor").equals("HardCore")) { %>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/webeditor/webeditor.js"></script>
+<% } %>
+<% if (myconfig.get(db, "content_editor").equals("HardCore1")) { %>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/webeditor/webeditor1.js"></script>
+<% } %>
+<% if (myconfig.get(db, "content_editor").equals("HardCore2")) { %>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/webeditor/webeditor2.js"></script>
+<% } %>
+<% if (myconfig.get(db, "content_editor").equals("eWebEditPro")) { %>
+<script type="text/javascript" src="/ewebeditpro/ewebeditpro.js"></script>
+<% } %>
+<% if (myconfig.get(db, "content_editor").equals("eWebEditPro2")) { %>
+<script type="text/javascript" src="/ewebeditpro2/ewebeditpro.js"></script>
+<% } %>
+<link rel="stylesheet" type="text/css" href="/<%= mytext.display("adminpath") %>/webadmin.css" /> 
+<link rel="StyleSheet" type="text/css" href="/<%= mytext.display("adminpath") %>/dtree.css" />
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/dtree.js"></script>
+<script type="text/javascript">
+
+function focusForm() {
+	save_window_onerror = window.onerror;
+	window.onerror = function (msg, url, line) { return true; }
+	keep_looking = 1;
+	form = 0;
+	while (keep_looking && (form < document.forms.length)) {
+		element = 0;
+		while (keep_looking && (element < document.forms[form].elements.length)) {
+			if (document.forms[form].elements[element].type == "text") {
+				try {
+					document.forms[form].elements[element].focus();
+					keep_looking = 0;
+				}
+				catch(oException) {
+					keep_looking = 1;
+				}
+			}
+			element++;
+		}
+		form ++;
+	}
+	if (! keep_looking) document.forms[--form].elements[--element].focus();
+	window.onerror = save_window_onerror;
+}
+</script>
+</head>
+<body<%= cms.PageHeader(adminpage.getId(), "htmlbodyonload", "", cms.BODYmargins) %> onload="focusForm();">
+<% if ((! mypage.getCreatedBy().equals("")) && (! mysession.get("username").equals(mypage.getCreatedBy()))) { %>
+<table width="100%" height="100%">
+<tr><td align="center">
+	<p>Sorry, you do not have permission to update this content.</p>
+</td></tr>
+</table>
+<% } else { %>
+<%= cms.CMSDisplay(adminpage.getId()) %>
+<%= cms.CMSStyleSheet(adminpage.getId()) %>
+<%= cms.CMSTemplate(adminpage.getId()) %>
+<% HardCore.Page.OutputContent(mytext, servletcontext, request, response, session, out, adminpage.display("body", "", myrequest.getServletPath(), myrequest.getQueryString(), mysession.get("mode"), mysession.get("administrator"))); %>
+<% } %>
+</body>
+</html>
+<% cms.CMSLog(adminpage.getId(), "page", ""); %>
+<% if (db != null) db.close(); %><% if (logdb != null) logdb.close(); %>

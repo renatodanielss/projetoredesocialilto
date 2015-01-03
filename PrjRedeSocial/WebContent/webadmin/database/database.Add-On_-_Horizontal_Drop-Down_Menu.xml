@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="content">
+  <row>
+   <column name="id" value="1" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-06-11 05:44:34" />
+   <column name="updated" value="2007-06-11 14:44:16" />
+   <column name="published" value="2007-06-11 14:44:16" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="@@@import:name@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+.@@@import:id@@@_menu {
+ position: relative;
+ height: @@@import:height@@@px;
+ z-index: 999;
+}
+
+.@@@import:id@@@_menu .menu_top, .@@@import:id@@@_menu .menu_top ul {
+ list-style-type: none;
+ margin: 0;
+ padding: 0;
+}
+.@@@import:id@@@_menu.dropdown .menu_top, .@@@import:id@@@_menu.dropdown .menu_top ul {
+ width: auto;
+}
+.@@@import:id@@@_menu.flyout .menu_top, .@@@import:id@@@_menu.flyout .menu_top ul {
+ width: @@@import:width@@@px;
+}
+
+.@@@import:id@@@_menu .menu_top li {
+ float: left;
+ background: @@@import:backcol@@@;
+}
+
+.@@@import:id@@@_menu.dropdown .menu_top li.menu_submenu {
+ background: @@@import:backcol@@@ url(/webadmin/menu_down.gif) no-repeat right center;
+}
+.@@@import:id@@@_menu.flyout .menu_top li.menu_submenu {
+ background: @@@import:backcol@@@ url(/webadmin/menu_right.gif) no-repeat right center;
+}
+.@@@import:id@@@_menu .menu_top li.menu_submenu li.menu_submenu {
+ background: @@@import:backcol@@@ url(/webadmin/menu_right.gif) no-repeat right center;
+}
+
+.@@@import:id@@@_menu .menu_top a, .@@@import:id@@@_menu .menu_top a:visited {
+ display: block;
+ width: @@@import:width@@@px;
+ height: @@@import:height@@@px;
+ line-height: @@@import:height@@@px;
+ color: @@@import:textcol@@@;
+ font-size: @@@import:fontsize@@@;
+ font-family: @@@import:fontname@@@;
+ text-decoration: none;
+ text-indent: 5px;
+ border: 1px solid @@@import:bordercol@@@;
+ border-width: 1px 1px 1px 1px;
+}
+.@@@import:id@@@_menu > .menu_top a, .@@@import:id@@@_menu .menu_top a:visited {
+ white-space: nowrap;
+ overflow: hidden;
+}
+
+.@@@import:id@@@_menu.dropdown .menu_top a, .@@@import:id@@@_menu.dropdown .menu_top a:visited {
+ border: 1px solid @@@import:bordercol@@@;
+ border-width: 1px 0 1px 1px;
+}
+.@@@import:id@@@_menu.flyout .menu_top a, .@@@import:id@@@_menu.flyout .menu_top a:visited {
+ border: 1px solid @@@import:bordercol@@@;
+ border-width: 1px 1px 0 1px;
+}
+.@@@import:id@@@_menu.flyout .menu_top li a.menu_last, .@@@import:id@@@_menu.flyout .menu_top li a.menu_last:visited {
+ border-width: 1px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li ul li a, .@@@import:id@@@_menu.dropdown .menu_top li ul li a:visited {
+ border-width: 0px 1px 1px 1px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li a.menu_last, .@@@import:id@@@_menu.dropdown .menu_top li a.menu_last:visited {
+ border-width: 1px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li li a.menu_last, .@@@import:id@@@_menu.dropdown .menu_top li li a.menu_last:visited {
+ border-width: 0px 1px 1px 1px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li li a.menu_first, .@@@import:id@@@_menu.dropdown .menu_top li li a.menu_first:visited {
+ border-width: 1px;
+}
+
+.@@@import:id@@@_menu .menu_top li:hover {
+ position:relative;
+}
+.@@@import:id@@@_menu .menu_top li:hover > a {
+ background: @@@import:mouseoverbackcol@@@;
+ color: @@@import:mouseovertextcol@@@;
+}
+.@@@import:id@@@_menu .menu_top li a:active, .@@@import:id@@@_menu .menu_top li a:focus {
+ background: @@@import:mouseoverbackcol@@@;
+ color: @@@import:mouseovertextcol@@@;
+}
+
+.@@@import:id@@@_menu .menu_top li ul {
+ display: none;
+}
+.@@@import:id@@@_menu .menu_top li:hover > ul {
+ display: block;
+ position: absolute;
+ width: @@@import:width@@@px;
+ top: -11px;
+ left: @@@import:leftoffset1@@@px;
+ padding: 10px 30px 30px 30px;
+ background: transparent url(dummy-transparent.gif);
+}
+.@@@import:id@@@_menu.flyout .menu_top li:hover > ul {
+ top: -10px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li.menu_first:hover > ul {
+ top: -10px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top > li:hover > ul {
+ left: -30px;
+ top: 16px;
+}
+
+.@@@import:id@@@_menu .menu_top table {
+ position: absolute;
+ top: 0;
+ left: 0;
+ z-index: 999;
+ border-collapse: collapse;
+ font-size: 1em;
+}
+
+* html .@@@import:id@@@_menu .menu_top li a:hover {
+ position: relative;
+ background: @@@import:mouseoverbackcol@@@;
+ color: @@@import:mouseovertextcol@@@;
+}
+* html .@@@import:id@@@_menu .menu_top li ul {
+ visibility: hidden;
+ display: block;
+ position: absolute;
+ top: -11px;
+ left: @@@import:leftoffset0@@@px;
+ padding: 10px 30px 30px 30px;
+ background: transparent url(dummy-transparent.gif);
+}
+
+.@@@import:id@@@_menu .menu_top li a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+
+.@@@import:id@@@_menu.dropdown .menu_top li a:hover ul { visibility: visible; left: -30px; top: 14px; lef\t: -31px; to\p: 15px; }
+.@@@import:id@@@_menu.dropdown .menu_top li a:hover ul a:hover ul { visibility: visible; top: -11px; left: @@@import:leftoffset0@@@px; }
+.@@@import:id@@@_menu.flyout .menu_top li a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu.flyout .menu_top li a:hover ul a:hover ul { visibility: visible; }
+
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;div class=&quot;@@@import:id@@@_menu @@@import:menutype@@@&quot;&gt;
+@@@extension:menu(top=@@@import:menutop@@@:@@@import:topfirst@@@levels=@@@import:menulevels@@@:id=@@@id@@@:list=ul:item=li:special=MSIE6tables)@@@
+&lt;/div&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="@@@import:contentclass@@@" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="1" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-06-11 05:44:34" />
+   <column name="updated" value="2007-06-11 14:44:16" />
+   <column name="published" value="2007-06-11 14:44:16" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="@@@import:name@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+.@@@import:id@@@_menu {
+ position: relative;
+ height: @@@import:height@@@px;
+ z-index: 999;
+}
+
+.@@@import:id@@@_menu .menu_top, .@@@import:id@@@_menu .menu_top ul {
+ list-style-type: none;
+ margin: 0;
+ padding: 0;
+}
+.@@@import:id@@@_menu.dropdown .menu_top, .@@@import:id@@@_menu.dropdown .menu_top ul {
+ width: auto;
+}
+.@@@import:id@@@_menu.flyout .menu_top, .@@@import:id@@@_menu.flyout .menu_top ul {
+ width: @@@import:width@@@px;
+}
+
+.@@@import:id@@@_menu .menu_top li {
+ float: left;
+ background: @@@import:backcol@@@;
+}
+
+.@@@import:id@@@_menu.dropdown .menu_top li.menu_submenu {
+ background: @@@import:backcol@@@ url(/webadmin/menu_down.gif) no-repeat right center;
+}
+.@@@import:id@@@_menu.flyout .menu_top li.menu_submenu {
+ background: @@@import:backcol@@@ url(/webadmin/menu_right.gif) no-repeat right center;
+}
+.@@@import:id@@@_menu .menu_top li.menu_submenu li.menu_submenu {
+ background: @@@import:backcol@@@ url(/webadmin/menu_right.gif) no-repeat right center;
+}
+
+.@@@import:id@@@_menu .menu_top a, .@@@import:id@@@_menu .menu_top a:visited {
+ display: block;
+ width: @@@import:width@@@px;
+ height: @@@import:height@@@px;
+ line-height: @@@import:height@@@px;
+ color: @@@import:textcol@@@;
+ font-size: @@@import:fontsize@@@;
+ font-family: @@@import:fontname@@@;
+ text-decoration: none;
+ text-indent: 5px;
+ border: 1px solid @@@import:bordercol@@@;
+ border-width: 1px 1px 1px 1px;
+}
+.@@@import:id@@@_menu > .menu_top a, .@@@import:id@@@_menu .menu_top a:visited {
+ white-space: nowrap;
+ overflow: hidden;
+}
+
+.@@@import:id@@@_menu.dropdown .menu_top a, .@@@import:id@@@_menu.dropdown .menu_top a:visited {
+ border: 1px solid @@@import:bordercol@@@;
+ border-width: 1px 0 1px 1px;
+}
+.@@@import:id@@@_menu.flyout .menu_top a, .@@@import:id@@@_menu.flyout .menu_top a:visited {
+ border: 1px solid @@@import:bordercol@@@;
+ border-width: 1px 1px 0 1px;
+}
+.@@@import:id@@@_menu.flyout .menu_top li a.menu_last, .@@@import:id@@@_menu.flyout .menu_top li a.menu_last:visited {
+ border-width: 1px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li ul li a, .@@@import:id@@@_menu.dropdown .menu_top li ul li a:visited {
+ border-width: 0px 1px 1px 1px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li a.menu_last, .@@@import:id@@@_menu.dropdown .menu_top li a.menu_last:visited {
+ border-width: 1px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li li a.menu_last, .@@@import:id@@@_menu.dropdown .menu_top li li a.menu_last:visited {
+ border-width: 0px 1px 1px 1px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li li a.menu_first, .@@@import:id@@@_menu.dropdown .menu_top li li a.menu_first:visited {
+ border-width: 1px;
+}
+
+.@@@import:id@@@_menu .menu_top li:hover {
+ position:relative;
+}
+.@@@import:id@@@_menu .menu_top li:hover > a {
+ background: @@@import:mouseoverbackcol@@@;
+ color: @@@import:mouseovertextcol@@@;
+}
+.@@@import:id@@@_menu .menu_top li a:active, .@@@import:id@@@_menu .menu_top li a:focus {
+ background: @@@import:mouseoverbackcol@@@;
+ color: @@@import:mouseovertextcol@@@;
+}
+
+.@@@import:id@@@_menu .menu_top li ul {
+ display: none;
+}
+.@@@import:id@@@_menu .menu_top li:hover > ul {
+ display: block;
+ position: absolute;
+ width: @@@import:width@@@px;
+ top: -11px;
+ left: @@@import:leftoffset1@@@px;
+ padding: 10px 30px 30px 30px;
+ background: transparent url(dummy-transparent.gif);
+}
+.@@@import:id@@@_menu.flyout .menu_top li:hover > ul {
+ top: -10px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top li.menu_first:hover > ul {
+ top: -10px;
+}
+.@@@import:id@@@_menu.dropdown .menu_top > li:hover > ul {
+ left: -30px;
+ top: 16px;
+}
+
+.@@@import:id@@@_menu .menu_top table {
+ position: absolute;
+ top: 0;
+ left: 0;
+ z-index: 999;
+ border-collapse: collapse;
+ font-size: 1em;
+}
+
+* html .@@@import:id@@@_menu .menu_top li a:hover {
+ position: relative;
+ background: @@@import:mouseoverbackcol@@@;
+ color: @@@import:mouseovertextcol@@@;
+}
+* html .@@@import:id@@@_menu .menu_top li ul {
+ visibility: hidden;
+ display: block;
+ position: absolute;
+ top: -11px;
+ left: @@@import:leftoffset0@@@px;
+ padding: 10px 30px 30px 30px;
+ background: transparent url(dummy-transparent.gif);
+}
+
+.@@@import:id@@@_menu .menu_top li a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul ul { visibility: hidden; }
+
+.@@@import:id@@@_menu.dropdown .menu_top li a:hover ul { visibility: visible; left: -30px; top: 14px; lef\t: -31px; to\p: 15px; }
+.@@@import:id@@@_menu.dropdown .menu_top li a:hover ul a:hover ul { visibility: visible; top: -11px; left: @@@import:leftoffset0@@@px; }
+.@@@import:id@@@_menu.flyout .menu_top li a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu.flyout .menu_top li a:hover ul a:hover ul { visibility: visible; }
+
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+.@@@import:id@@@_menu .menu_top li a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul a:hover ul { visibility: visible; }
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;div class=&quot;@@@import:id@@@_menu @@@import:menutype@@@&quot;&gt;
+@@@extension:menu(top=@@@import:menutop@@@:@@@import:topfirst@@@levels=@@@import:menulevels@@@:id=@@@id@@@:list=ul:item=li:special=MSIE6tables)@@@
+&lt;/div&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="@@@import:contentclass@@@" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+ </table>
+ <table name="config">
+  <row>
+   <column name="configname" value="use_advancedscripting" />
+   <column name="configvalue" value="yes" />
+  </row>
+  <row>
+   <column name="configname" value="use_additionalcontent" />
+   <column name="configvalue" value="yes" />
+  </row>
+ </table>
+</database>

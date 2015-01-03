@@ -1,0 +1,32 @@
+<img src="/webadmin/database/database.Professional_Add-On_-_Simple_Approval_Workflow.gif" align="left">
+Simple editor - manager - publisher workflow for website editors to add and update content and keep it private until they request a manager to approve the content and website publishers to publish the content.
+<br clear="all">
+
+<div class="import_parameters" style="display:none">
+
+<div>
+<!--
+- Only website administrators in/of the given website editor user group/type can add and update content (subject to the general access restrictions) and start this workflow.<br>
+- Only website administrators in/of the given website manager user group/type can approve content (also subject to the general access restrictions).<br>
+- Only website administrators in/of the given website publisher user group/type can publish content (also subject to the general access restrictions).<br>
+- Add website administrators who should have workflow permission to add and update content to the given website editor user group/type.<br>
+- Add website administrators who should have workflow permission to approve content to the given website manager user group/type.<br>
+- Add website administrators who should have workflow permission to publish content to the given website publisher user group/type.<br>
+- Leave user groups/types blank for workflow permissions to all administrators in/of any user group/type.<br>
+<br>
+-->
+The User Database, User Categories, Administrator Access Restrictions and Publishing features should also be enabled to use this workflow.
+</div>
+
+<div>Workflow name: <input disabled type="text" name="import_workflow" value="Simple approval"></div>
+<div>Website editor user group: <input disabled type="text" name="import_editorusergroup" value="Website Editor"></div>
+<div>Website editor user type: <input disabled type="text" name="import_editorusertype" value=""></div>
+<div>Website editor workflow state: <input disabled type="text" name="import_editorstate" value="Private"></div>
+<div>Website manager user group: <input disabled type="text" name="import_managerusergroup" value="Website Manager"></div>
+<div>Website manager user type: <input disabled type="text" name="import_managerusertype" value=""></div>
+<div>Website manager workflow state: <input disabled type="text" name="import_managerstate" value="Pending"></div>
+<div>Website publisher user group: <input disabled type="text" name="import_publisherusergroup" value="Website Publisher"></div>
+<div>Website publisher user type: <input disabled type="text" name="import_publisherusertype" value=""></div>
+<div>Website publisher workflow state: <input disabled type="text" name="import_publisherstate" value="Approved"></div>
+
+</div>

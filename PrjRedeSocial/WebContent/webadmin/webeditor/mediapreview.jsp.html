@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('mediapreview_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_title = requestParameter("title");
+request_href = requestParameter("href") || parent.tag.href;
+request_mediaclass = requestParameter("mediaclass") || parent.tag.mediaclass;
+request_width = requestParameter("width");
+request_height = requestParameter("height");
+request_htmlclass = requestParameter("htmlclass");
+request_htmlid = requestParameter("htmlid");
+request_mediaposter = requestParameter("mediaposter");
+request_mediapreload = requestParameter("mediapreload");
+request_mediaautoplay = requestParameter("mediaautoplay");
+request_mediacontrols = requestParameter("mediacontrols");
+request_medialoop = requestParameter("medialoop");
+request_mediamuted = requestParameter("mediamuted");
+request_mediatype = requestParameter("mediatype");
+
+if (request_href.indexOf("?") >= 0) {
+	request_href += "&" + Math.random();
+} else if (request_href != "") {
+	request_href += "?" + Math.random();
+}
+
+function setPreviewColor(color) {
+	if (color) {
+		window.parent.previewColor = color;
+		if (document.getElementById("preview")) document.getElementById("preview").style.background = color;
+	}
+}
+
+base_href = document.location.pathname.replace("mediapreview\.jsp", "");
+
+document.write('<base href="' + webeditor.baseHref + '">');
+
+</script>
+</head>
+<body onload="setPreviewColor(window.parent.previewColor);">
+<div>
+<table summary="" border="0"><tr>
+<td><div class="dtree"><script type="text/javascript">document.write(Text('mediapreview_text'));</script></div></td>
+<td bgcolor="#000000"><script type="text/javascript">document.write('<img src="'+base_href+'spacer.gif" width="10" height="13" border="0" onclick="setPreviewColor(\'#000000\')">');</script></td>
+<td bgcolor="#333333"><script type="text/javascript">document.write('<img src="'+base_href+'spacer.gif" width="10" height="13" border="0" onclick="setPreviewColor(\'#333333\')">');</script></td>
+<td bgcolor="#666666"><script type="text/javascript">document.write('<img src="'+base_href+'spacer.gif" width="10" height="13" border="0" onclick="setPreviewColor(\'#666666\')">');</script></td>
+<td bgcolor="#999999"><script type="text/javascript">document.write('<img src="'+base_href+'spacer.gif" width="10" height="13" border="0" onclick="setPreviewColor(\'#999999\')">');</script></td>
+<td bgcolor="#cccccc"><script type="text/javascript">document.write('<img src="'+base_href+'spacer.gif" width="10" height="13" border="0" onclick="setPreviewColor(\'#cccccc\')">');</script></td>
+<td bgcolor="#ffffff"><script type="text/javascript">document.write('<img src="'+base_href+'spacer.gif" width="10" height="13" border="0" onclick="setPreviewColor(\'#ffffff\')">');</script></td>
+</tr></table>
+</div>
+<hr>
+<table summary="" width="100%"><tr><td align="center" valign="middle">
+<script type="text/javascript">
+if (request_href != "") {
+	if (request_title != "") {
+		document.writeln('<div class="dtree" align="left"><img src="'+base_href+'dtree/page.gif"> ' + request_title + '<\/div>');
+	}
+	document.writeln('<div class="dtree" align="center">&nbsp;<\/div>');
+	document.writeln('<div id="preview" class="dtree" align="center" style="padding: 10px;">');
+	if (request_mediaclass == 'flash') {
+		var html = '<object';
+		html += ' codeBase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab"';
+		html += ' classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"';
+		if (request_width) { html += ' width="'+request_width+'"'; }
+		if (request_height) { html += ' height="'+request_height+'"'; }
+		if (request_htmlclass) { html += ' class="'+request_htmlclass+'"'; }
+		if (request_htmlid) { html += ' id="'+request_htmlid+'"'; }
+		html += '>';
+		html += '<param name="movie" value="'+request_href+'">';
+		html += '<param name="quality" value="high">';
+		html += '<embed';
+		html += ' src="'+request_href+'"';
+		html += ' pluginspage="http://www.macromedia.com/go/getflashplayer"';
+		html += ' type="application/x-shockwave-flash"';
+		html += ' quality="high"';
+		if (request_width) { html += ' width="'+request_width+'"'; }
+		if (request_height) { html += ' height="'+request_height+'"'; }
+		html += '>';
+		html += '<\/embed>';
+		html += '<\/object>';
+		document.writeln(html);
+	} else if (request_mediaclass == 'applet') {
+		var code;
+		var codebase;
+		if (request_href.lastIndexOf("/")>=0) {
+			code = request_href.substring(request_href.lastIndexOf("/")+1);
+			codebase = request_href.substring(0, request_href.lastIndexOf("/")+1);
+		} else {
+			code = request_href;
+			codebase = "";
+		}
+		var html = '<object';
+		html += ' codebase="http://java.sun.com/products/plugin/autodl/jinstall-1_4_2-windows-i586.cab"';
+		html += ' classid="clsid:CAFEEFAC-0014-0002-0000-ABCDEFFEDCBA"';
+		if (request_width) { html += ' width="'+request_width+'"'; }
+		if (request_height) { html += ' height="'+request_height+'"'; }
+		if (request_htmlclass) { html += ' class="'+request_htmlclass+'"'; }
+		if (request_htmlid) { html += ' id="'+request_htmlid+'"'; }
+		html += '>';
+		html += '<param name="codebase" value="'+codebase+'">';
+		html += '<param name="code" value="'+code+'">';
+		html += '<param name="type" value="application/x-java-applet">';
+		html += '<comment>';
+		html += '<embed';
+		html += ' pluginspage="http://java.sun.com/products/plugin/index.html#download"';
+		html += ' codebase="'+codebase+'"';
+		html += ' code="'+code+'"';
+		html += ' type="application/x-java-applet"';
+		if (request_width) { html += ' width="'+request_width+'"'; }
+		if (request_height) { html += ' height="'+request_height+'"'; }
+		html += '>';
+		html += '<noembed>';
+		html += '<applet';
+		html += ' codebase="'+codebase+'"';
+		html += ' code="'+code+'"';
+		if (request_width) { html += ' width="'+request_width+'"'; }
+		if (request_height) { html += ' height="'+request_height+'"'; }
+		html += '>';
+		html += 'Java applet';
+		html += '<\/applet>';
+		html += '<\/noembed>';
+		html += '<\/embed>';
+		html += '<\/comment>';
+		html += '<\/object>';
+		document.writeln(html);
+	} else if (request_mediaclass == 'quicktime') {
+		var html = '<object';
+		html += ' codeBase="http://www.apple.com/qtactivex/qtplugin.cab"';
+		html += ' classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"';
+		if (request_width) { html += ' width="'+request_width+'"'; }
+		if (request_height) { html += ' height="'+request_height+'"'; }
+		if (request_htmlclass) { html += ' class="'+request_htmlclass+'"'; }
+		if (request_htmlid) { html += ' id="'+request_htmlid+'"'; }
+		html += '>';
+		html += '<param name="src" value="'+request_href+'">';
+//		html += '<param name="autoplay" value="true">';
+//		html += '<param name="loop" value="false">';
+//		html += '<param name="controller" value="true">';
+		html += '<embed';
+		html += ' src="'+request_href+'"';
+		html += ' pluginspage="http://www.apple.com/quicktime/"';
+		html += ' type="video/quicktime"';
+//		html += ' autoplay="true"';
+//		html += ' loop="false"';
+//		html += ' controller="true"';
+		if (request_width) { html += ' width="'+request_width+'"'; }
+		if (request_height) { html += ' height="'+request_height+'"'; }
+		html += '>';
+		html += '</embed>';
+		html += '</object>';
+		document.writeln(html);
+	} else if (request_mediaclass == 'video') {
+		var html = '<video';
+		if (request_width) { html += ' width="'+request_width+'"'; }
+		if (request_height) { html += ' height="'+request_height+'"'; }
+		if (request_htmlclass) { html += ' class="'+request_htmlclass+'"'; }
+		if (request_htmlid) { html += ' id="'+request_htmlid+'"'; }
+		if (request_mediaposter) { html += ' poster="'+request_mediaposter+'"'; }
+		if (true || request_mediapreload) { html += ' preload="'+request_mediapreload+'"'; }
+		if (true || request_mediaautoplay) { html += ' autoplay="true"'; }
+		if (true || request_mediacontrols) { html += ' controls="true"'; }
+		if (request_medialoop) { html += ' loop="true"'; }
+		if (request_mediamuted) { html += ' muted="true"'; }
+		html += '>';
+		html += '<source src="'+request_href+'"';
+		if (request_mediatype) { html += ' type="'+request_mediatype+'"'; }
+		html += '>';
+		if (webeditor.videoAutoAltSources) {
+			if (request_mediatype == "video/mp4") {
+				html += '<source src="'+(request_href.replace(/\.(mp4|m4v)(\?|$)/gi, ".ogv$2"))+'" type="video/ogg">';
+				html += '<source src="'+(request_href.replace(/\.(mp4|m4v)(\?|$)/gi, ".webm$2"))+'" type="video/webm">';
+			}
+			if (request_mediatype == "video/ogg") {
+				html += '<source src="'+(request_href.replace(/\.(ogv|ogx)(\?|$)/gi, ".mp4$2"))+'" type="video/mp4">';
+				html += '<source src="'+(request_href.replace(/\.(ogv|ogx)(\?|$)/gi, ".webm$2"))+'" type="video/webm">';
+			}
+			if (request_mediatype == "video/webm") {
+				html += '<source src="'+(request_href.replace(/\.(webm)(\?|$)/gi, ".mp4$2"))+'" type="video/mp4">';
+				html += '<source src="'+(request_href.replace(/\.(webm)(\?|$)/gi, ".ogv$2"))+'" type="video/ogg">';
+			}
+		}
+		html += '</video>';
+		document.writeln(html);
+	} else if (request_mediaclass == 'audio') {
+		var html = '<audio';
+		if (request_htmlclass) { html += ' class="'+request_htmlclass+'"'; }
+		if (request_htmlid) { html += ' id="'+request_htmlid+'"'; }
+		if (true || request_mediapreload) { html += ' preload="'+request_mediapreload+'"'; }
+		if (true || request_mediaautoplay) { html += ' autoplay="true"'; }
+		if (true || request_mediacontrols) { html += ' controls="true"'; }
+		if (request_medialoop) { html += ' loop="true"'; }
+		if (request_mediamuted) { html += ' muted="true"'; }
+		html += '>';
+		html += '<source src="'+request_href+'"';
+		if (request_mediatype) { html += ' type="'+request_mediatype+'"'; }
+		html += '>';
+		if (top && top.opener && webeditor && webeditor.videoAutoAltSources) {
+			if (request_mediatype == "audio/mpeg") {
+				html += '<source src="'+(request_href.replace(/\.(mp3)(\?|$)/gi, ".ogg$2"))+'" type="audio/ogg">';
+				html += '<source src="'+(request_href.replace(/\.(mp3)(\?|$)/gi, ".wav$2"))+'" type="audio/wav">';
+			}
+			if (request_mediatype == "audio/ogg") {
+				html += '<source src="'+(request_href.replace(/\.(ogg)(\?|$)/gi, ".mp3$2"))+'" type="audio/mpeg">';
+				html += '<source src="'+(request_href.replace(/\.(ogg)(\?|$)/gi, ".wav$2"))+'" type="audio/wav">';
+			}
+			if (request_mediatype == "audio/wav") {
+				html += '<source src="'+(request_href.replace(/\.(wav)(\?|$)/gi, ".mp3$2"))+'" type="audio/mpeg">';
+				html += '<source src="'+(request_href.replace(/\.(wav)(\?|$)/gi, ".ogg$2"))+'" type="audio/wav">';
+			}
+		}
+		html += '</audio>';
+		document.writeln(html);
+	} else {
+		document.writeln('<img src="' + request_href + '">');
+	}
+	document.writeln('<\/div>');
+}
+</script>
+</td></tr></table>
+</body>
+</html>

@@ -1,0 +1,1221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("config.website.title") %></title>
+<%@ include file="database.javascript.jsp.html" %>
+<script type="text/javascript">
+
+$(function(){
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	if (document.forms[0] && document.forms[0].contact_form_recipient && ! document.forms[0].contact_form_recipient.value) {
+		$('#tabs').find('[rel=Contact_Form]').click();
+		tab('Contact Forms');
+	} else {
+		$('#tabs').find('[rel=Content_Design]').click();
+	}
+});
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function removeSetting(heading, name) {
+	var trInput = document.getElementById("websitesetting_config_" + heading + "_" + name + "_input");
+	if (trInput) {
+		trInput.parentNode.removeChild(trInput);
+	}
+	var trName = document.getElementById("websitesetting_config_" + heading + "_" + name);
+	if (trName) {
+		trName.parentNode.removeChild(trName);
+	}
+	var trHeading = document.getElementById("websitesetting_config_" + heading);
+	if (trHeading && trHeading.nextSibling && ((! trHeading.nextSibling.id) || (! trHeading.nextSibling.id.match(new RegExp("websitesetting_config_" + heading + "_"))))) {
+		trHeading.parentNode.removeChild(trHeading);
+	}
+	var input = document.getElementById("delete");
+	if (input) {
+		input.value += (input.value ? ":" : "") + "config_" + heading + "_" + name;
+	}
+}
+
+function addSetting(input, heading, name, value) {
+	if (! document.getElementById(input + "heading")) return;
+	if (! document.getElementById(input + "name")) return;
+	if (! heading) heading = document.getElementById(input + "heading").value;
+	if (! name) name = document.getElementById(input + "name").value;
+	if (! value) value = "";
+	heading = heading.replace(/[_:@\.,]/g, " ");
+	name = name.replace(/[_:@\.,]/g, " ");
+	document.getElementById(input + "heading").value = "";
+	document.getElementById(input + "name").value = "";
+	if (name) {
+		var insertpoint = document.getElementById(input + "addnew");
+		if (! document.getElementById("websitesetting_config_" + heading)) {
+			var tr = document.createElement("tr");
+			tr.setAttribute("id", "websitesetting_config_" + heading);
+			var th = document.createElement("th");
+			th.setAttribute("class", "WCMinnerContentHeading1");
+			th.setAttribute("align", "left");
+			th.setAttribute("colSpan", "2");
+			th.innerHTML = heading;
+			tr.appendChild(th);
+			var headinginsertpoint = insertpoint;
+			while (insertpoint && insertpoint.previousSibling && insertpoint.previousSibling.id && insertpoint.previousSibling.id.match(new RegExp("^websitesetting_config_"))) {
+				if (insertpoint.previousSibling.id.match(new RegExp("^websitesetting_config_([^_]+)$"))) {
+					if (insertpoint.previousSibling.id < "websitesetting_config_" + heading) {
+						break;
+					} else {
+						headinginsertpoint = insertpoint.previousSibling;
+					}
+				}
+				insertpoint = insertpoint.previousSibling;
+			}
+			insertpoint = headinginsertpoint;
+			if (! insertpoint) insertpoint = document.getElementById(input + "addnew");
+			if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+		}
+
+		if (! document.getElementById("websitesetting_config_" + heading + "_" + name)) {
+			var tr = document.createElement("tr");
+			tr.setAttribute("id", "websitesetting_config_" + heading + "_" + name);
+			var th = document.createElement("th");
+			th.setAttribute("class", "WCMinnerContentInputName");
+			th.setAttribute("align", "left");
+			th.setAttribute("colSpan", "2");
+			th.innerHTML = name + ' <span style="font-size: x-small; font-weight: normal;">@@@config:' + heading + ':' + name + '@@@</span>';
+			tr.appendChild(th);
+			if (document.getElementById("websitesetting_config_" + heading)) {
+				insertpoint = document.getElementById("websitesetting_config_" + heading).nextSibling;
+				while (insertpoint && insertpoint.id) {
+					if (! insertpoint.id.match(new RegExp("websitesetting_config_" + heading + "_"))) {
+						break;
+					} else if (insertpoint.id > "websitesetting_config_" + heading + "_" + name) {
+						break;
+					}
+					insertpoint = insertpoint.nextSibling;
+				}
+				if (! insertpoint) insertpoint = document.getElementById(input + "addnew");
+			}
+			if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+
+			tr = document.createElement("tr");
+			tr.setAttribute("id", "websitesetting_config_" + heading + "_" + name + "_input");
+			var td = document.createElement("td");
+			td.setAttribute("class", "WCMinnerContentInputValue");
+			td.setAttribute("align", "left");
+			td.setAttribute("colSpan", "3");
+			td.innerHTML = '<input type="text" size="80" maxlength="255" id="config_' + heading + '_' + name + '" name="config_' + heading + '_' + name + '" value="' + value + '"> <input type="button" onClick="removeSetting(\'' + heading + '\',\'' + name + '\')" value="Delete">';
+			tr.appendChild(td);
+			if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+		}
+
+		var inputfield = document.getElementById("config_" + heading + "_" + name);
+		try {
+			if (inputfield) inputfield.focus();
+		} catch(e) {
+		}
+	}
+	if (mySlideTabs) mySlideTabs.tabs_resize();
+}
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contentid = '';
+		var contenttitle = '';
+		var contenthref = '';
+		if (inputnode.type != "select-multiple") {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + encodeURIComponent(inputid) + '&section=' + encodeURIComponent(section) + '&category=' + encodeURIComponent(category) + '&title=' + encodeURIComponent(title) + '&id=' + encodeURIComponent(contentid) + '&link=' + encodeURIComponent(contenttitle) + '&href=' + encodeURIComponent(contenthref), 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		if (inputnode.type == "select-multiple") {
+			var newoption = new Option();
+			newoption.text = contenttitle;
+			newoption.value = contentid;
+			newoption.selected = true;
+			inputnode.options[inputnode.options.length] = newoption;
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+		}
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("config.website.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <% if (! myrequest.getParameter("redirect").equals("")) { %>
+      <script type="text/javascript">document.location.href='<%= html.encodeHtmlEntities(Common.redirectURL(db, myconfig, myrequest.getParameter("redirect"), "/")) %>'</script>
+      <% } %>
+      <form id="website" action="website.jsp" method="POST">
+<% if (! wizard.equals("")) { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+<% } else { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/config/website.jsp">
+<% } %>
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a onclick="showall('designs');" href="#Content_Design" rel="Content_Design"><%= mytext.display("config.website.contentdesign.tab") %></a></li>
+                <li><a href="#Website_Settings" rel="Website_Settings"><%= mytext.display("config.website.settings.tab") %></a></li>
+                <li><a href="#Contact_Forms" rel="Contact_Forms"><%= mytext.display("config.website.contactforms.tab") %></a></li>
+                <li><a href="#Security" rel="Security"><%= mytext.display("config.website.security.tab") %></a></li>
+                <li><a href="#Special_Pages" rel="Special_Pages"><%= mytext.display("config.website.special.tab") %></a></li>
+                <li><a href="#Special_Settings" rel="Special_Settings"><%= mytext.display("config.website.specialsettings.tab") %></a></li>
+                <li><a href="#URL_Rewriting" rel="URL_Rewriting"><%= mytext.display("config.website.urlrewriting.tab") %></a></li>
+                <li><a href="#Media_Storage" rel="Media_Storage"><%= mytext.display("config.website.mediastorage.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Content_Design" class="Content_Design st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("config.website.contentdesign.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="3"><%= mytext.display("config.website.contentdesign.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contentdesign.version") %></th>
+            <td rowspan="6" align="center" valign="middle"> 
+              <div align="center">
+                <input type="button" name="Button" value="<%= mytext.display("preview") %>" onClick="window.open('/index.jsp?mode=preview&template='+this.form.default_template[this.form.default_template.selectedIndex].value+'&stylesheet='+this.form.default_stylesheet[this.form.default_stylesheet.selectedIndex].value+'&version='+escape(this.form.default_version[this.form.default_version.selectedIndex].value)+'&'+Math.random(),'Preview','scrollbars=yes,resizable=yes,width=800,height=600');">
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <select name="default_version">
+                <option value=" "> <%= mypage.version_select_options(db, myconfig.get(db, "default_version")) %></option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contentdesign.template") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <select name="default_template">
+                <option value="<%= myconfig.get(db, "default_template") %>"><%= mytext.display("pleaseselect") %></option>
+		<option value="0" <% if (myconfig.get(db, "default_template").equals("0")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= mypage.select_options(db, "template", myconfig.get(db, "default_template")) %> 
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contentdesign.stylesheet") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <select name="default_stylesheet">
+                <option value="<%= myconfig.get(db, "default_stylesheet") %>"><%= mytext.display("pleaseselect") %></option>
+		<option value="0" <% if (myconfig.get(db, "default_stylesheet").equals("0")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= mypage.select_options(db, "stylesheet", myconfig.get(db, "default_stylesheet")) %> 
+              </select>
+            </td>
+          </tr>
+        </table>
+        <br>
+
+        <input type="hidden" name="insert" value="yes">
+        <input type="hidden" name="importfile" value="">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("config.database.designs.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2">
+              <%= mytext.display("config.database.designs.intro") %>
+            </td>
+          </tr>
+          <tr id="designs_importparams" class="WCMimportparams">
+            <td class="WCMinnerContentInputValue">
+            </td>
+          </tr>
+          <tr id="designs_importoptions" class="WCMimportoptions">
+            <td class="WCMinnerContentInputValue">
+                <%= DB.import_file_radio_buttons(mytext, "designs",2,DOCUMENT_ROOT, servername, db, myconfig) %>
+            </td>
+          </tr>
+          <tr id="designs_importupload" class="WCMimportupload">
+            <td class="WCMinnerContentInputValue" align="left" valign="top" colspan="2">
+              <%= mytext.display("config.database.designs.upload") %><br>
+              <input type="file" size="60" name="file" onchange="if (this.form.submitbutton) this.form.submitbutton.disabled = false;">
+              <input disabled name="submitbutton" type="submit" value="<%= mytext.display("config.database.designs.submit") %>" onclick="enableAll(this.form);">
+            </td>
+          </tr>
+        </table>
+        <br>
+
+</div></div>
+<div id="Website_Settings" class="Website_Settings st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.website.settings.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.website.settings.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.specialsettings.doctype") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="2"> 
+              <textarea name="doctype" rows="2" cols="80" wrap="off" style="width: 95%"><%= html.encode(myconfig.get(db, "doctype")) %></textarea>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="2"> 
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;>'"> HTML 4.01 Transitional
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;http://www.w3.org/TR/html4/strict.dtd&quot;>'"> HTML 4.01 Strict
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;>'"> XHTML 1.0 Transitional
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;>'"> XHTML 1.0 Strict
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;>'"> XHTML 1.1
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE html>")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html>'"> HTML 5
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.specialsettings.charset") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="2"> 
+              <input type="text" size="125" style="width: 95%" name="charset" value="<%= myconfig.get(db, "charset").replaceAll("\"", "&quot;") %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.settings.title.prefix") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.settings.title.suffix") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="text" size="60" maxlength="250" style="width: 90%" name="default_title_prefix" value="<%= myconfig.get(db, "default_title_prefix").replaceAll("\"", "&quot;") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="text" size="60" maxlength="250" style="width: 90%" name="default_title_suffix" value="<%= myconfig.get(db, "default_title_suffix").replaceAll("\"", "&quot;") %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr id="websitesettingaddnew"><td>&nbsp;</td></tr>
+          <tr>
+            <td colspan="2">
+              <%= mytext.display("config.website.settings.addnew.heading") %>: <input id="websitesettingheading" size="30" maxlength="255" name="websitesettingheading" type="text">
+              <%= mytext.display("config.website.settings.addnew.name") %>: <input id="websitesettingname" size="30" maxlength="255" name="websitesettingname" type="text">
+              <input value="Add New" onclick="addSetting('websitesetting')" type="button">
+              <input type="hidden" id="delete" name="delete" value="">
+            </td>
+          </tr>
+        </table>
+	<script>
+	<%
+	for (Iterator i = mywebsitesettings.keySet().iterator(); i.hasNext(); ) {
+		HashMap mywebsitesetting = (HashMap)mywebsitesettings.get(i.next());
+		Matcher matches = Pattern.compile("^config_([^_]+)_(.+)$").matcher("" + mywebsitesetting.get("configname"));
+		if (matches.find()) {
+			String myheading = "" + matches.group(1);
+			String myname = "" + matches.group(2);
+			String myvalue = "" + mywebsitesetting.get("configvalue");
+			%><%= "addSetting('websitesetting', '" + myheading + "', '" + myname + "', '" + myvalue + "');" + "\r\n" %><%
+	
+		}
+	}
+	%>
+	</script>
+</div></div>
+<div id="Contact_Forms" class="Contact_Forms st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th colspan="2" class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.contactforms.heading") %></th>
+          </tr>
+          <tr> 
+            <td colspan="2" class="WCMinnerContentIntro"><%= mytext.display("config.website.contactforms.intro") %></td>
+          </tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.recipient") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="contact_form_recipient" value="<%= myconfig.get(db, "contact_form_recipient") %>">
+            </td>
+          </tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.recipients") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <textarea rows="5" cols="40" name="contact_form_recipients"><%= html.encode(myconfig.get(db, "contact_form_recipients")) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.mailserver") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="text" size="40" name="contact_form_mailserver" value="<% if (! myconfig.get(db, "contact_form_mailserver").equals("")) { %><%= myconfig.get(db, "contact_form_mailserver") %><% } else { %>localhost<% } %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th colspan="2" class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.contactforms.captcha.heading") %></th>
+          </tr>
+          <tr> 
+            <td colspan="2" class="WCMinnerContentIntro"><%= mytext.display("config.website.contactforms.captcha.intro") %></td>
+          </tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.captcha.text") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="captcha_text" value="<%= html.encode(myconfig.get(db, "captcha_text")) %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <td width="25" class="WCMinnerContentInputName">
+              <input type="radio" name="captcha" value=""<% if (myconfig.get(db, "captcha").equals("")) { %> checked<% } %>>
+            </td>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.captcha.none") %></th>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <td width="25" class="WCMinnerContentInputName">
+              <input type="radio" name="captcha" value="recaptcha"<% if (myconfig.get(db, "captcha").equals("recaptcha")) { %> checked<% } %>>
+            </td>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.captcha.recaptcha") %></th>
+          </tr>
+          <tr>
+            <td width="25"></td>
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.website.contactforms.captcha.recaptcha.privatekey") %></td>
+          </tr>
+          <tr>
+            <td width="25"></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="captcha_private_key" value="<%= myconfig.get(db, "captcha_private_key") %>">
+            </td>
+          </tr>
+          <tr>
+            <td width="25"></td>
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.website.contactforms.captcha.recaptcha.publickey") %></td>
+          </tr>
+          <tr>
+            <td width="25"></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="captcha_public_key" value="<%= myconfig.get(db, "captcha_public_key") %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <td width="25" class="WCMinnerContentInputName">
+              <input type="radio" name="captcha" value="characters"<% if (myconfig.get(db, "captcha").equals("characters")) { %> checked<% } %>>
+            </td>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.captcha.characters") %></th>
+          </tr>
+          <tr>
+            <td width="25"></td>
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.website.contactforms.captcha.characters.list") %></td>
+          </tr>
+          <tr>
+            <td width="25"></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="captcha_characters" value="<% if (! myconfig.get(db, "captcha_characters").equals("")) { %><%= myconfig.get(db, "captcha_characters") %><% } else { %><%= mytext.display("config.website.contactforms.captcha.characters.list.default") %><% } %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <td width="25" class="WCMinnerContentInputName">
+              <input type="radio" name="captcha" value="words"<% if (myconfig.get(db, "captcha").equals("words")) { %> checked<% } %>>
+            </td>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.captcha.words") %></th>
+          </tr>
+          <tr>
+            <td width="25"></td>
+            <td class="WCMinnerContentInputName"><%= mytext.display("config.website.contactforms.captcha.words.list") %></td>
+          </tr>
+          <tr>
+            <td width="25"></td>
+            <td class="WCMinnerContentInputValue">
+              <textarea cols="80" rows="20" name="captcha_words"><%= myconfig.get(db, "captcha_words") %></textarea>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.captcha.functionality") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="hidden" name="captcha_contact" value="<%= myconfig.get(db, "captcha_contact") %>"><input onchange="this.form.captcha_contact.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "captcha_contact").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.captcha.functionality.contact").replaceAll(".xxx", ".jsp") %><br>
+              <input type="hidden" name="captcha_post" value="<%= myconfig.get(db, "captcha_post") %>"><input onchange="this.form.captcha_post.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "captcha_post").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.captcha.functionality.post").replaceAll(".xxx", ".jsp") %><br>
+              <input type="hidden" name="captcha_shopcart" value="<%= myconfig.get(db, "captcha_shopcart") %>"><input onchange="this.form.captcha_shopcart.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "captcha_shopcart").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.captcha.functionality.shopcart").replaceAll(".xxx", ".jsp") %><br>
+              <input type="hidden" name="captcha_register" value="<%= myconfig.get(db, "captcha_register") %>"><input onchange="this.form.captcha_register.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "captcha_register").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.captcha.functionality.register").replaceAll(".xxx", ".jsp") %><br>
+              <input type="hidden" name="captcha_user" value="<%= myconfig.get(db, "captcha_user") %>"><input onchange="this.form.captcha_user.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "captcha_user").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.captcha.functionality.user").replaceAll(".xxx", ".jsp") %>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th colspan="2" class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.contactforms.authorize.heading") %></th>
+          </tr>
+          <tr> 
+            <td colspan="2" class="WCMinnerContentIntro"><%= mytext.display("config.website.contactforms.authorize.intro") %></td>
+          </tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.authorize.functionality") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="hidden" name="authorize_contact" value="<%= myconfig.get(db, "authorize_contact") %>"><input onchange="this.form.authorize_contact.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "authorize_contact").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.authorize.functionality.contact").replaceAll(".xxx", ".jsp") %><br>
+              <input type="hidden" name="authorize_post" value="<%= myconfig.get(db, "authorize_post") %>"><input onchange="this.form.authorize_post.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "authorize_post").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.authorize.functionality.post").replaceAll(".xxx", ".jsp") %><br>
+              <input type="hidden" name="authorize_shopcart" value="<%= myconfig.get(db, "authorize_shopcart") %>"><input onchange="this.form.authorize_shopcart.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "authorize_shopcart").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.authorize.functionality.shopcart").replaceAll(".xxx", ".jsp") %><br>
+              <input type="hidden" name="authorize_register" value="<%= myconfig.get(db, "authorize_register") %>"><input onchange="this.form.authorize_register.value=this.checked?this.value:''" type="checkbox" name="dummy" value="yes"<% if (! myconfig.get(db, "authorize_register").equals("")) { %> checked<% } %>> <%= mytext.display("config.website.contactforms.authorize.functionality.register").replaceAll(".xxx", ".jsp") %>
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="Security" class="Security st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="4"><%= mytext.display("config.website.security.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="4"><%= mytext.display("config.website.security.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.require.ssl.admin") %></th>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.require.ssl.logout.admin") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="require_ssl_admin" value="no"<% if (! myconfig.get(db, "require_ssl_admin").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.security.require.ssl.admin.no") %>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input <% if (! myrequest.getProtocol().equals("https://")) { %>disabled<% } %> type="radio" name="require_ssl_admin" value="yes"<% if (myconfig.get(db, "require_ssl_admin").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.security.require.ssl.admin.yes") %>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="require_ssl_logout_admin" value="no"<% if (! myconfig.get(db, "require_ssl_logout_admin").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.security.require.ssl.admin.no") %>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input <% if (! myrequest.getProtocol().equals("https://")) { %>disabled<% } %> type="radio" name="require_ssl_logout_admin" value="yes"<% if (myconfig.get(db, "require_ssl_logout_admin").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.security.require.ssl.admin.yes") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.require.ssl.user") %></th>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.require.ssl.logout.user") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="require_ssl_user" value="no"<% if (! myconfig.get(db, "require_ssl_user").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.security.require.ssl.user.no") %>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="require_ssl_user" value="yes"<% if (myconfig.get(db, "require_ssl_user").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.security.require.ssl.user.yes") %>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="require_ssl_logout_user" value="no"<% if (! myconfig.get(db, "require_ssl_logout_user").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.security.require.ssl.user.no") %>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="require_ssl_logout_user" value="yes"<% if (myconfig.get(db, "require_ssl_logout_user").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.security.require.ssl.user.yes") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("config.website.security.login.notification.superadmin.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.superadmin") %></th>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.superadmin.lock") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="40" name="login_notification_superadmin" value="<%= myconfig.get(db, "login_notification_superadmin") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="3" name="login_notification_superadmin_lock" value="<%= myconfig.get(db, "login_notification_superadmin_lock") %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.superadmin.failure") %></th>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.superadmin.redirect") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="40" name="login_notification_superadmin_failure" value="<%= myconfig.get(db, "login_notification_superadmin_failure") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="60" name="login_notification_superadmin_redirect" value="<%= myconfig.get(db, "login_notification_superadmin_redirect") %>">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("config.website.security.login.notification.admin.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.admin") %></th>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.admin.lock") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="40" name="login_notification_admin" value="<%= myconfig.get(db, "login_notification_admin") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="3" name="login_notification_admin_lock" value="<%= myconfig.get(db, "login_notification_admin_lock") %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.admin.failure") %></th>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.admin.redirect") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="40" name="login_notification_admin_failure" value="<%= myconfig.get(db, "login_notification_admin_failure") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="60" name="login_notification_admin_redirect" value="<%= myconfig.get(db, "login_notification_admin_redirect") %>">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.website.security.passwordexpiration") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <input type="text" size="4" name="user_password_expiration" value="<%= myconfig.get(db, "user_password_expiration") %>"> <%= mytext.display("config.website.security.passwordexpiration.days") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("config.website.security.login.notification.user.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.user") %></th>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.user.lock") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="40" name="login_notification_user" value="<%= myconfig.get(db, "login_notification_user") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="3" name="login_notification_user_lock" value="<%= myconfig.get(db, "login_notification_user_lock") %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.user.failure") %></th>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("config.website.security.login.notification.user.redirect") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="40" name="login_notification_user_failure" value="<%= myconfig.get(db, "login_notification_user_failure") %>">
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="60" name="login_notification_user_redirect" value="<%= myconfig.get(db, "login_notification_user_redirect") %>">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.website.security.sessionaddresslock") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="session_address_lock" value="none"<% if (myconfig.get(db, "session_address_lock").equals("none")) { %> checked<% } %>> <%= mytext.display("config.website.security.sessionaddresslock.none") %>
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <input type="radio" name="session_address_lock" value="base"<% if (myconfig.get(db, "session_address_lock").equals("base")) { %> checked<% } %>> <%= mytext.display("config.website.security.sessionaddresslock.base") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="radio" name="session_address_lock" value="full"<% if (myconfig.get(db, "session_address_lock").equals("full")) { %> checked<% } %>> <%= mytext.display("config.website.security.sessionaddresslock.full") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("config.website.security.redirect") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="4">
+              <textarea name="redirect_urls" rows="5" cols="80"><%= html.encode(myconfig.get(db, "redirect_urls")) %></textarea>
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="Special_Pages" class="Special_Pages st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.special.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.website.special.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.page") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_page" name="default_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_page")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.page.nonexisting") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_page_nonexisting" name="default_page_nonexisting" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_page_nonexisting") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_page_nonexisting")) %></option> &nbsp;
+                <option value=""<% if (myconfig.get(db, "default_page_nonexisting").equals("")) { %> selected<% } %>><%= mytext.display("none") %></option>
+                <option value="-"<% if (myconfig.get(db, "default_page_nonexisting").equals("-")) { %> selected<% } %>><%= mytext.display("websites.page.error.404") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_page_nonexisting', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.page.unpublished") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_page_unpublished" name="default_page_unpublished" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_page_unpublished") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_page_unpublished")) %></option> &nbsp;
+                <option value=""<% if (myconfig.get(db, "default_page_unpublished").equals("")) { %> selected<% } %>><%= mytext.display("none") %></option>
+                <option value="-"<% if (myconfig.get(db, "default_page_unpublished").equals("-")) { %> selected<% } %>><%= mytext.display("websites.page.error.404") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_page_unpublished', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.page.expired") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_page_expired" name="default_page_expired" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_page_expired") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_page_expired")) %></option> &nbsp;
+                <option value=""<% if (myconfig.get(db, "default_page_expired").equals("")) { %> selected<% } %>><%= mytext.display("none") %></option>
+                <option value="-"<% if (myconfig.get(db, "default_page_expired").equals("-")) { %> selected<% } %>><%= mytext.display("websites.page.error.404") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_page_expired', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.login") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_login" name="default_login" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_login") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_login")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_login', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.searchresults.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_searchresults_page" name="default_searchresults_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_searchresults_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_searchresults_page")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_searchresults_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.searchresults.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_searchresults_entry" name="default_searchresults_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_searchresults_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_searchresults_entry")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_searchresults_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.list.entry") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_list_entry" name="default_list_entry" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_list_entry") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_list_entry")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_list_entry', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.publish.ready") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_publish_ready" name="default_publish_ready" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_publish_ready") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_publish_ready")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_publish_ready', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "community")) { %>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.community.register.confirmation") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_register_confirmation_page" name="default_register_confirmation_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_register_confirmation_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_register_confirmation_page")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_register_confirmation_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.community.register.notification") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_register_notification_page" name="default_register_notification_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_register_notification_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_register_notification_page")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_register_notification_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.community.personal.admin") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="default_personal_admin_page" name="default_personal_admin_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "default_personal_admin_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "default_personal_admin_page")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('default_personal_admin_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+<% } %>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.password.retrieve.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="retrieve_password_page" name="retrieve_password_page" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "retrieve_password_page") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "retrieve_password_page")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('retrieve_password_page', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.password.retrieve.confirmation") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="retrieve_password_confirmation" name="retrieve_password_confirmation" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "retrieve_password_confirmation") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "retrieve_password_confirmation")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('retrieve_password_confirmation', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.password.retrieve.email") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="retrieve_password_email" name="retrieve_password_email" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "retrieve_password_email") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "retrieve_password_email")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('retrieve_password_email', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.password.retrieve.error") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <select id="retrieve_password_error" name="retrieve_password_error" style="width: 400px;">
+                <option value="<%= myconfig.get(db, "retrieve_password_error") %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + myconfig.get(db, "retrieve_password_error")) %></option> &nbsp;
+                <option value=""><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('retrieve_password_error', 'Pages', '', 'Pages', 'page');">
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.website.special.printing.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.printing.contents") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <nobr>
+                <select multiple size="5" id="print_contents" name="print_contents" style="width: 400px;">
+                  <option value="">&nbsp;</option>
+                  <%= mypage.select_options_ids(db, "", myconfig.get(db, "print_contents").replaceAll(",", "|")) %>
+                </select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('print_contents', '', '', '', '');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.special.printing.users") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <nobr>
+                <select multiple size="5" id="print_users" name="print_users" style="width: 400px;">
+                  <option value="">&nbsp;</option>
+                  <%= mypage.select_options_ids(db, "", myconfig.get(db, "print_users").replaceAll(",", "|")) %>
+                </select>
+		<input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('print_users', '', '', '', '');">
+              </nobr>
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="Special_Settings" class="Special_Settings st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.specialsettings.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.website.specialsettings.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.specialsettings.imagehrefs") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="hardcore_image_hrefs" value=""<% if (! myconfig.get(db, "hardcore_image_hrefs").equals("direct")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.imagehrefs.default") %> 
+            </td>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="hardcore_image_hrefs" value="direct"<% if (myconfig.get(db, "hardcore_image_hrefs").equals("direct")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.imagehrefs.direct") %> 
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.specialsettings.filehrefs") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="hardcore_file_hrefs" value=""<% if (! myconfig.get(db, "hardcore_file_hrefs").equals("direct")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.filehrefs.default") %> 
+            </td>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="hardcore_file_hrefs" value="direct"<% if (myconfig.get(db, "hardcore_file_hrefs").equals("direct")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.filehrefs.direct") %> 
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.specialsettings.linkhrefs") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="hardcore_link_hrefs" value=""<% if (! myconfig.get(db, "hardcore_link_hrefs").equals("direct")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.linkhrefs.default") %> 
+            </td>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="hardcore_link_hrefs" value="direct"<% if (myconfig.get(db, "hardcore_link_hrefs").equals("direct")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.linkhrefs.direct") %> 
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.specialsettings.stylesheethrefs") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="hardcore_stylesheet_hrefs" value=""<% if (! myconfig.get(db, "hardcore_stylesheet_hrefs").equals("inline")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.stylesheethrefs.default") %> 
+            </td>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="hardcore_stylesheet_hrefs" value="direct"<% if (myconfig.get(db, "hardcore_stylesheet_hrefs").equals("direct")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.stylesheethrefs.direct") %> 
+              <br>
+              <input type="radio" name="hardcore_stylesheet_hrefs" value="inline"<% if (myconfig.get(db, "hardcore_stylesheet_hrefs").equals("inline")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.stylesheethrefs.inline") %> 
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.specialsettings.delivery.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.website.specialsettings.delivery.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.specialsettings.delivery.images") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="image_output_mode" value="redirect"<% if (! myconfig.get(db, "image_output_mode").equals("return")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.delivery.images.redirect") %> 
+            </td>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="image_output_mode" value="return"<% if (myconfig.get(db, "image_output_mode").equals("return")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.delivery.images.return") %> 
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.specialsettings.delivery.files") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="file_output_mode" value="redirect"<% if (myconfig.get(db, "file_output_mode").equals("redirect")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.delivery.files.redirect") %> 
+            </td>
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="file_output_mode" value="return"<% if (! myconfig.get(db, "file_output_mode").equals("redirect")) { %> checked<% } %>><%= mytext.display("config.website.specialsettings.delivery.files.return") %> 
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="URL_Rewriting" class="URL_Rewriting st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.website.urlrewriting.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.website.urlrewriting.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.urlrewriting.urls") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <input type="radio" name="url_rewriting" value="no"<% if (! myconfig.get(db, "url_rewriting").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.urlrewriting.urls.dynamic") %>
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <input type="radio" name="url_rewriting" value="yes"<% if (myconfig.get(db, "url_rewriting").equals("yes")) { %> checked<% } %>> <%= mytext.display("config.website.urlrewriting.urls.static") %>
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="Media_Storage" class="Media_Storage st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.website.mediastorage.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="2"><%= mytext.display("config.website.mediastorage.intro") %></td>
+          </tr>
+          <tr> 
+            <th colspan="2" class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.mediastorage.cloud") %></th>
+          </tr>
+          <tr> 
+            <td colspan="2" class="WCMinnerContentIntro"><%= mytext.display("config.website.mediastorage.cloud.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.mediastorage.cloud.service") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="csservice" value=""<% if (myconfig.get(db, "csservice").equals("")) { %> checked<% } %>><%= mytext.display("none") %> 
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="csservice" value="amazons3"<% if (myconfig.get(db, "csservice").equals("amazons3")) { %> checked<% } %>>Amazon S3 
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top"> 
+              <input type="radio" name="csservice" value="OTHER"<% if (myconfig.get(db, "csservice").equals("OTHER")) { %> checked<% } %>><%= mytext.display("other") %> 
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.mediastorage.cloud.username") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="csusername" value="<%= myconfig.get(db, "csusername") %>">
+            </td>
+          </tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.mediastorage.cloud.password") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="cspassword" value="<%= myconfig.get(db, "cspassword") %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.mediastorage.cloud.rootpath") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="csrootpath" value="<%= myconfig.get(db, "csrootpath") %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th colspan="2" class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.mediastorage.urls") %></th>
+          </tr>
+          <tr> 
+            <td colspan="2" class="WCMinnerContentIntro"><%= mytext.display("config.website.mediastorage.urls.intro") %></td>
+          </tr>
+          <tr>
+            <th colspan="2" class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.mediastorage.urls.rootpath") %></th>
+          </tr>
+          <tr>
+            <td colspan="2" class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="csURLrootpath" value="<%= myconfig.get(db, "csURLrootpath") %>">
+            </td>
+          </tr>
+          <tr> 
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.publish.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_static_filenames" value="no" <% if (! myconfig.get(db, "use_static_filenames").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticfilenames.disable") %></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2"> 
+              <input type="radio" name="use_static_filenames" value="yes" <% if (myconfig.get(db, "use_static_filenames").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticfilenames.enable") %><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="use_static_content" value="" <% if (myconfig.get(db, "use_static_content").equals("")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticcontent.disable") %><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="use_static_content" value="yes" <% if (myconfig.get(db, "use_static_content").equals("yes")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticcontent.enable") %><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="use_static_content" value="no" <% if (myconfig.get(db, "use_static_content").equals("no")) { %>checked<% } %> >
+              <%= mytext.display("config.publish.staticcontent.cloud") %><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= mytext.display("config.publish.staticcontent.info").replaceAll("\\.xxx", ".jsp") %></td>
+          </tr>
+        </table>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

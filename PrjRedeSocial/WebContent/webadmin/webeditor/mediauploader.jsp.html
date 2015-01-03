@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('mediauploader_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_action = requestParameter("action");
+request_category = requestParameter("category");
+request_id = requestParameter("id");
+request_title = requestParameter("title");
+request_href = requestParameter("href");
+var mediaclass = '';
+
+function checkExtension(file){
+	if (file == "") { return false; }
+
+	var file_extension = file;
+	file_extension = file_extension.split(".");
+	file_extension = file_extension[file_extension.length - 1];
+	file_extension = file_extension.toLowerCase();
+
+	valid_extensions = "";
+	<% if (! valid_extensions.equals("")) { %>
+	valid_extensions = "<%= valid_extensions %>";
+	<% } %>
+	if (valid_extensions != "") {
+		valid_extension = valid_extensions.split(",");
+		for (i=0; i<valid_extension.length; i++) {
+			if ( file_extension == valid_extension[i]) return true;
+		}
+		alert(HtmlDecode(Text('mediauploader_error')) + ' ' + valid_extensions);
+	} else {
+		alert(HtmlDecode(Text('disabled')));
+	}
+	return false;
+}
+
+function getname(id, file, title){
+	if (document.upload.title.value == "") {
+		var file_name = file;
+		file_name = file_name.split("/");
+		file_name = file_name[file_name.length - 1];
+		file_name = file_name.split("\\");
+		file_name = file_name[file_name.length - 1];
+		document.upload.title.value = file_name;
+		title = file_name;
+	}
+	var title_extension = document.upload.title.value;
+	title_extension = title_extension.split(".");
+	if (title_extension.length == 1) {
+		var file_extension = file;
+		file_extension = file_extension.split(".");
+		file_extension = file_extension[file_extension.length - 1];
+		file_extension = file_extension.toLowerCase();
+		if (file_extension != "") {
+			document.upload.title.value = document.upload.title.value + "." + file_extension;
+			title = document.upload.title.value;
+		}
+	}
+	if (checkExtension(file) && checkExtension(title)){
+		if (file.substring(file.length-4) == ".swf") {
+			mediaclass = "flash";
+		} else if (file.substring(file.length-6) == ".class") {
+			mediaclass = "applet";
+		} else {
+			mediaclass = "image";
+		}
+		parent.mediapreview.location.href = 'mediapreview.jsp?editor=' + editor + '&title='+encodeURIComponent(title)+'&href='+escape('file:///'+file)+'&mediaclass='+mediaclass;
+		return true;
+	} else if ((title != "") && (file == "") && checkExtension(title)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function doSubmit() {
+	if ((document.upload.file.type == "hidden") || (getname(document.upload.id.value, document.upload.file.value, document.upload.title.value))) {
+		if (document.upload.attributes && document.upload.attributes.action && document.upload.attributes && document.upload.attributes.action.nodeValue) {
+			document.upload.attributes.action.nodeValue = document.upload.attributes.action.nodeValue + '&list=' + escape(parent.medialist.location.href.replace(new RegExp("https?://[^/]+"), "")) + '&mediaclass=' + mediaclass;
+		} else {
+			document.upload.setAttribute("action", document.upload.getAttribute("action") + '&list=' + escape(parent.medialist.location.href.replace(new RegExp("https?://[^/]+"), "")) + '&mediaclass=' + mediaclass);
+		}
+		parent.medialist.medialistMenu.clearCookie();
+		parent.medialist.location.href = 'wait.html';
+		return true;
+	} else {
+		return false;
+	}
+}
+
+</script>
+</head>
+<body>
+
+<% if ((! upload_path.equals("")) && (enable_upload.equals("yes"))) { %>
+
+<script type="text/javascript">
+document.writeln('<form action="medianotification.jsp?editor=' + editor + '" method="POST" enctype="multipart/form-data" name="upload" onSubmit="return doSubmit();">');
+document.writeln('<input type="hidden" name="category" value="' + request_category + '">');
+document.writeln('<input type="hidden" name="old_title" value="' + request_title + '">');
+document.writeln('<input type="hidden" name="action" value="' + request_action + '">');
+if (request_action != "Create") {
+	document.writeln('<input type="hidden" name="id" value="' + request_id + '">');
+}
+document.writeln('<input type="hidden" name="contentclass" value="image">');
+
+document.writeln('<table summary="" width="100%" border="0" class="dtree">');
+	document.writeln('<tr>');
+	if (request_action == "Create") {
+		document.writeln('<th colspan="2" align="left">' + Text('mediauploader_create_image') + '<\/th>');
+	} else if (request_action == "Update") {
+		document.writeln('<th colspan="2" align="left">' + Text('mediauploader_update_image') + '<\/th>');
+	} else if (request_action == "Delete") {
+		document.writeln('<th colspan="2" align="left">' + Text('mediauploader_delete_image') + '<\/th>');
+	}
+		document.writeln('<th width="50%" align="right">');
+		if (request_action == "Delete") {
+			document.writeln('<input type="submit" name="delete" value="' + Text('mediauploader_delete') + '">');
+		} else if (request_action == "Update") {
+			document.writeln('<input type="submit" name="update" value="' + Text('mediauploader_update') + '">');
+		} else {
+			document.writeln('<input type="submit" name="create" value="' + Text('mediauploader_create') + '">');
+		}
+		document.writeln('<\/th>');
+	document.writeln('<\/tr>');
+	document.writeln('<tr>');
+		document.writeln('<td align="left" colspan="2">' + Text('mediauploader_heading') + '<\/td>');
+		document.writeln('<td width="50%" align="left">' + Text('mediauploader_file') + '<\/td>');
+	document.writeln('<\/tr>');
+	document.writeln('<tr align="left" valign="top">');
+		document.writeln('<td colspan="2">');
+		if (request_action == "Delete") {
+			document.writeln('<input disabled type="text" name="title" size="40" maxlength="250" value="' + request_title + '">');
+		} else {
+			document.writeln('<input type="text" name="title" size="40" maxlength="250" value="' + request_title + '">');
+		}
+		document.writeln('<\/td>');
+		document.writeln('<td width="50%">');
+		if (request_action == "Delete") {
+			document.writeln('<input type="hidden" name="file" value="">');
+			document.writeln('<input disabled type="text" name="href" size="40" maxlength="250" value="' + request_href + '">');
+		} else {
+			document.writeln('<input type="file" name="file" size="20" maxlength="256" align="middle" onChange="getname(document.upload.id.value, document.upload.file.value, document.upload.title.value);">');
+			document.writeln('<input type="hidden" name="href" value="">');
+		}
+		document.writeln('<\/td>');
+	document.writeln('<\/tr>');
+	document.writeln('<\/table>');
+document.writeln('<\/form>');
+</script>
+
+<% } else { %>
+
+<table summary="" width="100%" height="100%" border="0">
+	<tr>
+		<td align="center" valign="middle">
+			<script type="text/javascript">document.write(Text('mediauploader_disabled'));</script>
+		</td>
+	</tr>
+</table>
+
+<% } %>
+
+</body>
+</html>

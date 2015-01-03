@@ -1,0 +1,5 @@
+<%
+
+session.setAttribute("productdelivery", "Hello");
+
+%>

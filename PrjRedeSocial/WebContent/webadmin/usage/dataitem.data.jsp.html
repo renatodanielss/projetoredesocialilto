@@ -1,0 +1,36 @@
+<%
+if ((HashMap)usage.get("dataitem") != null) {
+%>
+	<p><b><%= reportUsage.pageName(myrequest.getParameter("contentclass") + ":::" + myrequest.getParameter("database") + ":::" + myrequest.getParameter("id"), myconfig, db) %></b></p>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.dataitem.user") %></td>
+				<td align="center" class="WCMstatsTableClienthosts"><%= mytext.display("usage.dataitem.clienthost") %></td>
+				<td align="center" class="WCMstatsTableVisitors"><%= mytext.display("usage.dataitem.visitor") %></td>
+				<td align="center" class="WCMstatsTableVisits"><%= mytext.display("usage.dataitem.visit") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.dataitem.datetime") %></td>
+			</tr>
+<%
+	for (int i=0; i<((HashMap)usage.get("dataitem")).size(); i++) {
+		String myid = "" + i;
+%>
+			<tr>
+				<td align="left">&nbsp;<% if (("" + ((HashMap)((HashMap)usage.get("dataitem")).get(myid)).get("clientusername")).equals("")) { %><%= mytext.display("usage.dataitem.anonymous") %><% } else { %><%= "" + ((HashMap)((HashMap)usage.get("dataitem")).get(myid)).get("clientusername") %><% } %>&nbsp;</td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.clienthostName("" + ((HashMap)((HashMap)usage.get("dataitem")).get(myid)).get("clienthost")) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.visitorName("" + ((HashMap)((HashMap)usage.get("dataitem")).get(myid)).get("visitorid")) %>&nbsp;</nobr></td>
+				<td align="left"><nobr>&nbsp;<%= reportUsage.visitName("" + ((HashMap)((HashMap)usage.get("dataitem")).get(myid)).get("sessionid")) %>&nbsp;</nobr></td>
+				<td align="left">&nbsp;<%= "" + ((HashMap)((HashMap)usage.get("dataitem")).get(myid)).get("datetimefull") %>&nbsp;</td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="3"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right"><%= reportUsage.countValues((HashMap)usage.get("dataitem")) %>&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>

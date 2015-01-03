@@ -1,0 +1,460 @@
+<script type="text/javascript">
+
+function addSetting(input, heading, name, value) {
+	if (! document.getElementById(input + "heading")) return;
+	if (! document.getElementById(input + "name")) return;
+	if (! heading) heading = document.getElementById(input + "heading").value;
+	if (! name) name = document.getElementById(input + "name").value;
+	if (! value) value = "";
+	heading = heading.replace(/[_:@\.,]/g, " ");
+	name = name.replace(/[_:@\.,]/g, " ");
+	document.getElementById(input + "heading").value = "";
+	document.getElementById(input + "name").value = "";
+	if (name) {
+		var insertpoint = document.getElementById(input + "addnew");
+		if (! document.getElementById("websitesetting_config_" + heading)) {
+			var tr = document.createElement("tr");
+			tr.setAttribute("id", "websitesetting_config_" + heading);
+			var th = document.createElement("th");
+			th.setAttribute("class", "WCMinnerContentHeading1");
+			th.setAttribute("align", "left");
+			th.setAttribute("colSpan", "2");
+			th.innerHTML = heading;
+			tr.appendChild(th);
+			var headinginsertpoint = insertpoint;
+			while (insertpoint && insertpoint.previousSibling && insertpoint.previousSibling.id && insertpoint.previousSibling.id.match(new RegExp("^websitesetting_config_"))) {
+				if (insertpoint.previousSibling.id.match(new RegExp("^websitesetting_config_([^_]+)$"))) {
+					if (insertpoint.previousSibling.id < "websitesetting_config_" + heading) {
+						break;
+					} else {
+						headinginsertpoint = insertpoint.previousSibling;
+					}
+				}
+				insertpoint = insertpoint.previousSibling;
+			}
+			insertpoint = headinginsertpoint;
+			if (! insertpoint) insertpoint = document.getElementById(input + "addnew");
+			if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+		}
+
+		if (! document.getElementById("websitesetting_config_" + heading + "_" + name)) {
+			var tr = document.createElement("tr");
+			tr.setAttribute("id", "websitesetting_config_" + heading + "_" + name);
+			var th = document.createElement("th");
+			th.setAttribute("class", "WCMinnerContentInputName");
+			th.setAttribute("align", "left");
+			th.setAttribute("colSpan", "2");
+			th.innerHTML = name;
+			tr.appendChild(th);
+			if (document.getElementById("websitesetting_config_" + heading)) {
+				insertpoint = document.getElementById("websitesetting_config_" + heading).nextSibling;
+				while (insertpoint && insertpoint.id) {
+					if (! insertpoint.id.match(new RegExp("websitesetting_config_" + heading + "_"))) {
+						break;
+					} else if (insertpoint.id > "websitesetting_config_" + heading + "_" + name) {
+						break;
+					}
+					insertpoint = insertpoint.nextSibling;
+				}
+				if (! insertpoint) insertpoint = document.getElementById(input + "addnew");
+			}
+			if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+
+			tr = document.createElement("tr");
+			tr.setAttribute("id", "websitesetting_config_" + heading + "_" + name + "_input");
+			var td = document.createElement("td");
+			td.setAttribute("class", "WCMinnerContentInputValue");
+			td.setAttribute("align", "left");
+			td.setAttribute("colSpan", "3");
+			td.innerHTML = '<input type="text" size="80" maxlength="255" id="config_' + heading + '_' + name + '" name="config_' + heading + '_' + name + '" value="' + value + '">';
+			tr.appendChild(td);
+			if (insertpoint && insertpoint.parentNode) insertpoint.parentNode.insertBefore(tr, insertpoint);
+		}
+
+		var inputfield = document.getElementById("config_" + heading + "_" + name);
+		try {
+			if (inputfield) inputfield.focus();
+		} catch(e) {
+		}
+	}
+}
+
+</script>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#system" rel="system"><%= mytext.display("intro.config.quickstart.system.tab") %></a></li>
+                <li><a href="#database" rel="database"><%= mytext.display("intro.config.quickstart.database.tab") %></a></li>
+                <li><a href="#license" rel="license"><%= mytext.display("intro.config.quickstart.licenses.tab") %></a></li>
+                <li><a href="#superadmin" rel="superadmin"><%= mytext.display("intro.config.quickstart.superadmin.tab") %></a></li>
+                <li><a href="#website" rel="website"><%= mytext.display("intro.config.quickstart.website.tab") %></a></li>
+                <li><a href="#design" rel="design"><%= mytext.display("intro.config.quickstart.design.tab") %></a></li>
+                <li><a href="#settings" rel="settings"><%= mytext.display("intro.config.quickstart.settings.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="system" class="system st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("intro.config.quickstart.system.heading") %></th>
+          </tr>
+          <tr>
+            <td>
+              <%= mytext.display("intro.config.quickstart.system.text") %>
+<%@ include file="config/system.check.jsp" %>
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="database" class="database st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("intro.config.quickstart.database.heading") %></th>
+          </tr>
+<% if ((wizard.equals("license")) || (wizard.equals("superadmin")) || (wizard.equals("website"))) { %>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("intro.config.quickstart.database.intro") %></td>
+          </tr>
+<% } %>
+          <tr>
+            <td>
+              <%= mytext.display("intro.config.quickstart.database.text") %>
+<% Configuration save_myconfig = myconfig; %>
+<%@ include file="config/database.connection.jsp" %>
+<%@ include file="config/database.connection.jsp.html" %>
+<% myconfig = save_myconfig; %>
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="license" class="license st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("intro.config.quickstart.licenses.heading") %></th>
+          </tr>
+<% if ((wizard.equals("superadmin")) || (wizard.equals("website"))) { %>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("intro.config.quickstart.licenses.intro") %></td>
+          </tr>
+<% } %>
+          <tr>
+            <td>
+              <%= mytext.display("intro.config.quickstart.licenses.text") %>
+<%@ include file="config/licenses.form.jsp.html" %>
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="superadmin" class="superadmin st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("intro.config.quickstart.superadmin.heading") %></th>
+          </tr>
+<% if (wizard.equals("website")) { %>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("intro.config.quickstart.superadmin.intro") %></td>
+          </tr>
+<% } %>
+          <tr>
+            <td>
+              <%= mytext.display("intro.config.quickstart.superadmin.text") %>
+
+      <form action="/<%= mytext.display("adminpath") %>/config/superadmin.jsp" method="POST">
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+        <p> 
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.superadmin.heading") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.superadmin.username") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue">
+              <input type="text" name="superadmin" value="<%= myconfig.get(db, "superadmin") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.superadmin.password") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue">
+              <input type="text" name="superadmin_password" value="<%= myconfig.get(db, "superadmin_password") %>">
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.superadmin.email") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="superadmin_email" value="<%= myconfig.get(db, "superadmin_email") %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.website.contactforms.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.website.contactforms.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.contactforms.recipient") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="contact_form_recipient" value="<%= myconfig.get(db, "contact_form_recipient") %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.ecommerce.orderforms.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro"><%= mytext.display("config.ecommerce.orderforms.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.ecommerce.orderforms.recipient") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="order_form_recipient" value="<%= myconfig.get(db, "order_form_recipient") %>">
+            </td>
+          </tr>
+        </table>
+        <br>
+<% } %>
+        </form>
+
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="website" class="website st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("intro.config.quickstart.website.heading") %></th>
+          </tr>
+          <tr>
+            <td>
+              <%= mytext.display("intro.config.quickstart.website.text") %>
+
+<%@ include file="config/database.javascript.jsp.html" %>
+      <div>&nbsp;</div>
+      <form id="initializeandimport" action="/<%= mytext.display("adminpath") %>/config/database.jsp?<%= Math.random() %>" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="drop" value="yes">
+        <input type="hidden" name="create" value="yes">
+        <input type="hidden" name="delete" value="yes">
+        <input type="hidden" name="insert" value="yes">
+        <input type="hidden" name="importfile" value="">
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("intro.config.quickstart.website.import.heading") %></th>
+          </tr>
+          <tr id="websites_importparams" class="WCMimportparams">
+            <td class="WCMinnerContentInputValue">
+            </td>
+          </tr>
+          <tr id="websites_importoptions" class="WCMimportoptions">
+            <td class="WCMinnerContentInputValue">
+		<table valign="top" class="WCMimportfile" width="100%" cellspacing="20"><tr class="WCMimportfile" valign="top">
+			<td class="WCMimportfile" style="width: 50%;" valign="top">
+				<b><%= mytext.display("config.database.import.website.title") %></b><br>
+				<input class="importfileselect" value="<%= mytext.display("config.database.import.select") %>" onclick="doSubmit(this,'database.-basic-.xml','websites', '<%= mytext.display("config.database.import.submit") %>');" type="button">
+				<div><img src="/webadmin/database/database.-basic-.gif" align="left">
+				<%= mytext.display("config.database.import.website.text") %>
+				<br clear="all">
+				<div class="import_parameters" style="display:none">
+					<div>
+					<%= mytext.display("config.database.import.website.description") %>
+					</div>
+					<input disabled type="hidden" name="insertwebsite" value="yes">
+<% if (db != null) { %>
+					<div><%= db.import_website_options(out, mytext, myconfig, DOCUMENT_ROOT, "/") %></div>
+<% } %>
+				</div>
+			</td>
+		</tr></table>
+                <%= DB.import_file_radio_buttons(mytext, "websites", 2, DOCUMENT_ROOT, servername, db, myconfig) %>
+            </td>
+          </tr>
+          <tr id="websites_importupload" class="WCMimportupload">
+            <td class="WCMinnerContentInputValue" align="left" valign="top" colspan="2">
+              <%= mytext.display("config.database.import.upload") %><br>
+              <input type="file" size="60" name="file" onchange="if (this.form.submitbutton) this.form.submitbutton.disabled = false;">
+              <input disabled name="submitbutton" type="submit" value="<%= mytext.display("config.database.import.submit") %>" onclick="enableAll(this.form);">
+            </td>
+          </tr>
+        </table>
+        <br>
+      </form>
+
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="design" class="design st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("intro.config.quickstart.design.heading") %></th>
+          </tr>
+          <tr>
+            <td>
+              <%= mytext.display("intro.config.quickstart.design.text") %>
+
+<%@ include file="config/database.javascript.jsp.html" %>
+      <div>&nbsp;</div>
+      <form id="initializeandimport" action="/<%= mytext.display("adminpath") %>/config/database.jsp?<%= Math.random() %>" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="insert" value="yes">
+        <input type="hidden" name="importfile" value="">
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("intro.config.quickstart.design.import.heading") %></th>
+          </tr>
+          <tr id="designs_importparams" class="WCMimportparams">
+            <td class="WCMinnerContentInputValue">
+            </td>
+          </tr>
+          <tr id="designs_importoptions" class="WCMimportoptions">
+            <td class="WCMinnerContentInputValue">
+                <%= DB.import_file_radio_buttons(mytext, "designs", 2, DOCUMENT_ROOT, servername, db, myconfig) %>
+            </td>
+          </tr>
+          <tr id="designs_importupload" class="WCMimportupload">
+            <td class="WCMinnerContentInputValue" align="left" valign="top" colspan="2">
+              <%= mytext.display("config.database.import.upload") %><br>
+              <input type="file" size="60" name="file" onchange="if (this.form.submitbutton) this.form.submitbutton.disabled = false;">
+              <input disabled name="submitbutton" type="submit" value="<%= mytext.display("config.database.import.submit") %>" onclick="enableAll(this.form);">
+            </td>
+          </tr>
+        </table>
+        <br>
+      </form>
+
+            </td>
+          </tr>
+        </table>
+</div></div>
+<div id="settings" class="settings st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("intro.config.quickstart.settings.heading") %></th>
+          </tr>
+          <tr>
+            <td>
+              <%= mytext.display("intro.config.quickstart.settings.text") %>
+
+      <form action="/<%= mytext.display("adminpath") %>/config/website.jsp" method="POST">
+        <input type="hidden" name="quickstart_settings" value="">
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+        <p> 
+          <input type="submit" value="<%= mytext.display("save") %>">
+          <input type="hidden" id="websitesettingheading" name="websitesettingheading">
+          <input type="hidden" id="websitesettingname" name="websitesettingname">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("intro.config.quickstart.settings.import.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.specialsettings.doctype") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="2"> 
+              <input type="text" size="125" name="doctype" value="<%= myconfig.get(db, "doctype").replaceAll("\"", "&quot;") %>">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="2"> 
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;>'"> HTML 4.01 Transitional
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;http://www.w3.org/TR/html4/strict.dtd&quot;>'"> HTML 4.01 Strict
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;>'"> XHTML 1.0 Transitional
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;>'"> XHTML 1.0 Strict
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;>'"> XHTML 1.1
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (myconfig.get(db, "doctype").equals("<!DOCTYPE html>")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html>'"> HTML 5
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.website.specialsettings.charset") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="2"> 
+              <input type="text" size="125" name="charset" value="<%= myconfig.get(db, "charset").replaceAll("\"", "&quot;") %>">
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr id="websitesettingaddnew"><td>&nbsp;</td></tr>
+        </table>
+	<script>
+	<%
+	for (Iterator i = mywebsitesettings.keySet().iterator(); i.hasNext(); ) {
+		HashMap mywebsitesetting = (HashMap)mywebsitesettings.get(i.next());
+		Matcher matches = Pattern.compile("^config_([^_]+)_(.+)$").matcher("" + mywebsitesetting.get("configname"));
+		if (matches.find()) {
+			String myheading = "" + matches.group(1);
+			String myname = "" + matches.group(2);
+			String myvalue = "" + mywebsitesetting.get("configvalue");
+			%><%= "addSetting('websitesetting', '" + myheading + "', '" + myname + "', '" + myvalue + "');" + "\r\n" %><%
+	
+		}
+	}
+	%>
+	</script>
+      </form>
+
+            </td>
+          </tr>
+        </table>
+</div></div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+$(function(){
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+<% if (errors || (wizard.equals("system"))) { %>
+	$('#tabs').find('[rel=system]').click();
+<% } else if (wizard.equals("database")) { %>
+	$('#tabs').find('[rel=database]').click();
+<% } else if (wizard.equals("license")) { %>
+	$('#tabs').find('[rel=license]').click();
+<% } else if (wizard.equals("superadmin")) { %>
+	$('#tabs').find('[rel=superadmin]').click();
+<% } else if (wizard.equals("website")) { %>
+	$('#tabs').find('[rel=website]').click();
+<% } else if (wizard.equals("design")) { %>
+	$('#tabs').find('[rel=design]').click();
+<% } else if (wizard.equals("settings")) { %>
+	$('#tabs').find('[rel=settings]').click();
+<% } %>
+});
+
+</script>

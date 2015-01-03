@@ -1,0 +1,2226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="content">
+  <row>
+   <column name="id" value="8" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 15:32:02" />
+   <column name="updated" value="2008-04-03 14:29:02" />
+   <column name="published" value="2008-04-03 14:29:02" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="Category added to @@@import:directory@@@: @@@Name@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Category Added&lt;/h2&gt;
+&lt;p&gt;A new category has been added to @@@import:directory@@@. &lt;br&gt;&lt;/p&gt;&lt;b&gt;&lt;/b&gt;&lt;h2&gt;@@@Name@@@&lt;/h2&gt;&lt;p&gt;@@@Summary@@@&lt;/p&gt;&lt;p&gt;&lt;/p&gt;@@@Content@@@&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="9" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 15:33:37" />
+   <column name="updated" value="2008-04-03 15:34:12" />
+   <column name="published" value="2008-04-03 15:34:12" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ - @@@include:database=Directory:id=###record###:Name@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+TD.directorytable{
+	padding-right: 10px;
+        vertical-align: top;
+	}
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;a href=&quot;/page.jsp?id=10&quot;&gt;Top&lt;/a&gt;@@@list:database=@@@import:directory@@@:entry=15:id=0@@@include:database=@@@import:directory@@@:id=###record###:Parent@@@@@@&lt;br&gt;&lt;br&gt;
+@@@list:database=@@@import:directory@@@:id=###record###:entry=13@@@&lt;br&gt;&lt;br&gt;
+&lt;h3&gt;Sub-Categories&lt;/h3&gt;@@@list:database=@@@import:directory@@@:Parent=###record###:order=Name:entry=14:columns=2:class=directorytable@@@&lt;br&gt;
+&lt;a class=&quot;directory&quot; href=&quot;/page.jsp?id=11&amp;amp;record=###record###&quot;&gt;
+Add Sub-Category under @@@include:database=@@@import:directory@@@:id=###record###:Name@@@&lt;br&gt;&lt;/a&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="10" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 15:34:56" />
+   <column name="updated" value="2008-04-03 13:53:01" />
+   <column name="published" value="2008-04-03 13:53:01" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+TD.directorytoptable{
+	width: 33%;
+	padding: 10px;
+        vertical-align: top;
+	}
+H3 {
+	margin: 2px;
+	}
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2 class=&quot;directory&quot;&gt;@@@import:directory@@@&lt;/h2&gt;
+@@@list:database=@@@import:directory@@@:order=Name:Parent=:columns=3:class=directorytoptable:entry=17@@@&lt;br&gt;
+&lt;br&gt;&lt;a class=&quot;directory&quot; href=&quot;/page.jsp?id=12&amp;amp;record=0&quot;&gt;
+Add Category&lt;/a&gt;&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="11" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 15:56:35" />
+   <column name="updated" value="2008-04-03 14:04:29" />
+   <column name="published" value="2008-04-03 14:04:29" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Add Sub-Category" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot;
+href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js&quot;&gt;&lt;/script&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+
+form.directory{
+	margin-bottom: 1em;
+	}
+	
+fieldset.directory{
+        margin: 10px 10px 0px 0px;
+	padding: 10px 0px 10px 5px;
+	border: 1px solid #666666;
+	width: 480px;
+	}
+	
+legend.directory{
+	padding: 0 10px;
+	text-transform: uppercase;
+	font-size: 1.0em;
+}
+
+.directoryrow{
+	clear: both;
+	padding-top: 5px;
+        margin: 0 10px;
+	}
+
+.directoryLabel{
+	line-height: 1.6em;
+	text-align: right;
+	margin-right: 10px;
+	width: 100px;
+	float: left;
+}
+input.formField{
+	float: left;
+	width: 340px;
+	}
+	
+textarea.directoryfield{
+        float: left;
+	font-size: 1em;
+	width: 340px;
+	}
+
+input.formField,textarea.directoryfield{
+	border: 1px solid #666666;
+	padding: 2px;
+	font-family: Arial,sans-serif;
+        }
+
+.directorysubmitButton{
+	font-weight: bold;
+	font-family: Arial,sans-serif;
+	padding: 4px 6px;
+	margin-right: 5px;
+	width: auto;
+	}	
+
+.clearfix:after {
+        content: &quot;.&quot;;
+        font-size: 0; 
+        display: block; 
+        height: 0; 
+        clear: both; 
+        visibility: hidden;
+        }
+
+.clearfix {
+        display: inline-block;
+        }
+
+/* Hides from IE-mac \*/
+        * html .clearfix {height: 1%;}
+        .clearfix {display: block;}
+/* End hide from IE-mac */
+
+.fn {
+	font-weight: bold;
+        }
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2 class=&quot;directory&quot;&gt;Add Sub-Category under @@@include:database=@@@import:directory@@@:id=###record###:Name@@@&lt;br&gt;&lt;/h2&gt;Fill in the form and press the Add button.&lt;br&gt;&lt;br&gt;
+      &lt;form class=&quot;directory&quot; action=&quot;/post.jsp?database=@@@import:directory@@@&quot; method=&quot;post&quot;&gt;
+        &lt;fieldset class=&quot;directory clearfix&quot;&gt;
+          &lt;legend class=&quot;directory&quot;&gt;Your New Category&lt;/legend&gt;
+          &lt;div class=&quot;directoryrow&quot;&gt;
+            &lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;name&quot;&gt;Name&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input src=&quot;/&quot; size=&quot;25&quot; name=&quot;Name&quot; id=&quot;name&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+         &lt;div class=&quot;directoryrow&quot;&gt;
+            &lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;summary&quot;&gt;Summary&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;directoryControl&quot;&gt;&lt;textarea cols=&quot;8&quot; rows=&quot;3&quot; name=&quot;Summary&quot; id=&quot;summary&quot; class=&quot;directoryfield&quot;&gt;&lt;/textarea&gt;&lt;/span&gt;
+          &lt;/div&gt;
+&lt;div class=&quot;directoryrow&quot;&gt;&lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;Content&quot;&gt;Content&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;directoryControl&quot;&gt;
+&lt;table style=&quot;border: 1px solid rgb(85, 85, 85); width: 340px;&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr background=&quot;/&quot;&gt;&lt;td style=&quot;width: 340px;&quot; class=&quot;webeditor_toolbar&quot; background=&quot;/&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--
+WebEditorToolbar({toolbar1: &quot;formatclass formatblock fontsize help&quot;, toolbar2: &quot;cut copy paste undo redo outdent indent justify insertorderedlist insertunorderedlist textformat preview&quot;, toolbar3: &quot;table insertmedia createlink unlink mailto specialcharacter import spellcheck find print viewdetails viewsource &quot;});
+// --&gt;
+&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr background=&quot;/&quot;&gt;&lt;td id=&quot;inner&quot; style=&quot;width: 340px; height: 300px;&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--
+ content = '';
+ WebEditor('Content', content, {format: 'html',manager: 'manager_wcm',language: '@@@webeditor:language@@@',baseHref: '/'});
+// --&gt;
+&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/span&gt;&lt;/div&gt;
+        &lt;/fieldset&gt;
+&lt;br&gt;
+&lt;input value=&quot;Cancel&quot; onclick=&quot;parent.location='/page.jsp?id=9&amp;record=###record###'&quot; class=&quot;directorysubmitButton&quot; type=&quot;button&quot;&gt;&lt;input value=&quot;Add&quot; name=&quot;SUBMIT&quot; class=&quot;directorysubmitButton&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;/page.jsp?id=9&amp;amp;record=&quot; name=&quot;redirect&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;###record###&quot; name=&quot;Parent&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_notification&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_template&quot; value=&quot;8&quot; type=&quot;hidden&quot;&gt;
+      &lt;/form&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="*" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="12" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:06:35" />
+   <column name="updated" value="2008-04-03 14:08:57" />
+   <column name="published" value="2008-04-03 14:08:57" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Add Top Level Category" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot;
+href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js&quot;&gt;&lt;/script&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+
+form.directory{
+	margin-bottom: 1em;
+	}
+	
+fieldset.directory{
+        margin: 10px 10px 0px 0px;
+	padding: 10px 0px 10px 5px;
+	border: 1px solid #666666;
+	width: 480px;
+	}
+	
+legend.directory{
+	padding: 0 10px;
+	text-transform: uppercase;
+	font-size: 1.0em;
+}
+
+.directoryrow{
+	clear: both;
+	padding-top: 5px;
+        margin: 0 10px;
+	}
+
+.directoryLabel{
+	line-height: 1.6em;
+	text-align: right;
+	margin-right: 10px;
+	width: 100px;
+	float: left;
+}
+input.formField{
+	float: left;
+	width: 340px;
+	}
+	
+textarea.directoryfield{
+        float: left;
+	font-size: 1em;
+	width: 340px;
+	}
+
+input.formField,textarea.directoryfield{
+	border: 1px solid #666666;
+	padding: 2px;
+	font-family: Arial,sans-serif;
+        }
+
+.directorysubmitButton{
+	font-weight: bold;
+	font-family: Arial,sans-serif;
+	padding: 4px 6px;
+	margin-right: 5px;
+	width: auto;
+	}	
+
+.clearfix:after {
+        content: &quot;.&quot;;
+        font-size: 0; 
+        display: block; 
+        height: 0; 
+        clear: both; 
+        visibility: hidden;
+        }
+
+.clearfix {
+        display: inline-block;
+        }
+
+/* Hides from IE-mac \*/
+        * html .clearfix {height: 1%;}
+        .clearfix {display: block;}
+/* End hide from IE-mac */
+
+.fn {
+	font-weight: bold;
+        }
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2 class=&quot;directory&quot;&gt;Add Top Level Category&lt;br&gt;&lt;/h2&gt;Fill in the form and press the Add button.&lt;br&gt;&lt;br&gt;
+      &lt;form class=&quot;directory&quot; action=&quot;/post.jsp?database=@@@import:directory@@@&quot; method=&quot;post&quot;&gt;
+        &lt;fieldset class=&quot;directory clearfix&quot;&gt;
+          &lt;legend class=&quot;directory&quot;&gt;Your New Top Level Category&lt;/legend&gt;
+          &lt;div class=&quot;directoryrow&quot;&gt;
+            &lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;name&quot;&gt;Name&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;Name&quot; id=&quot;name&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+         &lt;div class=&quot;directoryrow&quot;&gt;
+            &lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;summary&quot;&gt;Summary&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;directoryControl&quot;&gt;&lt;textarea cols=&quot;8&quot; rows=&quot;3&quot; name=&quot;Summary&quot; id=&quot;summary&quot; class=&quot;directoryfield&quot;&gt;&lt;/textarea&gt;&lt;/span&gt;
+          &lt;/div&gt;
+&lt;div class=&quot;directoryrow&quot;&gt;&lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;Content&quot;&gt;Content&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;directoryControl&quot;&gt;
+&lt;table style=&quot;border: 1px solid rgb(85, 85, 85); width: 340px;&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;width: 340px;&quot; class=&quot;webeditor_toolbar&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--
+WebEditorToolbar({toolbar1: &quot;formatclass formatblock fontsize help&quot;, toolbar2: &quot;cut copy paste undo redo outdent indent justify insertorderedlist insertunorderedlist textformat preview&quot;, toolbar3: &quot;table insertmedia createlink unlink mailto specialcharacter import spellcheck find print viewdetails viewsource &quot;});
+// --&gt;
+&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td id=&quot;inner&quot; style=&quot;width: 340px; height: 300px;&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--
+ content = '';
+ WebEditor('Content', content, {format: 'html',manager: 'manager_wcm',language: '@@@webeditor:language@@@'',baseHref: '/'});
+// --&gt;
+&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/span&gt;&lt;/div&gt;
+        &lt;/fieldset&gt;
+&lt;br&gt;
+&lt;input value=&quot;Cancel&quot; onclick=&quot;parent.location='/page.jsp?id=10'&quot; class=&quot;directorysubmitButton&quot; type=&quot;button&quot;&gt;&lt;input value=&quot;Add&quot; name=&quot;SUBMIT&quot; class=&quot;directorysubmitButton&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;/page.jsp?id=9&amp;amp;record=&quot; name=&quot;redirect&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_notification&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_template&quot; value=&quot;8&quot; type=&quot;hidden&quot;&gt;
+      &lt;/form&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="*" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="13" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:08:09" />
+   <column name="updated" value="2008-04-03 17:17:40" />
+   <column name="published" value="2008-04-03 17:17:40" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Category" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2 class=&quot;directory&quot;&gt;@@@Name@@@&lt;/h2&gt;@@@Content@@@&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="14" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:10:09" />
+   <column name="updated" value="2008-04-03 14:18:44" />
+   <column name="published" value="2008-04-03 14:18:44" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Category Child Summary" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;a class=&quot;directorychild&quot; href=&quot;/page.jsp?id=9&amp;amp;record=@@@id@@@&quot;&gt;@@@include:database=@@@import:directory@@@:id=@@@id@@@:Name@@@&lt;/a&gt;&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="15" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:14:46" />
+   <column name="updated" value="2008-04-03 14:19:31" />
+   <column name="published" value="2008-04-03 14:19:31" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Category Parents Summary" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="@@@list:database=@@@import:directory@@@:entry=15:id=0@@@Parent@@@@@@: &lt;a href=&quot;/page.jsp?id=9&amp;amp;record=@@@id@@@&quot; class=&quot;directoryparent&quot;&gt;@@@include:database=@@@import:directory@@@:id=@@@id@@@:Name@@@&lt;/a&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="16" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:21:24" />
+   <column name="updated" value="2008-04-03 14:26:15" />
+   <column name="published" value="2008-04-03 14:26:15" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Sub-Category Summary" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;a class=&quot;directorysub&quot; href=&quot;/page.jsp?id=9&amp;amp;record=@@@id@@@&quot;&gt;@@@Name@@@&lt;/a&gt;,&amp;nbsp;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="17" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:25:19" />
+   <column name="updated" value="2008-04-03 14:13:28" />
+   <column name="published" value="2008-04-03 14:13:28" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Category Summary" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h3 class=&quot;directory&quot;&gt;&lt;a class=&quot;directorymain&quot; href=&quot;/page.jsp?id=9&amp;amp;record=@@@id@@@&quot;&gt;@@@Name@@@&lt;/a&gt;&lt;/h3&gt;@@@list:database=@@@import:directory@@@:order=Name:Parent=@@@id@@@:entry=16:limit=3@@@...&lt;br&gt;&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="8" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 15:32:02" />
+   <column name="updated" value="2008-04-03 14:29:02" />
+   <column name="published" value="2008-04-03 14:29:02" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="Category added to @@@import:directory@@@: @@@Name@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2&gt;Category Added&lt;/h2&gt;
+&lt;p&gt;A new category has been added to @@@import:directory@@@. &lt;br&gt;&lt;/p&gt;&lt;b&gt;&lt;/b&gt;&lt;h2&gt;@@@Name@@@&lt;/h2&gt;&lt;p&gt;@@@Summary@@@&lt;/p&gt;&lt;p&gt;&lt;/p&gt;@@@Content@@@&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="9" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 15:33:37" />
+   <column name="updated" value="2008-04-03 15:34:12" />
+   <column name="published" value="2008-04-03 15:34:12" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ - @@@include:database=Directory:id=###record###:Name@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+TD.directorytable{
+	padding-right: 10px;
+        vertical-align: top;
+	}
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;a href=&quot;/page.jsp?id=10&quot;&gt;Top&lt;/a&gt;@@@list:database=@@@import:directory@@@:entry=15:id=0@@@include:database=@@@import:directory@@@:id=###record###:Parent@@@@@@&lt;br&gt;&lt;br&gt;
+@@@list:database=@@@import:directory@@@:id=###record###:entry=13@@@&lt;br&gt;&lt;br&gt;
+&lt;h3&gt;Sub-Categories&lt;/h3&gt;@@@list:database=@@@import:directory@@@:Parent=###record###:order=Name:entry=14:columns=2:class=directorytable@@@&lt;br&gt;
+&lt;a class=&quot;directory&quot; href=&quot;/page.jsp?id=11&amp;amp;record=###record###&quot;&gt;
+Add Sub-Category under @@@include:database=@@@import:directory@@@:id=###record###:Name@@@&lt;br&gt;&lt;/a&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="10" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 15:34:56" />
+   <column name="updated" value="2008-04-03 13:53:01" />
+   <column name="published" value="2008-04-03 13:53:01" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+TD.directorytoptable{
+	width: 33%;
+	padding: 10px;
+        vertical-align: top;
+	}
+H3 {
+	margin: 2px;
+	}
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2 class=&quot;directory&quot;&gt;@@@import:directory@@@&lt;/h2&gt;
+@@@list:database=@@@import:directory@@@:order=Name:Parent=:columns=3:class=directorytoptable:entry=17@@@&lt;br&gt;
+&lt;br&gt;&lt;a class=&quot;directory&quot; href=&quot;/page.jsp?id=12&amp;amp;record=0&quot;&gt;
+Add Category&lt;/a&gt;&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="11" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 15:56:35" />
+   <column name="updated" value="2008-04-03 14:04:29" />
+   <column name="published" value="2008-04-03 14:04:29" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Add Sub-Category" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot;
+href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js&quot;&gt;&lt;/script&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+
+form.directory{
+	margin-bottom: 1em;
+	}
+	
+fieldset.directory{
+        margin: 10px 10px 0px 0px;
+	padding: 10px 0px 10px 5px;
+	border: 1px solid #666666;
+	width: 480px;
+	}
+	
+legend.directory{
+	padding: 0 10px;
+	text-transform: uppercase;
+	font-size: 1.0em;
+}
+
+.directoryrow{
+	clear: both;
+	padding-top: 5px;
+        margin: 0 10px;
+	}
+
+.directoryLabel{
+	line-height: 1.6em;
+	text-align: right;
+	margin-right: 10px;
+	width: 100px;
+	float: left;
+}
+input.formField{
+	float: left;
+	width: 340px;
+	}
+	
+textarea.directoryfield{
+        float: left;
+	font-size: 1em;
+	width: 340px;
+	}
+
+input.formField,textarea.directoryfield{
+	border: 1px solid #666666;
+	padding: 2px;
+	font-family: Arial,sans-serif;
+        }
+
+.directorysubmitButton{
+	font-weight: bold;
+	font-family: Arial,sans-serif;
+	padding: 4px 6px;
+	margin-right: 5px;
+	width: auto;
+	}	
+
+.clearfix:after {
+        content: &quot;.&quot;;
+        font-size: 0; 
+        display: block; 
+        height: 0; 
+        clear: both; 
+        visibility: hidden;
+        }
+
+.clearfix {
+        display: inline-block;
+        }
+
+/* Hides from IE-mac \*/
+        * html .clearfix {height: 1%;}
+        .clearfix {display: block;}
+/* End hide from IE-mac */
+
+.fn {
+	font-weight: bold;
+        }
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2 class=&quot;directory&quot;&gt;Add Sub-Category under @@@include:database=@@@import:directory@@@:id=###record###:Name@@@&lt;br&gt;&lt;/h2&gt;Fill in the form and press the Add button.&lt;br&gt;&lt;br&gt;
+      &lt;form class=&quot;directory&quot; action=&quot;/post.jsp?database=@@@import:directory@@@&quot; method=&quot;post&quot;&gt;
+        &lt;fieldset class=&quot;directory clearfix&quot;&gt;
+          &lt;legend class=&quot;directory&quot;&gt;Your New Category&lt;/legend&gt;
+          &lt;div class=&quot;directoryrow&quot;&gt;
+            &lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;name&quot;&gt;Name&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input src=&quot;/&quot; size=&quot;25&quot; name=&quot;Name&quot; id=&quot;name&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+         &lt;div class=&quot;directoryrow&quot;&gt;
+            &lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;summary&quot;&gt;Summary&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;directoryControl&quot;&gt;&lt;textarea cols=&quot;8&quot; rows=&quot;3&quot; name=&quot;Summary&quot; id=&quot;summary&quot; class=&quot;directoryfield&quot;&gt;&lt;/textarea&gt;&lt;/span&gt;
+          &lt;/div&gt;
+&lt;div class=&quot;directoryrow&quot;&gt;&lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;Content&quot;&gt;Content&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;directoryControl&quot;&gt;
+&lt;table style=&quot;border: 1px solid rgb(85, 85, 85); width: 340px;&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr background=&quot;/&quot;&gt;&lt;td style=&quot;width: 340px;&quot; class=&quot;webeditor_toolbar&quot; background=&quot;/&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--
+WebEditorToolbar({toolbar1: &quot;formatclass formatblock fontsize help&quot;, toolbar2: &quot;cut copy paste undo redo outdent indent justify insertorderedlist insertunorderedlist textformat preview&quot;, toolbar3: &quot;table insertmedia createlink unlink mailto specialcharacter import spellcheck find print viewdetails viewsource &quot;});
+// --&gt;
+&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr background=&quot;/&quot;&gt;&lt;td id=&quot;inner&quot; style=&quot;width: 340px; height: 300px;&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--
+ content = '';
+ WebEditor('Content', content, {format: 'html',manager: 'manager_wcm',language: '@@@webeditor:language@@@',baseHref: '/'});
+// --&gt;
+&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/span&gt;&lt;/div&gt;
+        &lt;/fieldset&gt;
+&lt;br&gt;
+&lt;input value=&quot;Cancel&quot; onclick=&quot;parent.location='/page.jsp?id=9&amp;record=###record###'&quot; class=&quot;directorysubmitButton&quot; type=&quot;button&quot;&gt;&lt;input value=&quot;Add&quot; name=&quot;SUBMIT&quot; class=&quot;directorysubmitButton&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;/page.jsp?id=9&amp;amp;record=&quot; name=&quot;redirect&quot; type=&quot;hidden&quot;&gt;
+&lt;input value=&quot;###record###&quot; name=&quot;Parent&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_notification&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_template&quot; value=&quot;8&quot; type=&quot;hidden&quot;&gt;
+      &lt;/form&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="*" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="12" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:06:35" />
+   <column name="updated" value="2008-04-03 14:08:57" />
+   <column name="published" value="2008-04-03 14:08:57" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Add Top Level Category" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot;
+href=&quot;/webadmin/webeditor/webeditor.css&quot; /&gt;
+&lt;script src=&quot;/webadmin/webeditor/webeditor.js&quot;&gt;&lt;/script&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+
+form.directory{
+	margin-bottom: 1em;
+	}
+	
+fieldset.directory{
+        margin: 10px 10px 0px 0px;
+	padding: 10px 0px 10px 5px;
+	border: 1px solid #666666;
+	width: 480px;
+	}
+	
+legend.directory{
+	padding: 0 10px;
+	text-transform: uppercase;
+	font-size: 1.0em;
+}
+
+.directoryrow{
+	clear: both;
+	padding-top: 5px;
+        margin: 0 10px;
+	}
+
+.directoryLabel{
+	line-height: 1.6em;
+	text-align: right;
+	margin-right: 10px;
+	width: 100px;
+	float: left;
+}
+input.formField{
+	float: left;
+	width: 340px;
+	}
+	
+textarea.directoryfield{
+        float: left;
+	font-size: 1em;
+	width: 340px;
+	}
+
+input.formField,textarea.directoryfield{
+	border: 1px solid #666666;
+	padding: 2px;
+	font-family: Arial,sans-serif;
+        }
+
+.directorysubmitButton{
+	font-weight: bold;
+	font-family: Arial,sans-serif;
+	padding: 4px 6px;
+	margin-right: 5px;
+	width: auto;
+	}	
+
+.clearfix:after {
+        content: &quot;.&quot;;
+        font-size: 0; 
+        display: block; 
+        height: 0; 
+        clear: both; 
+        visibility: hidden;
+        }
+
+.clearfix {
+        display: inline-block;
+        }
+
+/* Hides from IE-mac \*/
+        * html .clearfix {height: 1%;}
+        .clearfix {display: block;}
+/* End hide from IE-mac */
+
+.fn {
+	font-weight: bold;
+        }
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2 class=&quot;directory&quot;&gt;Add Top Level Category&lt;br&gt;&lt;/h2&gt;Fill in the form and press the Add button.&lt;br&gt;&lt;br&gt;
+      &lt;form class=&quot;directory&quot; action=&quot;/post.jsp?database=@@@import:directory@@@&quot; method=&quot;post&quot;&gt;
+        &lt;fieldset class=&quot;directory clearfix&quot;&gt;
+          &lt;legend class=&quot;directory&quot;&gt;Your New Top Level Category&lt;/legend&gt;
+          &lt;div class=&quot;directoryrow&quot;&gt;
+            &lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;name&quot;&gt;Name&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;contactControl&quot;&gt;&lt;input size=&quot;25&quot; name=&quot;Name&quot; id=&quot;name&quot; class=&quot;formField&quot; type=&quot;text&quot;&gt;&lt;/span&gt;
+          &lt;/div&gt;
+         &lt;div class=&quot;directoryrow&quot;&gt;
+            &lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;summary&quot;&gt;Summary&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;directoryControl&quot;&gt;&lt;textarea cols=&quot;8&quot; rows=&quot;3&quot; name=&quot;Summary&quot; id=&quot;summary&quot; class=&quot;directoryfield&quot;&gt;&lt;/textarea&gt;&lt;/span&gt;
+          &lt;/div&gt;
+&lt;div class=&quot;directoryrow&quot;&gt;&lt;span class=&quot;directoryLabel&quot;&gt;&lt;label for=&quot;Content&quot;&gt;Content&lt;/label&gt;&lt;/span&gt;&lt;span class=&quot;directoryControl&quot;&gt;
+&lt;table style=&quot;border: 1px solid rgb(85, 85, 85); width: 340px;&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;width: 340px;&quot; class=&quot;webeditor_toolbar&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--
+WebEditorToolbar({toolbar1: &quot;formatclass formatblock fontsize help&quot;, toolbar2: &quot;cut copy paste undo redo outdent indent justify insertorderedlist insertunorderedlist textformat preview&quot;, toolbar3: &quot;table insertmedia createlink unlink mailto specialcharacter import spellcheck find print viewdetails viewsource &quot;});
+// --&gt;
+&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td id=&quot;inner&quot; style=&quot;width: 340px; height: 300px;&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!--
+ content = '';
+ WebEditor('Content', content, {format: 'html',manager: 'manager_wcm',language: '@@@webeditor:language@@@',baseHref: '/'});
+// --&gt;
+&lt;/script&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;/span&gt;&lt;/div&gt;
+        &lt;/fieldset&gt;
+&lt;br&gt;
+&lt;input value=&quot;Cancel&quot; onclick=&quot;parent.location='/page.jsp?id=10'&quot; class=&quot;directorysubmitButton&quot; type=&quot;button&quot;&gt;&lt;input value=&quot;Add&quot; name=&quot;SUBMIT&quot; class=&quot;directorysubmitButton&quot; type=&quot;submit&quot;&gt;
+&lt;input value=&quot;/page.jsp?id=9&amp;amp;record=&quot; name=&quot;redirect&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_notification&quot; value=&quot;yes&quot; type=&quot;hidden&quot;&gt;
+&lt;input name=&quot;email_template&quot; value=&quot;8&quot; type=&quot;hidden&quot;&gt;
+      &lt;/form&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="*" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="13" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:08:09" />
+   <column name="updated" value="2008-04-03 17:17:40" />
+   <column name="published" value="2008-04-03 17:17:40" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Category" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h2 class=&quot;directory&quot;&gt;@@@Name@@@&lt;/h2&gt;@@@Content@@@&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="14" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:10:09" />
+   <column name="updated" value="2008-04-03 14:18:44" />
+   <column name="published" value="2008-04-03 14:18:44" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Category Child Summary" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;a class=&quot;directorychild&quot; href=&quot;/page.jsp?id=9&amp;amp;record=@@@id@@@&quot;&gt;@@@include:database=@@@import:directory@@@:id=@@@id@@@:Name@@@&lt;/a&gt;&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="15" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:14:46" />
+   <column name="updated" value="2008-04-03 14:19:31" />
+   <column name="published" value="2008-04-03 14:19:31" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Category Parents Summary" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="@@@list:database=@@@import:directory@@@:entry=15:id=0@@@Parent@@@@@@: &lt;a href=&quot;/page.jsp?id=9&amp;amp;record=@@@id@@@&quot; class=&quot;directoryparent&quot;&gt;@@@include:database=@@@import:directory@@@:id=@@@id@@@:Name@@@&lt;/a&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="16" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:21:24" />
+   <column name="updated" value="2008-04-03 14:26:15" />
+   <column name="published" value="2008-04-03 14:26:15" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Sub-Category Summary" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;a class=&quot;directorysub&quot; href=&quot;/page.jsp?id=9&amp;amp;record=@@@id@@@&quot;&gt;@@@Name@@@&lt;/a&gt;,&amp;nbsp;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+  <row>
+   <column name="id" value="17" />
+   <column name="locked" value="0" />
+   <column name="created" value="2008-04-01 16:25:19" />
+   <column name="updated" value="2008-04-03 14:13:28" />
+   <column name="published" value="2008-04-03 14:13:28" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="requested_publish" value="" />
+   <column name="requested_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="@@@import:directory@@@ Category Summary" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;h3 class=&quot;directory&quot;&gt;&lt;a class=&quot;directorymain&quot; href=&quot;/page.jsp?id=9&amp;amp;record=@@@id@@@&quot;&gt;@@@Name@@@&lt;/a&gt;&lt;/h3&gt;@@@list:database=@@@import:directory@@@:order=Name:Parent=@@@id@@@:entry=16:limit=3@@@...&lt;br&gt;&lt;br&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="page" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+ </table>
+ <table name="contentgroups">
+  <row>
+   <column name="id" value="1" />
+   <column name="contentgroup" value="@@@import:directory@@@" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+  </row>
+ </table>
+ <table name="data">
+  <row>
+   <column name="id" value="1" />
+   <column name="title" value="@@@import:directory@@@" />
+   <column name="content" value="1|1|Name||text|80|1
+2|2|Summary||html|800|600
+3|3|Content||html|800|600
+4|4|Parent||datum||@@@import:directory@@@|Name
+5|5|Created By||createdby|
+6|6|Created Date||created|" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="searchresults" value="" />
+   <column name="searchresult" value="" />
+   <column name="viewpage" value="" />
+  </row>
+ </table>
+ <table name="data1">
+  <row>
+   <column name="id" value="11" />
+   <column name="col1" value="Electronics" />
+   <column name="col2" value="Electronics consists of Mobile Phones, Television and Video." />
+   <column name="col3" value="Electronics consists of Mobile Phones, Television and Video. The electronics business is focused on innovation and growth." />
+   <column name="col4" value="" />
+   <column name="col5" value="admin" />
+   <column name="col6" value="2008-04-03 15:15:20" />
+  </row>
+  <row>
+   <column name="id" value="12" />
+   <column name="col1" value="Mobile Phones" />
+   <column name="col2" value="The mobile phones business is focused on great usability." />
+   <column name="col3" value="The mobile phones business is focused on great usability and development of add-on services." />
+   <column name="col4" value="11" />
+   <column name="col5" value="admin" />
+   <column name="col6" value="2008-04-03 15:16:55" />
+  </row>
+  <row>
+   <column name="id" value="13" />
+   <column name="col1" value="Television" />
+   <column name="col2" value="The television business is directed towards new technologies." />
+   <column name="col3" value="The television business is directed towards new technologies. We are aiming to deliver state-of-the-art flatscreens." />
+   <column name="col4" value="11" />
+   <column name="col5" value="admin" />
+   <column name="col6" value="2008-04-03 15:18:35" />
+  </row>
+  <row>
+   <column name="id" value="14" />
+   <column name="col1" value="Games" />
+   <column name="col2" value="The games division supplies technology for various aspects of gaming." />
+   <column name="col3" value="The games division supplies technology for various aspects of gaming utilising new opportunities arising all the time." />
+   <column name="col4" value="" />
+   <column name="col5" value="admin" />
+   <column name="col6" value="2008-04-03 15:20:48" />
+  </row>
+  <row>
+   <column name="id" value="15" />
+   <column name="col1" value="Software" />
+   <column name="col2" value="The software department in the games" />
+   <column name="col3" value="The software department in the games division develops and distributes first-class games." />
+   <column name="col4" value="14" />
+   <column name="col5" value="admin" />
+   <column name="col6" value="2008-04-03 15:21:57" />
+  </row>
+  <row>
+   <column name="id" value="16" />
+   <column name="col1" value="Network Services" />
+   <column name="col2" value="Network Services aims to deliver interactive gaming services over the internet." />
+   <column name="col3" value="Network Services aims to deliver interactive gaming services over the internet via subscription-based services." />
+   <column name="col4" value="14" />
+   <column name="col5" value="admin" />
+   <column name="col6" value="2008-04-03 15:23:50" />
+  </row>
+ </table>
+</database>

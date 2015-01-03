@@ -1,0 +1,55 @@
+<%
+if ((HashMap)usage.get("entrycountvisits") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("entrycountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("entrycountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("entrycountvisitors"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("entrycountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("entrycountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("entrycountvisitors"));
+%>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.entry.page") %></td>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.entry.id") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator myentrycountvisits = ((LinkedHashMap)usage.get("entrycountvisits")).keySet().iterator();
+	while (myentrycountvisits.hasNext()) {
+		String mypage = "" + myentrycountvisits.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="left">&nbsp;<%= reportUsage.pageName(mypage, myconfig, db) %>&nbsp;</td>
+				<td align="left">&nbsp;<%= reportUsage.pageId(mypage) %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("entrycountclienthosts")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("entrycountclienthosts")).get(mypage))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("entrycountvisitors")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("entrycountvisitors")).get(mypage))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("entrycountvisits")).get(mypage)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("entrycountvisits")).get(mypage))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("entrycountclienthosts")).get(mypage))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("entrycountclienthosts")).get(mypage))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("entrycountvisitors")).get(mypage))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("entrycountvisitors")).get(mypage))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("entrycountvisits")).get(mypage))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("entrycountvisits")).get(mypage))*100/maxvisits) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right"><%= reportUsage.countValues((HashMap)usage.get("entrycountvisits")) %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>

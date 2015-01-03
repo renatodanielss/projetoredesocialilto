@@ -1,0 +1,76 @@
+<%
+	long totalvisits = Math.round(Common.number("" + usage.get("visitduration-0s-30s")) + Common.number("" + usage.get("visitduration-30s-2m")) + Common.number("" + usage.get("visitduration-2m-5m")) + Common.number("" + usage.get("visitduration-5m-15m")) + Common.number("" + usage.get("visitduration-15m-30m")) + Common.number("" + usage.get("visitduration-30m-1h")) + Common.number("" + usage.get("visitduration-1h+")));
+	long totalpageviews = Math.round(Common.number("" + usage.get("pageviewduration-0s-30s")) + Common.number("" + usage.get("pageviewduration-30s-2m")) + Common.number("" + usage.get("pageviewduration-2m-5m")) + Common.number("" + usage.get("pageviewduration-5m-15m")) + Common.number("" + usage.get("pageviewduration-15m-30m")) + Common.number("" + usage.get("pageviewduration-30m-1h")) + Common.number("" + usage.get("pageviewduration-1h+")));
+%>
+	<div align="center">
+		<table border="0" class="WCMstatsTable">
+			<tr>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("usage.duration.duration") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.duration.average") %></td>
+				<td align="right" width="50"><%= Common.DateFormat("HH:mm:ss", Math.round(Common.number("" + usage.get("visitduration-average")))) %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= Common.DateFormat("HH:mm:ss", Math.round(Common.number("" + usage.get("pageviewduration-average")))) %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.duration.0s30s") %></td>
+				<td align="right" width="50"><%= usage.get("visitduration-0s-30s") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("visitduration-0s-30s"))*100/totalvisits) } ) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= usage.get("pageviewduration-0s-30s") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("pageviewduration-0s-30s"))*100/totalpageviews) } ) %>%)<% } %>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.duration.30s2m") %></td>
+				<td align="right" width="50"><%= usage.get("visitduration-30s-2m") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("visitduration-30s-2m"))*100/totalvisits) } ) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= usage.get("pageviewduration-30s-2m") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("pageviewduration-30s-2m"))*100/totalpageviews) } ) %>%)<% } %>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.duration.2m5m") %></td>
+				<td align="right" width="50"><%= usage.get("visitduration-2m-5m") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("visitduration-2m-5m"))*100/totalvisits) } ) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= usage.get("pageviewduration-2m-5m") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("pageviewduration-2m-5m"))*100/totalpageviews) } ) %>%)<% } %>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.duration.5m15m") %></td>
+				<td align="right" width="50"><%= usage.get("visitduration-5m-15m") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("visitduration-5m-15m"))*100/totalvisits) } ) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= usage.get("pageviewduration-5m-15m") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("pageviewduration-5m-15m"))*100/totalpageviews) } ) %>%)<% } %>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.duration.15m30m") %></td>
+				<td align="right" width="50"><%= usage.get("visitduration-15m-30m") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("visitduration-15m-30m"))*100/totalvisits) } ) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= usage.get("pageviewduration-15m-30m") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("pageviewduration-15m-30m"))*100/totalpageviews) } ) %>%)<% } %>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.duration.30m1h") %></td>
+				<td align="right" width="50"><%= usage.get("visitduration-30m-1h") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("visitduration-30m-1h"))*100/totalvisits) } ) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= usage.get("pageviewduration-30m-1h") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("pageviewduration-30m-1h"))*100/totalpageviews) } ) %>%)<% } %>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left"><%= mytext.display("usage.duration.1h") %></td>
+				<td align="right" width="50"><%= usage.get("visitduration-1h+") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("visitduration-1h+"))*100/totalvisits) } ) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= usage.get("pageviewduration-1h+") %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.sprintf("%01.1f", new String[] { "" + (Common.number("" + usage.get("pageviewduration-1h+"))*100/totalpageviews) } ) %>%)<% } %>&nbsp;</td>
+			</tr>
+			<tr class="WCMstatsTableTotals">
+				<td align="left"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>

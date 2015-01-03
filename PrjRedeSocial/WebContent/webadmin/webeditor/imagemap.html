@@ -1,0 +1,808 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.js"></script>
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('imagemap_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+var editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window && window.parent && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+
+var editorwindow = window;
+if (window && window.opener && window.opener.contenteditable_selection_container) {
+	editorwindow = window.opener;
+} else if (top && top.contenteditable_selection_container) {
+	editorwindow = top;
+} else if (parent && parent.contenteditable_selection_container) {
+	editorwindow = parent;
+}
+
+function initform() {
+	var image = editorwindow.contenteditable_selection_container('img', false, true);
+	if (image && image.useMap) {
+		if (image.useMap.charAt(0) == "#") {
+			document.forms[0].name.value = image.useMap.substring(1);
+		} else {
+			document.forms[0].name.value = image.useMap;
+		}
+		var imagemap = editorwindow.webeditor_imagemap_node(image.useMap);
+		if (imagemap) {
+			document.forms[0].htmlclass.value = editorwindow.contenteditable_getAttribute(imagemap, "class") || "";
+			document.forms[0].htmlid.value = editorwindow.contenteditable_getAttribute(imagemap, "id") || "";
+			var i = 0;
+			for (var node=imagemap.firstChild; node; node=node.nextSibling) {
+				if (node.tagName == "AREA") {
+					var shape = node.getAttribute("shape").toLowerCase();
+					var coords = node.getAttribute("coords");
+					var href = editorwindow.contenteditable_getAttribute(node, "href");
+					var option = new Option();
+					option.text = shape + "=" + coords;
+					option.value = href;
+					document.forms[0].options.options[i++] = option;
+				}
+			}
+		}
+	}
+}
+
+function insertmap(form) {
+	var image = editorwindow.contenteditable_selection_container('img', false, true);
+	var imagemap = editorwindow.webeditor_imagemap_node(image.useMap);
+	var name = form.name.value;
+	var areas = form.options.options;
+	var htmlclass = form.htmlclass.value;
+	var htmlid = form.htmlid.value;
+	if (! name) {
+		alert(HtmlDecode(Text('imagemap_name_required')));
+	} else {
+		editorwindow[editor].insertMap(image,imagemap,name,areas,htmlclass,htmlid);
+		editorwindow[editor].window_close(window);
+	}
+}
+
+function select_option(form) {
+	form.shape.value = form.options.options[form.options.selectedIndex].text.split("=")[0].toLowerCase();
+	form.coords.value = form.options.options[form.options.selectedIndex].text.split("=")[1];
+	form.href.value = form.options.options[form.options.selectedIndex].value;
+	drawimagemapoutline(form.shape.value, form.coords.value, form.href.value);
+}
+
+function add_option(form) {
+	var option = new Option();
+	option.text = form.shape.value + "=" + form.coords.value;
+	option.value = form.href.value;
+	form.options.options[form.options.length] = option;
+	form.options.selectedIndex = form.options.length-1;
+}
+
+function update_option(form) {
+	if (form.options.selectedIndex >= 0) {
+		form.options.options[form.options.selectedIndex].text = form.shape.value + "=" + form.coords.value;
+		form.options.options[form.options.selectedIndex].value = form.href.value;
+	}
+}
+
+function remove_option(form) {
+	if (form.options.selectedIndex >= 0) {
+		var selected = form.options.selectedIndex;
+		form.options.options[form.options.selectedIndex] = null;
+		if (form.options.length-1 < selected) {
+			form.options.selectedIndex = form.options.length-1;
+		} else {
+			form.options.selectedIndex = selected;
+		}
+	}
+}
+
+function move_option_up(form) {
+	if (form.options.selectedIndex > 0) {
+		var text = form.options.options[form.options.selectedIndex].text;
+		var value = form.options.options[form.options.selectedIndex].value;
+		form.options.options[form.options.selectedIndex].text = form.options.options[form.options.selectedIndex-1].text;
+		form.options.options[form.options.selectedIndex].value = form.options.options[form.options.selectedIndex-1].value;
+		form.options.options[form.options.selectedIndex-1].text = text;
+		form.options.options[form.options.selectedIndex-1].value = value;
+		form.options.selectedIndex--;
+	}
+}
+
+function move_option_down(form) {
+	if ((form.options.selectedIndex >= 0) && (form.options.selectedIndex < form.options.length-1)) {
+		var text = form.options.options[form.options.selectedIndex].text;
+		var value = form.options.options[form.options.selectedIndex].value;
+		form.options.options[form.options.selectedIndex].text = form.options.options[form.options.selectedIndex+1].text;
+		form.options.options[form.options.selectedIndex].value = form.options.options[form.options.selectedIndex+1].value;
+		form.options.options[form.options.selectedIndex+1].text = text;
+		form.options.options[form.options.selectedIndex+1].value = value;
+		form.options.selectedIndex++;
+	}
+}
+
+function init() {
+//	hideGrips();
+	main.setZ(main.z+1);
+	main.div.onclick = showGrips;
+	showGrips();
+}
+
+function my_PickFunc() {
+	if (dd.obj.name == "main") {
+//		hideGrips();
+	} else {
+	        var i = 8;
+        	while (i--) {
+			if (grips[i] != dd.obj) {
+//				grips[i].hide();
+			}
+        	}
+	}
+}
+
+function my_DropFunc() {
+//    hideGrips();
+}
+
+function showGrips() {
+	moveGripsToCorners();
+	var i = 8;
+	while(i--) {
+		grips[i].setZ(main.z+1);
+		grips[i].show();
+	}
+}
+
+function hideGrips() {
+	var i = 8;
+	while(i--) {
+		grips[i].hide();
+	}
+}
+
+function moveGripsToCorners() {
+	lt.moveTo(main.x-lt.w/2, main.y-lt.h/2);
+	rt.moveTo(main.x+main.w-lt.w/2, main.y-lt.h/2);
+	rb.moveTo(main.x+main.w-lt.w/2, main.y+main.h-lt.h/2);
+	lb.moveTo(main.x-lt.w/2, main.y+main.h-lt.h/2);
+	lm.moveTo(main.x-lm.w/2, main.y+main.h/2-lm.h/2);
+	tm.moveTo(main.x+main.w/2-tm.w/2, main.y-tm.h/2);
+	rm.moveTo(main.x+main.w-rm.w/2, main.y+main.h/2-rm.h/2);
+	bm.moveTo(main.x+main.w/2-bm.w/2, main.y+main.h-bm.h/2);
+}
+
+function reshapeImagemapOutline(shape, coords, href) {
+	var coordN = coords.split(",");
+	if ((imagemapoutlineShape == "circle") && (shape == "rect")) {
+		var x = parseInt(coordN[0]) || 25;
+		var y = parseInt(coordN[1]) || 25;
+		var r = parseInt(coordN[2]) || 25;
+		var left = x-r;
+		var top = y-r;
+		var right = x+r;
+		var bottom = y+r;
+		drawimagemapoutline("rect", "" + left + "," + top + "," + right + "," + bottom, href);
+	} else if ((imagemapoutlineShape == "rect") && (shape == "circle")) {
+		var left = parseInt(coordN[0]) || 0;
+		var top = parseInt(coordN[1]) || 0;
+		var right = parseInt(coordN[2]) || left+50;
+		var bottom = parseInt(coordN[3]) || top+50;
+		var x = (left+right)/2;
+		var y = (top+bottom)/2;
+		var w = right-left;
+		var h = bottom-top;
+		var r = (w + h) / 2 / 2; // avg
+//		var r = ((w < h) ? w : h) / 2; // min
+//		var r = ((w > h) ? w : h) / 2; // max
+		drawimagemapoutline("circle", "" + (x) + "," + (y) + "," + r, href);
+	} else if (shape == "rect") {
+		var left = parseInt(coordN[0]) || 0;
+		var top = parseInt(coordN[1]) || 0;
+		var right = parseInt(coordN[2]) || left+50;
+		var bottom = parseInt(coordN[3]) || top+50;
+		if (left > right) {
+			var tmp = left;
+			left = right;
+			right = tmp;
+		}
+		if (top > bottom) {
+			var tmp = top;
+			top = bottom;
+			bottom = tmp;
+		}
+		drawimagemapoutline("rect", "" + left + "," + top + "," + right + "," + bottom, href);
+	} else if (shape == "circle") {
+		var x = parseInt(coordN[0]) || 25;
+		var y = parseInt(coordN[1]) || 25;
+		var r = parseInt(coordN[2]) || 25;
+		drawimagemapoutline("circle", "" + x + "," + y + "," + r, href);
+	}
+}
+
+function drawimagemapoutline(shape, coords, href) {
+	if (shape && coords) {
+		imagemapoutlineShape = shape;
+		var coordN = coords.split(",");
+		if (shape == "circle") {
+			coordN[0] = parseInt(coordN[0] || 0);
+			coordN[1] = parseInt(coordN[1] || 0);
+			coordN[2] = parseInt(coordN[2] || 0);
+			imagemapoutlineX = coordN[0]-coordN[2];
+			imagemapoutlineY = coordN[1]-coordN[2];
+			imagemapoutlineW = coordN[2]*2;
+			imagemapoutlineH = coordN[2]*2;
+		} else if (shape == "rect") {
+			coordN[0] = parseInt(coordN[0] || 0);
+			coordN[1] = parseInt(coordN[1] || 0);
+			coordN[2] = parseInt(coordN[2] || coordN[0]);
+			coordN[3] = parseInt(coordN[3] || coordN[1]);
+			imagemapoutlineX = coordN[0];
+			imagemapoutlineY = coordN[1];
+			imagemapoutlineW = coordN[2]-coordN[0];
+			imagemapoutlineH = coordN[3]-coordN[1];
+		} else if (shape == "oval") {
+			coordN[0] = parseInt(coordN[0] || 0);
+			coordN[1] = parseInt(coordN[1] || 0);
+			coordN[2] = parseInt(coordN[2] || 0);
+			coordN[3] = parseInt(coordN[3] || 0);
+			imagemapoutlineX = coordN[0]-coordN[2];
+			imagemapoutlineY = coordN[1]-coordN[3];
+			imagemapoutlineW = coordN[2]*2;
+			imagemapoutlineH = coordN[3]*2;
+		} else if (shape == "poly") {
+		} else {
+		}
+	}
+
+	imagemapimage = document.getElementById("imagemapimage");
+	imageTop = getAbsoluteOffsetTop(imagemapimage);
+	imageLeft = getAbsoluteOffsetLeft(imagemapimage);
+	imageRight = getAbsoluteOffsetLeft(imagemapimage)+imagemapimage.clientWidth;
+	imageBottom = getAbsoluteOffsetTop(imagemapimage)+imagemapimage.clientHeight;
+	main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+	main.moveTo(imageLeft+imagemapoutlineX, imageTop+imagemapoutlineY);
+
+	jg.clear();
+	jg.setColor('#ff0000');
+	jg.setStroke(1);
+	if (imagemapoutlineShape == "oval") {
+		jg.drawOval(0, 0, imagemapoutlineW-1, imagemapoutlineH-1);
+	} else if (imagemapoutlineShape == "circle") {
+		jg.drawOval(0, 0, imagemapoutlineW-1, imagemapoutlineH-1);
+	} else {
+		jg.drawRect(0, 0, imagemapoutlineW-1, imagemapoutlineH-1);
+	}
+	jg.paint();
+
+	moveGripsToCorners();
+
+	if (imagemapoutlineShape == "circle") {
+		document.forms[0].coords.value = parseInt(imagemapoutlineX+imagemapoutlineW/2) + "," + parseInt(imagemapoutlineY+imagemapoutlineW/2) + "," + parseInt(imagemapoutlineW/2);
+	} else if (imagemapoutlineShape == "oval") {
+		document.forms[0].coords.value = parseInt(imagemapoutlineX+imagemapoutlineW/2) + "," + parseInt(imagemapoutlineY+imagemapoutlineW/2) + "," + parseInt(imagemapoutlineW/2) + "," + parseInt(imagemapoutlineH/2);
+	} else if (imagemapoutlineShape == "rect") {
+		document.forms[0].coords.value = (imagemapoutlineX) + "," + (imagemapoutlineY) + "," + (imagemapoutlineX+imagemapoutlineW) + "," + (imagemapoutlineY+imagemapoutlineH);
+	} else if (imagemapoutlineShape == "poly") {
+	} else {
+	}
+}
+
+</script>
+</head>
+<body onload="initform();init();" style="margin: 0px;">
+<script type="text/javascript" src="wz_jsgraphics.js"></script>
+<script type="text/javascript" src="wz_dragdrop.js"></script>
+<form action="#" onSubmit="javascript:insertmap(this); return false;">
+<table summary="" width="100%" border="0" class="dtree">
+	<tr align="left" valign="top"> 
+		<td colspan="3" class="webeditor_window_title"><script type="text/javascript">document.write(Text('imagemap_title'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="50%">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('imagemap_imagemap'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('imagemap_name'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="name" size="10" value="">
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+		<td width="50%">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('class_id'));</script></legend>
+				<table summary="" width="100%">
+					<tr>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('htmlclass'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="htmlclass" size="10" value="">
+						</td>
+						<td></td>
+						<td class="webeditor_window_attribute"><script type="text/javascript">document.write(Text('htmlid'));</script></td>
+						<td class="webeditor_window_value"> 
+							<input type="text" name="htmlid" size="10" value="">
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="2" rowspan="3" valign="top">
+			<fieldset>
+			<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('imagemap_areas'));</script></legend>
+				<table summary="" style="width: 100%; height: 100%;">
+					<tr align="left" valign="top"> 
+						<td class="webeditor_window_attribute" valign="bottom"><script type="text/javascript">document.write(Text('imagemap_shape'));</script></td>
+						<td class="webeditor_window_attribute" valign="bottom"><script type="text/javascript">document.write(Text('imagemap_coords'));</script></td>
+						<td rowspan="5">&nbsp;</td>
+						<td class="webeditor_window_value" rowspan="5" width="50%">
+				        		<select name="options" size="7" onChange="select_option(this.form)" style="width: 100%;">
+				        		</select>
+				        		<div align="center">
+				        		<script type="text/javascript">document.write('<input type="button" value="' + Text('imagemap_areas_moveup') + '" onClick="move_option_up(this.form)">');</script>
+				        		<script type="text/javascript">document.write('<input type="button" value="' + Text('imagemap_areas_movedown') + '" onClick="move_option_down(this.form)">');</script>
+				        		</div>
+						</td>
+					</tr>
+					<tr align="left" valign="top"> 
+						<td colspan="1"> 
+				        		<select name="shape" onchange="reshapeImagemapOutline(this.form.shape.value, this.form.coords.value, this.form.href.value);">
+				        		<script type="text/javascript">
+				        		document.write('<option value="rect">' + Text('imagemap_rectangle'));
+				        		document.write('<option value="circle">' + Text('imagemap_circle'));
+				        		</script>
+<!--
+				        		<option value="oval" onclick="imagemapoutlineShape='oval';drawimagemapoutline();"><script type="text/javascript">document.write(Text('imagemap_oval'));</script>
+				        		<option value="poly"><script type="text/javascript">document.write(Text('imagemap_polygon'));</script>
+-->
+				        		</select>
+						</td>
+						<td colspan="1"> 
+				        		<input type="text" size="15" name="coords" value="" onchange="reshapeImagemapOutline(this.form.shape.value, this.form.coords.value, this.form.href.value);">
+						</td>
+					</tr>
+					<tr align="left" valign="top"> 
+						<td class="webeditor_window_attribute" colspan="2" valign="bottom"><script type="text/javascript">document.write(Text('imagemap_href'));</script></td>
+					</tr>
+					<tr align="left" valign="top"> 
+						<td colspan="2"> 
+				        		<input type="text" size="35" name="href" value="">
+						</td>
+					</tr>
+					<tr align="left" valign="bottom"> 
+						<td colspan="2" align="center"> 
+				        		<script type="text/javascript">document.write('<input type="button" value="' + Text('imagemap_areas_add') + '" onClick="add_option(this.form)">');</script>
+				        		<script type="text/javascript">document.write('<input type="button" value="' + Text('imagemap_areas_update') + '" onClick="update_option(this.form)">');</script>
+				        		<script type="text/javascript">document.write('<input type="button" value="' + Text('imagemap_areas_remove') + '" onClick="remove_option(this.form)">');</script>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</td>
+	</tr>
+</table>
+<div align="center">
+<script type="text/javascript">document.write('<input type="submit" value="' + Text('ok') + '">');</script>
+<script type="text/javascript">document.write('<input type="button" value="' + Text('cancel') + '" onClick="editorwindow[editor].window_close(window);">');</script>
+</div>
+</form>
+<hr>
+
+<p align="center">
+<script type="text/javascript">
+	var image = editorwindow.contenteditable_selection_container('img');
+	document.write('<img id="imagemapimage" src="' + image.src + '"');
+	if (image.width) document.write(' width="' + image.width + '"');
+	if (image.height) document.write(' height="' + image.height + '"');
+	document.write('>');
+</script>
+</p>
+<div id="main" onclick="showGrips();" style="position:absolute;left:80px;top:120px;"><img alt="" src="transparentpixel.gif" width="100%" height="100%"></div>
+<img alt="" name="lefttop" src="imagemap.marker_rect.gif" width="6" height="6" style="visibility:hidden;">
+<img alt="" name="righttop" src="imagemap.marker_rect.gif" width="6" height="6" style="visibility:hidden;">
+<img alt="" name="rightbottom" src="imagemap.marker_rect.gif" width="6" height="6" style="visibility:hidden;">
+<img alt="" name="leftbottom" src="imagemap.marker_rect.gif" width="6" height="6" style="visibility:hidden;">
+<img alt="" name="leftmiddle" src="imagemap.marker_rect.gif" width="6" height="6" style="visibility:hidden;">
+<img alt="" name="topmiddle" src="imagemap.marker_rect.gif" width="6" height="6" style="visibility:hidden;">
+<img alt="" name="rightmiddle" src="imagemap.marker_rect.gif" width="6" height="6" style="visibility:hidden;">
+<img alt="" name="bottommiddle" src="imagemap.marker_rect.gif" width="6" height="6" style="visibility:hidden;">
+
+<script type="text/javascript">
+<!--
+
+var imagemapoutlineShape = "rect";
+var imagemapoutlineW = 50;
+var imagemapoutlineH = 50;
+var imagemapoutlineX = 0;
+var imagemapoutlineY = 0;
+
+var imagemapimage = document.getElementById("imagemapimage");
+var imageTop = getAbsoluteOffsetTop(imagemapimage);
+var imageLeft = getAbsoluteOffsetLeft(imagemapimage);
+var imageRight = getAbsoluteOffsetLeft(imagemapimage)+imagemapimage.clientWidth;
+var imageBottom = getAbsoluteOffsetTop(imagemapimage)+imagemapimage.clientHeight;
+
+SET_DHTML("main"+CURSOR_MOVE, "lefttop"+CURSOR_NW_RESIZE, "righttop"+CURSOR_NE_RESIZE, "rightbottom"+CURSOR_SE_RESIZE, "leftbottom"+CURSOR_SW_RESIZE, "leftmiddle"+CURSOR_W_RESIZE, "topmiddle"+CURSOR_N_RESIZE, "rightmiddle"+CURSOR_E_RESIZE, "bottommiddle"+CURSOR_S_RESIZE);
+
+var jg = new jsGraphics("main");
+
+var main = dd.elements.main;
+var lt = dd.elements.lefttop;
+var rt = dd.elements.righttop;
+var rb = dd.elements.rightbottom;
+var lb = dd.elements.leftbottom;
+var lm = dd.elements.leftmiddle;
+var tm = dd.elements.topmiddle;
+var rm = dd.elements.rightmiddle;
+var bm = dd.elements.bottommiddle;
+var grips = [lt, rt, rb, lb, lm, tm, rm, bm];
+
+drawimagemapoutline();
+// Safari may move image when drawing outline - simply redraw outline to position correctly
+drawimagemapoutline();
+
+window.onresize = drawimagemapoutline;
+
+function my_DragFunc() {
+	if (dd.obj == rb) {
+		if ((rb.x > imageRight-rb.w/2) && (rb.y > imageBottom-rb.h/2)) {
+			rb.moveTo(imageRight-rb.w/2, imageBottom-rb.h/2);
+		} else if (rb.x > imageRight-rb.w/2) {
+			rb.moveTo(imageRight-rb.w/2, rb.y-rb.h/2);
+		} else if (rb.y > imageBottom-rb.h/2) {
+			rb.moveTo(rb.x-rb.w/2, imageBottom-rb.h/2);
+		}
+		if (imagemapoutlineShape == "oval") {
+			imagemapoutlineW = rb.x-lb.x;
+			imagemapoutlineH = rb.y-rt.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else if (imagemapoutlineShape == "circle") {
+			imagemapoutlineW = rb.x-lb.x;
+			imagemapoutlineH = rb.y-rt.y;
+			if (imagemapoutlineW > imagemapoutlineH) {
+				imagemapoutlineW = imagemapoutlineH;
+			} else {
+				imagemapoutlineH = imagemapoutlineW;
+			}
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else {
+			imagemapoutlineW = rb.x-lb.x;
+			imagemapoutlineH = rb.y-rt.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.resizeTo(imagemapoutlineW , imagemapoutlineH);
+		}
+	} else if (dd.obj == rt) {
+		if ((rt.x > imageRight-rt.w/2) && (rt.y < imageTop-rt.h/2)) {
+			rt.moveTo(imageRight-rt.w/2, imageTop-rt.h/2);
+		} else if (rt.x > imageRight-rt.w/2) {
+			rt.moveTo(imageRight-rt.w/2, rt.y-rt.h/2);
+		} else if (rt.y < imageTop-rt.h/2) {
+			rt.moveTo(rt.x-rt.w/2, imageTop-rt.h/2);
+		}
+		if (imagemapoutlineShape == "oval") {
+			imagemapoutlineW = rt.x-lt.x;
+			imagemapoutlineH = rb.y-rt.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineY = lb.y-imagemapoutlineH+rt.h/2-imageTop;
+			drawimagemapoutline();
+			main.moveTo(lb.x+rt.w/2, lb.y-imagemapoutlineH+rt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else if (imagemapoutlineShape == "circle") {
+			imagemapoutlineW = rt.x-lt.x;
+			imagemapoutlineH = rb.y-rt.y;
+			if (imagemapoutlineW > imagemapoutlineH) {
+				imagemapoutlineW = imagemapoutlineH;
+			} else {
+				imagemapoutlineH = imagemapoutlineW;
+			}
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineY = lb.y-imagemapoutlineH+rt.h/2-imageTop;
+			drawimagemapoutline();
+			main.moveTo(lb.x+rt.w/2, lb.y-imagemapoutlineH+rt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else {
+			imagemapoutlineW = rt.x-lt.x;
+			imagemapoutlineH = rb.y-rt.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineY = lb.y-imagemapoutlineH+rt.h/2-imageTop;
+			drawimagemapoutline();
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+			main.moveTo(lb.x+rt.w/2, lb.y-imagemapoutlineH+rt.h/2);
+		}
+	} else if (dd.obj == lb) {
+		if ((lb.x < imageLeft-lb.w/2) && (lb.y > imageBottom-lb.h/2)) {
+			lb.moveTo(imageLeft-lb.w/2, imageBottom-lb.h/2);
+		} else if (lb.x < imageLeft-lb.w/2) {
+			lb.moveTo(imageLeft-lb.w/2, lb.y-lb.h/2);
+		} else if (lb.y > imageBottom-lb.h/2) {
+			lb.moveTo(lb.x-lb.w/2, imageBottom-lb.h/2);
+		}
+		if (imagemapoutlineShape == "oval") {
+			imagemapoutlineW = rb.x-lb.x;
+			imagemapoutlineH = lb.y-lt.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rt.x-imagemapoutlineW+lb.w/2-imageLeft;
+			drawimagemapoutline();
+			main.moveTo(rt.x-imagemapoutlineW+lb.w/2, rt.y+lb.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else if (imagemapoutlineShape == "circle") {
+			imagemapoutlineW = rb.x-lb.x;
+			imagemapoutlineH = lb.y-lt.y;
+			if (imagemapoutlineW > imagemapoutlineH) {
+				imagemapoutlineW = imagemapoutlineH;
+			} else {
+				imagemapoutlineH = imagemapoutlineW;
+			}
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rt.x-imagemapoutlineW+lb.w/2-imageLeft;
+			drawimagemapoutline();
+			main.moveTo(rt.x-imagemapoutlineW+lb.w/2, rt.y+lb.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else {
+			imagemapoutlineW = rb.x-lb.x;
+			imagemapoutlineH = lb.y-lt.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rt.x-imagemapoutlineW+lb.w/2-imageLeft;
+			drawimagemapoutline();
+			main.moveTo(rt.x-imagemapoutlineW+lb.w/2, rt.y+lb.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		}
+	} else if (dd.obj == lt) {
+		if ((lt.x < imageLeft-lt.w/2) && (lt.y < imageTop-lt.h/2)) {
+			lt.moveTo(imageLeft-lt.w/2, imageTop-lt.h/2);
+		} else if (lt.x < imageLeft-lt.w/2) {
+			lt.moveTo(imageLeft-lt.w/2, lt.y-lt.h/2);
+		} else if (lt.y < imageTop-lt.h/2) {
+			lt.moveTo(lt.x-lt.w/2, imageTop-lt.h/2);
+		}
+		if (imagemapoutlineShape == "oval") {
+			imagemapoutlineW = rt.x-lt.x;
+			imagemapoutlineH = lb.y-lt.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rb.x-imagemapoutlineW+lt.w/2-imageLeft;
+			imagemapoutlineY = rb.y-imagemapoutlineH+lt.h/2-imageTop;
+			drawimagemapoutline();
+			main.moveTo(rb.x-imagemapoutlineW+lt.w/2, rb.y-imagemapoutlineH+lt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else if (imagemapoutlineShape == "circle") {
+			imagemapoutlineW = rt.x-lt.x;
+			imagemapoutlineH = lb.y-lt.y;
+			if (imagemapoutlineW > imagemapoutlineH) {
+				imagemapoutlineW = imagemapoutlineH;
+			} else {
+				imagemapoutlineH = imagemapoutlineW;
+			}
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rb.x-imagemapoutlineW+lt.w/2-imageLeft;
+			imagemapoutlineY = rb.y-imagemapoutlineH+lt.h/2-imageTop;
+			drawimagemapoutline();
+			main.moveTo(rb.x-imagemapoutlineW+lt.w/2, rb.y-imagemapoutlineH+lt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else {
+			imagemapoutlineW = rt.x-lt.x;
+			imagemapoutlineH = lb.y-lt.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rb.x-imagemapoutlineW+lt.w/2-imageLeft;
+			imagemapoutlineY = rb.y-imagemapoutlineH+lt.h/2-imageTop;
+			drawimagemapoutline();
+			main.moveTo(rb.x-imagemapoutlineW+lt.w/2, rb.y-imagemapoutlineH+lt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		}
+	} else if (dd.obj == lm) {
+		if (lm.x < imageLeft-lm.w/2) {
+			lm.moveTo(imageLeft-lm.w/2, lm.y-lm.h/2);
+		}
+		if (imagemapoutlineShape == "oval") {
+			imagemapoutlineW = rm.x-lm.x;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rm.x-imagemapoutlineW+lm.w/2-imageLeft;
+			drawimagemapoutline();
+			main.moveTo(rm.x-imagemapoutlineW+lm.w/2, lt.y+((lb.y-lt.y-imagemapoutlineH)/2)+lt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else if (imagemapoutlineShape == "circle") {
+			imagemapoutlineW = rm.x-lm.x;
+			imagemapoutlineH = rm.x-lm.x;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rm.x-imagemapoutlineW+lm.w/2-imageLeft;
+			drawimagemapoutline();
+			main.moveTo(rm.x-imagemapoutlineW+lm.w/2, lt.y+((lb.y-lt.y-imagemapoutlineH)/2)+lt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else {
+			imagemapoutlineW = rm.x-lm.x;
+			imagemapoutlineH = bm.y-tm.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineX = rm.x-imagemapoutlineW+lm.w/2-imageLeft;
+			drawimagemapoutline();
+			main.moveTo(rm.x-imagemapoutlineW+lm.w/2, lt.y+lt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		}
+	} else if (dd.obj == tm) {
+		if (tm.y < imageTop-tm.h/2) {
+			tm.moveTo(tm.x-tm.w/2, imageTop-tm.h/2);
+		}
+		if (imagemapoutlineShape == "oval") {
+			imagemapoutlineH = bm.y-tm.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineY = bm.y-imagemapoutlineH+tm.h/2-imageTop;
+			drawimagemapoutline();
+			main.moveTo(lm.x+((rm.x-lm.x-imagemapoutlineW)/2)+tm.w/2, bm.y-imagemapoutlineH+tm.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else if (imagemapoutlineShape == "circle") {
+			imagemapoutlineW = bm.y-tm.y;
+			imagemapoutlineH = bm.y-tm.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineY = bm.y-imagemapoutlineH+tm.h/2-imageTop;
+			drawimagemapoutline();
+			main.moveTo(lm.x+((rm.x-lm.x-imagemapoutlineW)/2)+tm.w/2, bm.y-imagemapoutlineH+tm.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else {
+			imagemapoutlineW = rm.x-lm.x;
+			imagemapoutlineH = bm.y-tm.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			imagemapoutlineY = bm.y-imagemapoutlineH+tm.h/2-imageTop;
+			drawimagemapoutline();
+			main.moveTo(lm.x+tm.w/2, bm.y-imagemapoutlineH+tm.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		}
+	} else if (dd.obj == rm) {
+		if (rm.x > imageRight-rm.w/2) {
+			rm.moveTo(imageRight-rm.w/2, rm.y-rm.h/2);
+		}
+		if (imagemapoutlineShape == "oval") {
+			imagemapoutlineW = rm.x-lm.x;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.moveTo(lm.x+lm.w/2, lt.y+((lb.y-lt.y-imagemapoutlineH)/2)+lt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else if (imagemapoutlineShape == "circle") {
+			imagemapoutlineW = rm.x-lm.x;
+			imagemapoutlineH = rm.x-lm.x;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.moveTo(lm.x+lm.w/2, lt.y+((lb.y-lt.y-imagemapoutlineH)/2)+lt.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else {
+			imagemapoutlineW = rm.x-lm.x;
+			imagemapoutlineH = bm.y-tm.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		}
+	} else if (dd.obj == bm) {
+		if (bm.y > imageBottom-bm.h/2) {
+			bm.moveTo(bm.x-bm.w/2, imageBottom-bm.h/2);
+		}
+		if (imagemapoutlineShape == "oval") {
+			imagemapoutlineH = bm.y-tm.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.moveTo(lm.x+((rm.x-lm.x-imagemapoutlineW)/2)+tm.w/2, tm.y+tm.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else if (imagemapoutlineShape == "circle") {
+			imagemapoutlineW = bm.y-tm.y;
+			imagemapoutlineH = bm.y-tm.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.moveTo(lm.x+((rm.x-lm.x-imagemapoutlineW)/2)+tm.w/2, tm.y+tm.h/2);
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		} else {
+			imagemapoutlineW = rm.x-lm.x;
+			imagemapoutlineH = bm.y-tm.y;
+			if (imagemapoutlineW < 1) imagemapoutlineW = 1;
+			if (imagemapoutlineH < 1) imagemapoutlineH = 1;
+			drawimagemapoutline();
+			main.resizeTo(imagemapoutlineW, imagemapoutlineH);
+		}
+	} else if (dd.obj.name == "main") {
+		if ((main.x < imageLeft) && (main.y < imageTop)) {
+			main.moveTo(imageLeft, imageTop);
+		} else if ((main.x < imageLeft) && (main.y+main.h > imageBottom)) {
+			if (imageBottom-main.h > imageTop) {
+				main.moveTo(imageLeft, imageBottom-main.h);
+			} else {
+				main.moveTo(imageLeft, imageTop);
+			}
+		} else if ((main.x+main.w > imageRight) && (main.y < imageTop)) {
+			if (imageRight-main.w > imageLeft) {
+				main.moveTo(imageRight-main.w, imageTop);
+			} else {
+				main.moveTo(imageLeft, imageTop);
+			}
+		} else if (main.x < imageLeft) {
+			main.moveTo(imageLeft, main.y);
+		} else if (main.y < imageTop) {
+			main.moveTo(main.x, imageTop);
+		} else if ((main.x+main.w > imageRight) && (main.y+main.h > imageBottom)) {
+			if ((imageRight-main.w > imageLeft) && (imageBottom-main.h > imageTop)) {
+				main.moveTo(imageRight-main.w, imageBottom-main.h);
+			} else if (imageRight-main.w > imageLeft) {
+				main.moveTo(imageRight-main.w, imageTop);
+			} else if (imageBottom-main.h > imageTop) {
+				main.moveTo(imageLeft, imageBottom-main.h);
+			} else {
+				main.moveTo(imageLeft, imageTop);
+			}
+		} else if (main.x+main.w > imageRight) {
+			if (imageRight-main.w > imageLeft) {
+				main.moveTo(imageRight-main.w, main.y);
+			} else {
+				main.moveTo(imageLeft, main.y);
+			}
+		} else if (main.y+main.h > imageBottom) {
+			if (imageBottom-main.h > imageTop) {
+				main.moveTo(main.x, imageBottom-main.h);
+			} else {
+				main.moveTo(main.x, imageTop);
+			}
+		}
+		imagemapoutlineX = main.x-imageLeft;
+		imagemapoutlineY = main.y-imageTop;
+		imagemapoutlineW = main.w;
+		imagemapoutlineH = main.h;
+		drawimagemapoutline();
+	}
+	showGrips();
+}
+
+//-->
+</script>
+</body>
+</html>

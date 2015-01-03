@@ -1,0 +1,531 @@
+<%= "<" + "?xml version=\"1.0\" encoding=\"" + myconfig.get(db, "charset") + "\" ?" + ">" %>
+<ajax-response><response type="object" id="data_grid_updater">
+<% if (! error.equals("")) { %>
+<rows update_ui="false" /><error><%= html.encode(error) %></error>
+<% } else { %>
+<rows update_ui="true">
+<%
+	HashMap pageMaster = new HashMap();
+	HashMap pageRoot = new HashMap();
+	HashMap pageTop = new HashMap();
+	HashMap pageUp = new HashMap();
+	HashMap pageChildren = new HashMap();
+	HashMap pagePrevious = new HashMap();
+	HashMap pageNext = new HashMap();
+	while (pageEdit.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		if (! pageEdit.getUser()) {
+			recordCount--;
+		} else {
+			if ((myconfig.get(db, "use_workflow").equals("yes")) && (! pageEdit.getAdministrator()) && (! workflow.permissions(db, pageEdit.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), pageEdit.getContentClass(), pageEdit.getContentGroup(), pageEdit.getContentType(), pageEdit.getVersion(), (pageEdit.getStatusBy().equals(mysession.get("username")))))) {
+				pageEdit.setEditor(false);
+				pageEdit.setPublisher(false);
+			}
+			if ((! pageEdit.getVersionMaster().equals("0")) && (! pageEdit.getVersionMaster().equals(""))) {
+				pageMaster.put("" + pageEdit.getId(), pageEdit.getVersionMaster());
+			} else {
+				pageEdit.setVersionMaster("");
+			}
+			if ((! pageEdit.getPageTop().equals("0")) && (! pageEdit.getPageTop().equals(""))) {
+				pageTop.put("" + pageEdit.getId(), "" + pageEdit.getPageTop());
+				if ((pageEdit.getPageUp().equals("0")) || (pageEdit.getPageUp().equals(""))) {
+					pageEdit.setPageUp("" + pageEdit.getPageTop());
+				}
+			} else {
+				pageEdit.setPageTop("");
+			}
+			if ((! pageEdit.getPageUp().equals("0")) && (! pageEdit.getPageUp().equals(""))) {
+				pageUp.put("" + pageEdit.getId(), "" + pageEdit.getPageUp());
+				if (pageChildren.get("" + pageEdit.getPageUp()) == null) {
+					pageChildren.put("" + pageEdit.getPageUp(), new HashMap());
+				}
+				((HashMap)pageChildren.get("" + pageEdit.getPageUp())).put("" + pageEdit.getId(), "" + pageEdit.getId());
+			} else {
+				pageEdit.setPageUp("");
+			}
+			if ((! pageEdit.getPageFirst().equals("0")) && (! pageEdit.getPageFirst().equals(""))) {
+			} else {
+				pageEdit.setPageFirst("");
+			}
+			if ((! pageEdit.getPageLast().equals("0")) && (! pageEdit.getPageLast().equals(""))) {
+			} else {
+				pageEdit.setPageLast("");
+			}
+			if ((! pageEdit.getPagePrevious().equals("0")) && (! pageEdit.getPagePrevious().equals(""))) {
+				pagePrevious.put("" + pageEdit.getId(), "" + pageEdit.getPagePrevious());
+				pageNext.put("" + pageEdit.getPagePrevious(), "" + pageEdit.getId());
+			} else {
+				pageEdit.setPagePrevious("");
+			}
+			if ((! pageEdit.getPageNext().equals("0")) && (! pageEdit.getPageNext().equals(""))) {
+				pageNext.put("" + pageEdit.getId(), "" + pageEdit.getPageNext());
+				pagePrevious.put("" + pageEdit.getPageNext(), "" + pageEdit.getId());
+			} else {
+				pageEdit.setPageNext("");
+			}
+			if ((pageEdit.getPageUp().equals("")) && (pageEdit.getPagePrevious().equals(""))) {
+				pageRoot.put("" + pageEdit.getId(), "" + pageEdit.getId());
+			} else {
+				pageRoot.put("" + pageEdit.getId(), "-1");
+			}
+			if ((! pageEdit.getPageTop().equals("")) && ((pageRoot.get("" + pageEdit.getPageTop()) == null) || (! pageRoot.get("" + pageEdit.getPageTop()).equals("-1")))) {
+				pageRoot.put("" + pageEdit.getPageTop(), "" + pageEdit.getPageTop());
+			}
+			if ((! pageEdit.getPageUp().equals("")) && ((pageRoot.get("" + pageEdit.getPageUp()) == null) || (! pageRoot.get("" + pageEdit.getPageUp()).equals("-1")))) {
+				pageRoot.put("" + pageEdit.getPageUp(), "" + pageEdit.getPageUp());
+			}
+			String workflowoptions = "";
+			if (pageEdit.getCheckoutPermissions(mysession.get("username"), db, myconfig)) {
+				workflowoptions = "workflowoptions[" + pageEdit.getId() + "] = '" + workflow.workflow_action_select_options(db, pageEdit.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), pageEdit.getContentClass(), pageEdit.getContentGroup(), pageEdit.getContentType(), pageEdit.getVersion(), pageEdit.getAdministrator(), (pageEdit.getStatusBy().equals(mysession.get("username")))).replaceAll("\\r","\\\\r").replaceAll("\\n","\\\\n").replaceAll("\"","&quot;") + "';";
+			} else {
+				workflowoptions = "workflowoptions[" + pageEdit.getId() + "] = '';";
+			}
+%>
+        <tr> 
+<%
+			String myadminindex = "";
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("content"))) {
+				myadminindex = adminuser.getIndexContent();
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("library"))) {
+				myadminindex = adminuser.getIndexLibrary();
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce")) && (myrequest.getRequestURI().indexOf("stock.xml.jsp") >= 0)) {
+				myadminindex = adminuser.getIndexStock();
+			} else if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce"))) {
+				myadminindex = adminuser.getIndexProduct();
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_segment").equals(""))) {
+				myadminindex = adminuser.getIndexSegments();
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_usertest").equals(""))) {
+				myadminindex = adminuser.getIndexUsertests();
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_heatmap").equals(""))) {
+				myadminindex = adminuser.getIndexHeatmaps();
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("content"))) {
+				myadminindex = myconfig.get(db, "index_content");
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("library"))) {
+				myadminindex = myconfig.get(db, "index_library");
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce")) && (myrequest.getRequestURI().indexOf("stock.xml.jsp") >= 0)) {
+				myadminindex = myconfig.get(db, "index_stock");
+			} else if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce"))) {
+				myadminindex = myconfig.get(db, "index_product");
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_segment").equals(""))) {
+				myadminindex = myconfig.get(db, "index_usersegments");
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_usertest").equals(""))) {
+				myadminindex = myconfig.get(db, "index_usertests");
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("experience")) && (! mysession.get("admin_heatmap").equals(""))) {
+				myadminindex = myconfig.get(db, "index_heatmaps");
+				if (myadminindex.equals("")) {
+					myadminindex = "package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px webviewicon:20px heatmapicon:20px heatmapalign:50px heatmaponoff:50px heatmapclear:50px BLANK:10px";
+				}
+			}
+			if (myadminindex.equals("")) {
+				myadminindex = myconfig.get(db, "use_adminindex");
+			}
+			if ((myadminindex.equals("")) && (mysession.get("menu").equals("ecommerce")) && (myrequest.getRequestURI().indexOf("stock.xml.jsp") >= 0)) {
+				myadminindex = "group:50px type:50px admin:200px id:25px stock:25px stockupdate:25px stockcomment:200px stocklow:25px restocked:25px restockedupdate:25px";
+			} else if (myadminindex.equals("")) {
+				//myadminindex = "checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin id:25px previewicon:20px archivedicon:20px scheduledicon:20px status:250px";
+				//myadminindex = "checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px title:200px id:25px position:25px search:200px replace:200px preview:50px view:50px update:50px delete:50px";
+				myadminindex = "checkbox:25px package:50px class:50px bundle:50px group:50px type:50px version:50px device:50px usersegment:50px usertest:50px admin:200px id:25px position:25px search:200px replace:200px previewicon:20px archivedicon:20px scheduledicon:20px status:250px";
+			}
+
+			String[] columns = myadminindex.split(" ");
+			for (int i=0; i<columns.length; i++) {
+				String mycolumn = columns[i];
+				String mycolumnname = "";
+				String mycolumnwidth = "";
+				String mycolumnhref = "";
+				if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+					mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+					mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+					mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+				} else if (mycolumn.matches("^(.+):(.+)$")) {
+					mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+					mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+				} else {
+					mycolumnname = mycolumn;
+				}
+				if (! mycolumnwidth.equals("")) {
+					mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+				}
+%>
+<% if (mycolumnname.equals("BLANK")) { %>
+          <td><![CDATA[&nbsp;]]></td>
+<% } else if (mycolumnname.equals("checkbox")) { %>
+          <td><![CDATA[<input type="checkbox" name="dummy" value="<%= pageEdit.getId() %>" onclick="toggleCheckbox(<%= pageEdit.getId() %>,this.checked);<%= workflowoptions %>;refreshWorkflow(this.form);">]]></td>
+<% } else if (mycolumnname.equals("package")) { %>
+          <% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getContentPackage() %>"><%= pageEdit.getContentPackage() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("bundle")) { %>
+          <% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getContentBundle() %>"><%= pageEdit.getContentBundle() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("class")) { %>
+          <% if ((mysession.get("admin_contentclass") != null) && ((mysession.get("admin_contentclass").indexOf(",") > 0) || (mysession.get("admin_contentclass").equals("element")) || (mysession.get("admin_contentclass").equals("")))) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getContentClass() %>"><%= pageEdit.getContentClass() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("group")) { %>
+          <% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet")) && (! mysession.get("admin_contentclass").equals("script"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getContentGroup() %>"><%= pageEdit.getContentGroup() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("type")) { %>
+          <% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet")) && (! mysession.get("admin_contentclass").equals("script"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getContentType() %>"><%= pageEdit.getContentType() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("version")) { %>
+          <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getVersion() %>"><%= pageEdit.getVersion() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("device")) { %>
+          <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getDevice() %>"><%= pageEdit.getDevice() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("usersegment")) { %>
+          <% if (License.valid(db, myconfig, "experience") && (myconfig.get(db, "use_versions").equals("yes"))) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getUsersegment() %>"><%= pageEdit.getUsersegment() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("usertest")) { %>
+          <% if (License.valid(db, myconfig, "experience") && (myconfig.get(db, "use_versions").equals("yes"))) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getUsertest() %>"><%= pageEdit.getUsertest() %></span>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("created")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getCreated() %>"><%= pageEdit.getCreated() %></span>]]></td>
+<% } else if (mycolumnname.equals("createdby")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getCreatedBy() %>"><%= pageEdit.getCreatedBy() %></span>]]></td>
+<% } else if (mycolumnname.equals("updated")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getUpdated() %>"><%= pageEdit.getUpdated() %></span>]]></td>
+<% } else if (mycolumnname.equals("updatedby")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getUpdatedBy() %>"><%= pageEdit.getUpdatedBy() %></span>]]></td>
+<% } else if (mycolumnname.equals("published")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getPublished() %>"><%= pageEdit.getPublished() %></span>]]></td>
+<% } else if (mycolumnname.equals("publishedby")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getPublishedBy() %>"><%= pageEdit.getPublishedBy() %></span>]]></td>
+<% } else if (mycolumnname.equals("scheduledpublish")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getScheduledPublish() %>"><%= pageEdit.getScheduledPublish() %></span>]]></td>
+<% } else if (mycolumnname.equals("scheduledunpublish")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getScheduledUnpublish() %>"><%= pageEdit.getScheduledUnpublish() %></span>]]></td>
+<% } else if (mycolumnname.equals("unpublished")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getUnpublished() %>"><%= pageEdit.getUnpublished() %></span>]]></td>
+<% } else if (mycolumnname.equals("unpublishedby")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getUnpublishedBy() %>"><%= pageEdit.getUnpublishedBy() %></span>]]></td>
+<% } else if (mycolumnname.equals("filename")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getServerFilename() %>"><%= pageEdit.getServerFilename() %></span>]]></td>
+<% } else if (mycolumnname.equals("template")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getTemplate() %>"><%= pageEdit.getTemplate() %></span>]]></td>
+<% } else if (mycolumnname.equals("stylesheet")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getStyleSheet() %>"><%= pageEdit.getStyleSheet() %></span>]]></td>
+<% } else if (mycolumnname.equals("top")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getPageTop() %>"><%= pageEdit.getPageTop() %></span>]]></td>
+<% } else if (mycolumnname.equals("up")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getPageUp() %>"><%= pageEdit.getPageUp() %></span>]]></td>
+<% } else if (mycolumnname.equals("first")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getPageFirst() %>"><%= pageEdit.getPageFirst() %></span>]]></td>
+<% } else if (mycolumnname.equals("previous")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getPagePrevious() %>"><%= pageEdit.getPagePrevious() %></span>]]></td>
+<% } else if (mycolumnname.equals("next")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getPageNext() %>"><%= pageEdit.getPageNext() %></span>]]></td>
+<% } else if (mycolumnname.equals("last")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getPageLast() %>"><%= pageEdit.getPageLast() %></span>]]></td>
+<% } else if (mycolumnname.equals("permission")) { %>
+          <td><![CDATA[<% if (pageEdit.getAdministrator()) { %>
+            		<%= mytext.display("content.permission.administrator") %>
+            	<% } else if (pageEdit.getPublisher()) { %>
+            		<%= mytext.display("content.permission.publisher") %>
+            	<% } else if (pageEdit.getCreator()) { %>
+            		<%= mytext.display("content.permission.creator") %>
+            	<% } else if (pageEdit.getDeveloper()) { %>
+            		<%= mytext.display("content.permission.developer") %>
+            	<% } else if (pageEdit.getEditor()) { %>
+            		<%= mytext.display("content.permission.editor") %>
+            	<% } else if (pageEdit.getUser()) { %>
+            		<%= mytext.display("content.permission.user") %>
+            	<% } else { %>
+            		<%= mytext.display("content.permission.none") %>
+		<% } %>]]></td>
+<% } else if (mycolumnname.equals("permissionicon")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getAdministrator()) { %>
+            		<img src="permission.administrator.gif" border="0">
+            	<% } else if (pageEdit.getPublisher()) { %>
+            		<img src="permission.publisher.gif" border="0">
+            	<% } else if (pageEdit.getCreator()) { %>
+            		<img src="permission.creator.gif" border="0">
+            	<% } else if (pageEdit.getDeveloper()) { %>
+            		<img src="permission.developer.gif" border="0">
+            	<% } else if (pageEdit.getEditor()) { %>
+            		<img src="permission.editor.gif" border="0">
+            	<% } else if (pageEdit.getUser()) { %>
+            		<img src="permission.user.gif" border="0">
+            	<% } else { %>
+            		<img src="permission.none.gif" border="0">
+		<% } %></div>]]></td>
+<% } else if (mycolumnname.equals("admin")) { %>
+<% if (pageEdit.getUser()) { %>
+          <td><![CDATA[<span class="title" title="<%= pageEdit.getTitle() %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %> (<%= pageEdit.getVersion() %>)<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %> (<%= pageEdit.getDevice() %>)<% } %>"><a href="admin.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>" class="title"><%= pageEdit.getTitle() %><% if (pageEdit.getTitle().equals("")) { %>-<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %> (<%= pageEdit.getVersion() %>)<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %> (<%= pageEdit.getDevice() %>)<% } %></a></span>]]></td>
+<% } else { %>
+          <td><![CDATA[<span class="title" title="<%= pageEdit.getTitle() %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %> (<%= pageEdit.getVersion() %>)<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %> (<%= pageEdit.getDevice() %>)<% } %>"><%= pageEdit.getTitle() %><% if (pageEdit.getTitle().equals("")) { %>-<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %> (<%= pageEdit.getVersion() %>)<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %> (<%= pageEdit.getDevice() %>)<% } %></span>]]></td>
+<% } %>
+<% } else if (mycolumnname.equals("title")) { %>
+          <td class="title"><![CDATA[<span class="title" title="<%= pageEdit.getTitle() %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %> (<%= pageEdit.getVersion() %>)<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %> (<%= pageEdit.getDevice() %>)<% } %>"><%= pageEdit.getTitle() %><% if (pageEdit.getTitle().equals("")) { %>-<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %> (<%= pageEdit.getVersion() %>)<% } %><% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getDevice().equals(""))) { %> (<%= pageEdit.getDevice() %>)<% } %></span>]]></td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td><![CDATA[<div style="text-align: right;"><%= pageEdit.getId() %></div>]]></td>
+<% } else if (mycolumnname.equals("position")) { %>
+<% } else if (mycolumnname.equals("search")) { %>
+<% } else if (mycolumnname.equals("replace")) { %>
+<% } else if (mycolumnname.equals("webviewicon")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser()) { %><a target="_blank" href="/<% if ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")) || (pageEdit.getContentClass().equals("template")) || (pageEdit.getContentClass().equals("stylesheet")) || (pageEdit.getContentClass().equals("script")) || (pageEdit.getContentClass().equals("image")) || (pageEdit.getContentClass().equals("file")) || (pageEdit.getContentClass().equals("link"))) { %><%= pageEdit.getContentClass() %><% } else { %>element<% } %>.jsp?mode=+&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>" title="<%= mytext.display("webview") %>"><img src="webview.gif" border="0"></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("webview")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser()) { %><a target="_blank" href="/<% if ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")) || (pageEdit.getContentClass().equals("template")) || (pageEdit.getContentClass().equals("stylesheet")) || (pageEdit.getContentClass().equals("script")) || (pageEdit.getContentClass().equals("image")) || (pageEdit.getContentClass().equals("file")) || (pageEdit.getContentClass().equals("link"))) { %><%= pageEdit.getContentClass() %><% } else { %>element<% } %>.jsp?mode=+&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>"><%= mytext.display("webview") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("previewicon")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser()) { %><a target="_blank" href="/<% if ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")) || (pageEdit.getContentClass().equals("template")) || (pageEdit.getContentClass().equals("stylesheet")) || (pageEdit.getContentClass().equals("script")) || (pageEdit.getContentClass().equals("image")) || (pageEdit.getContentClass().equals("file")) || (pageEdit.getContentClass().equals("link"))) { %><%= pageEdit.getContentClass() %><% } else { %>element<% } %>.jsp?mode=preview&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>" title="<%= mytext.display("preview") %>"><img src="preview.gif" border="0"></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("preview")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser()) { %><a target="_blank" href="/<% if ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")) || (pageEdit.getContentClass().equals("template")) || (pageEdit.getContentClass().equals("stylesheet")) || (pageEdit.getContentClass().equals("script")) || (pageEdit.getContentClass().equals("image")) || (pageEdit.getContentClass().equals("file")) || (pageEdit.getContentClass().equals("link"))) { %><%= pageEdit.getContentClass() %><% } else { %>element<% } %>.jsp?mode=preview&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>"><%= mytext.display("preview") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser()) { %><a href="view.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("view") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td><![CDATA[<div align="center"><% if (((pageEdit.getEditor()) && ((pageEdit.getScheduledPublish().equals("")) || pageEdit.getPublisher())) || (pageEdit.getPublisher() && (! myconfig.get(db, "inherit_accessrestrictions").equals("no"))) || ((pageEdit.getEditor()) && (myconfig.get(db, "use_scheduled_publish").equals("yes")) && (myconfig.get(db, "use_schedule").equals("yes")) && (pageEdit.getUser()) && (pageEdit.isScheduled(db)))) { %><a href="update.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("update") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("create")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getCreator()) { %><a href="create.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td><![CDATA[<% if (pageEdit.getLocked() == 0) { %><div align="center"><% if (pageEdit.getPublisher()) { %><a href="delete.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("delete") %></a><% } %><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("archivedicon")) { %>
+          <% if (! myconfig.get(db, "use_archive").equals("none")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser() && pageEdit.isArchived(db)) { %><a href="archive.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>" title="<%= mytext.display("archived") %>"><img src="archive.gif" border="0"></a><% } %></div>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("scheduledicon")) { %>
+          <% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+          <% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser() && pageEdit.isScheduled(db)) { %><a href="schedule.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>" title="<%= mytext.display("scheduled") %>"><img src="schedule.gif" border="0"></a><% } %></div>]]></td>
+          <% } %>
+          <% } %>
+<% } else if (mycolumnname.equals("archived")) { %>
+          <% if (! myconfig.get(db, "use_archive").equals("none")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser() && pageEdit.isArchived(db)) { %><a href="archive.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>" title="<%= mytext.display("archived") %>"><%= mytext.display("archived") %></a><% } %></div>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("scheduled")) { %>
+          <% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+          <% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser() && pageEdit.isScheduled(db)) { %><a href="schedule.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>" title="<%= mytext.display("scheduled") %>"><%= mytext.display("scheduled") %></a><% } %></div>]]></td>
+          <% } %>
+          <% } %>
+<% } else if (mycolumnname.equals("status")) { %>
+          <% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <td><![CDATA[<%= pageEdit.display_status().replaceAll("<br>", " ") %>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("statusicon")) { %>
+          <% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <td><![CDATA[<%= pageEdit.display_status_icon().replaceAll("<br>", " ") %>]]></td>
+          <% } %>
+<% } else if (mycolumnname.equals("heatmapicon")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %><a href="javascript:doHeatmap('/<%= pageEdit.getContentClass() %>.jsp?mode=heatmap&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>')" title="<%= mytext.display("content.heatmap") %>"><img src="heatmap.gif" border="0"></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("heatmap")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %><a href="javascript:doHeatmap('/<%= pageEdit.getContentClass() %>.jsp?mode=heatmap&id=<%= pageEdit.getId() %>&version=<%= pageEdit.getVersion() %>&<%= Math.random() %>')"><%= mytext.display("content.heatmap") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("heatmapclear")) { %>
+          <td><![CDATA[<div align="center"><% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %><a href="heatmap.jsp?id=<%= pageEdit.getId() %>&log=delete&<%= Math.random() %>"><%= mytext.display("content.heatmapclear") %></a><% } %></div>]]></td>
+<% } else if (mycolumnname.equals("heatmaponoff")) { %>
+	<% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %>
+          <td><![CDATA[<div style="text-align: center;"><select class="WCMheatmaponoff" id="WCMheatmaponoff_<%= pageEdit.getId() %>" name="WCMheatmaponoff_<%= pageEdit.getId() %>" onchange="doHeatmapOnOffUpdate(this)">
+          		<option value=""<% if (pageEdit.getHeatmap().equals("")) { %> selected<% } %>><%= mytext.display("content.heatmap.off") %></option>
+          		<option value="click"<% if (pageEdit.getHeatmap().equals("click")) { %> selected<% } %>><%= mytext.display("content.heatmap.click") %></option>
+<!--
+          		<option value="mouse"<% if (pageEdit.getHeatmap().equals("mouse")) { %> selected<% } %>><%= mytext.display("content.heatmap.mouse") %></option>
+-->
+          	</select></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("heatmapalign")) { %>
+	<% if (pageEdit.getUser() && ((pageEdit.getContentClass().equals("product")) || (pageEdit.getContentClass().equals("page")))) { %>
+          <td><![CDATA[<div style="text-align: center;"><select class="WCMheatmapalign" id="WCMheatmapalign_<%= pageEdit.getId() %>" name="WCMheatmapalign_<%= pageEdit.getId() %>" onchange="doHeatmapAlignUpdate(this)">
+          		<option value=""<% if (pageEdit.getHeatmapAlign().equals("")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.default") %></option>
+          		<option value="c"<% if (pageEdit.getHeatmapAlign().equals("c")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.center") %></option>
+          		<option value="l"<% if (pageEdit.getHeatmapAlign().equals("l")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.left") %></option>
+          		<option value="r"<% if (pageEdit.getHeatmapAlign().equals("r")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.right") %></option>
+          		<option value="f"<% if (pageEdit.getHeatmapAlign().equals("f")) { %> selected<% } %>><%= mytext.display("content.heatmapalign.full") %></option>
+          	</select></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("productcode")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getProductCode() %>"><%= pageEdit.getProductCode() %></span>]]></td>
+<% } else if (mycolumnname.equals("weight")) { %>
+          <td><![CDATA[<div style="text-align: right;"><span title="<%= pageEdit.getProductWeight() %>"><%= pageEdit.getProductWeight() %></span></div>]]></td>
+<% } else if (mycolumnname.equals("volume")) { %>
+          <td><![CDATA[<div style="text-align: right;"><span title="<%= pageEdit.getProductVolume() %>"><%= pageEdit.getProductVolume() %></span></div>]]></td>
+<% } else if (mycolumnname.equals("width")) { %>
+          <td><![CDATA[<div style="text-align: right;"><span title="<%= pageEdit.getProductWidth() %>"><%= pageEdit.getProductWidth() %></span></div>]]></td>
+<% } else if (mycolumnname.equals("height")) { %>
+          <td><![CDATA[<div style="text-align: right;"><span title="<%= pageEdit.getProductHeight() %>"><%= pageEdit.getProductHeight() %></span></div>]]></td>
+<% } else if (mycolumnname.equals("depth")) { %>
+          <td><![CDATA[<div style="text-align: right;"><span title="<%= pageEdit.getProductDepth() %>"><%= pageEdit.getProductDepth() %></span></div>]]></td>
+<% } else if (mycolumnname.equals("currency")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %>"><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %></span>]]></td>
+<% } else if (mycolumnname.equals("price")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getProductPrice() %>"><%= pageEdit.getProductPrice() %></span>]]></td>
+<% } else if (mycolumnname.equals("cost")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getProductCost() %>"><%= pageEdit.getProductCost() %></span>]]></td>
+<% } else if (mycolumnname.equals("period")) { %>
+          <td><![CDATA[<span title="<% if (pageEdit.getProductPeriod().equals("")) { %><%= mytext.display("content.productdetails.period.once") %><% } else { %><%= mytext.display("content.productdetails.period." + pageEdit.getProductPeriod()) %><% } %>"><% if (pageEdit.getProductPeriod().equals("")) { %><%= mytext.display("content.productdetails.period.once") %><% } else { %><%= mytext.display("content.productdetails.period." + pageEdit.getProductPeriod()) %><% } %></span>]]></td>
+<% } else if (mycolumnname.equals("stock")) { %>
+<%
+	String stock_status = "WCMstock";
+	if (pageEdit.getContentClass().equals("product")) {
+		int stock_amount = Common.intnumber(pageEdit.getProductStockAmount(db));
+		if (stock_amount < 0) {
+			stock_status = "WCMstock_ordered";
+		} else if (stock_amount == 0) {
+			stock_status = "WCMstock_no";
+		} else if (stock_amount <= Common.intnumber(pageEdit.getProductLowStockAmount())) {
+			stock_status = "WCMstock_low";
+		} else {
+			stock_status = "WCMstock_in";
+		}
+%>
+          <td><![CDATA[<div style="text-align: right;"><span id="WCMstock_<%= pageEdit.getId() %>" class="<%= stock_status %>"><%= stock_amount %></span></div>]]></td>
+<%
+	} else {
+%>
+          <td><![CDATA[&nbsp;]]></td>
+<%
+	}
+%>
+<% } else if (mycolumnname.equals("stockcomment")) { %>
+<%
+	String stock_status = "WCMstock";
+	String stock_comment = "&nbsp;";
+	if (pageEdit.getContentClass().equals("product")) {
+		int stock_amount = Common.intnumber(pageEdit.getProductStockAmount(db));
+		if (stock_amount < 0) {
+			stock_status = "WCMstock_ordered";
+			stock_comment = pageEdit.getProductNoStockText();
+		} else if (stock_amount == 0) {
+			stock_status = "WCMstock_no";
+			stock_comment = pageEdit.getProductNoStockText();
+		} else if (stock_amount <= Common.intnumber(pageEdit.getProductLowStockAmount())) {
+			stock_status = "WCMstock_low";
+			stock_comment = pageEdit.getProductLowStockText();
+		} else {
+			stock_status = "WCMstock_in";
+			stock_comment = pageEdit.getProductStockText();
+		}
+	}
+%>
+          <td><![CDATA[<span id="WCMstockcomment_<%= pageEdit.getId() %>" class="<%= stock_status %>"><%= stock_comment %></span>]]></td>
+<% } else if (mycolumnname.equals("stocklow")) { %>
+	<% if (pageEdit.getContentClass().equals("product")) { %>
+          <td><![CDATA[<div style="text-align: right;"><%= pageEdit.getProductLowStockAmount() %></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("restocked")) { %>
+<%
+	if (pageEdit.getContentClass().equals("product")) {
+		int restocked_amount = Common.intnumber(pageEdit.getProductRestockedAmount(db));
+%>
+          <td><![CDATA[<div style="text-align: right;"><span id="WCMrestocked_<%= pageEdit.getId() %>" class="WCMstock_restocked"><%= restocked_amount %></span></div>]]></td>
+<%
+	} else {
+%>
+          <td><![CDATA[&nbsp;]]></td>
+<%
+	}
+%>
+<% } else if (mycolumnname.equals("stockupdate")) { %>
+	<% if (pageEdit.getEditor() && (pageEdit.getContentClass().equals("product"))) { %>
+          <td><![CDATA[<div style="text-align: center;"><input type="text" size="5" class="WCMstockupdate" id="WCMstockupdate_<%= pageEdit.getId() %>" name="WCMstockupdate_<%= pageEdit.getId() %>" value="" onchange="doStockUpdate(this)"></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("restockedupdate")) { %>
+	<% if (pageEdit.getEditor() && (pageEdit.getContentClass().equals("product"))) { %>
+          <td><![CDATA[<div style="text-align: center;"><input type="text" size="5" class="WCMrestockedupdate" id="WCMrestockedupdate_<%= pageEdit.getId() %>" name="WCMrestockedupdate_<%= pageEdit.getId() %>" value="" onchange="doRestockedUpdate(this)"></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("stockcost")) { %>
+	<% if ((pageEdit.getContentClass().equals("product")) && (pageEdit.getProductPeriod().equals("")) && (Common.intnumber(pageEdit.getProductStockAmount(db)) >= 0) && (Common.intnumber(pageEdit.getProductCost()) > 0)) { %>
+          <td><![CDATA[<div style="text-align: right;"><% if (pageEdit.getProductCurrency().equals("")) { %><%= pageEdit.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %><% } %> <%= Common.numberformat(Common.intnumber(pageEdit.getProductStockAmount(db)) * Common.intnumber(pageEdit.getProductCost()), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("restockcost")) { %>
+	<% if ((pageEdit.getContentClass().equals("product")) && (pageEdit.getProductPeriod().equals("")) && (Common.intnumber(pageEdit.getProductLowStockAmount()) > Common.intnumber(pageEdit.getProductStockAmount(db))) && (Common.intnumber(pageEdit.getProductLowStockAmount()) > 0) && (Common.intnumber(pageEdit.getProductCost()) > 0)) { %>
+          <td><![CDATA[<div style="text-align: right;"><% if (pageEdit.getProductCurrency().equals("")) { %><%= pageEdit.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %><% } %> <%= Common.numberformat((Common.intnumber(pageEdit.getProductLowStockAmount()) - Common.intnumber(pageEdit.getProductStockAmount(db))) * Common.intnumber(pageEdit.getProductCost()), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("stockvalue")) { %>
+	<% if ((pageEdit.getContentClass().equals("product")) && (pageEdit.getProductPeriod().equals("")) && (Common.intnumber(pageEdit.getProductStockAmount(db)) >= 0) && (Common.intnumber(pageEdit.getProductPrice()) > 0)) { %>
+          <td><![CDATA[<div style="text-align: right;"><% if (pageEdit.getProductCurrency().equals("")) { %><%= pageEdit.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %><% } %> <%= Common.numberformat(Common.intnumber(pageEdit.getProductStockAmount(db)) * Common.intnumber(pageEdit.getProductPrice()), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("stockprofit")) { %>
+	<% if ((pageEdit.getContentClass().equals("product")) && (pageEdit.getProductPeriod().equals("")) && (Common.intnumber(pageEdit.getProductStockAmount(db)) >= 0) && (Common.intnumber(pageEdit.getProductPrice()) > 0) && (Common.intnumber(pageEdit.getProductCost()) > 0)) { %>
+          <td><![CDATA[<div style="text-align: right;"><% if (pageEdit.getProductCurrency().equals("")) { %><%= pageEdit.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= pageEdit.currency_symbol(db, pageEdit.getProductCurrency()) %><% } %> <%= Common.numberformat(Common.intnumber(pageEdit.getProductStockAmount(db)) * (Common.intnumber(pageEdit.getProductPrice()) - Common.intnumber(pageEdit.getProductCost())), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %></div>]]></td>
+	<% } else { %>
+          <td><![CDATA[&nbsp;]]></td>
+	<% } %>
+<% } else if (mycolumnname.equals("stocklocation")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getProductLocation() %>"><%= pageEdit.getProductLocation() %></span>]]></td>
+<% } else if (mycolumnname.equals("checkout")) { %>
+          <% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+          <td><![CDATA[
+          	<% if (pageEdit.getCheckedOut().equals(mysession.get("username"))) { %>
+          		<div align="center"><a href="checkin.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("checkin") %></a></div>
+          	<% } else if ((! pageEdit.getCheckedOut().equals("")) && (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+          		<div align="center"><a href="checkin.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>"><%= pageEdit.getCheckedOut() %></a></div>
+          	<% } else if (pageEdit.getCheckedOut().equals("-creators-")) { %>
+          		<div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.creators") %></a></nobr></div>
+          	<% } else if (pageEdit.getCheckedOut().equals("-editors-")) { %>
+          		<div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.editors") %></a></nobr></div>
+          	<% } else if (pageEdit.getCheckedOut().equals("-developers-")) { %>
+          		<div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.developers") %></a></nobr></div>
+          	<% } else if (pageEdit.getCheckedOut().equals("-publishers-")) { %>
+          		<div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.publishers") %></a></nobr></div>
+          	<% } else if (pageEdit.getCheckedOut().equals("-administrators-")) { %>
+          		<div align="center"><nobr><a href="#"><%= mytext.display("content.checkedout.administrators") %></a></nobr></div>
+          	<% } else if (! pageEdit.getCheckedOut().equals("")) { %>
+          		<div align="center"><a href="#"><%= pageEdit.getCheckedOut() %></a></div>
+          	<% } else { %>
+          		<div align="center">
+          		<% if (((pageEdit.getEditor()) && ((pageEdit.getScheduledPublish().equals("")) || pageEdit.getPublisher())) || (pageEdit.getPublisher() && (! myconfig.get(db, "inherit_accessrestrictions").equals("no"))) || ((pageEdit.getEditor()) && (myconfig.get(db, "use_scheduled_publish").equals("yes")) && (myconfig.get(db, "use_schedule").equals("yes")) && (pageEdit.getUser()) && (pageEdit.isScheduled(db)))) { %>
+          			<a href="checkout.jsp?id=<%= pageEdit.getId() %>&<%= Math.random() %>"><%= mytext.display("checkout") %></a>
+          		<% } %>
+          		</div>
+          	<% } %>
+          ]]></td>
+          <% } %>
+<% } else if (mycolumnname.startsWith("metainfo_")) { %>
+          <td><![CDATA[<span title="<% if (! pageEdit.getMetaInfo(mycolumnname.substring(9)).equals("")) { %><%= pageEdit.getMetaInfo(mycolumnname.substring(9)) %><% } else { %><%= pageEdit.getMetaInfo(mycolumnname.substring(9).replaceAll("_"," ")) %><% } %>"><% if (! pageEdit.getMetaInfo(mycolumnname.substring(9)).equals("")) { %><%= pageEdit.getMetaInfo(mycolumnname.substring(9)) %><% } else { %><%= pageEdit.getMetaInfo(mycolumnname.substring(9).replaceAll("_"," ")) %><% } %></span>]]></td>
+<% } else if (mycolumnname.startsWith("productinfo_")) { %>
+  <td><![CDATA[<span title="<% if (! pageEdit.getProductInfo(mycolumnname.substring(12)).equals("")) { %><%= pageEdit.getProductInfo(mycolumnname.substring(12)) %><% } else { %><%= pageEdit.getProductInfo(mycolumnname.substring(12).replaceAll("_"," ")) %><% } %>"><% if (! pageEdit.getProductInfo(mycolumnname.substring(12)).equals("")) { %><%= pageEdit.getProductInfo(mycolumnname.substring(12)) %><% } else { %><%= pageEdit.getProductInfo(mycolumnname.substring(12).replaceAll("_"," ")) %><% } %></span>]]></td>
+<% } else if (mycolumnname.equals("brand")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getProductBrand() %>"><%= pageEdit.getProductBrand() %></span>]]></td>
+<% } else if (mycolumnname.equals("colour")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getProductColour() %>"><%= pageEdit.getProductColour() %></span>]]></td>
+<% } else if (mycolumnname.equals("size")) { %>
+          <td><![CDATA[<span title="<%= pageEdit.getProductSize() %>"><%= pageEdit.getProductSize() %></span>]]></td>
+<% } else { %>
+          <td><![CDATA[<div align="center"><a href="<%= mycolumnhref + pageEdit.getId() %>&<%= Math.random() %>"><%= mycolumnname %></a></div>]]></td>
+<% } %>
+<%
+			}
+%>
+        </tr>
+<%
+		}
+	}
+%>
+</rows>
+<rowcount><%= recordCount %></rowcount>
+<% } %>
+</response></ajax-response>

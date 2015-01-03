@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("websites.delete.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("websites.delete.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="delete_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("delete") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("websites.heading") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.domain") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDomain() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.remote") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getRemote() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.useragent") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getUserAgent() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.language") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getLanguage() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.referrer") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getReferrer() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.keywords") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getKeywords() %>&nbsp;</td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.page") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultPageTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.page.nonexisting") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultPageNonexistingTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.page.unpublished") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultPageUnpublishedTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.page.expired") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultPageExpiredTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.login") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultLoginTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.searchresults.page") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultSearchresultsPageTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.searchresults.entry") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultSearchresultsEntryTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+<% if (License.valid(db, myconfig, "community")) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.community.register.confirmation") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultRegisterConfirmationPageTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.community.register.notification") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultRegisterNotificationPageTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.password.retrieve.page") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultRetrievePasswordPageTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.password.retrieve.confirmation") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultPasswordConfirmationTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.password.retrieve.email") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultRetrievePasswordEmailTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.password.retrieve.error") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultRetrievePasswordErrorTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+<% if (! myconfig.get(db, "use_versions").equals("")) { %>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.version") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultVersion() %>&nbsp;</td>
+          </tr>
+<% } %>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.template") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultTemplateTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.stylesheet") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultStylesheetTitle(db, myconfig) %> &nbsp;</td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.website.specialsettings.doctype") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="4"> 
+              <%= html.encode(mywebsite.getDefaultDocType()).replaceAll("\r\n", "\n").replaceAll("\r", "\n").replaceAll("\n", "<BR>") %> &nbsp;
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.price") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultPrice() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.country") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultCountry() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("websites.state") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= mywebsite.getDefaultState() %> &nbsp;</td>
+          </tr>
+<% } %>
+        </table>
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

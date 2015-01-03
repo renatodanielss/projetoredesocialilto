@@ -1,0 +1,174 @@
+	<% if (mypage.getContentClass().equals("product")) { %>
+
+<div id="Product Details" class="Product_Details st_view"><div class="st_view_inner">
+	<input type="hidden" id="product_info" name="product_info" value="<%= html.encode(mypage.getProductInfo()) %>">
+	<input type="hidden" id="product_options" name="product_options" value="<%= html.encode(mypage.getProductOptions()) %>">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("content.productdetails.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="3"><%= mytext.display("content.productdetails.intro") %></td></tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.code") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("content.productdetails.price") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.cost") %></th>
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" width="25%"><input type="text" size="20" id="product_code" name="product_code" value="<%= mypage.getProductCode() %>"></td>
+			<td class="WCMinnerContentInputValue" width="50%">
+				<select id="product_currency" name="product_currency">
+					<option value="<%= mypage.getProductCurrency() %>"><%= mytext.display("pleaseselect") %></option>
+					<option value="" <% if (mypage.getProductCurrency().equals("")) { %>selected<% } %>><%= mytext.display("default") %> (<%= mypage.currency_symbol(db, myconfig.get(db, "default_currency")) %>)</option>
+					<%= mypage.currency_options(db, mypage.getProductCurrency()) %>
+				</select>
+				<input type="text" size="10" id="product_price" name="product_price" value="<%= mypage.getProductPrice() %>">
+				<select id="product_period" name="product_period">
+					<option value="" <% if (mypage.getProductPeriod().equals("")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.once") %></option>
+					<option value="daily" <% if (mypage.getProductPeriod().equals("daily")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.daily") %></option>
+					<option value="weekly" <% if (mypage.getProductPeriod().equals("weekly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.weekly") %></option>
+					<option value="biweekly" <% if (mypage.getProductPeriod().equals("biweekly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.biweekly") %></option>
+					<option value="monthly" <% if (mypage.getProductPeriod().equals("monthly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.monthly") %></option>
+					<option value="bimonthly" <% if (mypage.getProductPeriod().equals("bimonthly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.bimonthly") %></option>
+					<option value="quarterly" <% if (mypage.getProductPeriod().equals("quarterly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.quarterly") %></option>
+					<option value="biquarterly" <% if (mypage.getProductPeriod().equals("biquarterly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.biquarterly") %></option>
+					<option value="yearly" <% if (mypage.getProductPeriod().equals("yearly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.yearly") %></option>
+				</select>
+			</td>
+			<td class="WCMinnerContentInputValue" width="25%">
+				<input type="text" size="10" id="product_cost" name="product_cost" value="<%= mypage.getProductCost() %>">
+			</td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" width="25%"><%= mypage.getProductCode() %>&nbsp;</td>
+			<td class="WCMinnerContentInputValue" width="75%" colspan="2"><% if (mypage.getProductCurrency().equals("")) { %>default (<%= mypage.currency_symbol(db, myconfig.get(db, "default_currency")) %>)<% } else { %><%= mypage.currency_symbol(db, mypage.getProductCurrency()) %><% } %>&nbsp;<%= mypage.getProductPrice() %>&nbsp;<%= mytext.display("content.productdetails.period." + mypage.getProductPeriod()) %></td>
+
+		<% } %>
+
+		</tr>
+<!--
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.stock") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.productdetails.comment") %></th>
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" width="25%"><input type="text" size="10" name="product_stock" value="<%= mypage.getProductStock() %>"></td>
+			<td class="WCMinnerContentInputValue" width="75%" colspan="2"><input type="text" size="30" name="product_comment" value="<%= mypage.getProductComment() %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" width="25%"><%= mypage.getProductStock() %>&nbsp;</td>
+			<td class="WCMinnerContentInputValue" width="75%" colspan="2"><%= mypage.getProductComment() %>&nbsp;</td>
+
+		<% } %>
+
+		</tr>
+-->
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.weight") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("content.productdetails.width") %> x <%= mytext.display("content.productdetails.height") %> x <%= mytext.display("content.productdetails.depth") %></th>
+			<th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.volume") %></th>
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" width="25%"><input type="text" size="10" id="product_weight" name="product_weight" value="<%= mypage.getProductWeight() %>"><%= mytext.display("content.productdetails.weight.unit") %></td>
+			<td class="WCMinnerContentInputValue" width="50%"><input type="text" size="10" id="product_width" name="product_width" value="<%= mypage.getProductWidth() %>"><%= mytext.display("content.productdetails.width.unit") %> x <input type="text" size="10" id="product_height" name="product_height" value="<%= mypage.getProductHeight() %>"><%= mytext.display("content.productdetails.height.unit") %> x <input type="text" size="10" id="product_depth" name="product_depth" value="<%= mypage.getProductDepth() %>"><%= mytext.display("content.productdetails.depth.unit") %></td>
+			<td class="WCMinnerContentInputValue" width="25%"><input type="text" size="10" id="product_volume" name="product_volume" value="<%= mypage.getProductVolume() %>"><%= mytext.display("content.productdetails.volume.unit") %></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" width="25%"><%= mypage.getProductWeight() %> <%= mytext.display("content.productdetails.weight.unit") %></td>
+			<td class="WCMinnerContentInputValue" width="25%"><%= mypage.getProductVolume() %> <%= mytext.display("content.productdetails.volume.unit") %></td>
+			<td class="WCMinnerContentInputValue" width="50%"><%= mypage.getProductWidth() %> <%= mytext.display("content.productdetails.width.unit") %> x <%= mypage.getProductHeight() %> <%= mytext.display("content.productdetails.height.unit") %> x <%= mypage.getProductDepth() %> <%= mytext.display("content.productdetails.depth.unit") %></td>
+
+		<% } %>
+
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="100%" colspan="3"><%= mytext.display("content.productdetails.brand") %></th>
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" width="100%" colspan="3"><input type="text" size="80" maxlength="255" id="product_brand" name="product_brand" value="<%= mypage.getProductBrand() %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" width="100%" colspan="3"><%= mypage.getProductBrand() %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="100%" colspan="3"><%= mytext.display("content.productdetails.colour") %></th>
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" width="100%" colspan="3"><input type="text" size="80" maxlength="255" id="product_colour" name="product_colour" value="<%= mypage.getProductColour() %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" width="100%" colspan="3"><%= mypage.getProductColour() %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+		<tr>
+			<th class="WCMinnerContentInputName" align="left" width="100%" colspan="3"><%= mytext.display("content.productdetails.size") %></th>
+		</tr>
+		<tr>
+
+		<% if (update) { %>
+
+			<td class="WCMinnerContentInputValue" width="100%" colspan="3"><input type="text" size="80" maxlength="255" id="product_size" name="product_size" value="<%= mypage.getProductSize() %>"></td>
+
+		<% } else { %>
+
+			<td class="WCMinnerContentInputValue" width="100%" colspan="3"><%= mypage.getProductSize() %> &nbsp;</td>
+
+		<% } %>
+
+		</tr>
+		<tr id="product_infoaddnew"><td>&nbsp;</td></tr>
+
+		<% if (update) { %>
+
+		<tr><td colspan="2"><input id="product_infoname" type="text" size="80" maxlength="255" name="product_infoname"> <input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('product_info')"></td></tr>
+
+		<% } else { %>
+
+		<tr><td colspan="2"><input id="product_infoname" type="hidden" name="product_infoname"></td></tr>
+
+		<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.productoptions.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("content.productoptions.intro") %></td></tr>
+		<tr id="product_optionsaddnew"><td>&nbsp;</td></tr>
+
+		<% if (update) { %>
+
+		<tr><td colspan="2"><input id="product_optionsname" type="text" size="60" maxlength="255" name="product_optionsname"> <input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('product_options')"></td></tr>
+
+		<% } else { %>
+
+		<tr><td colspan="2"><input id="product_optionsname" type="hidden" name="product_optionsname"></td></tr>
+
+		<% } %>
+
+	</table>
+	<br>
+</div></div>
+
+	<% } %>

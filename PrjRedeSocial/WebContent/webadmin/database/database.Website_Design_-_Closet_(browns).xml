@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="content">
+  <row>
+   <column name="id" value="128" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-06-11 02:01:23" />
+   <column name="updated" value="2002-10-13 19:22:36" />
+   <column name="published" value="2002-10-13 19:22:36" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Closet (browns)" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+	.hidden{
+		position:absolute;
+		left:-10000px;
+		top:auto;
+		width:1px;
+		height:1px;
+		overflow:hidden;
+}
+
+	.alignleft{
+		float:left;
+}
+
+	.alignright{
+		float:right;
+		text-align:right;
+}
+
+	.clearalign{
+		clear:both;
+}
+
+	.templatedesign01 {
+		background:#88726e;    	/* Top background colour */
+}
+
+	#maincontentbox {
+		padding-top:8px;
+}
+
+	.left_centre_right .colleft, .left_centre{
+		background:#c5bdb0;    	/* Left column background colour */
+}
+
+
+	#wrapper_outer, #maincontentbox, .centre, .centre_right, .centre_right .colleft, .left_centre .colright, .left_centre_right, .left_centre_right .colmid, .left_right, .left_right .colleft{
+		background-color:#f8f3e9;    	/* Content background colour */
+}
+
+
+/* Needed to expand width for ecommerce toolbar */
+	#wrapper_outer{
+	   /* YOU CAN USE px, em OR % */
+		width:1060px;               
+}
+
+
+	#wrapper_inner{
+		padding:0 35px;
+}
+
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;div id=&quot;wrapper_outer&quot;&gt;
+   &lt;div id=&quot;wrapper_inner&quot;&gt;
+   &lt;a href=&quot;#maincontent&quot; class=&quot;hidden&quot;&gt;Skip to main content&lt;/a&gt; 
+&lt;table class=&quot;templatedesign01&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td colspan=&quot;1&quot; rowspan=&quot;2&quot; valign=&quot;top&quot; width=&quot;187&quot;&gt;&lt;img style=&quot;width: 187px; height: 117px;&quot; src=&quot;/image.jsp?id=352&quot; border=&quot;0&quot;&gt;&lt;br&gt;
+&lt;/td&gt;
+&lt;td width=&quot;5&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;
+&lt;!-- START OF HEADER AREA --&gt;
+            &lt;div id=&quot;header&quot;&gt;
+                        &lt;div class=&quot;alignright&quot;&gt;
+                           @@@utilities.content@@@
+                        &lt;/div&gt;
+@@@logo.content@@@
+            &lt;/div&gt;
+            &lt;!-- END OF HEADER AREA --&gt;
+&lt;br&gt;
+&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td width=&quot;5&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;           &lt;!-- START OF TOOLBAR NAVIGATION --&gt;
+                  @@@toolbar.content@@@
+            &lt;!-- END OF TOOLBAR NAVIGATION --&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+            &lt;!-- START OF MAIN CONTENT AREA --&gt;
+&lt;div id=&quot;maincontentbox&quot;&gt;
+@@@content@@@
+&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;
+            &lt;!-- END OF MAIN CONTENT AREA --&gt;
+            &lt;!-- START OF FOOTER AREA --&gt;
+                        &lt;div id=&quot;footer&quot;&gt;
+                              &lt;div class=&quot;alignright&quot;&gt;&lt;a class=&quot;footerlink&quot; href=&quot;#&quot;&gt;
+                                    Skip to top&lt;/a&gt;&lt;/div&gt;
+                                    &lt;div class=&quot;hr_footer clearalign&quot;&gt;&lt;/div&gt;
+                              &lt;div class=&quot;alignleft&quot;&gt;
+@@@footer.content@@@
+                              &lt;/div&gt;
+                              &lt;div class=&quot;alignright copyright&quot;&gt;
+                                    © All rights reserved.
+                              &lt;/div&gt;
+                        &lt;div style=&quot;clear: both;&quot;&gt;&lt;/div&gt;
+&lt;br&gt;
+                        &lt;/div&gt;
+                        &lt;div style=&quot;clear: both;&quot;&gt;&lt;/div&gt;
+            &lt;!-- END OF FOOTER AREA --&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="template" />
+   <column name="contenttype" value="General" />
+   <column name="contentgroup" value="Asbru" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+  </row>
+  <row>
+   <column name="id" value="352" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-10-13 19:22:16" />
+   <column name="updated" value="2002-10-13 19:22:16" />
+   <column name="published" value="2002-10-13 19:22:16" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="Closet" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="image" />
+   <column name="contenttype" value="Template" />
+   <column name="contentgroup" value="Asbru" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="image/Closet.jpg" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="128" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-06-11 02:01:23" />
+   <column name="updated" value="2002-10-13 19:22:36" />
+   <column name="published" value="2002-10-13 19:22:36" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="Closet (browns)" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+	.hidden{
+		position:absolute;
+		left:-10000px;
+		top:auto;
+		width:1px;
+		height:1px;
+		overflow:hidden;
+}
+
+	.alignleft{
+		float:left;
+}
+
+	.alignright{
+		float:right;
+		text-align:right;
+}
+
+	.clearalign{
+		clear:both;
+}
+
+	.templatedesign01 {
+		background:#88726e;    	/* Top background colour */
+}
+
+	#maincontentbox {
+		padding-top:8px;
+}
+
+	.left_centre_right .colleft, .left_centre{
+		background:#c5bdb0;    	/* Left column background colour */
+}
+
+
+	#wrapper_outer, #maincontentbox, .centre, .centre_right, .centre_right .colleft, .left_centre .colright, .left_centre_right, .left_centre_right .colmid, .left_right, .left_right .colleft{
+		background-color:#f8f3e9;    	/* Content background colour */
+}
+
+
+/* Needed to expand width for ecommerce toolbar */
+	#wrapper_outer{
+	   /* YOU CAN USE px, em OR % */
+		width:1060px;               
+}
+
+
+	#wrapper_inner{
+		padding:0 35px;
+}
+
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;div id=&quot;wrapper_outer&quot;&gt;
+   &lt;div id=&quot;wrapper_inner&quot;&gt;
+   &lt;a href=&quot;#maincontent&quot; class=&quot;hidden&quot;&gt;Skip to main content&lt;/a&gt; 
+&lt;table class=&quot;templatedesign01&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td colspan=&quot;1&quot; rowspan=&quot;2&quot; valign=&quot;top&quot; width=&quot;187&quot;&gt;&lt;img style=&quot;width: 187px; height: 117px;&quot; src=&quot;/image.jsp?id=352&quot; border=&quot;0&quot;&gt;&lt;br&gt;
+&lt;/td&gt;
+&lt;td width=&quot;5&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;
+&lt;!-- START OF HEADER AREA --&gt;
+            &lt;div id=&quot;header&quot;&gt;
+                        &lt;div class=&quot;alignright&quot;&gt;
+                           @@@utilities.content@@@
+                        &lt;/div&gt;
+@@@logo.content@@@
+            &lt;/div&gt;
+            &lt;!-- END OF HEADER AREA --&gt;
+&lt;br&gt;
+&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td width=&quot;5&quot;&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td rowspan=&quot;1&quot;&gt;           &lt;!-- START OF TOOLBAR NAVIGATION --&gt;
+                  @@@toolbar.content@@@
+            &lt;!-- END OF TOOLBAR NAVIGATION --&gt;&lt;/td&gt;&lt;td rowspan=&quot;1&quot;&gt;&lt;br&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+            &lt;!-- START OF MAIN CONTENT AREA --&gt;
+&lt;div id=&quot;maincontentbox&quot;&gt;
+@@@content@@@
+&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;
+            &lt;!-- END OF MAIN CONTENT AREA --&gt;
+            &lt;!-- START OF FOOTER AREA --&gt;
+                        &lt;div id=&quot;footer&quot;&gt;
+                              &lt;div class=&quot;alignright&quot;&gt;&lt;a class=&quot;footerlink&quot; href=&quot;#&quot;&gt;
+                                    Skip to top&lt;/a&gt;&lt;/div&gt;
+                                    &lt;div class=&quot;hr_footer clearalign&quot;&gt;&lt;/div&gt;
+                              &lt;div class=&quot;alignleft&quot;&gt;
+@@@footer.content@@@
+                              &lt;/div&gt;
+                              &lt;div class=&quot;alignright copyright&quot;&gt;
+                                    © All rights reserved.
+                              &lt;/div&gt;
+                        &lt;div style=&quot;clear: both;&quot;&gt;&lt;/div&gt;
+&lt;br&gt;
+                        &lt;/div&gt;
+                        &lt;div style=&quot;clear: both;&quot;&gt;&lt;/div&gt;
+            &lt;!-- END OF FOOTER AREA --&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="template" />
+   <column name="contenttype" value="General" />
+   <column name="contentgroup" value="Asbru" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+  </row>
+  <row>
+   <column name="id" value="352" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-10-13 19:22:16" />
+   <column name="updated" value="2002-10-13 19:22:16" />
+   <column name="published" value="2002-10-13 19:22:16" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="" />
+   <column name="title" value="Closet" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="image" />
+   <column name="contenttype" value="Template" />
+   <column name="contentgroup" value="Asbru" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="" />
+   <column name="page_up" value="" />
+   <column name="page_next" value="" />
+   <column name="page_previous" value="" />
+   <column name="page_first" value="" />
+   <column name="page_last" value="" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="image/Closet.jpg" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+  </row>
+ </table>
+ <folder name="image/">
+  <file name="Closet.jpg">
+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
+  </file>
+ </folder>
+</database>

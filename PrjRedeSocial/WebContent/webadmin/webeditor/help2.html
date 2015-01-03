@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('help2_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+
+</script>
+</head>
+<body>
+<form action="#">
+<table summary="" style="width: 100%; height: 100%;">
+	<tr align="left" valign="top"> 
+		<th colspan="4" class="webeditor_window_title"><script type="text/javascript">document.write(Text('help2_title'));</script></th>
+	</tr>
+	<tr align="left" valign="top"> 
+		<th colspan="4" class="webeditor_window_heading"><script type="text/javascript">document.write(Text('help2_formatting_style'));</script></th>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"> 
+			<select name="select">
+			<script type="text/javascript">document.write('<option selected>' + Text('help2_style_title') + '<\/option>');</script>
+			</select>
+		</td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_style'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'forecolor.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_forecolor'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"> 
+			<select name="select">
+			<script type="text/javascript">document.write('<option selected>' + Text('help2_normal') + '<\/option>');</script>
+			</select>
+		</td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_format'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'backcolor.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_backcolor'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"> 
+			<select name="select">
+			<option selected>Courier</option>
+			</select>
+		</td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_fontname'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'strikethrough.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_strikethrough'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"> 
+			<select name="select2">
+			<option selected>3</option>
+			</select>
+		</td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_fontsize'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'superscript.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_superscript'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'bold.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_bold'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'subscript.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_subscript'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'italic.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_italic'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'removeformat.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_removeformat'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'underline.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_underline'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'textformat.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_format'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+	<td>&nbsp;</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<th colspan="2" class="webeditor_window_heading"><script type="text/javascript">document.write(Text('help2_editing'));</script></th>
+		<th colspan="2" class="webeditor_window_heading"><script type="text/javascript">document.write(Text('help2_indent_align'));</script></th>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'cut.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_cut'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'outdent.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_outdent'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'copy.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_copy'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'indent.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_indent'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'paste.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_paste'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'justifyleft.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_justifyleft'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'clean.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_clean'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'justifycenter.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_justifycenter'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'delete.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_delete'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'justifyright.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_justifyright'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'selectall.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_selectall'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'justifyfull.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_justifyfull'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'redo.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_redo'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'nobr.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_nobr'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'undo.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_undo'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'ol.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_ol'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"></td>
+		<td width="40%" class="webeditor_window_value"></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'ul.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_ul'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+	<td>&nbsp;</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<th colspan="2" class="webeditor_window_heading"><script type="text/javascript">document.write(Text('help2_webcontent'));</script></th>
+		<th colspan="2" class="webeditor_window_heading"><script type="text/javascript">document.write(Text('help2_special'));</script></th>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'specialcharacter.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_specialcharacter'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'help.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_help'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'media.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_media'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'import.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_import'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'imagemap.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_imagemap'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'find.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_find'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'link.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_link'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'printbreak.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_printbreak'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'iframe.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_iframe'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'print.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_print'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'mailto.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_mailto'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'preview.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_preview'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'anchor.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_anchor'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'save.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_save'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'unlink.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_unlink'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'viewdetails.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_viewdetails'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'hr.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_hr'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'viewsource.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_viewsource'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%">&nbsp;</td>
+		<td width="40%" class="webeditor_window_value">&nbsp;</td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'spellcheck.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_spellcheck'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+	<td>&nbsp;</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<th colspan="2" class="webeditor_window_heading"><script type="text/javascript">document.write(Text('help2_tableediting'));</script></th>
+		<th colspan="2" class="webeditor_window_heading"><script type="text/javascript">document.write(Text('help2_formediting'));</script></th>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'createtable.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_table'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'form.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_form'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'tableproperties.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_tableproperties'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'submitbutton.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_submitbutton'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertcaption.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertcaption'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'resetbutton.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_resetbutton'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertrowhead.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertrowhead'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'backbutton.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_backbutton'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertrowfoot.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertrowfoot'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'imagebutton.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_imagebutton'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'rowproperties.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_rowproperties'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'file.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_file'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertrowabove.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertrowabove'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'button.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_button'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertrowbelow.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertrowbelow'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'text.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_text'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'deleterow.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_deleterow'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'password.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_password'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'splitcellrows.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_splitcellrows'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'hidden.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_hidden'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'columnproperties.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_columnproperties'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'textarea.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_textarea'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertcolumnleft.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertcolumnleft'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'checkbox.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_checkbox'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertcolumnright.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertcolumnright'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'radio.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_radio'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'deletecolumn.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_deletecolumn'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'select.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_select'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'splitcellcolumns.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_splitcellcolumns'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'cellproperties.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_cellproperties'));</script></td>
+		<th colspan="2" class="webeditor_window_heading"><script type="text/javascript">document.write(Text('help2_positioning'));</script></th>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertcellleft.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertcellleft'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'position.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_position'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'insertcellright.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_insertcellright'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'forwards.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_forwards'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'deletecell.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_deletecell'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'backwards.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_backwards'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'splitcell.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_splitcell'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'front.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_front'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'mergecells.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_mergecells'));</script></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'back.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_back'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"></td>
+		<td width="40%" class="webeditor_window_value"></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'abovetext.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_abovetext'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"></td>
+		<td width="40%" class="webeditor_window_value"></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'belowtext.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_belowtext'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td width="10%"></td>
+		<td width="40%" class="webeditor_window_value"></td>
+		<td width="10%"><script type="text/javascript">document.write('<img alt="" src="' + webeditor.skinpath + 'box.gif">');</script></td>
+		<td width="40%" class="webeditor_window_value"><script type="text/javascript">document.write(Text('help2_box'));</script></td>
+	</tr>
+	<tr align="left" valign="top"> 
+	<td>&nbsp;</td>
+	</tr>
+	<tr align="left" valign="top"> 
+		<td colspan="4" align="center" class="webeditor_window_value">
+		Asbru Web Content Editor v9.1.5<br>
+		(C) 2002-2014 - Asbru Ltd.<br>
+		<a target="_blank" href="http://www.asbrusoft.com/">www.asbrusoft.com</a>
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

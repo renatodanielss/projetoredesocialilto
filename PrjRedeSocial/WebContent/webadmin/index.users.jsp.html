@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("intro.users.title") %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("intro.users.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="left" valign="top">
+                  <table width="100%" border="0">
+                    <tr align="left" valign="top"> 
+                      <th class="WCMinnerContentHeading1" colspan="2"><%= mytext.display("intro.users.heading") %></th>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td class="WCMinnerContentSectionIntro" colspan="2"><%= mytext.display("intro.users.intro") %></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td colspan="2"><%= mytext.display("intro.users.text") %></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <th width="50%">&nbsp;</th>
+                      <th width="50%">&nbsp;</th>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% int cellcount = 0; %>
+<% if (! myconfig.get(db, "use_userclasses").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="50%" class="WCMfrontpage"><%= mytext.display("intro.users.administrators") %><br>&nbsp;</p></td>
+<% } %>
+<% cellcount = cellcount+1; %>
+                      <td width="50%" class="WCMfrontpage"><%= mytext.display("intro.users.templates") %><br>&nbsp;</p></td>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% cellcount = cellcount+1; %>
+                      <td width="50%" class="WCMfrontpage"><%= mytext.display("intro.users.users") %><br>&nbsp;</p></td>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% cellcount = cellcount+1; %>
+                      <td width="50%" class="WCMfrontpage"><%= mytext.display("intro.users.status") %><br>&nbsp;</p></td>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+
+<% for(int i=0; i<module.size(); i++) { %>
+<% if ((moduleUsersIntroTitle.size()>i) && (! moduleUsersIntroTitle.get(i).equals(""))) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><b><%= moduleUsersIntroTitle.get(i) %></b><br><%= moduleUsersIntroText.get(i) %><br>&nbsp;</p>
+                      </td>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% } %>
+<% } %>
+
+                    </tr>
+                  </table>
+          </td>
+          <td align="right" valign="top" width="110">
+            <p><img src="users1.gif" width="100" height="100"></p>
+            <p><img src="users2.gif" width="100" height="100"></p>
+            <p><img src="users3.gif" width="100" height="100"></p>
+          </td>
+        </tr>
+      </table>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

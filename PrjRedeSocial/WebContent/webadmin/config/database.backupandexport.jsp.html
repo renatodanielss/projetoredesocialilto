@@ -1,0 +1,52 @@
+      <form id="backupandexport" action="/<%= mytext.display("adminpath") %>/database/export.xml.jsp?<%= Math.random() %>" method="POST" target="Database_Export">
+<% if (! wizard.equals("")) { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+<% } %>
+<% if ((! inidb.ReadINI(inifile, ini_database, "database", "", "", null, null).equals("")) && (! error.equals(""))) { %>
+	<p><font color="red"><%= mytext.display("config.database.error") %> <%= error %></font></p>
+<% } else if (! current_database.equals(database)) { %>
+	<p><font color="red"><%= mytext.display("config.database.unavailable") %></font></p>
+<% } %>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.database.export.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro">
+              <%= mytext.display("config.database.export.intro") %>
+              <p>
+                <input type="button" value="<%= mytext.display("config.database.export.export") %>" onClick="window.open('','Database_Export','scrollbars=yes,width=700,height=450,resizable=yes,status=yes',true); this.form.submit();">
+              </p>
+              <p>
+                <nobr><input type="checkbox" name="export_content" value="yes" checked> <%= mytext.display("config.database.export.content") %></nobr> - 
+                <nobr><input type="checkbox" name="export_images" value="yes" checked> <%= mytext.display("config.database.export.images") %></nobr> - 
+                <nobr><input type="checkbox" name="export_files" value="yes" checked> <%= mytext.display("config.database.export.files") %></nobr> - 
+		<% if (License.valid(db, myconfig, "ecommerce")) { %>
+                <nobr><input type="checkbox" name="export_ecommerce" value="yes" checked> <%= mytext.display("config.database.export.ecommerce") %></nobr> - 
+		<% } %>
+		<% if (License.valid(db, myconfig, "databases")) { %>
+                <nobr><input type="checkbox" name="export_databases" value="yes" checked> <%= mytext.display("config.database.export.databases") %></nobr> - 
+		<% } %>
+                <nobr><input type="checkbox" name="export_users" value="yes" checked> <%= mytext.display("config.database.export.users") %></nobr> - 
+                <nobr><input type="checkbox" name="export_workflow" value="yes" checked> <%= mytext.display("config.database.export.workflow") %></nobr> - 
+                <nobr><input type="checkbox" name="export_websites" value="yes" checked> <%= mytext.display("config.database.export.websites") %></nobr> - 
+                <nobr><input type="checkbox" name="export_config" value="yes" checked> <%= mytext.display("config.database.export.config") %></nobr> - 
+		<% if (License.valid(db, myconfig, "hosting")) { %>
+                <nobr><input type="checkbox" name="export_hosting" value="yes" checked> <%= mytext.display("config.database.export.hosting") %></nobr> - 
+		<% } %>
+                <nobr><input type="checkbox" name="export_other" value="yes" checked> <%= mytext.display("config.database.export.other") %></nobr>
+                <nobr><input type="checkbox" name="export_allfolderfiles" value="yes" checked> <%= mytext.display("config.database.export.allfolderfiles") %></nobr>
+                <nobr><input type="checkbox" name="export_blanks" value="yes"> <%= mytext.display("config.database.export.blanks") %></nobr>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("config.database.export.description") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <textarea name="description" cols="80" rows="5"></textarea>
+            </td>
+          </tr>
+        </table>
+      </form>

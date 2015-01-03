@@ -1,0 +1,370 @@
+      <form id="databaseconnection" action="/<%= mytext.display("adminpath") %>/config/database.jsp?<%= Math.random() %>" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="create" value="yes">
+<% if (! wizard.equals("")) { %>
+        <input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp">
+<% } %>
+<% if ((! inidb.ReadINI(inifile, ini_database, "database", "", "", null, null).equals("")) && (! error.equals(""))) { %>
+	<p><font color="red"><%= mytext.display("config.database.error") %><br><%= error %></font></p>
+<% } else if ((! inidb.ReadINI(inifile, ini_database, "database", "", "", null, null).equals("")) && (! myconfig.get(db, "database_version").equals(""))) { %>
+	<p><font color="red"><%= mytext.display("config.database.configured") %></font></p>
+<% } else if (! current_database.equals(database)) { %>
+	<p><font color="red"><%= mytext.display("config.database.unavailable") %><br><%= error %></font></p>
+<% } %>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.database.connection.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro">
+              <%= mytext.display("config.database.connection.intro") %>
+              <p>
+                <input type="submit" value="<%= mytext.display("save") %>">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("config.database.connection.current") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="database" value="<%= current_database %>">
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">&nbsp;</td>
+          </tr>
+<!--
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left"><%= mytext.display("config.database.connection.access") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='<%= dummy_database.replaceAll("\"", "&quot;").replaceAll("\\\\", "\\\\\\\\") %>'" name="dummy" <% if (database.equals(dummy_database)) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.access.default") %>
+              <br><font size="1"><%= dummy_database %></font>
+            </td>
+          </tr>
+          <tr> 
+            <td> 
+		<%= mytext.display("config.database.connection.access.default.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='<%= dummy_database3.replaceAll("\"", "&quot;").replaceAll("\\\\", "\\\\\\\\") %>'" name="dummy" <% if (database.equals(dummy_database3)) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.access.randomized") %>
+              <br><font size="1"><%= dummy_database3 %></font>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+		<%= mytext.display("config.database.connection.access.randomized.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='<%= dummy_database2.replaceAll("\"", "&quot;").replaceAll("\\\\", "\\\\\\\\") %>'" name="dummy" <% if (database.equals(dummy_database2)) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.access.root") %>
+              <br><font size="1"><%= dummy_database2 %></font>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+		<%= mytext.display("config.database.connection.access.root.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='access:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database'" name="dummy" <% if (database.equals("access:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.access.odbc.dsn") %>
+              <br><font size="1">access:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td> 
+		<%= mytext.display("config.database.connection.access.java.odbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='access:username:password@jdbc/database'" name="dummy" <% if (database.equals("access:username:password@jdbc/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.access.java.ds") %>
+              <br><font size="1">access:username:password@jdbc/database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+		<%= mytext.display("config.database.connection.access.java.ds.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+-->
+          <tr> 
+            <th class="WCMinnerContentHeading2" align="left"><%= mytext.display("config.database.connection.sqlserver") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='mssql:com.microsoft.sqlserver.jdbc.SQLServerDriver:username:password@jdbc:sqlserver://localhost'" name="dummy" <% if (database.equals("mssql:com.microsoft.sqlserver.jdbc.SQLServerDriver:username:password@jdbc:sqlserver://localhost")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.sqlserver") %>
+              <br><font size="1">mssql:com.microsoft.sqlserver.jdbc.SQLServerDriver:username:password@jdbc:sqlserver://localhost</font>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+		<%= mytext.display("config.database.connection.sqlserver.java.jdbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='mssql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database'" name="dummy" <% if (database.equals("mssql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.sqlserver.odbc.dsn") %>
+              <br><font size="1">mssql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td> 
+		<%= mytext.display("config.database.connection.sqlserver.java.odbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='mssql:username:password@jdbc/database'" name="dummy" <% if (database.equals("mssql:username:password@jdbc/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.sqlserver.java.ds") %>
+              <br><font size="1">mssql:username:password@jdbc/database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+		<%= mytext.display("config.database.connection.sqlserver.java.ds.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading2" align="left"><%= mytext.display("config.database.connection.mysql") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='mysql:com.mysql.jdbc.Driver:username:password@jdbc:mysql://localhost/database'" name="dummy" <% if (database.equals("mysql:com.mysql.jdbc.Driver:username:password@jdbc:mysql://localhost/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.mysql") %>
+              <br><font size="1">mysql:com.mysql.jdbc.Driver:username:password@jdbc:mysql://localhost/database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+		<%= mytext.display("config.database.connection.mysql.java.jdbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='mysql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database'" name="dummy" <% if (database.equals("mysql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.mysql.odbc.dsn") %>
+              <br><font size="1">mysql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+		<%= mytext.display("config.database.connection.mysql.java.odbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='mysql:username:password@jdbc/database'" name="dummy" <% if (database.equals("mysql:username:password@jdbc/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.mysql.java.ds") %>
+              <br><font size="1">mysql:username:password@jdbc/database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td> 
+		<%= mytext.display("config.database.connection.mysql.java.ds.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading2" align="left"><%= mytext.display("config.database.connection.oracle") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='oracle:oracle.jdbc.driver.OracleDriver:username:password@jdbc:oracle:thin:@//localhost:1521/database'" name="dummy" <% if (database.equals("oracle:oracle.jdbc.driver.OracleDriver:username:password@jdbc:oracle:thin:@//localhost:1521/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.oracle") %>
+              <br><font size="1">oracle:oracle.jdbc.driver.OracleDriver:username:password@jdbc:oracle:thin:@//localhost:1521/database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+		<%= mytext.display("config.database.connection.oracle.java.jdbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='oracle:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database'" name="dummy" <% if (database.equals("oracle:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.oracle.odbc.dsn") %>
+              <br><font size="1">oracle:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database</font>
+            </td>
+          </tr>
+          <tr>
+            <td> 
+		<%= mytext.display("config.database.connection.oracle.java.odbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='oracle:username:password@jdbc/database'" name="dummy" <% if (database.equals("oracle:username:password@jdbc/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.oracle.java.ds") %>
+              <br><font size="1">oracle:username:password@jdbc/database</font>
+            </td>
+          </tr>
+          <tr>
+            <td>
+		<%= mytext.display("config.database.connection.oracle.java.ds.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading2" align="left"><%= mytext.display("config.database.connection.db2") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='db2:COM.ibm.db2.jdbc.app.DB2Driver:username:password@jdbc:db2://localhost/database'" name="dummy" <% if (database.equals("db2:COM.ibm.db2.jdbc.app.DB2Driver:username:password@jdbc:db2://localhost/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.db2") %>
+              <br><font size="1">db2:COM.ibm.db2.jdbc.app.DB2Driver:username:password@jdbc:db2://localhost/database</font>
+            </td>
+          </tr>
+          <tr>
+            <td> 
+		<%= mytext.display("config.database.connection.db2") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='db2:com.ibm.db2.jcc.DB2Driver:username:password@jdbc:db2://localhost:50000/database'" name="dummy" <% if (database.equals("db2:com.ibm.db2.jcc.DB2Driver:username:password@jdbc:db2://localhost:50000/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.db2") %>
+              <br><font size="1">db2:com.ibm.db2.jcc.DB2Driver:username:password@jdbc:db2://localhost:50000/database</font>
+            </td>
+          </tr>
+          <tr>
+            <td> 
+		<%= mytext.display("config.database.connection.db2") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='db2:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database'" name="dummy" <% if (database.equals("db2:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.db2.odbc.dsn") %>
+              <br><font size="1">db2:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database</font>
+            </td>
+          </tr>
+          <tr>
+            <td>
+		<%= mytext.display("config.database.connection.db2.java.odbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='db2:username:password@jdbc/database'" name="dummy" <% if (database.equals("db2:username:password@jdbc/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.db2.java.ds") %>
+              <br><font size="1">db2:username:password@jdbc/database</font>
+            </td>
+          </tr>
+          <tr>
+            <td>
+		<%= mytext.display("config.database.connection.db2.java.ds.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading2" align="left"><%= mytext.display("config.database.connection.postgresql") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='pgsql:org.postgresql.Driver:username:password@jdbc:postgresql://localhost/database'" name="dummy" <% if (database.equals("pgsql:org.postgresql.Driver:username:password@jdbc:postgresql://localhost/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.postgresql") %>
+              <br><font size="1">pgsql:org.postgresql.Driver:username:password@jdbc:postgresql://localhost/database</font>
+            </td>
+          </tr>
+          <tr>
+            <td>
+		<%= mytext.display("config.database.connection.postgresql.java.jdbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='pgsql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database'" name="dummy" <% if (database.equals("pgsql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.postgresql.odbc.dsn") %>
+              <br><font size="1">pgsql:sun.jdbc.odbc.JdbcOdbcDriver:username:password@jdbc:odbc:database</font>
+            </td>
+          </tr>
+          <tr> 
+            <td> 
+		<%= mytext.display("config.database.connection.postgresql.java.odbc.text") %>
+            </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <input type="radio" onclick="this.form.database.value='pgsql:username:password@jdbc/database'" name="dummy" <% if (database.equals("pgsql:username:password@jdbc/database")) { %>checked<% } %> >
+              <%= mytext.display("config.database.connection.postgresql.java.ds") %>
+              <br><font size="1">pgsql:username:password@jdbc/database</font>
+            </td>
+          </tr>
+          <tr>
+            <td> 
+		<%= mytext.display("config.database.connection.postgresql.java.ds.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+      </form>

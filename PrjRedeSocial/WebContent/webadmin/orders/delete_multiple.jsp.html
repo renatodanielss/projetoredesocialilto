@@ -1,0 +1,477 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("orders.deletemultiple.title") %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/sorttable.js"></script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("orders.deletemultiple.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<form action="delete_multiple_post.jsp" method="POST">
+<% String workflowoptions = ""; %>
+<input type="hidden" name="redirect" value="<%= html.encodeHtmlEntities(Common.redirectURL(db, myconfig, myrequest.getParameter("redirect"), "/")).replaceAll("\"", "&quot;") %>">
+<div align="right"><input type="submit" value="<%= mytext.display("deleteall") %>"></div>
+<div>&nbsp;</div>
+      <table style="width: 100%;" class="sortable" id="orders">
+        <tr class="WCMindex"> 
+<%
+	String myadminindex = "id:25px created:100px paid:100px closed:100px delivery_email:200px status:50px";
+
+	String[] columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "#";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " width: " + mycolumnwidth + ";";
+		}
+%>
+<% if (mycolumnname.equals("BLANK")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("checkbox")) { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("id")) { %>
+          <th id="column_id" name="id" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.id") %></th>
+<% } else if (mycolumnname.equals("checkout")) { %>
+          <th id="column_checkedout" name="checkedout" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("created")) { %>
+          <th id="column_created" name="created" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.created") %></th>
+<% } else if (mycolumnname.equals("createdby")) { %>
+          <th id="column_createdby" name="createdby" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.createdby") %></th>
+<% } else if (mycolumnname.equals("updated")) { %>
+          <th id="column_updated" name="updated" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.updated") %></th>
+<% } else if (mycolumnname.equals("updatedby")) { %>
+          <th id="column_updatedby" name="updatedby" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.updatedby") %></th>
+<% } else if (mycolumnname.equals("paid")) { %>
+          <th id="column_paid" name="paid" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.paid") %></th>
+<% } else if (mycolumnname.equals("closed")) { %>
+          <th id="column_closed" name="closed" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.closed") %></th>
+<% } else if (mycolumnname.equals("closedby")) { %>
+          <th id="column_closedby" name="closedby" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.closedby") %></th>
+<% } else if (mycolumnname.equals("status")) { %>
+          <th id="column_status" name="status" class="WCMindex unsortable" style="text-align: center;<%= mycolumnwidth %>"><%= mytext.display("orders.status") %></th>
+<% } else if (mycolumnname.equals("statusby")) { %>
+          <th id="column_statusby" name="statusby" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.statusby") %></th>
+
+<% } else if (mycolumnname.equals("order_quantity")) { %>
+          <th id="column_order_quantity" name="order_quantity" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.orderquantity") %></th>
+<% } else if (mycolumnname.equals("order_subtotal")) { %>
+          <th id="column_order_subtotal" name="order_subtotal" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.ordersubtotal") %></th>
+<% } else if (mycolumnname.equals("order_total")) { %>
+          <th id="column_order_total" name="order_total" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.ordertotal") %></th>
+<% } else if (mycolumnname.equals("tax_description")) { %>
+          <th id="column_tax_description" name="tax_description" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.taxdescription") %></th>
+<% } else if (mycolumnname.equals("tax_total")) { %>
+          <th id="column_tax_total" name="tax_total" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.taxtotal") %></th>
+<% } else if (mycolumnname.equals("shipping_description")) { %>
+          <th id="column_shipping_description" name="shipping_description" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.shippingdescription") %></th>
+<% } else if (mycolumnname.equals("shipping_total")) { %>
+          <th id="column_shipping_total" name="shipping_total" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.shippingtotal") %></th>
+<% } else if (mycolumnname.equals("discount_description")) { %>
+          <th id="column_discount_description" name="discount_description" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.discountdescription") %></th>
+<% } else if (mycolumnname.equals("discount_total")) { %>
+          <th id="column_discount_total" name="discount_total" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.discounttotal") %></th>
+
+<% } else if (mycolumnname.equals("delivery_name")) { %>
+          <th id="column_delivery_name" name="delivery_name" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliveryname") %></th>
+<% } else if (mycolumnname.equals("delivery_organisation")) { %>
+          <th id="column_delivery_organisation" name="delivery_organisation" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliveryorganisation") %></th>
+<% } else if (mycolumnname.equals("delivery_address")) { %>
+          <th id="column_delivery_address" name="delivery_address" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliveryaddress") %></th>
+<% } else if (mycolumnname.equals("delivery_postalcode")) { %>
+          <th id="column_delivery_postalcode" name="delivery_postalcode" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliverypostalcode") %></th>
+<% } else if (mycolumnname.equals("delivery_city")) { %>
+          <th id="column_delivery_city" name="delivery_city" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliverycity") %></th>
+<% } else if (mycolumnname.equals("delivery_state")) { %>
+          <th id="column_delivery_state" name="delivery_state" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliverystate") %></th>
+<% } else if (mycolumnname.equals("delivery_country")) { %>
+          <th id="column_delivery_country" name="delivery_country" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliverycountry") %></th>
+<% } else if (mycolumnname.equals("delivery_phone")) { %>
+          <th id="column_delivery_phone" name="delivery_phone" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliveryphone") %></th>
+<% } else if (mycolumnname.equals("delivery_fax")) { %>
+          <th id="column_delivery_fax" name="delivery_fax" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliveryfax") %></th>
+<% } else if (mycolumnname.equals("delivery_website")) { %>
+          <th id="column_delivery_website" name="delivery_website" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliverywebsite") %></th>
+<% } else if (mycolumnname.equals("delivery_email")) { %>
+          <th id="column_delivery_email" name="delivery_email" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.deliveryemail") %></th>
+
+<% } else if (mycolumnname.equals("invoice_name")) { %>
+          <th id="column_invoice_name" name="invoice_name" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoicename") %></th>
+<% } else if (mycolumnname.equals("invoice_organisation")) { %>
+          <th id="column_invoice_organisation" name="invoice_organisation" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoiceorganisation") %></th>
+<% } else if (mycolumnname.equals("invoice_address")) { %>
+          <th id="column_invoice_address" name="invoice_address" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoiceaddress") %></th>
+<% } else if (mycolumnname.equals("invoice_postalcode")) { %>
+          <th id="column_invoice_postalcode" name="invoice_postalcode" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoicepostalcode") %></th>
+<% } else if (mycolumnname.equals("invoice_city")) { %>
+          <th id="column_invoice_city" name="invoice_city" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoicecity") %></th>
+<% } else if (mycolumnname.equals("invoice_state")) { %>
+          <th id="column_invoice_state" name="invoice_state" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoicestate") %></th>
+<% } else if (mycolumnname.equals("invoice_country")) { %>
+          <th id="column_invoice_country" name="invoice_country" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoicecountry") %></th>
+<% } else if (mycolumnname.equals("invoice_phone")) { %>
+          <th id="column_invoice_phone" name="invoice_phone" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoicephone") %></th>
+<% } else if (mycolumnname.equals("invoice_fax")) { %>
+          <th id="column_invoice_fax" name="invoice_fax" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoicefax") %></th>
+<% } else if (mycolumnname.equals("invoice_website")) { %>
+          <th id="column_invoice_website" name="invoice_website" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoicewebsite") %></th>
+<% } else if (mycolumnname.equals("invoice_email")) { %>
+          <th id="column_invoice_email" name="invoice_email" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.invoiceemail") %></th>
+
+<% } else if (mycolumnname.equals("card_type")) { %>
+          <th id="column_card_type" name="card_type" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardtype") %></th>
+<% } else if (mycolumnname.equals("card_number")) { %>
+          <th id="column_card_number" name="card_number" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardnumber") %></th>
+<% } else if (mycolumnname.equals("card_issuedmonth")) { %>
+          <th id="column_card_issuedmonth" name="card_issuedmonth" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardissuedmonth") %></th>
+<% } else if (mycolumnname.equals("card_issuedyear")) { %>
+          <th id="column_card_issuedyear" name="card_issuedyear" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardissuedyear") %></th>
+<% } else if (mycolumnname.equals("card_issued")) { %>
+          <th id="column_card_issued" name="card_issued" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardissued") %></th>
+<% } else if (mycolumnname.equals("card_expirymonth")) { %>
+          <th id="column_card_expirymonth" name="card_expirymonth" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardexpirymonth") %></th>
+<% } else if (mycolumnname.equals("card_expiryyear")) { %>
+          <th id="column_card_expiryyear" name="card_expiryyear" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardexpiryyear") %></th>
+<% } else if (mycolumnname.equals("card_expiry")) { %>
+          <th id="column_card_expiry" name="card_expiry" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardexpiry") %></th>
+<% } else if (mycolumnname.equals("card_name")) { %>
+          <th id="column_card_name" name="card_name" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardname") %></th>
+<% } else if (mycolumnname.equals("card_cvc")) { %>
+          <th id="column_card_cvc" name="card_cvc" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardcvc") %></th>
+<% } else if (mycolumnname.equals("card_issue")) { %>
+          <th id="column_card_issue" name="card_issue" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardissue") %></th>
+<% } else if (mycolumnname.equals("card_postalcode")) { %>
+          <th id="column_card_postalcode" name="card_postalcode" class="WCMindex" style="text-align: left;<%= mycolumnwidth %>"><%= mytext.display("orders.cardpostalcode") %></th>
+
+<% } else if (mycolumnname.equals("create")) { %>
+          <th id="column_create" name="create" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("view")) { %>
+          <th id="column_view" name="view" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("update")) { %>
+          <th id="column_update" name="update" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <th id="column_delete" name="delete" class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } else { %>
+          <th class="WCMindex unsortable" style="text-align: left;<%= mycolumnwidth %>">&nbsp;</th>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	boolean administrator = false;
+	while (order.records(db, "")) {
+		administrator = true;
+		if ((myconfig.get(db, "use_workflow_orders").equals("yes")) && (! workflow.permissions(db, order.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), "-order-", "", "", "", (order.getStatusBy().equals(mysession.get("username"))))) && (! myconfig.get(db, "superadmin").equals(mysession.get("username")))) {
+			administrator = false;
+		}
+		if ((! order.getCheckedOut().equals("")) && (! order.getCheckedOut().equals(mysession.get("username"))) && (! myconfig.get(db, "superadmin").equals(mysession.get("username")))) {
+			administrator = false;
+		}
+		if (order.getCheckoutPermissions(mysession.get("username"), db, myconfig)) {
+			workflowoptions += "workflowoptions[" + order.getId() + "] = '" + workflow.workflow_action_select_options(db, order.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), "-order-", "", "", "", (myconfig.get(db, "superadmin").equals(mysession.get("username"))), (order.getStatusBy().equals(mysession.get("username")))).replaceAll("\\r","\\\\r").replaceAll("\\n","\\\\n").replaceAll("\"","&quot;") + "';";
+		} else {
+			workflowoptions += "workflowoptions[" + order.getId() + "] = '';" + "\r\n";
+		}
+%>
+<input type="hidden" name="id" value="<%= order.getId() %>">
+        <tr class="WCMindex" onMouseOver="highlight(this)" onMouseOut="unhighlight(this)" id="row<%= order.getId() %>"> 
+<%
+	columns = myadminindex.split(" ");
+	for (int i=0; i<columns.length; i++) {
+		String mycolumn = columns[i];
+		String mycolumnname = "";
+		String mycolumnwidth = "";
+		String mycolumnhref = "#";
+		if (mycolumn.matches("^(.+?):(.+?):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$2");
+			mycolumnhref = mycolumn.replaceAll("^(.+?):(.+?):(.+)$", "$3");
+		} else if (mycolumn.matches("^(.+):(.+)$")) {
+			mycolumnname = mycolumn.replaceAll("^(.+):(.+)$", "$1");
+			mycolumnwidth = mycolumn.replaceAll("^(.+):(.+)$", "$2");
+		} else {
+			mycolumnname = mycolumn;
+		}
+		if (! mycolumnwidth.equals("")) {
+			mycolumnwidth = " style=\"width: " + mycolumnwidth + "\"";
+		}
+%>
+<% if (mycolumnname.equals("BLANK")) { %>
+          <td class="WCMindex">&nbsp;</td>
+<% } else if (mycolumnname.equals("checkbox")) { %>
+          <td class="WCMindex"><input type="checkbox" onclick="refreshWorkflow(this.form)" name="id" value="<%= order.getId() %>"></td>
+<% } else if (mycolumnname.equals("id")) { %>
+          <td class="WCMindex" style="text-align: right;"><%= order.getId() %>&nbsp;</td>
+<% } else if (mycolumnname.equals("created")) { %>
+          <td class="WCMindex"><nobr><%= order.getCreated() %></nobr></td>
+<% } else if (mycolumnname.equals("createdby")) { %>
+          <td class="WCMindex"><nobr><%= order.getCreatedBy() %></nobr></td>
+<% } else if (mycolumnname.equals("updated")) { %>
+          <td class="WCMindex"><nobr><%= order.getUpdated() %></nobr></td>
+<% } else if (mycolumnname.equals("updatedby")) { %>
+          <td class="WCMindex"><nobr><%= order.getUpdatedBy() %></nobr></td>
+<% } else if (mycolumnname.equals("paid")) { %>
+          <td class="WCMindex"><nobr><%= order.getPaid() %></nobr></td>
+<% } else if (mycolumnname.equals("closed")) { %>
+          <td class="WCMindex"><nobr><%= order.getPublished() %></nobr></td>
+<% } else if (mycolumnname.equals("closedby")) { %>
+          <td class="WCMindex"><nobr><%= order.getPublishedBy() %></nobr></td>
+<% } else if (mycolumnname.equals("status")) { %>
+          <td class="WCMindex"><nobr><% if (! order.getStatus().equals("")) { %><%= order.getStatus() %><% } else if (! order.getPublished().equals("")) { %><%= mytext.display("orders.status.state.closed") %><% } else if (! order.getPaid().equals("")) { %><%= mytext.display("orders.status.state.paid") %><% } else if (! order.getCreated().equals(order.getUpdated())) { %><%= mytext.display("orders.status.state.open") %><% } else { %><%= mytext.display("orders.status.state.new") %><% } %></nobr></td>
+<% } else if (mycolumnname.equals("statusby")) { %>
+          <td class="WCMindex"><nobr><%= order.getStatusBy() %></nobr></td>
+
+<% } else if (mycolumnname.equals("order_quantity")) { %>
+          <td class="WCMindex"><nobr><%= order.getOrderQuantity() %></nobr></td>
+<% } else if (mycolumnname.equals("order_subtotal")) { %>
+          <td class="WCMindex"><nobr><%= order.getOrderCurrencyTitle() %> <%= order.getOrderSubtotal() %></nobr></td>
+<% } else if (mycolumnname.equals("order_total")) { %>
+          <td class="WCMindex"><nobr><%= order.getOrderCurrencyTitle() %> <%= order.getOrderTotal() %></nobr></td>
+<% } else if (mycolumnname.equals("tax_description")) { %>
+          <td class="WCMindex"><nobr><%= order.getTaxDescription() %></nobr></td>
+<% } else if (mycolumnname.equals("tax_total")) { %>
+          <td class="WCMindex"><nobr><%= order.getOrderCurrencyTitle() %> <%= order.getTaxTotal() %></nobr></td>
+<% } else if (mycolumnname.equals("shipping_description")) { %>
+          <td class="WCMindex"><nobr><%= order.getShippingDescription() %></nobr></td>
+<% } else if (mycolumnname.equals("shipping_total")) { %>
+          <td class="WCMindex"><nobr><%= order.getOrderCurrencyTitle() %> <%= order.getShippingTotal() %></nobr></td>
+<% } else if (mycolumnname.equals("discount_description")) { %>
+          <td class="WCMindex"><nobr><%= order.getDiscountDescription() %></nobr></td>
+<% } else if (mycolumnname.equals("discount_total")) { %>
+          <td class="WCMindex"><nobr><%= order.getOrderCurrencyTitle() %> <%= order.getDiscountTotal() %></nobr></td>
+
+<% } else if (mycolumnname.equals("delivery_name")) { %>
+          <td class="WCMindex"><%= order.getDeliveryName() %></td>
+<% } else if (mycolumnname.equals("delivery_organisation")) { %>
+          <td class="WCMindex"><%= order.getDeliveryOrganisation() %></td>
+<% } else if (mycolumnname.equals("delivery_address")) { %>
+          <td class="WCMindex"><%= order.getDeliveryAddress() %></td>
+<% } else if (mycolumnname.equals("delivery_postalcode")) { %>
+          <td class="WCMindex"><%= order.getDeliveryPostalcode() %></td>
+<% } else if (mycolumnname.equals("delivery_city")) { %>
+          <td class="WCMindex"><%= order.getDeliveryCity() %></td>
+<% } else if (mycolumnname.equals("delivery_state")) { %>
+          <td class="WCMindex"><%= order.getDeliveryState() %></td>
+<% } else if (mycolumnname.equals("delivery_country")) { %>
+          <td class="WCMindex"><%= order.getDeliveryCountry() %></td>
+<% } else if (mycolumnname.equals("delivery_phone")) { %>
+          <td class="WCMindex"><%= order.getDeliveryPhone() %></td>
+<% } else if (mycolumnname.equals("delivery_fax")) { %>
+          <td class="WCMindex"><%= order.getDeliveryFax() %></td>
+<% } else if (mycolumnname.equals("delivery_website")) { %>
+          <td class="WCMindex"><%= order.getDeliveryWebsite() %></td>
+<% } else if (mycolumnname.equals("delivery_email")) { %>
+          <td class="WCMindex"><%= order.getDeliveryEmail() %></td>
+
+<% } else if (mycolumnname.equals("invoice_name")) { %>
+          <td class="WCMindex"><%= order.getInvoiceName() %></td>
+<% } else if (mycolumnname.equals("invoice_organisation")) { %>
+          <td class="WCMindex"><%= order.getInvoiceOrganisation() %></td>
+<% } else if (mycolumnname.equals("invoice_address")) { %>
+          <td class="WCMindex"><%= order.getInvoiceAddress() %></td>
+<% } else if (mycolumnname.equals("invoice_postalcode")) { %>
+          <td class="WCMindex"><%= order.getInvoicePostalcode() %></td>
+<% } else if (mycolumnname.equals("invoice_city")) { %>
+          <td class="WCMindex"><%= order.getInvoiceCity() %></td>
+<% } else if (mycolumnname.equals("invoice_state")) { %>
+          <td class="WCMindex"><%= order.getInvoiceState() %></td>
+<% } else if (mycolumnname.equals("invoice_country")) { %>
+          <td class="WCMindex"><%= order.getInvoiceCountry() %></td>
+<% } else if (mycolumnname.equals("invoice_phone")) { %>
+          <td class="WCMindex"><%= order.getInvoicePhone() %></td>
+<% } else if (mycolumnname.equals("invoice_fax")) { %>
+          <td class="WCMindex"><%= order.getInvoiceFax() %></td>
+<% } else if (mycolumnname.equals("invoice_website")) { %>
+          <td class="WCMindex"><%= order.getInvoiceWebsite() %></td>
+<% } else if (mycolumnname.equals("invoice_email")) { %>
+          <td class="WCMindex"><%= order.getInvoiceEmail() %></td>
+
+<% } else if (mycolumnname.equals("card_type")) { %>
+          <td class="WCMindex"><%= order.getCardType() %></td>
+<% } else if (mycolumnname.equals("card_number")) { %>
+          <td class="WCMindex"><%= order.getCardNumber() %></td>
+<% } else if (mycolumnname.equals("card_issuedmonth")) { %>
+          <td class="WCMindex"><%= order.getCardIssuedMonth() %></td>
+<% } else if (mycolumnname.equals("card_issuedyear")) { %>
+          <td class="WCMindex"><%= order.getCardIssuedYear() %></td>
+<% } else if (mycolumnname.equals("card_issued")) { %>
+          <td class="WCMindex"><%= order.getCardIssuedMonth() %>/<%= order.getCardIssuedYear() %></td>
+<% } else if (mycolumnname.equals("card_expirymonth")) { %>
+          <td class="WCMindex"><%= order.getCardExpiryMonth() %></td>
+<% } else if (mycolumnname.equals("card_expiryyear")) { %>
+          <td class="WCMindex"><%= order.getCardExpiryYear() %></td>
+<% } else if (mycolumnname.equals("card_expiry")) { %>
+          <td class="WCMindex"><%= order.getCardExpiryMonth() %>/<%= order.getCardExpiryYear() %></td>
+<% } else if (mycolumnname.equals("card_name")) { %>
+          <td class="WCMindex"><%= order.getCardName() %></td>
+<% } else if (mycolumnname.equals("card_cvc")) { %>
+          <td class="WCMindex"><%= order.getCardCVC() %></td>
+<% } else if (mycolumnname.equals("card_issue")) { %>
+          <td class="WCMindex"><%= order.getCardIssue() %></td>
+<% } else if (mycolumnname.equals("card_postalcode")) { %>
+          <td class="WCMindex"><%= order.getCardPostalcode() %></td>
+
+<% } else if (mycolumnname.equals("create")) { %>
+          <td class="WCMindex"><div align="center"><% if (administrator) { %><a href="create.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("addnew") %></a><% } else { %>&nbsp;<% } %></div></td>
+<% } else if (mycolumnname.equals("view")) { %>
+          <td class="WCMindex"><div align="center"><a href="view.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("view") %></a></div></td>
+<% } else if (mycolumnname.equals("update")) { %>
+          <td class="WCMindex"><div align="center"><% if (administrator) { %><a href="update.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("update") %></a><% } else { %>&nbsp;<% } %></div></td>
+<% } else if (mycolumnname.equals("delete")) { %>
+          <td class="WCMindex"><div align="center"><% if (administrator) { %><a href="delete.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("delete") %></a><% } else { %>&nbsp;<% } %></div></td>
+<% } else if (mycolumnname.equals("checkout")) { %>
+          <% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+          <td class="WCMindex"> 
+            <% if (order.getCheckedOut().equals(mysession.get("username"))) { %>
+            <div align="center"><a href="checkin.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("checkin") %></a></div>
+            <% } else if ((! order.getCheckedOut().equals("")) && (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+            <div align="center"><a href="checkin.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= order.getCheckedOut() %></a></div>
+            <% } else if (! order.getCheckedOut().equals("")) { %>
+            <div align="center"><a href="#"><%= order.getCheckedOut() %></a></div>
+            <% } else { %>
+            <div align="center"><a href="checkout.jsp?id=<%= order.getId() %>&<%= Math.random() %>"><%= mytext.display("checkout") %></a>
+            </div>
+            <% } %>
+          </td>
+          <% } %>
+<% } else { %>
+          <td class="WCMindex"><div align="center"><a href="<%= mycolumnhref + order.getId() %>&<%= Math.random() %>"><%= mycolumnname %></a></div></td>
+<% } %>
+<%
+	}
+%>
+        </tr>
+<%
+	}
+%>
+      </table>
+</form>
+
+<script type="text/javascript">
+function preSortTable(column) {
+}
+function onloadSortTable() {
+}
+</script>
+<script type="text/javascript">
+
+function highlight(row) {
+	row.style.backgroundColor = "#fcffd2";
+}
+
+function unhighlight(row) {
+	var id = row.id.replace(/^row/,"");
+	if (document.getElementById("top_"+id) && document.getElementById("top_"+id).checked) {
+		row.style.backgroundColor = "#dddddd";
+	} else {
+		row.style.backgroundColor = "#eeeeee";
+	}
+}
+
+
+
+function getIndentation(id) {
+	var indent = 0;
+	id = (""+id).replace(/^row/,"");
+	// MSIE may handle className changes very slowly - set style directly instead
+	//if (id && document.getElementById("row"+id) && document.getElementById("row"+id).className.match(/WCMindex_indent(\d+)/)) {
+	//	indent += parseInt(RegExp.$1);
+	//}
+	if (id && document.getElementById("title_cell_"+id) && document.getElementById("title_cell_"+id).style) {
+		indent += parseInt(document.getElementById("title_cell_"+id).style.paddingLeft)/10;
+	}
+	return indent;
+}
+
+function setIndentation(id,indent) {
+	if (indent < 0) indent = 0;
+	if (indent > 20) indent = 20;
+	id = (""+id).replace(/^row/,"");
+	// MSIE may handle className changes very slowly - set style directly instead
+	//document.getElementById("row"+id).className = document.getElementById("row"+id).className.replace(/WCMindex_indent(\d+)/,"") + " WCMindex_indent" + indent;
+	if (id && document.getElementById("title_cell_"+id) && document.getElementById("title_cell_"+id).style) {
+		document.getElementById("title_cell_"+id).style.paddingLeft = "" + (parseInt(indent)*10) + "px";
+	}
+}
+
+</script>
+
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

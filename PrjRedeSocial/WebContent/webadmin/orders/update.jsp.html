@@ -1,0 +1,557 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("orders.update.title") %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+<script type="text/javascript">
+
+$(function(){
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	$('#tabs').find('[rel=Order_Status]').click();
+});
+
+</script>
+
+<script type="text/javascript">
+
+function changeWorkflowStatus(workflowid) {
+	var usernameoptions = GET("/<%= mytext.display("adminpath") %>/orders/workflow_username_options.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&workflow=" + workflowid + "&<%= Math.random() %>");
+	var mycheckedout = document.getElementById("checkedout");
+	var myselectedindex = mycheckedout.selectedIndex; 
+	var myselectedvalue = mycheckedout.value; 
+	mycheckedout.options.length = 2;
+	var myselect = "" + mycheckedout.outerHTML;
+	myselect = myselect.substring(0, myselect.lastIndexOf("<")) + usernameoptions + "</select>";
+	mycheckedout.innerHTML += usernameoptions;
+	mycheckedout.value = myselectedvalue;	
+	// Microsoft Internet Explorer may not correctly update the select options
+	if (document.all) mycheckedout.outerHTML = "" + myselect;
+}
+
+function doRecalculate(input) {
+	var orderitems_discount = 1 * document.getElementById("orderitems_discount_total").value;
+	var order_discount = 1 * document.getElementById("order_discount_total").value;
+	var discount = orderitems_discount + order_discount;
+	document.getElementById("discount_total").value = discount;
+	document.getElementById("discount_description").value = "" + document.getElementById("orderitems_discount_description").value + document.getElementById("order_discount_description").value;
+	document.getElementById("discount_description").value = document.getElementById("discount_description").value.replace("\r", "\n").replace(/\n+/, "\n").replace(/^\n+/, "");
+	document.getElementById("order_discount_description").value = document.getElementById("order_discount_description").value.replace("\r", "\n").replace(/\n+/, "\n").replace(/^\n+/, "");
+
+	var gross = 1 *document.getElementById("gross_total").value;
+	var subtotal = gross - discount;
+	document.getElementById("order_subtotal").value = subtotal;
+
+	var orderitems_tax = 1 * document.getElementById("orderitems_tax_total").value;
+	var order_tax = 1 * document.getElementById("order_tax_total").value;
+	var tax = orderitems_tax + order_tax;
+	document.getElementById("tax_total").value = tax;
+	document.getElementById("tax_description").value = "" + document.getElementById("orderitems_tax_description").value + document.getElementById("order_tax_description").value;
+	document.getElementById("tax_description").value = document.getElementById("tax_description").value.replace("\r", "\n").replace(/\n+/, "\n").replace(/^\n+/, "");
+	document.getElementById("order_tax_description").value = document.getElementById("order_tax_description").value.replace("\r", "\n").replace(/\n+/, "\n").replace(/^\n+/, "");
+
+	var orderitems_shipping = 1 * document.getElementById("orderitems_shipping_total").value;
+	var order_shipping = 1 * document.getElementById("order_shipping_total").value;
+	var shipping = orderitems_shipping + order_shipping;
+	document.getElementById("shipping_total").value = shipping;
+	document.getElementById("shipping_description").value = "" + document.getElementById("orderitems_shipping_description").value + document.getElementById("order_shipping_description").value;
+	document.getElementById("shipping_description").value = document.getElementById("shipping_description").value.replace("\r", "\n").replace(/\n+/, "\n").replace(/^\n+/, "");
+	document.getElementById("order_shipping_description").value = document.getElementById("order_shipping_description").value.replace("\r", "\n").replace(/\n+/, "\n").replace(/^\n+/, "");
+
+	var total = subtotal + tax + shipping;
+	document.getElementById("order_total").value = total;
+}
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<script type="text/javascript">
+
+$(function(){
+
+	$('#paid_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#paid').attr('value').length >= 10) ? $('#paid').attr('value').substring(0,10) : $('#paid').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#paid').attr('value').length >= 10) {
+					$('#paid_trigger').datepicker( "option", "defaultDate", $('#paid').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#paid').attr('value').length >= 10) {
+					$('#paid').attr('value', dateText + $('#paid').attr('value').substring(10));
+				} else {
+					$('#paid').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	changeWorkflowStatus("");
+
+});
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("orders.update.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<% if ((myconfig.get(db, "use_workflow_orders").equals("yes")) && (! workflow.permissions(db, order.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), "-order-", "", "", "", (order.getStatusBy().equals(mysession.get("username"))))) && (! myconfig.get(db, "superadmin").equals(mysession.get("username")))) { %>
+	<p><%= mytext.display("orders.update.nopermission.workflow") %></p>
+<% } else if ((! order.getCheckedOut().equals("")) && (! order.getCheckedOut().equals(mysession.get("username"))) && (! myconfig.get(db, "superadmin").equals(mysession.get("username")))) { %>
+	<p><%= mytext.display("orders.update.nopermission.checkedout") %></p>
+<% } else { %>
+      <form action="update_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>" method="POST" onsubmit="doRecalculate(this)">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+          <input type="checkbox" name="ordertracking" value="yes"><%= mytext.display("orders.update.ordertracking") %>
+        </p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Order_Status" rel="Order_Status"><%= mytext.display("orders.status.tab") %></a></li>
+                <li><a href="#Payment_Details" rel="Payment_Details"><%= mytext.display("orders.payment.tab") %></a></li>
+                <li><a href="#Delivery_Details" rel="Delivery_Details"><%= mytext.display("orders.delivery.tab") %></a></li>
+                <li><a href="#Invoice_Details" rel="Invoice_Details"><%= mytext.display("orders.invoice.tab") %></a></li>
+                <li><a href="#Order_Items" rel="Order_Items"><%= mytext.display("orders.items.tab") %></a></li>
+                <li><a href="#Order_Totals" rel="Order_Totals"><%= mytext.display("orders.totals.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Order_Status" class="Order_Status st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("orders.status.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="radio" name="state" value="open"<% if (order.getPublished().equals("")) { %> checked<% } %>> <%= mytext.display("orders.status.state.reopen") %>
+              <input type="radio" name="state" value="close"<% if (! order.getPublished().equals("")) { %> checked<% } %>> <%= mytext.display("orders.status.state.close") %>
+              <% if (myconfig.get(db, "use_workflow_orders").equals("yes")) { %>
+                - <%= mytext.display("orders.status.workflow") %>
+                <select id="status" name="status" onchange="changeWorkflowStatus(this.value)">
+                  <% if (! mytext.display("orders.status.workflow.select.static").equals("orders.status.workflow.select.static")) { %>
+                    <option value=""><%= mytext.display("orders.status.workflow.select.static") %></option>
+                  <% } else { %>
+                    <option value=""><% if (! mytext.display("orders.status.workflow.select.prefix").equals("orders.status.workflow.select.prefix")) { %><%= mytext.display("orders.status.workflow.select.prefix") %><% } %><% if (! order.getStatus().equals("")) { %><%= order.getStatus() %><% } else { %><%= mytext.display("none") %><% } %></option>
+                  <% } %>
+                  <% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>
+                    <option value="0"><%= mytext.display("end") %></option>
+                  <% } %>
+                  <%= workflow.workflow_action_select_options(db, order.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), "-order-", "", "", "", (myconfig.get(db, "superadmin").equals(mysession.get("username"))), (order.getStatusBy().equals(mysession.get("username")))) %>
+                </select>
+                &nbsp;
+              <% } %>
+              <% if (! myconfig.get(db, "use_assign").equals("no")) { %>
+                <%= mytext.display("content.checkedout") %>
+                <select id="checkedout" name="checkedout">
+                  <option value=""></option> &nbsp;
+                  <option value="<%= myconfig.get(db, "superadmin") %>"<% if (order.getCheckedOut().equals(myconfig.get(db, "superadmin"))) { %> selected<% } %>><%= myconfig.get(db, "superadmin") %></option>
+                  <%= adminuser.select_options_where(db, order.getCheckedOut(), "where userclass='administrator'") %>
+                </select>
+              <% } %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"><textarea name="revision" cols="80" rows="10"><%= html.encode(order.getRevision()) %></textarea></td>
+          </tr>
+          <tr>
+            <td colspan="2">&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.status.created") %></td>
+            <td class="WCMinnerContentInputValue"><%= order.getCreated() %> <% if (! order.getCreatedBy().equals("")) { %><%= mytext.display("orders.status.createdby") %> <%= order.getCreatedBy() %><% } %>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.status.updated") %></td>
+            <td class="WCMinnerContentInputValue"><%= order.getUpdated() %> <% if (! order.getUpdatedBy().equals("")) { %><%= mytext.display("orders.status.updatedby") %> <%= order.getUpdatedBy() %><% } %>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.status.published") %></td>
+            <td class="WCMinnerContentInputValue"><% if (! order.getPublished().equals("")) { %><%= order.getPublished() %> <% if (! order.getPublishedBy().equals("")) { %><%= mytext.display("orders.status.publishedby") %> <%= order.getPublishedBy() %><% } %><% } %>&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.status.paid") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="20" id="paid" name="paid" value="<%= order.getPaid() %>"><input type="button" value="..." id="paid_trigger"></td>
+          </tr>
+        </table>
+</div></div>
+<div id="Payment_Details" class="Payment_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("orders.payment.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.payment.type") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="card_type" value="<%= order.getCardType() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.payment.number") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="card_number" value="<%= order.getCardNumber() %>"></td>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.payment.issued") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="2" maxlength="2" name="card_issuedmonth" value="<%= order.getCardIssuedMonth() %>"> / <input type="text" size="4" maxlength="4" name="card_issuedyear" value="<%= order.getCardIssuedYear() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.payment.expiry") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="2" maxlength="2" name="card_expirymonth" value="<%= order.getCardExpiryMonth() %>"> / <input type="text" size="4" maxlength="4" name="card_expiryyear" value="<%= order.getCardExpiryYear() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.payment.cvc") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="4" maxlength="4" name="card_cvc" value="<%= order.getCardCVC() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.payment.name") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="40" name="card_name" value="<%= order.getCardName() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.payment.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="card_postalcode" value="<%= order.getCardPostalcode() %>"></td>
+          </tr>
+        </table>
+</div></div>
+<div id="Delivery_Details" class="Delivery_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("orders.delivery.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.email") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="80" name="delivery_email" value="<%= order.getDeliveryEmail() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.website") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="80" name="delivery_website" value="<%= order.getDeliveryWebsite() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.name") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="80" name="delivery_name" value="<%= order.getDeliveryName() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.organisation") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="80" name="delivery_organisation" value="<%= order.getDeliveryOrganisation() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%" valign="top"><%= mytext.display("orders.delivery.address") %></td>
+            <td class="WCMinnerContentInputValue"><textarea name="delivery_address" cols="80" rows="4"><%= order.getDeliveryAddress() %></textarea></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="delivery_postalcode" value="<%= order.getDeliveryPostalcode() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.city") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="delivery_city" value="<%= order.getDeliveryCity() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.state") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="delivery_state" value="<%= order.getDeliveryState() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.country") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="delivery_country" value="<%= order.getDeliveryCountry() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.phone") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="delivery_phone" value="<%= order.getDeliveryPhone() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.delivery.fax") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="delivery_fax" value="<%= order.getDeliveryFax() %>"></td>
+          </tr>
+        </table>
+</div></div>
+<div id="Invoice_Details" class="Invoice_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("orders.invoice.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.email") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="80" name="invoice_email" value="<%= order.getInvoiceEmail() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.website") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="80" name="invoice_website" value="<%= order.getInvoiceWebsite() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.name") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="80" name="invoice_name" value="<%= order.getInvoiceName() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.organisation") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" size="80" name="invoice_organisation" value="<%= order.getInvoiceOrganisation() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%" valign="top"><%= mytext.display("orders.invoice.address") %></td>
+            <td class="WCMinnerContentInputValue"><textarea name="invoice_address" cols="80" rows="4"><%= order.getInvoiceAddress() %></textarea></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="invoice_postalcode" value="<%= order.getInvoicePostalcode() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.city") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="invoice_city" value="<%= order.getInvoiceCity() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.state") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="invoice_state" value="<%= order.getInvoiceState() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.country") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="invoice_country" value="<%= order.getInvoiceCountry() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.phone") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="invoice_phone" value="<%= order.getInvoicePhone() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.invoice.fax") %></td>
+            <td class="WCMinnerContentInputValue"><input type="text" name="invoice_fax" value="<%= order.getInvoiceFax() %>"></td>
+          </tr>
+        </table>
+</div></div>
+<div id="Order_Items" class="Order_Items st_view"><div class="st_view_inner">
+
+        <div align="right">
+            <input type="button" value="<%= mytext.display("addnew") %>" onclick="document.location.href='../orderitems/create.jsp?order_id=<%= order.getId() %>&redirect=<%= URLEncoder.encode("../orders/update.jsp?id=" + order.getId()) %>&<%= Math.random() %>'">
+        </div>
+
+        <table width="100%" class="sortable">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="8"><%= mytext.display("orders.items.heading") %></th>
+          </tr>
+          <tr class="WCMindex"> 
+            <th class="WCMindex" align="left" width="50"><%= mytext.display("orders.items.quantity") %></th>
+            <th class="WCMindex" align="left" colspan="2"><%= mytext.display("orders.items.product") %></th>
+            <th class="WCMindex" align="left" width="100"><%= mytext.display("orders.items.itemprice") %></th>
+            <th class="WCMindex" align="left" width="100"><%= mytext.display("orders.items.totalprice") %></th>
+            <th class="WCMindex" align="left" colspan="3">&nbsp;</th>
+          </tr>
+<%
+double orderitems_item_subtotal = 0;
+double orderitems_item_total = 0;
+double orderitems_discount_total = 0;
+double orderitems_tax_total = 0;
+double orderitems_shipping_total = 0;
+String orderitems_discount_description = "\r\n";
+String orderitems_tax_description = "\r\n";
+String orderitems_shipping_description = "\r\n";
+String order_discount_description = "\r\n" + order.getDiscountDescription() + "\r\n";
+String order_tax_description = "\r\n" + order.getTaxDescription() + "\r\n";
+String order_shipping_description = "\r\n" + order.getShippingDescription() + "\r\n";
+%>
+<% while (order.orderitems(db)) { %>
+<%
+	orderitems_item_subtotal += Common.number(order.getOrderitem().getItemSubtotal());
+	orderitems_item_total += Common.number(order.getOrderitem().getItemTotal());
+	orderitems_discount_total += Common.number(order.getOrderitem().getDiscountTotal());
+	orderitems_tax_total += Common.number(order.getOrderitem().getTaxTotal());
+	orderitems_shipping_total += Common.number(order.getOrderitem().getShippingTotal());
+	if ((! order.getOrderitem().getDiscountDescription().equals("")) && (orderitems_discount_description.indexOf("\r\n" + order.getOrderitem().getDiscountDescription() + "\r\n") < 0)) {
+		orderitems_discount_description += order.getOrderitem().getDiscountDescription() + "\r\n";
+		order_discount_description = order_discount_description.replaceAll("\\Q" + "\r\n" + order.getOrderitem().getDiscountDescription() + "\r\n" + "\\E", "\r\n");
+	}
+	if ((! order.getOrderitem().getTaxDescription().equals("")) && (orderitems_tax_description.indexOf("\r\n" + order.getOrderitem().getTaxDescription() + "\r\n") < 0)) {
+		orderitems_tax_description += order.getOrderitem().getTaxDescription() + "\r\n";
+		order_tax_description = order_tax_description.replaceAll("\\Q" + "\r\n" + order.getOrderitem().getTaxDescription() + "\r\n" + "\\E", "\r\n");
+	}
+	if ((! order.getOrderitem().getShippingDescription().equals("")) && (orderitems_shipping_description.indexOf("\r\n" + order.getOrderitem().getShippingDescription() + "\r\n") < 0)) {
+		orderitems_shipping_description += order.getOrderitem().getShippingDescription() + "\r\n";
+		order_shipping_description = order_shipping_description.replaceAll("\\Q" + "\r\n" + order.getOrderitem().getShippingDescription() + "\r\n" + "\\E", "\r\n");
+	}
+%>
+          <tr class="WCMindex" onMouseOver="this.className='WCMindex_highlight'" onMouseOut="this.className='WCMindex'"> 
+            <td class="WCMindex" align="center" width="50"><%= order.getOrderitem().getItemQuantity() %>&nbsp;</td>
+            <td class="WCMindex" width="50"><%= order.getOrderitem().getProductCode() %>&nbsp;</td>
+            <td class="WCMindex"><%= order.getOrderitem().getTitle() %>&nbsp;</td>
+            <td class="WCMindex" align="right" width="100"><%= order.getOrderitem().getProductCurrency() %>&nbsp;<%= Common.numberformat(order.getOrderitem().getProductPrice(), 2) %>&nbsp;</td>
+            <td class="WCMindex" align="right" width="100"><%= order.getOrderitem().getProductCurrency() %>&nbsp;<%= Common.numberformat(order.getOrderitem().getItemTotal(), 2) %>&nbsp;</td>
+            <td class="WCMindex" align="center" width="50"><a href="../orderitems/view.jsp?id=<%= order.getOrderitem().getId() %>&redirect=<%= URLEncoder.encode("../orders/update.jsp?id=" + order.getId()) %>&<%= Math.random() %>"><%= mytext.display("view") %></a></td>
+            <td class="WCMindex" align="center" width="50"><a href="../orderitems/update.jsp?id=<%= order.getOrderitem().getId() %>&redirect=<%= URLEncoder.encode("../orders/update.jsp?id=" + order.getId()) %>&<%= Math.random() %>"><%= mytext.display("update") %></a></td>
+            <td class="WCMindex" align="center" width="50"><a href="../orderitems/delete.jsp?id=<%= order.getOrderitem().getId() %>&redirect=<%= URLEncoder.encode("../orders/update.jsp?id=" + order.getId()) %>&<%= Math.random() %>"><%= mytext.display("delete") %></a></td>
+          </tr>
+<% } %>
+<%
+orderitems_discount_description = orderitems_discount_description.replaceAll("^[\r\n]+", "").replaceAll("[\r\n]+$", "\r\n");
+orderitems_tax_description = orderitems_tax_description.replaceAll("^[\r\n]+", "").replaceAll("[\r\n]+$", "\r\n");
+orderitems_shipping_description = orderitems_shipping_description.replaceAll("^[\r\n]+", "").replaceAll("[\r\n]+$", "\r\n");
+order_discount_description = order_discount_description.replaceAll("^[\r\n]+", "").replaceAll("[\r\n]+$", "\r\n");
+order_tax_description = order_tax_description.replaceAll("^[\r\n]+", "").replaceAll("[\r\n]+$", "\r\n");
+order_shipping_description = order_shipping_description.replaceAll("^[\r\n]+", "").replaceAll("[\r\n]+$", "\r\n");
+%>
+        </table>
+</div></div>
+<div id="Order_Totals" class="Order_Totals st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("orders.totals.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.totals.quantity") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="10" id="order_quantity" name="order_quantity" value="<%= order.getOrderQuantity() %>"></td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.totals.currency") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="10" id="order_currency" name="order_currency" value="<%= order.getOrderCurrency() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.totals.gross") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input disabled type="text" size="10" id="gross_total" name="gross_total" value="<%= Common.numberformat(orderitems_item_subtotal, 2) %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" valign="top" width="20%" rowspan="2"><%= mytext.display("orders.totals.discount") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><input disabled type="text" size="10" id="orderitems_discount_total" name="orderitems_discount_total" value="<%= Common.numberformat(orderitems_discount_total, 2) %>"></td>
+            <td class="WCMinnerContentInputValue"><textarea disabled cols="80" rows="<%= orderitems_discount_description.split("\r\n").length-1 %>" id="orderitems_discount_description" name="orderitems_discount_description"><%= html.encode(orderitems_discount_description.replaceAll("<span class=\"discount\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <input type="text" size="10" id="order_discount_total" name="order_discount_total" value="<%= Common.numberformat(Common.number(order.getDiscountTotal())-orderitems_discount_total, 2) %>" onchange="doRecalculate(this)">
+              <input type="hidden" id="discount_total" name="discount_total" value="<%= Common.numberformat(Common.number(order.getDiscountTotal()), 2) %>">
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <textarea cols="80" rows="2" id="order_discount_description" name="order_discount_description" onchange="doRecalculate(this)"><%= html.encode(order_discount_description.replaceAll("<span class=\"discount\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea>
+              <input type="hidden" id="discount_description" name="discount_description" value="<%= html.encode(order.getDiscountDescription().replaceAll("<span class=\"discount\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.totals.subtotal") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="10" id="order_subtotal" name="order_subtotal" value="<%= Common.numberformat(orderitems_item_subtotal-Common.number(order.getDiscountTotal()), 2) %>" onchange="doRecalculate(this)">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" valign="top" width="20%" rowspan="2"><%= mytext.display("orders.totals.tax") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><input disabled type="text" size="10" id="orderitems_tax_total" name="orderitems_tax_total" value="<%= Common.numberformat(orderitems_tax_total, 2) %>"></td>
+            <td class="WCMinnerContentInputValue"><textarea disabled cols="80" rows="3" id="orderitems_tax_description" name="orderitems_tax_description"><%= html.encode(orderitems_tax_description.replaceAll("<span class=\"tax\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <input type="text" size="10" id="order_tax_total" name="order_tax_total" value="<%= Common.numberformat(Common.number(order.getTaxTotal())-orderitems_tax_total, 2) %>" onchange="doRecalculate(this)">
+              <input type="hidden" id="tax_total" name="tax_total" value="<%= Common.numberformat(Common.number(order.getTaxTotal()), 2) %>">
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <textarea cols="80" rows="2" id="order_tax_description" name="order_tax_description" onchange="doRecalculate(this)"><%= html.encode(order_tax_description.replaceAll("<span class=\"tax\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea>
+              <input type="hidden" id="tax_description" name="tax_description" value="<%= html.encode(order.getTaxDescription().replaceAll("<span class=\"tax\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" valign="top" width="20%" rowspan="2"><%= mytext.display("orders.totals.shipping") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><input disabled type="text" size="10" id="orderitems_shipping_total" name="orderitems_shipping_total" value="<%= Common.numberformat(orderitems_shipping_total, 2) %>"></td>
+            <td class="WCMinnerContentInputValue"><textarea disabled cols="80" rows="3" id="orderitems_shipping_description" name="orderitems_shipping_description"><%= html.encode(orderitems_shipping_description.replaceAll("<span class=\"shipping\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <input type="text" size="10" id="order_shipping_total" name="order_shipping_total" value="<%= Common.numberformat(Common.number(order.getShippingTotal())-orderitems_shipping_total, 2) %>" onchange="doRecalculate(this)">
+              <input type="hidden" id="shipping_total" name="shipping_total" value="<%= Common.numberformat(Common.number(order.getShippingTotal()), 2) %>">
+            </td>
+            <td class="WCMinnerContentInputValue">
+              <textarea cols="80" rows="2" id="order_shipping_description" name="order_shipping_description" onchange="doRecalculate(this)"><%= html.encode(order_shipping_description.replaceAll("<span class=\"shipping\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea>
+              <input type="hidden" id="shipping_description" name="shipping_description" value="<%= html.encode(order.getShippingDescription().replaceAll("<span class=\"shipping\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %>">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orders.totals.total") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="10" id="order_total" name="order_total" value="<%= Common.numberformat(Common.number(order.getOrderTotal()), 2) %>" onchange="doRecalculate(this)"></td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+<% } %>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

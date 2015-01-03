@@ -1,0 +1,306 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("email.title") %></title>
+<%
+String basehref = "";
+// basehref = myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort();
+%>
+<script type="text/javascript">
+document.write('<base href="' + document.location.protocol + "//" + document.location.host + '<%= basehref %>' + '"><!--[if IE]></base><![endif]-->');
+</script>
+<script type="text/javascript">
+
+var baseHref = "/";
+var baseHrefPrefix = "/";
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contentid = '';
+		var contenttitle = '';
+		var contenthref = '';
+		if (inputnode.type != "select-multiple") {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		contenttitle = encodeURIComponent(contenttitle);
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		if (inputnode.type == "select-multiple") {
+			var newoption = new Option();
+			newoption.text = contenttitle;
+			newoption.value = contentid;
+			newoption.selected = true;
+			inputnode.options[inputnode.options.length] = newoption;
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+		}
+		if (inputnode.onchange) {
+			inputnode.onchange();
+		}
+	}
+}
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+if ((mypage.getContentFormat().equals("text")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) {
+	mywebeditor = "textarea";
+} else if (! adminuser.getContentEditor().equals("")) {
+	mywebeditor = adminuser.getContentEditor();
+} else if (! myconfig.get(db, "content_editor").equals("")) {
+	mywebeditor = myconfig.get(db, "content_editor");
+}
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+$(function(){
+
+	if (typeof(WebEditorInit) == "function") {
+		var webeditor_inputs = document.getElementsByClassName('webeditor_input');
+		var webeditor_input_ids = [];
+		for (var i=0; i<webeditor_inputs.length; i++) {
+			webeditor_input_ids[i] = webeditor_inputs[i].id;
+		}
+		for (var i=0; i<webeditor_input_ids.length; i++) {
+			WebEditorInit(webeditor_input_ids[i]);
+		}
+	}
+
+});
+
+</script>
+
+<script type="text/javascript">
+
+function webeditor_custom_save() {
+}
+
+if (! window.doPreview) window.doPreview = function() {
+        myform = document.getElementById('webeditor_stylesheet').form;
+        var save_target = myform.target;
+        var save_action = myform.action;
+        myform.target = '_preview';
+        myform.action = '/webadmin/content/preview.jsp?mode=preview&id=&redirect=&preview=';
+        mywindow = window.open('', myform.target, 'scrollbars=yes,resizable=yes,status=yes,width=800,height=600');
+        if (mywindow && (typeof(mywindow.focus) == "function")) mywindow.focus();
+        if (myform.onsubmit) {
+                myform.onsubmit();
+        } else if (typeof(WebEditorSubmit) != "undefined") {
+                WebEditorSubmit();
+        }
+        myform.submit();
+        myform.target = save_target;
+        myform.action = save_action;
+}
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("email.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="/<%= mytext.display("adminpath") %>/email/<%= action %>" method="POST">
+        <input type="hidden" id="webeditor_stylesheet" name="stylesheet" value="<%= (String)email.get("stylesheet") %>">
+        <input type="hidden" name="style" value="<%= html.encode((String)email.get("style")) %>">
+<% if (! error.equals("")) { %>
+	<p><font color="red"><%= mytext.display("error") %><br><%= error %></font></p>
+<% } else if (! myrequest.getParameter("action").equals("")) { %>
+	<p><font color="red"><%= mytext.display("email.sent") %></font></p>
+<% } %>
+        <p>
+          <input type="submit" name="action" value="<%= mytext.display("email.submit") %>">
+        </p>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("email.heading") %></th>
+          </tr>
+<!--
+          <tr>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("email.intro") %></td>
+          </tr>
+-->
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("email.from") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="80" name="from" value="<%= "" + (String)email.get("from") %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("email.to") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <textarea cols="80" rows="3" name="to"><%= "" + (String)email.get("to") %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("email.cc") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <textarea cols="80" rows="3" name="cc"><%= "" + (String)email.get("cc") %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("email.bcc") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <textarea cols="80" rows="3" name="bcc"><%= "" + (String)email.get("bcc") %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left">&nbsp;</th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left">&nbsp;</th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" align="right">
+              <nobr>
+              <select id="content_id" name="content_id" style="width: 400px;">
+                <option value=""> &nbsp;
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('content_id', 'Pages', '', 'Pages', 'page');">
+              <input type="submit" value="<%= mytext.display("email.copy") %>">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("email.subject") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"> 
+              <input type="text" size="80" name="subject" value="<%= "" + (String)email.get("subject") %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("email.content") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" id="content_container"> 
+              <textarea id="content" name="content" class="webeditor_input" cols="80" rows="25"><%= html.encode("" + (String)email.get("content")) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("email.content.plain") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <textarea name="content_plaintext" cols="80" rows="25" style="width: 100%"><%= html.encode("" + (String)email.get("content_plaintext")) %></textarea>
+            </td>
+          </tr>
+        </table>
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

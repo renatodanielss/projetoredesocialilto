@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<link rel="stylesheet" type="text/css" href="/<%= mytext.display("adminpath") %>/webadmin.css">
+<link rel="stylesheet" type="text/css" href="/<%= mytext.display("adminpath") %>/dtree.css">
+<link rel="stylesheet" type="text/css" href="/<%= mytext.display("adminpath") %>/jquery/css/layout-default.css">
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/json/json2.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery.layout.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery.layout.state.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery.cookie.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery.hotkeys.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jstree/jquery.jstree.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/webadmin.js"></script>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("usage.summarise.title") %></title>
+<script type="text/javascript">
+
+function doReload(commitall) {
+	if ((commitall == 'true') && document.getElementById('summarised')) {
+		var myhref = document.location.href;
+		myhref = myhref.replace(/&[.0-9]+$/g, '');
+		myhref += '&' + Math.random();
+		document.location.href = myhref;
+	}
+}
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body onload="doReload('<%= (! myrequest.getParameter("all").equals("")) %>');">
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("usage.summarise.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <p> 
+      <form action="summarise.jsp" method="GET">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("usage.summarise.title") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro"><%= mytext.display("usage.summarise.intro") %></td>
+          </tr>
+        </table>
+        <p> 
+          <input type="submit" name="test" value="<%= mytext.display("usage.summarise.test") %>">
+          -
+          <input type="submit" name="commit" value="<%= mytext.display("usage.summarise.commit") %>">
+          -
+          <input type="submit" name="all" value="<%= mytext.display("usage.summarise.all") %>">
+          -
+          <input type="submit" name="force" value="<%= mytext.display("usage.summarise.force") %>">
+          -
+          <select name="summarised_period" onchange="document.getElementById('summarise').disabled=true">
+            <option value=""><%= mytext.display("config.statistics.summaryperiod.select") %>
+            <option value="hourly"<% if ((myconfig.get(db, "summarised_period").equals("hourly")) || (myconfig.get(db, "summarised_period").equals(""))) { %> selected<% } %>><%= mytext.display("config.statistics.summaryperiod.hourly") %>
+            <option value="daily"<% if (myconfig.get(db, "summarised_period").equals("daily")) { %> selected<% } %>><%= mytext.display("config.statistics.summaryperiod.daily") %>
+            <option value="monthly"<% if (myconfig.get(db, "summarised_period").equals("monthly")) { %> selected<% } %>><%= mytext.display("config.statistics.summaryperiod.monthly") %>
+          </select>
+          -
+          <select name="summarised_details" onchange="document.getElementById('summarise').disabled=true">
+<!--
+            <option value=""><%= mytext.display("config.statistics.summaryperiod.select") %>
+-->
+            <option value="pageviews,hits"<% if ((myconfig.get(db, "summarised_details").equals("pageviews,hits")) || (myconfig.get(db, "summarised_details").equals(""))) { %> selected<% } %>><%= mytext.display("config.statistics.summarydetails.hits") %>
+<!--
+            <option value="visitors,pageviews,hits"<% if (myconfig.get(db, "summarised_details").equals("visitors,pageviews,hits")) { %> selected<% } %>><%= mytext.display("config.statistics.summarydetails.visitors") %>
+            <option value="visits,pageviews,hits"<% if (myconfig.get(db, "summarised_details").equals("visits,pageviews,hits")) { %> selected<% } %>><%= mytext.display("config.statistics.summarydetails.visits") %>
+            <option value="visitors,visits,pageviews,hits"<% if (myconfig.get(db, "summarised_details").equals("visitors,visits,pageviews,hits")) { %> selected<% } %>><%= mytext.display("config.statistics.summarydetails.all") %>
+-->
+          </select>
+        </p>
+        <br>
+      </form>
+<%@ include file="summarise.data.jsp" %>
+      <p>&nbsp;</p>
+
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

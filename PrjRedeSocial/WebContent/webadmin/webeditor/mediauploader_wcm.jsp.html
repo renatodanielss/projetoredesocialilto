@@ -1,0 +1,356 @@
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Management System">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('mediauploader_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_action = requestParameter("action");
+request_section = requestParameter("section");
+request_category = requestParameter("category");
+request_id = requestParameter("id");
+request_title = requestParameter("title");
+request_href = requestParameter("href");
+var mediaclass = '';
+
+function checkExtension(file){
+	if (file == "") { return false; }
+
+	var file_extension = file;
+	file_extension = file_extension.split(".");
+	file_extension = file_extension[file_extension.length - 1];
+	file_extension = file_extension.toLowerCase();
+
+	valid_extensions = "";
+	<% if (myrequest.getParameter("section").equals("Images")) { %>
+	valid_extensions = "<%= HardCore.Image.filenameextension_list(db) %>";
+	<% } else if (myrequest.getParameter("section").equals("Files")) { %>
+	valid_extensions = "<%= HardCore.File.filenameextension_list(db) %>";
+	<% } %>
+	valid_extension = valid_extensions.split(",");
+	for (i=0; i<valid_extension.length; i++) {
+		if ( file_extension == valid_extension[i]) return true;
+	}
+	alert(HtmlDecode(Text('mediauploader_error')) + ' ' + valid_extensions);
+	return false;
+}
+
+function getname(id, file, title){
+	if (document.upload.title.value == "") {
+		var file_name = file;
+		file_name = file_name.split("/");
+		file_name = file_name[file_name.length - 1];
+		file_name = file_name.split("\\");
+		file_name = file_name[file_name.length - 1];
+		document.upload.title.value = file_name;
+		title = file_name;
+	}
+	if (checkExtension(file)){
+		if (file.substring(file.length-4) == ".swf") {
+			mediaclass = "flash";
+		} else if (file.substring(file.length-6) == ".class") {
+			mediaclass = "applet";
+		} else {
+			<% if (myrequest.getParameter("section").equals("Images")) { %>
+			mediaclass = "image";
+			<% } else if (myrequest.getParameter("section").equals("Files")) { %>
+			mediaclass = "file";
+			<% } else { %>
+			mediaclass = "image";
+			<% } %>
+		}
+		parent.mediapreview.location.href = 'mediapreview.jsp?editor=' + editor + '&title='+encodeURIComponent(title)+'&href='+escape('file:///'+file)+'&mediaclass='+mediaclass;
+		return true;
+//	} else if ((title != "") && (file == "") && checkExtension(title)) {
+//		return true;
+	} else {
+		return false;
+	}
+}
+
+function doSubmit() {
+	if (typeof(doMultiFileUpload) == "function") {
+		try {
+			if (doMultiFileUpload(document.upload)) {
+				doSubmitRedirectLocation = parent.medialist.location.href.replace(new RegExp("https?://[^/]+"), "") + '&mediaclass=' + mediaclass;
+				parent.medialist.medialistMenu.clearCookie();
+				parent.medialist.location.href = 'wait.html';
+				return false;
+			}
+		} catch(e) {
+		}
+	}
+	if ((document.upload.file.type == "hidden") || (getname(document.upload.id.value, document.upload.file.value, document.upload.title.value))) {
+		if (document.upload.attributes && document.upload.attributes.action && document.upload.attributes && document.upload.attributes.action.nodeValue) {
+			document.upload.attributes.action.nodeValue = document.upload.attributes.action.nodeValue + '&list=' + escape(parent.medialist.location.href.replace(new RegExp("https?://[^/]+"), "")) + '&mediaclass=' + mediaclass;
+		} else {
+			document.upload.setAttribute("action", document.upload.getAttribute("action") + '&list=' + escape(parent.medialist.location.href.replace(new RegExp("https?://[^/]+"), "")) + '&mediaclass=' + mediaclass);
+		}
+		parent.medialist.medialistMenu.clearCookie();
+		parent.medialist.location.href = 'wait.html';
+		return true;
+	} else {
+		return false;
+	}
+}
+
+var doSubmitRedirectLocation = "";
+function doSubmitRedirect() {
+	parent.medialist.document.location.href = doSubmitRedirectLocation || 'medialist_wcm.jsp?editor=' + editor;
+	document.location.href = 'mediainsert_wcm.jsp?action=server&editor=' + editor;
+}
+
+</script>
+<%@ include file="../content/multifileupload.jsp" %>
+<script type="text/javascript">
+function initMultiFileUpload() {
+	try {
+		swfu = new SWFUpload({
+			flash_url : "/<%= mytext.display("adminpath") %>/swfupload/swfupload.swf",
+			upload_url : "/<%= mytext.display("adminpath") %>/webeditor/medianotification_multi_wcm.jsp;jsessionid=<%= session.getId() %>?action=Create&editor=" + editor,
+			file_post_name: "file",
+
+			button_placeholder_id : "multifileuploadbutton",
+			button_width: 150,
+			button_height: 22,
+			button_image_url : "/<%= mytext.display("adminpath") %>/content/multifileupload.png",	// Relative to the SWF file
+			button_text : '<span class="multifileuploadbutton"><%= mytext.display("addmultiple") %></span>', 
+			button_text_style : " .multifileuploadbutton { text-align: center; } ", 
+
+//			file_dialog_start_handler: fileDialogStart,
+			file_queued_handler : queueMultiFileUpload,
+//			file_queue_error_handler : queueMultiFileUploadError,
+//			file_dialog_complete_handler : fileDialogComplete,
+
+//			upload_start_handler : uploadStart,	// I could do some client/JavaScript validation here, but I don't need to.
+			upload_progress_handler : showMultiFileUploadProgress,
+			upload_error_handler : displayMultiFileUploadError,
+			upload_success_handler : displayMultiFileUploadSuccess,
+			upload_complete_handler : startMultiFileUpload,
+
+			custom_settings : { redirect : doSubmitRedirect },
+
+			debug: false
+		}); 
+	} catch(e) {
+		swfu = false;
+	}
+}
+</script>
+</head>
+<body onload="if (typeof(initMultiFileUpload) == 'function') initMultiFileUpload();">
+
+<% if ((adminuser.getHardcoreUpload().equals("yes")) || ((adminuser.getHardcoreUpload().equals("")) && (myconfig.get(db, "hardcore_upload").equals("yes")))) { %>
+
+<script type="text/javascript">
+document.writeln('<form action="medianotification_wcm.jsp?<% if (! myrequest.getParameter("action").equals("Create")) { %>id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&<% } %>action=<%= html.encodeHtmlEntities(myrequest.getParameter("action")) %>&editor=<%= html.encodeHtmlEntities(myrequest.getParameter("editor")) %>" method="POST" enctype="multipart/form-data" id="upload" name="upload" onSubmit="return doSubmit();">');
+if (request_section == "Images") {
+	document.writeln('<input type="hidden" name="contentclass" value="image">');
+} else if (request_section == "Files") {
+	document.writeln('<input type="hidden" name="contentclass" value="file">');
+} else {
+	document.writeln('<input type="hidden" name="contentclass" value="image">');
+}
+</script>
+
+<table summary="" width="100%" border="0" class="dtree">
+	<tr>
+<script type="text/javascript">
+	if (request_action == "Create") {
+		if (request_section == "Images") {
+			document.writeln('<th colspan="2" align="left">' + Text('mediauploader_create_image') + '</th>');
+		} else if (request_section == "Files") {
+			document.writeln('<th colspan="2" align="left">' + Text('mediauploader_create_file') + '</th>');
+		}
+	} else if (request_action == "Update") {
+		if (request_section == "Images") {
+			document.writeln('<th colspan="2" align="left">' + Text('mediauploader_update_image') + '</th>');
+		} else if (request_section == "Files") {
+			document.writeln('<th colspan="2" align="left">' + Text('mediauploader_update_file') + '</th>');
+		}
+	} else if (request_action == "Delete") {
+		if (request_section == "Images") {
+			document.writeln('<th colspan="2" align="left">' + Text('mediauploader_delete_image') + '</th>');
+		} else if (request_section == "Files") {
+			document.writeln('<th colspan="2" align="left">' + Text('mediauploader_delete_file') + '</th>');
+		}
+	}
+</script>
+<script type="text/javascript">
+		document.writeln('<th width="50%" align="right">');
+		if (request_action == "Delete") {
+			document.writeln('<input type="submit" name="delete" value="' + Text('mediauploader_delete') + '">');
+		} else if (request_action == "Update") {
+			document.writeln('<input type="submit" name="update" value="' + Text('mediauploader_update') + '">');
+			<% if (myconfig.get(db, "use_publish").equals("manual-on")) { %>
+			document.writeln('<input type="checkbox" name="publish" value="Save & Publish" checked>' + Text('mediauploader_publish'));
+			<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>
+			document.writeln('<input type="checkbox" name="publish" value="Save & Publish">' + Text('mediauploader_publish'));
+			<% } else if (myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+			document.writeln('<input type="hidden" name="publish" value="Save & Publish">');
+			<% } %>
+		} else {
+			document.writeln('<input type="submit" name="create" value="' + Text('mediauploader_create') + '">');
+			<% if (myconfig.get(db, "use_publish").equals("manual-on")) { %>
+			document.writeln('<input type="checkbox" name="publish" value="Save & Publish" checked>' + Text('mediauploader_publish'));
+			<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>
+			document.writeln('<input type="checkbox" name="publish" value="Save & Publish">' + Text('mediauploader_publish'));
+			<% } else if (myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+			document.writeln('<input type="hidden" name="publish" value="Save & Publish">');
+			<% } %>
+		}
+		document.writeln('</th>');
+</script>
+	</tr>
+	<tr>
+		<td align="left" colspan="2"><script type="text/javascript">document.write(Text('mediauploader_heading'));</script></td>
+		<td width="50%" align="left"><script type="text/javascript">document.write(Text('mediauploader_file'));</script></td>
+	</tr>
+	<tr align="left" valign="top">
+		<td colspan="2">
+<script type="text/javascript">
+		if (request_action == "Delete") {
+			document.writeln('<input disabled type="text" name="title" size="40" maxlength="250" value="' + request_title + '">');
+		} else {
+			document.writeln('<input type="text" name="title" size="40" maxlength="250" value="' + request_title + '" onChange="getname(document.upload.id.value, document.upload.file.value, document.upload.title.value);">');
+		}
+</script>
+		</td>
+		<td width="50%">
+<script type="text/javascript">
+		if (request_action == "Delete") {
+			document.writeln('<input type="hidden" name="file" value="">');
+			document.writeln('<input disabled type="text" name="href" size="40" maxlength="250" value="' + request_href + '">');
+		} else {
+			document.writeln('<input type="file" name="file" size="20" maxlength="256" align="middle" onChange="getname(document.upload.id.value, document.upload.file.value, document.upload.title.value);">');
+			<% if (myrequest.getParameter("action").equals("Create")) { %>
+			document.writeln('<span><span id="multifileuploadbutton"></span></span>');
+			<% } %>
+			document.writeln('<input type="hidden" name="href" value="">');
+		}
+</script>
+		</td>
+	</tr>
+	<% if (myrequest.getParameter("action").equals("Create")) { %>
+	<tr><td colspan="3">&nbsp;</td></tr>
+	<tr align="left" valign="top">
+		<% if (myconfig.get(db, "use_contentdefinition").equals("yes")) { %>
+<% if ((myrequest.getParameter("section").equals("Images")) || (myrequest.getParameter("section").equals("Files"))) { %>
+		<% if (((myrequest.getParameter("section").equals("Images")) && ((myconfig.get(db, "use_imagetypes").equals("yes")) || (myconfig.get(db, "use_imagegroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Files")) && ((myconfig.get(db, "use_filetypes").equals("yes")) || (myconfig.get(db, "use_filegroups").equals("yes"))))) { %>
+		<% if (((myrequest.getParameter("section").equals("Images")) && (myconfig.get(db, "use_imagegroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Files")) && (myconfig.get(db, "use_filegroups").equals("yes")))) { %>
+		<td width="25%"><script type="text/javascript">document.write(Text('mediauploader_group'));</script></td>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<% if (((myrequest.getParameter("section").equals("Images")) && (myconfig.get(db, "use_imagetypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Files")) && (myconfig.get(db, "use_filetypes").equals("yes")))) { %>
+		<td width="25%"><script type="text/javascript">document.write(Text('mediauploader_type'));</script></td>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+<% } %>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<% if (! select_options.equals("")) { %>
+		<td width="50%" align="left"><script type="text/javascript">document.write(Text('mediauploader_copy'));</script></td>
+		<% } %>
+	</tr>
+	<tr> 
+		<% if (myconfig.get(db, "use_contentdefinition").equals("yes")) { %>
+		<% if (((myrequest.getParameter("section").equals("Images")) && ((myconfig.get(db, "use_imagetypes").equals("yes")) || (myconfig.get(db, "use_imagegroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Files")) && ((myconfig.get(db, "use_filetypes").equals("yes")) || (myconfig.get(db, "use_filegroups").equals("yes"))))) { %>
+		<td width="25%">
+			<% if (((myrequest.getParameter("section").equals("Images")) && (myconfig.get(db, "use_imagegroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Files")) && (myconfig.get(db, "use_filegroups").equals("yes")))) { %>
+			<select name="contentgroup">
+				<option value=""><script type="text/javascript">document.write(Text('mediauploader_none'));</script>
+			<% if (myrequest.getParameter("section").equals("Images")) { %>
+				<%= Imagegroup.select_options(myrequest.getParameter("imagegroup"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Files")) { %>
+				<%= Filegroup.select_options(myrequest.getParameter("filegroup"), db, myconfig, mysession) %> 
+			<% } %>
+			</select>
+			<% } %>
+		</td>
+		<td width="25%">
+			<% if (((myrequest.getParameter("section").equals("Images")) && (myconfig.get(db, "use_imagetypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Files")) && (myconfig.get(db, "use_filetypes").equals("yes")))) { %>
+			<select name="contenttype">
+				<option value=""><script type="text/javascript">document.write(Text('mediauploader_none'));</script>
+			<% if (myrequest.getParameter("section").equals("Images")) { %>
+				<%= Imagetype.select_options(myrequest.getParameter("imagetype"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Files")) { %>
+				<%= Filetype.select_options(myrequest.getParameter("filetype"), db, myconfig, mysession) %> 
+			<% } %>
+			</select>
+			<% } %>
+		</td>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<td width="50%">
+			<% if (! select_options.equals("")) { %>
+			<select name="id">
+				<% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+				<option value=""><script type="text/javascript">document.write(Text('mediauploader_copy_blank'));</script>
+				<% } %>
+				<%= select_options %>
+			</select>
+			<% } %>
+		</td>
+	</tr>
+	<% } %>
+</table>
+
+</form>
+
+<% } else { %>
+
+<table width="100%" height="100%" border="0">
+	<tr>
+		<td align="center" valign="middle">
+			<script type="text/javascript">document.write(Text('mediauploader_disabled'));</script>
+		</td>
+	</tr>
+</table>
+
+<% } %>
+
+</body>
+</html>

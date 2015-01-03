@@ -1,0 +1,686 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("workflows.delete.title") %></title>
+<script type="text/javascript">
+
+function doArchive(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'ARCHIVE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)ARCHIVE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)ARCHIVE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doCheckout(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'CHECKOUT' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)CHECKOUT([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)CHECKIN([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)CHECKOUT([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doCheckin(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'CHECKIN' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)CHECKOUT([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)CHECKIN([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)CHECKIN([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doPublish(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'PUBLISH' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNPUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)PUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)DELETE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)PUBLISH([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnpublish(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNPUBLISH' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNPUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)PUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)DELETE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNPUBLISH([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doDelete(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'DELETE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNPUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)PUBLISH([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)DELETE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)DELETE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnschedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNSCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNSCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNSCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockUser(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK USER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK USER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK USER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK USER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK USER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockUser(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK USER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK USER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK USER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK USER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK USER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockEditor(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK EDITOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK EDITOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK EDITOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK EDITOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK EDITOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockEditor(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK EDITOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK EDITOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK EDITOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK EDITOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK EDITOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockDeveloper(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK DEVELOPER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK DEVELOPER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK DEVELOPER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK DEVELOPER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK DEVELOPER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockDeveloper(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK DEVELOPER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK DEVELOPER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK DEVELOPER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK DEVELOPER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK DEVELOPER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockCreator(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK CREATOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK CREATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK CREATOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK CREATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK CREATOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockCreator(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK CREATOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK CREATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK CREATOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK CREATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK CREATOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockPublisher(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK PUBLISHER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK PUBLISHER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK PUBLISHER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK PUBLISHER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK PUBLISHER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockPublisher(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK PUBLISHER' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK PUBLISHER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK PUBLISHER([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK PUBLISHER([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK PUBLISHER([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockAdministrator(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK ADMINISTRATOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockAdministrator(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK ADMINISTRATOR' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK ADMINISTRATOR([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockSchedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK SCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK SCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK SCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK SCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK SCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockSchedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK SCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK SCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK SCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK SCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK SCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLockUnschedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'LOCK UNSCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK UNSCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK UNSCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK UNSCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK UNSCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doUnlockUnschedule(input) {
+	if (input.checked) {
+		document.getElementById('contentchanges').value = 'UNLOCK UNSCHEDULE' + '\r\n' + (document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK UNSCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK UNSCHEDULE([\r\n]+|$)/,'\r\n'));
+	} else {
+		document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/(^|[\r\n]+)UNLOCK UNSCHEDULE([\r\n]+|$)/,'\r\n').replace(/(^|[\r\n]+)LOCK UNSCHEDULE([\r\n]+|$)/,'\r\n');
+	}
+	document.getElementById('contentchanges').value = document.getElementById('contentchanges').value.replace(/^[\r\n]*/g,'').replace(/(\r\n)+/g,'\r\n').replace(/\n\n/g,'\r\n');
+	doLocked(document.getElementById('contentchanges').value);
+}
+
+function doLocked(commands) {
+	doProgrammedArchive(commands);
+	doProgrammedCheckout(commands);
+	doProgrammedCheckin(commands);
+	doProgrammedPublish(commands);
+	doProgrammedUnpublish(commands);
+	doProgrammedDelete(commands);
+	doProgrammedUnschedule(commands);
+	doLockedUser(commands);
+	doLockedCreator(commands);
+	doLockedDeveloper(commands);
+	doLockedEditor(commands);
+	doLockedPublisher(commands);
+	doLockedAdministrator(commands);
+	doLockedSchedule(commands);
+	doLockedUnschedule(commands);
+}
+
+function doProgrammedArchive(commands) {
+	if (commands.match(/(^|[\r\n])ARCHIVE([\r\n]|$)/)) {
+		document.getElementById('content_archive').checked = true;
+	} else {
+		document.getElementById('content_archive').checked = false;
+	}
+}
+
+function doProgrammedCheckout(commands) {
+	if (commands.match(/(^|[\r\n])CHECKOUT([\r\n]|$)/)) {
+		document.getElementById('content_checkout').checked = true;
+	} else {
+		document.getElementById('content_checkout').checked = false;
+	}
+}
+
+function doProgrammedCheckin(commands) {
+	if (commands.match(/(^|[\r\n])CHECKIN([\r\n]|$)/)) {
+		document.getElementById('content_checkin').checked = true;
+	} else {
+		document.getElementById('content_checkin').checked = false;
+	}
+}
+
+function doProgrammedPublish(commands) {
+	if (commands.match(/(^|[\r\n])PUBLISH([\r\n]|$)/)) {
+		document.getElementById('content_publish').checked = true;
+	} else {
+		document.getElementById('content_publish').checked = false;
+	}
+}
+
+function doProgrammedUnpublish(commands) {
+	if (commands.match(/(^|[\r\n])UNPUBLISH([\r\n]|$)/)) {
+		document.getElementById('content_unpublish').checked = true;
+	} else {
+		document.getElementById('content_unpublish').checked = false;
+	}
+}
+
+function doProgrammedDelete(commands) {
+	if (commands.match(/(^|[\r\n])DELETE([\r\n]|$)/)) {
+		document.getElementById('content_delete').checked = true;
+	} else {
+		document.getElementById('content_delete').checked = false;
+	}
+}
+
+function doProgrammedUnschedule(commands) {
+	if (commands.match(/(^|[\r\n])UNSCHEDULE([\r\n]|$)/)) {
+		document.getElementById('content_unschedule').checked = true;
+	} else {
+		document.getElementById('content_unschedule').checked = false;
+	}
+}
+
+function doLockedUser(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK USER([\r\n]|$)/)) {
+		document.getElementById('locked_user_unlock').checked = true;
+		document.getElementById('locked_user_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK USER([\r\n]|$)/)) {
+		document.getElementById('locked_user_lock').checked = true;
+		document.getElementById('locked_user_unlock').checked = false;
+	} else {
+		document.getElementById('locked_user_lock').checked = false;
+		document.getElementById('locked_user_unlock').checked = false;
+	}
+}
+
+function doLockedCreator(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK CREATOR([\r\n]|$)/)) {
+		document.getElementById('locked_creator_unlock').checked = true;
+		document.getElementById('locked_creator_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK CREATOR([\r\n]|$)/)) {
+		document.getElementById('locked_creator_lock').checked = true;
+		document.getElementById('locked_creator_unlock').checked = false;
+	}
+}
+
+function doLockedDeveloper(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK DEVELOPER([\r\n]|$)/)) {
+		document.getElementById('locked_developer_unlock').checked = true;
+		document.getElementById('locked_developer_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK DEVELOPER([\r\n]|$)/)) {
+		document.getElementById('locked_developer_lock').checked = true;
+		document.getElementById('locked_developer_unlock').checked = false;
+	}
+}
+
+function doLockedEditor(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK EDITOR([\r\n]|$)/)) {
+		document.getElementById('locked_editor_unlock').checked = true;
+		document.getElementById('locked_editor_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK EDITOR([\r\n]|$)/)) {
+		document.getElementById('locked_editor_lock').checked = true;
+		document.getElementById('locked_editor_unlock').checked = false;
+	}
+}
+
+function doLockedPublisher(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK PUBLISHER([\r\n]|$)/)) {
+		document.getElementById('locked_publisher_unlock').checked = true;
+		document.getElementById('locked_publisher_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK PUBLISHER([\r\n]|$)/)) {
+		document.getElementById('locked_publisher_lock').checked = true;
+		document.getElementById('locked_publisher_unlock').checked = false;
+	}
+}
+
+function doLockedAdministrator(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK ADMINISTRATOR([\r\n]|$)/)) {
+		document.getElementById('locked_administrator_unlock').checked = true;
+		document.getElementById('locked_administrator_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK ADMINISTRATOR([\r\n]|$)/)) {
+		document.getElementById('locked_administrator_lock').checked = true;
+		document.getElementById('locked_administrator_unlock').checked = false;
+	}
+}
+
+function doLockedSchedule(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK SCHEDULE([\r\n]|$)/)) {
+		document.getElementById('locked_schedule_unlock').checked = true;
+		document.getElementById('locked_schedule_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK SCHEDULE([\r\n]|$)/)) {
+		document.getElementById('locked_schedule_lock').checked = true;
+		document.getElementById('locked_schedule_unlock').checked = false;
+	}
+}
+
+function doLockedUnschedule(commands) {
+	if (commands.match(/(^|[\r\n])UNLOCK UNSCHEDULE([\r\n]|$)/)) {
+		document.getElementById('locked_unschedule_unlock').checked = true;
+		document.getElementById('locked_unschedule_lock').checked = false;
+	} else if (commands.match(/(^|[\r\n])LOCK UNSCHEDULE([\r\n]|$)/)) {
+		document.getElementById('locked_unschedule_lock').checked = true;
+		document.getElementById('locked_unschedule_unlock').checked = false;
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("workflows.delete.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="delete_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&workflow=<%= html.encodeHtmlEntities(myrequest.getParameter("workflow")) %>" method="POST">
+<% if (License.valid(db, myconfig, "ecommerce") && (myrequest.getParameter("workflow").equals("-orders-"))) { %>
+          <input type="hidden" name="contentclass" value="-order-">
+<% } %>
+        <p>
+          <input type="submit" value="<%= mytext.display("delete") %>">
+        </p>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.heading") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.title") %></th>
+          </tr>
+          <tr> 
+<% if (License.valid(db, myconfig, "ecommerce") && (myrequest.getParameter("workflow").equals("-orders-"))) { %>
+            <td class="WCMinnerContentInputValue" colSpan="2"><%= mytext.display("workflows.title.orders") %>&nbsp;</td>
+<% } else { %>
+            <td class="WCMinnerContentInputValue" colSpan="2"><%= workflow.getTitle() %>&nbsp;</td>
+<% } %>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.action") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"><%= workflow.getAction() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.fromstate") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"><%= workflow.getFromState() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.tostate") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"><%= workflow.getToState() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2">&nbsp;</th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.content.actions") %></th>
+          </tr>
+<% if (! myrequest.getParameter("workflow").equals("-orders-")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"> 
+              <table width="100%" border="0">
+              	<tr>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_archive" name="content_archive" value="" onchange="doArchive(this);"><%= mytext.display("workflows.content.archive") %></nobr></td>
+              	  <td width="11%" valign="top">&nbsp;</td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_checkout" name="content_checkout" value="" onchange="doCheckout(this);"><%= mytext.display("workflows.content.checkout") %></nobr></td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_checkin" name="content_checkin" value="" onchange="doCheckin(this);"><%= mytext.display("workflows.content.checkin") %></nobr></td>
+              	  <td width="11%" valign="top">&nbsp;</td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_publish" name="content_publish" value="" onchange="doPublish(this);"><%= mytext.display("workflows.content.publish") %></nobr></td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_unpublish" name="content_unpublish" value="" onchange="doUnpublish(this);"><%= mytext.display("workflows.content.unpublish") %></nobr></td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_delete" name="content_delete" value="" onchange="doDelete(this);"><%= mytext.display("workflows.content.delete") %></nobr></td>
+              	  <td width="11%" valign="top"><nobr><input type="checkbox" id="content_unschedule" name="content_unschedule" value="" onchange="doUnschedule(this);"><%= mytext.display("workflows.content.unschedule") %></nobr></td>
+              	</tr>
+              </table>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.locked") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"> 
+              <table width="100%" border="0">
+              	<tr>
+              	  <td width="11%" valign="top">&nbsp;</td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.user") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.editor") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.developer") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.creator") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.publisher") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.administrator") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.schedule") %></td>
+              	  <td width="11%" valign="top"><%= mytext.display("workflows.locked.unschedule") %></td>
+              	</tr>
+              	<tr>
+              	  <th width="11%" align="left" valign="top"><%= mytext.display("workflows.locked.lock") %></td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_user_lock" name="locked_user" value="" onchange="doLockUser(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_editor_lock" name="locked_editor" value="" onchange="doLockEditor(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_developer_lock" name="locked_developer" value="" onchange="doLockDeveloper(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_creator_lock" name="locked_creator" value="" onchange="doLockCreator(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_publisher_lock" name="locked_publisher" value="" onchange="doLockPublisher(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_administrator_lock" name="locked_administrator" value="" onchange="doLockAdministrator(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_schedule_lock" name="locked_schedule" value="" onchange="doLockSchedule(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_unschedule_lock" name="locked_unschedule" value="" onchange="doLockUnschedule(this);">
+                  </td>
+                </tr>
+              	<tr>
+              	  <th width="11%" align="left" valign="top"><%= mytext.display("workflows.locked.unlock") %></td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_user_unlock" name="locked_user" value="" onchange="doUnlockUser(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_editor_unlock" name="locked_editor" value="" onchange="doUnlockEditor(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_developer_unlock" name="locked_developer" value="" onchange="doUnlockDeveloper(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_creator_unlock" name="locked_creator" value="" onchange="doUnlockCreator(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_publisher_unlock" name="locked_publisher" value="" onchange="doUnlockPublisher(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_administrator_unlock" name="locked_administrator" value="" onchange="doUnlockAdministrator(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_schedule_unlock" name="locked_schedule" value="" onchange="doUnlockSchedule(this);">
+                  </td>
+              	  <td width="11%">
+                    <input type="checkbox" id="locked_unschedule_unlock" name="locked_unschedule" value="" onchange="doUnlockUnschedule(this);">
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.contentchanges") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2">
+              <textarea cols="80" rows="5" id="contentchanges" name="contentchanges" onchange="doLocked(this.value)"><%= workflow.getContentChanges() %></textarea>
+            </td>
+          </tr>
+<% } %>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2"><%= mytext.display("workflows.workflowprogram") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2">
+              <select id="workflow_program" name="workflow_program" style="width: 400px;">
+                <option value="<%= workflow.getWorkflowProgram() %>"><%= workflow.getWorkflowProgram() %></option> &nbsp;
+                <option value="" <% if (workflow.getWorkflowProgram().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= workflow.workflowprogram_select_options(DOCUMENT_ROOT, workflow.getWorkflowProgram()) %>
+              </select>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2">&nbsp;</th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.accessrestrictions") %></th>
+          </tr>
+          <tr> 
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.usergroup") %></th>
+<% } %>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.usertype") %></th>
+<% } %>
+          </tr>
+          <tr> 
+<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%"><% if (workflow.getUserGroup().equals("")) { %><%= mytext.display("any") %><% } else { %><%= workflow.getUserGroup() %><% } %>&nbsp;</td>
+<% } %>
+<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%"><% if (workflow.getUserType().equals("")) { %><%= mytext.display("any") %><% } else { %><%= workflow.getUserType() %><% } %>&nbsp;</td>
+<% } %>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="2" width="50%"><%= mytext.display("workflows.userrestriction") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colSpan="2" width="50%">
+                <% if (workflow.getUserRestriction().equals("")) { %><%= mytext.display("workflows.userrestriction.any") %><% } %>
+                <% if (workflow.getUserRestriction().equals("different")) { %><%= mytext.display("workflows.userrestriction.different") %><% } %>
+                <% if (workflow.getUserRestriction().equals("same")) { %><%= mytext.display("workflows.userrestriction.same") %><% } %>
+            </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.notification") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="2"><%= workflow.getNotifyEmailTitle(mysession, myconfig, db) %>&nbsp;</td>
+          </tr>
+<% if (! myrequest.getParameter("workflow").equals("-orders-")) { %>
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colSpan="2"><%= mytext.display("workflows.content") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.contentclass") %></th>
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.version") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%" valign="top"><% if (workflow.getContentClass().equals("")) { %><%= mytext.display("any") %><% } else { %><%= workflow.getContentClass().replaceAll("^\\|", "").replaceAll("\\|$", "").replaceAll("\\|", "<br>") %><% } %>&nbsp;</td>
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%" valign="top"><% if (workflow.getVersion().equals("")) { %><%= mytext.display("any") %><% } else { %><%= workflow.getVersion().replaceAll("^\\|", "").replaceAll("\\|$", "").replaceAll("\\|", "<br>") %><% } %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.contentgroup") %></th>
+            <th class="WCMinnerContentInputName" align="left" colSpan="1" width="50%"><%= mytext.display("workflows.contenttype") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%" valign="top"><% if (workflow.getContentGroup().equals("")) { %><%= mytext.display("any") %><% } else { %><%= workflow.getContentGroup().replaceAll("^\\|", "").replaceAll("\\|$", "").replaceAll("\\|", "<br>") %><% } %>&nbsp;</td>
+            <td class="WCMinnerContentInputValue" colSpan="1" width="50%" valign="top"><% if (workflow.getContentType().equals("")) { %><%= mytext.display("any") %><% } else { %><%= workflow.getContentType().replaceAll("^\\|", "").replaceAll("\\|$", "").replaceAll("\\|", "<br>") %><% } %>&nbsp;</td>
+          </tr>
+<% } %>
+        </table>
+<%@ include file="diagram.jsp.html" %>
+      </form>
+<script type="text/javascript">doLocked(document.getElementById('contentchanges').value);</script>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

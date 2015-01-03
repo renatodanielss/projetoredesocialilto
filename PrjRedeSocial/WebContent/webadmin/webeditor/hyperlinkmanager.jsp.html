@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('hyperlinkmanager_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+window.focus();
+var request = "" + window.location;
+
+function init() {
+	if (window.hyperlinklistfilter && window.hyperlinklist && window.hyperlinkpreview && window.hyperlinkinsert) {
+		editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+		href = requestParameter("href");
+		hyperlinklistfilter.location.href = 'hyperlinklistfilter.jsp?editor=' + editor;
+		hyperlinklist.location.href = 'hyperlinklist.jsp?editor=' + editor;
+		hyperlinkpreview.location.href = 'hyperlinkpreview.jsp?editor=' + editor + '&href=' + href;
+		hyperlinkinsert.location.href = 'hyperlinkinsert.jsp?action=server&editor=' + editor;
+	} else {
+		setTimeout("init()", 100);
+	}
+}
+setTimeout("init()", 100);
+
+</script>
+<script type="text/javascript">
+
+var ready_section = '';
+var ready_category = '';
+var ready_title = '';
+var ready_link = '';
+var ready_href = '';
+
+function hyperlinklistfilter_ready() {
+	if (hyperlinklistfilter && hyperlinklistfilter.hyperlinklistfilterMenu && hyperlinklistfilter.hyperlinklistfilterMenu.selectURL && hyperlinklistfilter.openit) {
+		hyperlinklistfilter.hyperlinklistfilterMenu.selectURL('javascript:openit(\''+ready_section+'\',\''+ready_category+'\',\''+ready_title+'\')');
+		hyperlinklistfilter.openit(ready_section,ready_category,ready_title);
+	} else {
+		setTimeout("hyperlinklistfilter_ready()", 100);
+	}
+}
+
+function hyperlinklist_ready() {
+	if (hyperlinklist && hyperlinklist.hyperlinklistMenu && hyperlinklist.hyperlinklistMenu.selectURL && hyperlinklist.openit) {
+		hyperlinklist.hyperlinklistMenu.selectURL('javascript:openit(\''+ready_link+'\',\''+ready_href+'\')');
+		hyperlinklist.openit(ready_link,ready_href);
+	} else {
+		setTimeout("medialist_ready()", 100);
+	}
+}
+
+var tag = new Array();
+tag["href"] = requestParameter("href");
+tag["target"] = requestParameter("target");
+tag["text"] = requestParameter("text");
+tag["htmlclass"] = requestParameter("htmlclass");
+tag["htmlid"] = requestParameter("htmlid");
+tag["title"] = requestParameter("title");
+tag["onclick"] = requestParameter("onclick");
+
+</script>
+</head>
+<frameset rows="*,175" border="1" bordercolor="Gray">
+	<frameset cols="200,200,200" border="1" bordercolor="Gray">
+		<frame name="hyperlinklistfilter" src="blank.html" frameborder="1">
+		<frame name="hyperlinklist" src="blank.html" frameborder="1">
+		<frame name="hyperlinkpreview" src="blank.html" frameborder="1">
+	</frameset>
+	<frame name="hyperlinkinsert" src="blank.html" marginwidth="2" marginheight="2" frameborder="0">
+</frameset>
+<body bgcolor="#FFFFFF" text="#000000" link="#000000" vlink="#000000" alink="#000000" onload="javascript:self.focus();">
+</body>
+</html>

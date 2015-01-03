@@ -1,0 +1,107 @@
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.contentdependencies.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("content.contentdependencies.intro") %></td></tr>
+<% String settings = maintainContent.listContentDependenciesSettings(dependents, mysession, myconfig, db); %>
+<% if (! settings.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.settings") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= settings %></td></tr>
+<% } %>
+<% String specialpages = maintainContent.listContentDependenciesSpecialPages(dependents, mysession, myconfig, db); %>
+<% if (! specialpages.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.specialpages") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= specialpages %></td></tr>
+<% } %>
+<% String users = maintainContent.listContentDependenciesUsers(dependents, mysession, myconfig, db); %>
+<% if (! users.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.users") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= users %></td></tr>
+<% } %>
+<% String usergroups = maintainContent.listContentDependenciesUsergroups(dependents, mysession, myconfig, db); %>
+<% if (! usergroups.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.usergroups") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= usergroups %></td></tr>
+<% } %>
+<% String usertypes = maintainContent.listContentDependenciesUsertypes(dependents, mysession, myconfig, db); %>
+<% if (! usertypes.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.usertypes") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= usertypes %></td></tr>
+<% } %>
+<% String websites = maintainContent.listContentDependenciesWebsites(dependents, mysession, myconfig, db); %>
+<% if (! websites.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.websites") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= websites %></td></tr>
+<% } %>
+<% String pages = maintainContent.listContentDependenciesPages(dependents, mysession, myconfig, db); %>
+<% if (! pages.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.pages") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= pages %></td></tr>
+<% } %>
+<% String products = maintainContent.listContentDependenciesProducts(dependents, mysession, myconfig, db); %>
+<% if (! products.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.products") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= products %></td></tr>
+<% } %>
+<% String images = maintainContent.listContentDependenciesImages(dependents, mysession, myconfig, db); %>
+<% if (! images.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.images") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= images %></td></tr>
+<% } %>
+<% String files = maintainContent.listContentDependenciesFiles(dependents, mysession, myconfig, db); %>
+<% if (! files.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.files") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= files %></td></tr>
+<% } %>
+<% String links = maintainContent.listContentDependenciesLinks(dependents, mysession, myconfig, db); %>
+<% if (! links.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.links") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= links %></td></tr>
+<% } %>
+<% String elements = maintainContent.listContentDependenciesElements(dependents, mysession, myconfig, db); %>
+<% if (! elements.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.elements") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= elements %></td></tr>
+<% } %>
+<% String templates = maintainContent.listContentDependenciesTemplates(dependents, mysession, myconfig, db); %>
+<% if (! templates.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.templates") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= templates %></td></tr>
+<% } %>
+<% String stylesheets = maintainContent.listContentDependenciesStylesheets(dependents, mysession, myconfig, db); %>
+<% if (! stylesheets.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.stylesheets") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= stylesheets %></td></tr>
+<% } %>
+<% String scripts = maintainContent.listContentDependenciesScripts(dependents, mysession, myconfig, db); %>
+<% if (! scripts.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.scripts") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= scripts %></td></tr>
+<% } %>
+<% String contentgroups = maintainContent.listContentDependenciesContentgroups(dependents, mysession, myconfig, db); %>
+<% if (! contentgroups.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.contentgroups") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= contentgroups %></td></tr>
+<% } %>
+<% String contenttypes = maintainContent.listContentDependenciesContenttypes(dependents, mysession, myconfig, db); %>
+<% if (! contenttypes.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.contenttypes") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= contenttypes %></td></tr>
+<% } %>
+<% String productgroups = maintainContent.listContentDependenciesProductgroups(dependents, mysession, myconfig, db); %>
+<% if (! productgroups.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.productgroups") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= productgroups %></td></tr>
+<% } %>
+<% String producttypes = maintainContent.listContentDependenciesProducttypes(dependents, mysession, myconfig, db); %>
+<% if (! producttypes.equals("")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.producttypes") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= producttypes %></td></tr>
+<% } %>
+<% if ((settings.equals("")) && (specialpages.equals("")) && (usergroups.equals("")) && (usertypes.equals("")) && (websites.equals("")) && (pages.equals("")) && (products.equals("")) && (images.equals("")) && (files.equals("")) && (links.equals("")) && (elements.equals("")) && (templates.equals("")) && (stylesheets.equals("")) && (scripts.equals("")) && (contentgroups.equals("")) && (contenttypes.equals("")) && (productgroups.equals("")) && (producttypes.equals(""))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentdependencies.dependencies") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= mytext.display("content.contentdependencies.none") %></td></tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.contentdependencies.about.heading") %></th></tr>
+          <tr><td align="left" colspan="4"><%= mytext.display("content.contentdependencies.about.text") %></td></tr>
+        </table>
+        <br>

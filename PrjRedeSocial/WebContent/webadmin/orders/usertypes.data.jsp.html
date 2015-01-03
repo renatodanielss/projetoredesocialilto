@@ -1,0 +1,66 @@
+<%
+if ((HashMap)usage.get("usertypessumitemquantity") != null) {
+	double maxcustomers = reportOrders.maxValue((HashMap)usage.get("usertypescountcustomers"));
+	double maxorders = reportOrders.maxValue((HashMap)usage.get("usertypescountorders"));
+	double maxorderitems = reportOrders.maxValue((HashMap)usage.get("usertypescountorderitems"));
+	double maxitemquantity = reportOrders.maxValue((HashMap)usage.get("usertypessumitemquantity"));
+	double maxitemtotal = reportOrders.maxValue((HashMap)usage.get("usertypessumitemtotal"));
+	double totalcustomers = reportOrders.totalValue((HashMap)usage.get("usertypescountcustomers"));
+	double totalorders = reportOrders.totalValue((HashMap)usage.get("usertypescountorders"));
+	double totalorderitems = reportOrders.totalValue((HashMap)usage.get("usertypescountorderitems"));
+	double totalitemquantity = reportOrders.totalValue((HashMap)usage.get("usertypessumitemquantity"));
+	double totalitemtotal = reportOrders.totalValue((HashMap)usage.get("usertypessumitemtotal"));
+%>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" class="WCMstatsTableName"><%= mytext.display("sales.usertypes.usertype") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableCustomers"><%= mytext.display("sales.customers") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableOrders"><%= mytext.display("sales.orders") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableOrderitems"><%= mytext.display("sales.orderitems") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableQuantity"><%= mytext.display("sales.quantity") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableSales"><%= mytext.display("sales.sales") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator myusertypessumitemtotal = ((LinkedHashMap)usage.get("usertypessumitemtotal")).keySet().iterator();
+	while (myusertypessumitemtotal.hasNext()) {
+		String myusertype = "" + myusertypessumitemtotal.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="left"><%= reportOrders.categoryName(myusertype) %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(Common.toString(((HashMap)usage.get("usertypescountcustomers")).get(myusertype)), 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalcustomers>0) { %>(<%= Common.numberformat("" + (float)Common.intnumber("" + ((HashMap)usage.get("usertypescountcustomers")).get(myusertype))*100/totalcustomers, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(Common.toString(((HashMap)usage.get("usertypescountorders")).get(myusertype)), 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalorders>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("usertypescountorders")).get(myusertype))*100/totalorders, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(Common.toString(((HashMap)usage.get("usertypescountorderitems")).get(myusertype)), 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalorderitems>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("usertypescountorderitems")).get(myusertype))*100/totalorderitems, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(Common.toString(((HashMap)usage.get("usertypessumitemquantity")).get(myusertype)), 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalitemquantity>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("usertypessumitemquantity")).get(myusertype))*100/totalitemquantity, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(Common.toString(((HashMap)usage.get("usertypessumitemtotal")).get(myusertype)), Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalitemtotal>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("usertypessumitemtotal")).get(myusertype))*100/totalitemtotal, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.integernumber("" + ((HashMap)usage.get("usertypescountcustomers")).get(myusertype))*100/maxcustomers) > 0) { %><img src="customers.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("usertypescountcustomers")).get(myusertype))*100/maxcustomers) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("usertypescountorders")).get(myusertype))*100/maxorders) > 0) { %><img src="orders.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("usertypescountorders")).get(myusertype))*100/maxorders) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("usertypescountorderitems")).get(myusertype))*100/maxorderitems) > 0) { %><img src="orderitems.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("usertypescountorderitems")).get(myusertype))*100/maxorderitems) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("usertypessumitemquantity")).get(myusertype))*100/maxitemquantity) > 0) { %><img src="quantity.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("usertypessumitemquantity")).get(myusertype))*100/maxitemquantity) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("usertypessumitemtotal")).get(myusertype))*100/maxitemtotal) > 0) { %><img src="sales.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("usertypessumitemtotal")).get(myusertype))*100/maxitemtotal) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left"><%= mytext.display("sales.total") %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(""+totalcustomers, 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(""+totalorders, 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(""+totalorderitems, 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(""+totalitemquantity, 0, myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= Common.numberformat(""+totalitemtotal, Common.intnumber(myconfig.get(db, "decimals")), myconfig.get(db, "grouping").equals("true")) %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>

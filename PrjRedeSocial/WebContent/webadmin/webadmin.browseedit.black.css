@@ -1,0 +1,1036 @@
+
+
+/*
+
+	output.append("<div class=\"WCMoverlay\" id=\"WCMoverlay\" style=\"display: none;\"></div>");
+	output.append("<div class=\"WCMwrapper\" id=\"WCMwrapper\" style=\"display: none;\">");
+	output.append("<div class=\"WCMinputs\" id=\"WCMinputs\">");
+
+	output.append("<table class=\"WCMeditable\" width=\"100%\" style=\"border: solid 1px #ffffff\" cellspacing=0 cellpadding=0><tr><td>");
+	output.append("<table class=\"WCMeditable\" width=\"100%\" style=\"border: solid 1px #000000\" cellspacing=0 cellpadding=0>");
+	output.append("<tr bgcolor=\"#000000\"><td><table class=\"WCMeditableheader\" border=0 width=\"100%\" cellspacing=0 cellpadding=2>");
+	output.append("<tr><td align=\"left\" valign=\"top\" class=\"WCMeditablestatus\">");
+	output.append("</td><td class=\"WCMeditabletitle\" width=\"100%\" align=center valign=top><font color=\"white\" size=\"1\" face=\"Arial, Helvetica\">");
+	output.append("</td><td class=\"WCMeditablelinks\" align=right valign=top>");
+
+	output.append("<nobr><a href=\"" + addnew_href + "\"><font color=\"#ff0000\" size=\"1\" face=\"Arial, Helvetica\">" + text.display("addnew") + "</font></a></nobr><br>");
+
+*/
+
+table.WCMeditable {
+	border: 1px solid white;
+	padding: 0px;
+	width: 100%;
+}
+tr.WCMeditable {
+	background-color: black;
+	padding: 0px;
+	width: 100%;
+}
+
+table.WCMeditable table.WCMeditable {	/* outer box around editable content item */
+	padding: 0px;
+	width: 100%;
+	border: 1px solid black;	/* thin black border */
+	/* border: none;		/* no border */
+}
+
+table.WCMeditable table.WCMeditable table.WCMeditableheader { /* inner box around editable content item header */
+	padding: 0px;
+	width: 100%;
+	border: 3px solid black;
+}
+
+table.WCMeditable table.WCMeditable table.WCMeditableheader tr {
+	/* display: none;		/* hidden editable content item header */
+}
+table.WCMeditable table.WCMeditable table.WCMeditableheader td.WCMeditabletitle {
+	/* display: none;		/* hidden editable content item header title */
+}
+table.WCMeditable table.WCMeditable table.WCMeditableheader td.WCMeditablestatus {
+	/* display: none;		/* hidden editable content item header status */
+}
+table.WCMeditable table.WCMeditable table.WCMeditableheader td.WCMeditablelinks {
+	/* display: none;		/* hidden editable content item header links */
+}
+table.WCMeditable table.WCMeditable table.WCMeditableheader td.WCMeditablelinks a {
+	color: #ff0000;
+	font-size: 8pt;
+	font-family: Arial, Helvetica
+	text-decoration: none;
+}
+table.WCMeditable table.WCMeditable table.WCMeditableheader td.WCMeditablelinks a:visited {
+	color: #ff0000;
+	font-size: 8pt;
+	font-family: Arial, Helvetica
+	text-decoration: none;
+}
+table.WCMeditable table.WCMeditable table.WCMeditableheader td.WCMeditablelinks a:hover {
+	color: #ff0000;
+	font-size: 8pt;
+	font-family: Arial, Helvetica
+	text-decoration: underline;
+}
+
+td.WCMeditablestatus {
+	text-align: left;
+	vertical-align: top;
+}
+
+td.WCMeditabletitle {
+	width: 100%;
+	text-align: center;
+	vertical-align: middle;
+	color: white;
+	font-size: 10pt;
+	font-family: Arial, Helvetica;
+}
+
+td.WCMeditablelinks {
+	text-align: right;
+	vertical-align: top;
+}
+
+QQQbody {
+ background-color: white;
+}
+
+.QQQWCMeditable p, .QQQWCMeditable div, .QQQWCMeditable th, .QQQWCMeditable td, .QQQWCMeditable pre {
+ color: black;
+ font-family: Arial, Helvetica;
+ font-size: 12pt;
+ font-style: normal;
+}
+
+.QQQWCMeditable a, .QQQWCMeditable a:visited {
+ color: black;
+ text-decoration: underline;
+}
+
+.QQQWCMeditable a:hover {
+ color: #cc0000;
+ text-decoration: underline;
+}
+
+.WCMtoolbar {
+ color: #cc0000;
+ font-size: 12pt;
+ font-weight: bold;
+ font-family: Arial, Helvetica;
+ text-decoration: none;
+ vertical-align: top;
+}
+.WCMtoolbar a,.WCMtoolbar a:visited {
+ color: #cc0000;
+ font-size: 12pt;
+ font-weight: bold;
+ font-family: Arial, Helvetica;
+ text-decoration: none;
+ vertical-align: top;
+}
+.WCMtoolbar a:hover {
+ color: #cc0000;
+ font-size: 12pt;
+ font-weight: bold;
+ font-family: Arial, Helvetica;
+ text-decoration: underline;
+ vertical-align: top;
+}
+
+.WCMfrontpage {
+}
+.WCMfrontpage a,.WCMfrontpage a:visited {
+ color: #cc0000;
+ font-size: 12pt;
+ font-weight: bold;
+ font-family: Arial, Helvetica;
+ text-decoration: none;
+ vertical-align: top;
+}
+.WCMfrontpage a:hover {
+ color: #cc0000;
+ font-size: 12pt;
+ font-weight: bold;
+ font-family: Arial, Helvetica;
+ text-decoration: underline;
+ vertical-align: top;
+}
+
+.WCMtitle, .WCMtitle p {
+ color: white;
+ padding-right: 10px;
+ font-size: 13pt;
+ font-weight: bold;
+ font-family: Arial, Helvetica;
+ text-decoration: none;
+}
+.WCMheader {
+ color: black;
+ padding-left: 10px;
+ padding-top: 5px;
+ padding-bottom: 5px;
+ background-color: #cc0000;
+ font-size: 26pt;
+ font-weight: bold;
+ font-family: Arial, Helvetica;
+ text-decoration: none;
+}
+.WCMsubheader {
+ color: white;
+ padding-left: 5px;
+ padding-right: 5px;
+ font-size: 13pt;
+ font-weight: bold;
+ font-family: Arial Narrow, Helvetica Narrow;
+ text-decoration: none;
+}
+.WCMfooter, .WCMfooter a, .WCMfooter a:visited, .WCMfooter a:hover {
+ color: white;
+ background-color: #cc0000;
+ font-size: 10pt;
+ font-family: Arial, Helvetica;
+ text-decoration: none;
+}
+
+
+
+table.WCMouterBorder {
+ background-color: #ffffff;
+ border: 0;
+ position: static;
+ width: 100%;
+}
+
+td.WCMouterBorderTopLeft {
+ background-color: #000000;
+ background-image: url(/webadmin/outerBorderTopLeft.gif);
+        background-repeat: no-repeat;
+  width: 21px;
+ height: 21px;
+}
+td.WCMouterBorderTop {
+ background-color: #000000;
+ background-image: url(/webadmin/outerBorderTop.gif);
+        background-repeat: repeat-x;
+ height: 21px;
+}
+td.WCMouterBorderTopRight {
+ background-color: #000000;
+ background-image: url(/webadmin/outerBorderTopRight.gif);
+        background-repeat: no-repeat;
+ width: 21px;
+ height: 21px;
+}
+td.WCMouterBorderLeft {
+ background-color: #000000;
+ background-image: url(/webadmin/outerBorderLeft.gif);
+        background-repeat: repeat-y;
+ width: 21px;
+}
+td.WCMouterBorderRight {
+ background-color: #000000;
+ background-image: url(/webadmin/outerBorderRight.gif);
+        background-repeat: repeat-y;
+ width: 21px;
+}
+td.WCMouterBorderBottomLeft {
+ background-color: #000000;
+ background-image: url(/webadmin/outerBorderBottomLeft.gif);
+        background-repeat: no-repeat;
+ width: 21px;
+ height: 21px;
+}
+td.WCMouterBorderBottom {
+ background-color: #000000;
+ background-image: url(/webadmin/outerBorderBottom.gif);
+        background-repeat: repeat-x;
+ height: 21px;
+}
+td.WCMouterBorderBottomRight {
+ background-color: #000000;
+ background-image: url(/webadmin/outerBorderBottomRight.gif);
+        background-repeat: no-repeat;
+ width: 21px;
+ height: 21px;
+}
+
+td.WCMouterPaddingTopLeft {
+ background-color: #ffffff;
+ width: 20px;
+ height: 20px;
+}
+td.WCMouterPaddingTop {
+ background-color: #ffffff;
+ height: 20px;
+}
+td.WCMouterPaddingTopRight {
+ background-color: #ffffff;
+ width: 20px;
+ height: 20px;
+}
+td.WCMouterPaddingLeft {
+ background-color: #ffffff;
+ width: 20px;
+}
+td.WCMouterPaddingRight {
+ background-color: #ffffff;
+ width: 20px;
+}
+td.WCMouterPaddingBottomLeft {
+ background-color: #ffffff;
+ width: 20px;
+ height: 20px;
+}
+td.WCMouterPaddingBottom {
+ background-color: #ffffff;
+ height: 20px;
+}
+td.WCMouterPaddingBottomRight {
+ background-color: #ffffff;
+ width: 20px;
+ height: 20px;
+}
+
+table.WCMinnerBorder {
+ background-color: #ffffff;
+ border: 0;
+ position: static;
+ width: 100%;
+}
+
+td.WCMinnerBorderTopLeft {
+ background-color: #000000;
+ width: 1px;
+ height: 1px;
+}
+td.WCMinnerBorderTop {
+ background-color: #000000;
+ height: 1px;
+}
+td.WCMinnerBorderTopRight {
+ background-color: #000000;
+ width: 1px;
+ height: 1px;
+}
+td.WCMinnerBorderLeft {
+ background-color: #000000;
+ width: 1px;
+}
+td.WCMinnerBorderRight {
+ background-color: #000000;
+ width: 1px;
+}
+td.WCMinnerBorderBottomLeft {
+ background-color: #000000;
+ width: 1px;
+ height: 1px;
+}
+td.WCMinnerBorderBottom {
+ background-color: #000000;
+ height: 1px;
+}
+td.WCMinnerBorderBottomRight {
+ background-color: #000000;
+ width: 1px;
+ height: 1px;
+}
+td.WCMinnerContentTabDivider {
+ background-color: #000000;
+ width: 1px;
+}
+td.WCMinnerContentTabBottom {
+ background-color: #000000;
+ height: 1px;
+}
+td.WCMinnerContentTabSelectedBottom {
+ background-color: #ffffff;
+ height: 1px;
+}
+
+td.WCMinnerContentTab {
+ background-color: #e0e0e0;
+ width: 1px;
+ padding: 3px;
+ font-size: 11pt;
+}
+td.WCMinnerContentTab A {
+ color: black;
+ font-weight: normal;
+ text-decoration: none;
+}
+td.WCMinnerContentTab A:visited {
+ color: black;
+ font-weight: normal;
+ text-decoration: none;
+}
+td.WCMinnerContentTab A:hover {
+ color: #cc0000;
+ font-weight: normal;
+ text-decoration: underline;
+}
+td.WCMinnerContentTabSelected {
+ background-color: #ffffff;
+ width: 1px;
+ padding: 3px;
+ font-size: 11pt;
+}
+td.WCMinnerContentTabSelected A {
+ color: #cc0000;
+ font-weight: bold;
+ text-decoration: none
+}
+td.WCMinnerContentTabSelected A:visited {
+ color: #cc0000;
+ font-weight: bold;
+ text-decoration: none
+}
+td.WCMinnerContentTabSelected A:hover {
+ color: #cc0000;
+ font-weight: bold;
+ text-decoration: none
+}
+td.WCMinnerContentTabDummy {
+ width: 1000px;
+}
+
+td.WCMinnerContent {
+ padding: 10px;
+}
+.WCMinnerContentHeading1 {
+ color: #cc0000;
+ background-color: #ffffff;
+ font-size: 18pt;
+ font-weight: bold;
+ text-decoration: none;
+}
+.WCMinnerContentHeading2 {
+ color: #cc0000;
+ background-color: #ffffff;
+ font-size: 12pt;
+ font-weight: bold;
+ text-decoration: none;
+}
+.WCMinnerContentHighlighted {
+ color: #cc0000;
+ background-color: #ffffff;
+ font-size: 12pt;
+ font-weight: bold;
+ text-decoration: none;
+}
+.WCMinnerContentSectionIntro {
+ color: #000000;
+ background-color: #ffffff;
+ font-size: 12pt;
+ font-weight: normal;
+ text-decoration: none;
+ padding-bottom: 20px;
+}
+.WCMinnerContentIntro {
+ color: #cc0000;
+ background-color: #ffffff;
+ font-size: 12pt;
+ font-weight: normal;
+ text-decoration: none;
+ padding-bottom: 20px;
+}
+th.WCMinnerContentInputName {
+ color: #000000;
+ background-color: #ffffff;
+ font-size: 15pt;
+ font-weight: bold;
+ text-decoration: none;
+}
+td.WCMinnerContentInputName {
+ color: #000000;
+ background-color: #ffffff;
+ font-size: 12pt;
+ font-weight: bold;
+ text-decoration: none;
+}
+.WCMinnerContentInputValue {
+ color: #000000;
+ background-color: #ffffff;
+ font-size: 12pt;
+ font-weight: normal;
+ text-decoration: none;
+ border: 1px solid #cccccc;
+}
+tr.WCMindex {
+ border: 1px solid #cccccc;
+ background-color: #eeeeee;
+}
+tr.WCMindex_top {
+ border: 1px solid #cccccc;
+ background-color: #dddddd;
+}
+tr.WCMindex_highlight {
+ border: 1px solid #cccccc;
+ background-color: #fcffd2;
+}
+td.WCMindex_highlight {
+ background-color: #fcffd2;
+}
+tr.WCMindex_dropable_highlight {
+ border: 1px solid #cccccc;
+ background-color: #fcffd2;
+}
+tr.WCMindex_dropable_highlight_ok {
+ border: 1px solid #cccccc;
+ background-color: #ccffcc;
+}
+tr.WCMindex_dropable_highlight_no {
+ border: 1px solid #cccccc;
+ background-color: #ffcccc;
+}
+th.WCMindex {
+ color: #ffffff;
+ background-color: #cc0000;
+ font-size: 10pt;
+ font-weight: bold;
+ text-decoration: none;
+ padding-left: 3px;
+}
+td.WCMindex {
+ color: #000000;
+ font-size: 10pt;
+ font-weight: normal;
+ text-decoration: none;
+}
+td.WCMindex_dragable {
+ cursor: move;
+}
+div.WCMindex_title {
+ color: #000000;
+ font-size: 10pt;
+ font-weight: normal;
+ text-decoration: none;
+
+ border: 1px solid black;
+ background-color: #eeeeee;
+ padding-top: 2px;
+ padding-bottom: 2px;
+ padding-left: 3px;
+ padding-right: 3px;
+ margin-top: -2px;
+ margin-left: -3px;
+ filter: alpha(opacity=70);
+ opacity: 0.7;
+
+ cursor: move;
+}
+tr.WCMindex_indent1 td.WCMindex_title {
+ padding-left: 10px;
+}
+tr.WCMindex_indent2 td.WCMindex_title {
+ padding-left: 20px;
+}
+tr.WCMindex_indent3 td.WCMindex_title {
+ padding-left: 30px;
+}
+tr.WCMindex_indent4 td.WCMindex_title {
+ padding-left: 40px;
+}
+tr.WCMindex_indent5 td.WCMindex_title {
+ padding-left: 50px;
+}
+tr.WCMindex_indent6 td.WCMindex_title {
+ padding-left: 60px;
+}
+tr.WCMindex_indent7 td.WCMindex_title {
+ padding-left: 70px;
+}
+tr.WCMindex_indent8 td.WCMindex_title {
+ padding-left: 80px;
+}
+tr.WCMindex_indent9 td.WCMindex_title {
+ padding-left: 90px;
+}
+tr.WCMindex_indent10 td.WCMindex_title {
+ padding-left: 100px;
+}
+tr.WCMindex_indent11 td.WCMindex_title {
+ padding-left: 110px;
+}
+tr.WCMindex_indent12 td.WCMindex_title {
+ padding-left: 120px;
+}
+tr.WCMindex_indent13 td.WCMindex_title {
+ padding-left: 130px;
+}
+tr.WCMindex_indent14 td.WCMindex_title {
+ padding-left: 140px;
+}
+tr.WCMindex_indent15 td.WCMindex_title {
+ padding-left: 150px;
+}
+tr.WCMindex_indent16 td.WCMindex_title {
+ padding-left: 160px;
+}
+tr.WCMindex_indent17 td.WCMindex_title {
+ padding-left: 170px;
+}
+tr.WCMindex_indent18 td.WCMindex_title {
+ padding-left: 180px;
+}
+tr.WCMindex_indent19 td.WCMindex_title {
+ padding-left: 190px;
+}
+tr.WCMindex_indent20 td.WCMindex_title {
+ padding-left: 200px;
+}
+th.WCMindex A {
+ color: #ffffff;
+ text-decoration: none;
+}
+th.WCMindex A:visited {
+ color: #ffffff;
+ text-decoration: none;
+}
+th.WCMindex A:hover {
+ color: #ffffff;
+ text-decoration: underline;
+}
+td.WCMindex A {
+ color: #cc0000;
+ font-size: 8pt;
+ text-decoration: none;
+}
+td.WCMindex A:visited {
+ color: #cc0000;
+ font-size: 8pt;
+ text-decoration: none;
+}
+td.WCMindex A:hover {
+ color: #cc0000;
+ font-size: 8pt;
+ text-decoration: underline;
+}
+
+table.WCMstatsChart * {
+}
+
+table.WCMstatsTable * {
+ font-size: small;
+}
+
+tr.WCMstatsTableTotals {
+ background-color: #cccccc;
+}
+
+td.WCMstatsTableName {
+ background-color: #cccccc;
+}
+
+td.WCMstatsTableVisitors {
+ background-color: #ff6666;
+}
+
+td.WCMstatsTableVisits {
+ background-color: #ffcc66;
+}
+
+td.WCMstatsTablePageViews {
+ background-color: #66ff66;
+}
+
+td.WCMstatsTableHits {
+ background-color: #9966ff;
+}
+
+table.WCMbrowseEditHeader {
+ width: 100%;
+ border: 0px;
+ padding: 0px;
+ background-color: #cc0000;
+}
+
+td.WCMbrowseEditHeader {
+ padding: 2px;
+}
+ 
+.WCMbrowseEditHeader, .WCMbrowseEditHeader a, .WCMbrowseEditHeader a:visited {
+ color: white;
+ background-color: #cc0000;
+ font-size: 10pt;
+ font-family: Arial, Helvetica;
+ text-decoration: none;
+}
+.WCMbrowseEditHeader a:hover {
+ color: white;
+ background-color: #cc0000;
+ font-size: 10pt;
+ font-family: Arial, Helvetica;
+ text-decoration: underline;
+}
+
+table.WCMimportfile {
+ border-spacing: 20px;
+}
+.WCMimportfile td, .WCMimportparams td {
+ border: 1px solid #cccccc;
+ margin: 5px;
+ padding: 5px;
+}
+td.WCMimportfile_disabled {
+ border: 1px solid #cccccc;
+ filter: alpha(opacity = 50);
+ -moz-opacity: 0.50;
+ opacity: 0.50;
+}
+.WCMimportfile div, .WCMimportparams div {
+ color: #000000;
+ background-color: #ffffff;
+ font-size: 12pt;
+ font-weight: normal;
+ text-decoration: none;
+ padding: 5px;
+}
+.WCMimportfile div img, .WCMimportparams div img {
+ border: 1px solid #cccccc;
+}
+.WCMimportfile_disabled div img {
+ border: 1px solid #cccccc;
+}
+
+
+
+
+
+/*==============================================================================
+
+	GRC multi-level script-free pure-CSS menuing system stylesheet.
+   This code is hereby placed into the public domain by its author
+   Steve Gibson. It may be freely used for any purpose whatsoever.
+
+	Computed Geometries:	with a default 12px font, 1.0em == 12px and
+	1px == 0.08333em.
+	Thus, our 98px wide Freeware & Research buttons are 8.166666em wide.
+
+==============================================================================*/
+
+/*====== GLOBAL OVERRIDES FOR MAJOR ITEMS AND DIFFERING BROWSER DEFAULTS =====*/
+
+/*
+QQQbody { color:#009; background:#fff; font-family: verdana, tahoma, arial, helvetica, sans-serif, MS Sans Serif; }
+QQQbody, QQQtable, QQQimg, QQQbutton, QQQiframe, QQQul, QQQli  { margin:0; padding:0; border:0; }
+QQQtable { text-align:left; }
+QQQiframe { width:0; height:0 }
+*/
+
+/* QQQul { margin-left:20px; }       /* kill default 50px left padding and set 20px */
+/* QQQli { margin-bottom:1em; }          /* set default inter-item vertical spacing */
+/* .QQQtightlist li { margin-bottom:0.25em; }     /* tighter list for simple bullets */
+
+
+/* our default page-width div */
+/*
+.QQQpagecontainer { width:85%; text-align:left; font-size:10pt;}
+*/
+
+ /*================= STYLES FOR THE GRC MASTHEAD & CONTROLS ==================*/
+
+#WCMmenucontainer {		/* container for entire WCM header */
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 35px;
+	background: white;
+	z-index: 999;
+}
+#WCMpagecontainer {
+	margin-top: 35px;
+}
+
+.WCMmenuminwidth0 {             /* for all browsers (non-IE) that obey min-width */
+	position:relative;
+	border:0;
+	margin:0;
+	padding:0;
+	width:100%;
+	/* height:55px;/* 36px masthead height + 18px button height + 1px lower border*/
+	min-width:560px;
+}
+
+/* suppress our whole menu when not an interactive mode (when printing, etc.) */
+@media print, projection { .WCMmenuminwidth0 { d\isplay:none; } }
+
+* html .WCMmenuminwidth1 { /* this allows IE5/6 to simulate min-width capability */
+	position:relative;  /* we can simulate a minimum width by creating a large */
+	float:left;          /* border in this first div, then placing our content */
+	height: 1px;          /* into a second nested div (see 2nd nested div next */
+	border-left:560px solid #fff;    /* CSS box-model borders are a fixed size */
+}
+
+* html .WCMmenuminwidth2 {    /* used to simulate min-width capability for IE5/6 */
+	position:relative;
+	margin-left:-560px;
+	height: 1px;
+}
+
+#WCMmenuhead {
+	position:relative;      /* position our child objects relative to this div */
+	float:left;
+	vertical-align:top;	         /* protect from super-large user text sizing */
+	border:0;
+	margin:0;
+	padding:0;
+	width:100%;                                  /* grey-fill the entire width */
+	/* height:36px;                  /* set the overall height above the menu-bar */
+	background:black;                          /* a very light shade of grey */
+}
+
+#WCMmenuheadlogo {
+	float:left;
+	vertical-align:top;
+	border:0;
+	padding:0;
+	margin:6px 0 0 7px;
+}
+
+ /*========================= TOP OF THE MENU CASCADE =========================*/
+
+.WCMmenu {
+	position:relative;        /* establish a menu-relative positioning context */
+	float:left;                                     /* play nicely with others */
+	margin:0;
+	padding:0;
+	border:0;
+	height:18px;                                  /* the menu's overall height */
+	width:100%;         /* we always want our menu to fill the available space */
+	background: black;
+	/* font-family: Verdana, Arial, Helvetica, sans-serif; /* */
+	font-size:12px;         /* this (and also below) sets the menu's font size */
+	border-bottom:1px solid black;        /* give us a black border underneath */
+	z-index: 999;
+}
+
+.WCMmenu a {
+	color:white;
+}
+
+.WCMmenu a:visited {
+	color:white;
+}
+
+.WCMmenu a:hover {
+	color:white;
+	text-decoration:underline;
+}
+
+.WCMmenu img {
+	vertical-align: top;      /* prevent images from being pushed down by text */
+}
+
+.WCMmenu ul {
+	padding:0;
+	margin:0;
+	border:0;
+	list-style-type:none;          /* we don't want to view the list as a list */
+	line-height:1.5em;           /* globally set the menu's item spacing. note */
+}                               /* this must be 1.0 or 1.5 or 2.0 for Mozilla */
+
+.WCMmenu li {
+	float:left;    /* this creates the side-by-side array of top-level buttons */
+	position:relative;    /* create local positioning contexts for each button */
+	margin:0;
+}
+
+.WCMmenu ul li table {
+	margin:-1px 0;              /* IE5 needs -1px top and bottom table margins */
+	m\argin:0;               /* re-zero the table margins for everyone but IE5 */
+	border-collapse:collapse;      /* IE5 needs this for the sub-menus to work */
+	font-size:12px;        /* this sets the base font size for our entire menu */
+}
+
+.WCMmenudrop {
+	display:block;
+	padding:0px 0.33em;	       /* this sets the l/r margins for our menu item */
+	margin:0;
+	text-align:right;   /* this right alignment goes with the float:left below */
+	cursor:pointer;      /* IE tries to switch back to an I-beam, don't let it */
+	cursor:hand;           /* IE5 only knows about "hand", so set it both ways */
+}
+
+.WCMmenudrop span {        /* this simultaneously left and right aligns the text and */
+	float:left;       /* the >> in the drop-down menus which link to sub-menus */
+}
+
+.WCMmenuright {
+	position:relative;  /* establish a local positioning context for YAH label */
+	float:right;                  /* and right-align it at the top of our page */
+}
+
+#QQQresearch {            /* this rightmost "Research" button must be positioned */
+	position:absolute;       /* absolutely so that the YAH (you are here) text */
+	top:0px;               /* label will slide underneath it under Opera v8.54 */
+	left:364px;    /* which has a z-order sequencing bug with abs-pos elements */
+}
+
+/*======================== TOP LEVEL MENU DEFINITIONS ========================*/
+
+.WCMmenu ul li ul {
+	display:none;                  /* initially hide the entire list hierarchy */
+	padding:1px;                               /* this is our box border width */
+}
+
+.WCMmenu ul li a,
+.WCMmenu ul li a:visited {                    /* unselected top-level menu items */
+	color:#ffffff;
+	display:block;
+	float:left;
+	text-decoration:none;
+	height:18px;
+}
+
+.WCMmenu ul li:hover a,
+.WCMmenu ul li a:hover {                        /* selected top-level menu items */
+	/* border-top:1px solid #000;    /* these 2 lines create the push-in illusion */
+	/* height:16px;			/* */
+	color: red;
+}
+
+/*======================== 2ND LEVEL MENU DEFINITIONS ========================*/
+
+.WCMmenu ul li:hover ul,
+.WCMmenu ul li a:hover ul {                           /* 2nd level drop-down box */
+	display:block;
+	position:absolute;
+	margin:0;
+	top:17px;              /* place us just up underneath the top-level images */
+	left:-1px;       /* left-align our drop-down to the previous button border */
+	height:auto;      /* the drop-down height will be determiend by line count */
+	width:33.5em;
+	color:black;                        /* this sets the unselected-text color */
+	/* background:black;         /* this sets our menu's effective "border" color */
+	white-space: nowrap;
+	z-index: 999;
+}
+
+.WCMmenu ul li:hover ul.WCMmenuleft,
+.WCMmenu ul li a:hover ul.WCMmenuleft {/* our first dropdown should not be skewed */
+	left:0px;
+}
+
+.WCMmenu ul li:hover ul.WCMmenuskinny,
+.WCMmenu ul li a:hover ul.WCMmenuskinny {             /* 2nd level skinny drop-down box */
+	width:9.5em;   /* with a 12px default font, this is 114px width (114/12) */
+	white-space: nowrap;
+}
+
+.WCMmenu ul.WCMmenuright li:hover ul,
+.WCMmenu ul.WCMmenuright li a:hover ul {    /* 2nd level neighborhood drop-down box */
+	left:auto;
+	right:0;         /* nudge the right menu right to line up under the border */
+}
+
+* html .WCMmenu ul.WCMmenuright li a:hover ul {         /* IE5/6 needs a tweak here */
+	right:-1px;
+}
+
+.WCMmenu ul li:hover ul li,
+.WCMmenu ul li a:hover ul li {                   /* 2nd level unselected items */
+	white-space: nowrap;
+}
+.WCMmenu ul li:hover ul li a,
+.WCMmenu ul li a:hover ul li a {                   /* 2nd level unselected items */
+	border:0;
+	margin:0;
+	padding:5px;
+	height:auto;
+	color:black;               /* this sets the unselected drop-down text color */
+	background:#d8d8d8;       /* this sets the drop-down menu background color */
+	width:33.5em;
+	white-space: nowrap;
+}
+
+.WCMmenu ul li:hover ul li:hover a,
+.WCMmenu ul li a:hover ul li a:hover {                /* 2nd level selected item */
+	color:red;
+	/* background:white;			/* */
+	background:#d8d8d8;
+}
+
+.WCMmenu ul li:hover ul.WCMmenuskinny li a,
+.WCMmenu ul li a:hover ul.WCMmenuskinny li a,
+.WCMmenu ul li:hover ul.WCMmenuskinny li a:hover,
+.WCMmenu ul li a:hover ul.WCMmenuskinny li a:hover {     /* 2nd level un+selected items */
+	width:9.5em;
+	white-space: nowrap;
+}
+
+/*======================== 3RD LEVEL MENU DEFINITIONS ========================*/
+
+.WCMmenu ul li:hover ul li ul,
+.WCMmenu ul li a:hover ul li a ul {             /* hide inactive 3rd-level menus */
+	visibility:hidden;
+}
+     
+.WCMmenu ul li:hover ul li:hover ul,
+.WCMmenu ul li a:hover ul li a:hover ul {             /* 3rd level drop-down box */
+	visibility:visible;
+	position:absolute;
+	margin-top:-1px;	      /* bring the top edge of the 3rd level menu up one */
+	top:0;
+	left:8.08333em;
+	width:14em;
+	white-space: nowrap;
+}
+
+.WCMmenu ul li:hover ul li:hover ul li a,
+.WCMmenu ul li a:hover ul li a:hover ul li a {     /* 3rd level unselected items */
+	width:14em;
+	white-space: nowrap;
+	background:#d8d8d8;
+}
+
+.WCMmenu ul li:hover ul li:hover ul li a:hover,
+.WCMmenu ul li a:hover ul li a:hover ul li a:hover {    /* level3 selected items */
+	width:14em;
+	white-space: nowrap;
+	background:white;
+}
+
+/*======================== MENU ITEMS STYLING ========================*/
+
+#WCMmenu ul li ul li {
+line-height: 1.0;
+margin: 0px;
+padding: 0px;
+}
+
+#text {           /* the Mac's standard Safari browser will not see this code */
+	height:1.215em;#           /* ...  but every other browser will and should */
+} /* Safari barfs on the illegal pound sign (#) after the rule's property val */
+
+
+
+/* modal dialogue windows */
+
+.WCMmodal {
+  background: #FFF;
+  color: #000;
+  padding: 15px;
+  border: 3px solid #cccccc;
+  border-right: 3px solid #888888;
+  border-bottom: 3px solid #888888;
+  display: none;
+}
+
+.WCMmodaloverlay {
+  border-width: 0;
+  margin: 0;
+  padding: 0;
+  background: #000 none repeat scroll 0 0;
+  display: none;
+  height: 2500px;
+  top: 0;
+  left: 0;
+  filter: alpha(opacity=70);
+  opacity: 0.70;
+  width: 100%;
+  position: fixed;
+  -moz-background-clip: -moz-initial;
+  -moz-background-origin: -moz-initial;
+  -moz-background-inline-policy: -moz-initial;
+}

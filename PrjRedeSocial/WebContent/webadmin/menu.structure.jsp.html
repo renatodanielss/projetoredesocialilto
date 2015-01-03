@@ -1,0 +1,42 @@
+
+<% if (mysession.get("menu").equals("structure")) { %>
+	<br>
+	<div id="contentStructureMenu" style="display: none;">
+		<ul><li rel="root" class="jstree-wcm-root" id="0"><a class="<% if (myrequest.getParameter("root").equals("")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/structure.jsp?menu=structure&contentclass=page,product&contentgroup=%20&contenttype=%20&status=%20&version=%20&root=&title=<%= URLEncoder.encode(mytext.display("menu.content.structure")) %>"><%= mytext.display("menu.content.structure") %></a></li></ul>
+<%
+		String SQL = "select distinct domain,remote,useragent,language,referrer,keywords,default_page from websites order by domain,remote,useragent,language,referrer,keywords,default_page";
+		Website mywebsite = new Website(mytext);
+		mywebsite.records(db, SQL);
+		while (mywebsite.records(db, "")) {
+			String mytitle = URLEncoder.encode(mywebsite.getDomain());
+			mytitle += " (" + mywebsite.getDefaultPage() + ")";
+
+			String mydomain = html.encode(mywebsite.getDomain());
+			String myid = " (" + mywebsite.getDefaultPage() + ")";
+			String myremote = "";
+			if (! mywebsite.getRemote().equals("")) {
+				myremote = " (" + html.encode(mywebsite.getRemote()) + ")";
+			}
+			String myuseragent = "";
+			if (! mywebsite.getUserAgent().equals("")) {
+				myuseragent = " (" + html.encode(mywebsite.getUserAgent()) + ")";
+			}
+			String myreferrer = "";
+			if (! mywebsite.getReferrer().equals("")) {
+				myreferrer = " (" + html.encode(mywebsite.getReferrer()) + ")";
+			}
+			String mykeywords = "";
+			if (! mywebsite.getKeywords().equals("")) {
+				mykeywords = " (" + html.encode(mywebsite.getKeywords()) + ")";
+			}
+			String mylanguage = "";
+			if (! mywebsite.getLanguage().equals("")) {
+				mylanguage = " (" + html.encode(mywebsite.getLanguage()) + ")";
+			}
+%>
+			<ul><li rel="root" class="jstree-wcm-root" id="-<%= mywebsite.getDefaultPage() %>"><a class="<% if (myrequest.getParameter("title").equals(mytitle)) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/structure.jsp?menu=structure&contentclass=page,product&contentgroup=%20&contenttype=%20&status=%20&version=%20&root=<%= mywebsite.getDefaultPage() %>&title=<%= mytitle %>"><%= mydomain %><%= myremote %><%= myuseragent %><%= mylanguage %><%= myreferrer %><%= mykeywords %><%= myid %></a></li></ul>
+<%
+		}
+%>
+	</div>
+<% } %>

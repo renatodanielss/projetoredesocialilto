@@ -1,0 +1,340 @@
+	<div align="right">
+		<form id="selectfilterform" action="#" method="get">
+			<input type="hidden" name="id" value="<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>">
+			<input type="hidden" name="contentclass" value="<%= html.encodeHtmlEntities(myrequest.getParameter("contentclass")) %>">
+			<input type="hidden" name="contentgroup" value="<%= html.encodeHtmlEntities(myrequest.getParameter("contentgroup")) %>">
+			<input type="hidden" name="contenttype" value="<%= html.encodeHtmlEntities(myrequest.getParameter("contenttype")) %>">
+			<input type="hidden" name="database" value="<%= html.encodeHtmlEntities(myrequest.getParameter("database")) %>">
+			<input type="hidden" name="userclass" value="<%= html.encodeHtmlEntities(myrequest.getParameter("userclass")) %>">
+			<input type="hidden" name="usergroup" value="<%= html.encodeHtmlEntities(myrequest.getParameter("usergroup")) %>">
+			<input type="hidden" name="usertype" value="<%= html.encodeHtmlEntities(myrequest.getParameter("usertype")) %>">
+			<input type="hidden" name="visit" value="<%= html.encodeHtmlEntities(myrequest.getParameter("visit")) %>">
+			<input type="hidden" name="visitor" value="<%= html.encodeHtmlEntities(myrequest.getParameter("visitor")) %>">
+			<select id="limit" name="limit">
+				<option value="<%= mysession.get("admin_usage_limit") %>"><%= mytext.display("usage.limit.select") %>
+				<option value="10"<% if (mysession.get("admin_usage_limit").equals("10")) { %> selected<% } %>><%= mytext.display("usage.limit.top") %> 10
+				<option value="25"<% if (mysession.get("admin_usage_limit").equals("25")) { %> selected<% } %>><%= mytext.display("usage.limit.top") %> 25
+				<option value="50"<% if (mysession.get("admin_usage_limit").equals("50")) { %> selected<% } %>><%= mytext.display("usage.limit.top") %> 50
+				<option value="100"<% if (mysession.get("admin_usage_limit").equals("100")) { %> selected<% } %>><%= mytext.display("usage.limit.top") %> 100
+				<option value="250"<% if (mysession.get("admin_usage_limit").equals("250")) { %> selected<% } %>><%= mytext.display("usage.limit.top") %> 250
+				<option value="500"<% if (mysession.get("admin_usage_limit").equals("500")) { %> selected<% } %>><%= mytext.display("usage.limit.top") %> 500
+				<option value="1000"<% if (mysession.get("admin_usage_limit").equals("1000")) { %> selected<% } %>><%= mytext.display("usage.limit.top") %> 1000
+				<option value=" "<% if (mysession.get("admin_usage_limit").equals("")) { %> selected<% } %>><%= mytext.display("usage.limit.all") %>
+			</select>
+<% if (License.valid(db, myconfig, "experience")) { %>
+<% if (! myrequest.getRequestURI().matches("^/" + mytext.display("adminpath") + "/usage/(index|daily|weekly|monthly|yearly|hours|weekdays|days|weeks|months|clienthosts|visitors|robots|operatingsystems|webbrowsers|devices|users|usergroups|usertypes|referers|searchengines|searchqueries|searchwords|entry|paths|exit|duration|visits|contentitem)\\.jsp.*$")) { %>
+			<select id="details" name="details">
+				<option value=""><%= mytext.display("usage.details.basic") %>
+				<option value="+countusersegments"<% if (mysession.get("admin_usage_details").equals("+countusersegments")) { %> selected<% } %>><%= mytext.display("usage.details.usersegments") %>
+				<option value="+countusertests"<% if (mysession.get("admin_usage_details").equals("+countusertests")) { %> selected<% } %>><%= mytext.display("usage.details.usertests") %>
+				<option value="+countusersegments+countusertests"<% if (mysession.get("admin_usage_details").equals("+countusersegments+countusertests")) { %> selected<% } %>><%= mytext.display("usage.details.all") %>
+			</select>
+<% } else { %>
+<% mysession.set("admin_usage_details", ""); %>
+<% } %>
+<% } %>
+			<select id="period" name="period" onChange="selectPeriod(this);">
+				<option value="<%= mysession.get("admin_usage_period") %>"><%= mytext.display("usage.period.select") %>
+				<option value="now"<% if ((mysession.get("admin_usage_period").equals("")) || (mysession.get("admin_usage_period").equals("now"))) { %> selected<% } %>><%= mytext.display("usage.period.now") %>
+<% if ((myconfig.get(db, "log_period").equals("")) || (Common.integernumber(myconfig.get(db, "log_period")) >= 86400)) { %>
+				<option value="today"<% if (mysession.get("admin_usage_period").equals("today")) { %> selected<% } %>><%= mytext.display("usage.period.today") %>
+				<option value="last24hours"<% if (mysession.get("admin_usage_period").equals("last24hours")) { %> selected<% } %>><%= mytext.display("usage.period.last24hours") %>
+				<option value="yesterday"<% if (mysession.get("admin_usage_period").equals("yesterday")) { %> selected<% } %>><%= mytext.display("usage.period.yesterday") %>
+<% } %>
+<% if ((myconfig.get(db, "log_period").equals("")) || (Common.integernumber(myconfig.get(db, "log_period")) >= 604800)) { %>
+				<option value="thisweek"<% if (mysession.get("admin_usage_period").equals("thisweek")) { %> selected<% } %>><%= mytext.display("usage.period.thisweek") %>
+				<option value="last7days"<% if (mysession.get("admin_usage_period").equals("last7days")) { %> selected<% } %>><%= mytext.display("usage.period.last7days") %>
+				<option value="lastweek"<% if (mysession.get("admin_usage_period").equals("lastweek")) { %> selected<% } %>><%= mytext.display("usage.period.lastweek") %>
+<% } %>
+<% if ((myconfig.get(db, "log_period").equals("")) || (Common.integernumber(myconfig.get(db, "log_period")) >= 1209600)) { %>
+				<option value="last14days"<% if (mysession.get("admin_usage_period").equals("last14days")) { %> selected<% } %>><%= mytext.display("usage.period.last14days") %>
+<% } %>
+<% if ((myconfig.get(db, "log_period").equals("")) || (Common.integernumber(myconfig.get(db, "log_period")) >= 2678400)) { %>
+				<option value="thismonth"<% if (mysession.get("admin_usage_period").equals("thismonth")) { %> selected<% } %>><%= mytext.display("usage.period.thismonth") %>
+				<option value="last30days"<% if (mysession.get("admin_usage_period").equals("last30days")) { %> selected<% } %>><%= mytext.display("usage.period.last30days") %>
+				<option value="lastmonth"<% if (mysession.get("admin_usage_period").equals("lastmonth")) { %> selected<% } %>><%= mytext.display("usage.period.lastmonth") %>
+<% } %>
+<% if ((myconfig.get(db, "log_period").equals("")) || (Common.integernumber(myconfig.get(db, "log_period")) >= 7948800)) { %>
+				<option value="thisquarter"<% if (mysession.get("admin_usage_period").equals("thisquarter")) { %> selected<% } %>><%= mytext.display("usage.period.thisquarter") %>
+				<option value="last3months"<% if (mysession.get("admin_usage_period").equals("last3months")) { %> selected<% } %>><%= mytext.display("usage.period.last3months") %>
+				<option value="lastquarter"<% if (mysession.get("admin_usage_period").equals("lastquarter")) { %> selected<% } %>><%= mytext.display("usage.period.lastquarter") %>
+<% } %>
+<% if ((myconfig.get(db, "log_period").equals("")) || (Common.integernumber(myconfig.get(db, "log_period")) >= 15897600)) { %>
+				<option value="thishalfyear"<% if (mysession.get("admin_usage_period").equals("thishalfyear")) { %> selected<% } %>><%= mytext.display("usage.period.thishalfyear") %>
+				<option value="last6months"<% if (mysession.get("admin_usage_period").equals("last6months")) { %> selected<% } %>><%= mytext.display("usage.period.last6months") %>
+				<option value="lasthalfyear"<% if (mysession.get("admin_usage_period").equals("lasthalfyear")) { %> selected<% } %>><%= mytext.display("usage.period.lasthalfyear") %>
+<% } %>
+<% if ((myconfig.get(db, "log_period").equals("")) || (Common.integernumber(myconfig.get(db, "log_period")) >= 31622400)) { %>
+				<option value="thisyear"<% if (mysession.get("admin_usage_period").equals("thisyear")) { %> selected<% } %>><%= mytext.display("usage.period.thisyear") %>
+				<option value="last12months"<% if (mysession.get("admin_usage_period").equals("last12months")) { %> selected<% } %>><%= mytext.display("usage.period.last12months") %>
+				<option value="lastyear"<% if (mysession.get("admin_usage_period").equals("lastyear")) { %> selected<% } %>><%= mytext.display("usage.period.lastyear") %>
+<% } %>
+<% if ((myconfig.get(db, "log_period").equals("")) || (Common.integernumber(myconfig.get(db, "log_period")) >= 63158400)) { %>
+				<option value="all"<% if (mysession.get("admin_usage_period").equals("all")) { %> selected<% } %>><%= mytext.display("usage.period.all") %>
+<% } %>
+			</select>
+
+
+
+<script>
+
+function selectPeriod(input) {
+	var now = new Date();
+//now.setTime(now.getTime()+10*24*60*60*1000);
+	var periodstart = new Date(now.getTime());
+	var periodend = new Date(now.getTime());
+	switch(input.value) {
+		case 'now':
+			periodstart = "";
+			periodend = "";
+			break;
+		case 'today':
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'last24hours':
+			periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			break;
+		case 'yesterday':
+			periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodend = new Date(periodstart.getTime());
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'thisweek':
+			var dayofweek = now.getDay() ? now.getDay()-1 : 6;
+			periodstart.setTime(now.getTime()-dayofweek*24*60*60*1000);
+			periodend.setTime(now.getTime()+(6-dayofweek)*24*60*60*1000);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'last7days':
+			periodstart.setTime(periodstart.getTime()-7*24*60*60*1000);
+			break;
+		case 'lastweek':
+			var dayofweek = now.getDay() ? now.getDay()-1 : 6;
+			periodstart.setTime(now.getTime()-dayofweek*24*60*60*1000);
+			periodend.setTime(now.getTime()+(6-dayofweek)*24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-7*24*60*60*1000);
+			periodend.setTime(periodend.getTime()-7*24*60*60*1000);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'last14days':
+			periodstart.setTime(periodstart.getTime()-14*24*60*60*1000);
+			break;
+		case 'thismonth':
+			periodstart.setTime(now.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			periodend.setTime(periodstart.getTime()+(32-periodstart.getDate())*24*60*60*1000);
+			while (periodend.getDate()<7) periodend.setTime(periodend.getTime()-24*60*60*1000);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'last30days':
+			var olddate = periodstart.getDate();
+			if (periodstart.getMonth()>0) {
+				periodstart.setMonth(periodstart.getMonth()-1);
+			} else {
+				periodstart.setFullYear(periodstart.getFullYear()-1);
+				periodstart.setMonth(periodstart.getMonth()-1+12);
+			}
+			if (periodstart.getDate()<olddate) {
+				periodstart.setTime(periodstart.getTime()-periodstart.getDate()*24*60*60*1000);
+			}
+			break;
+		case 'lastmonth':
+			periodstart.setTime(now.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			periodend.setTime(periodstart.getTime()+(32-periodstart.getDate())*24*60*60*1000);
+			while (periodend.getDate()<7) periodend.setTime(periodend.getTime()-24*60*60*1000);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'thisquarter':
+			while ((periodstart.getMonth()!=0) && (periodstart.getMonth()!=3) && (periodstart.getMonth()!=6) && (periodstart.getMonth()!=9)) periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			while ((periodend.getMonth()!=2) && (periodend.getMonth()!=5) && (periodend.getMonth()!=8) && (periodend.getMonth()!=11)) periodend.setTime(periodend.getTime()+24*60*60*1000);
+			while (periodend.getDate()!=1) periodend.setTime(periodend.getTime()+24*60*60*1000);
+			periodend.setTime(periodend.getTime()-24*60*60*1000);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'last3months':
+			var olddate = periodstart.getDate();
+			if (periodstart.getMonth()>2) {
+				periodstart.setMonth(periodstart.getMonth()-3);
+			} else {
+				periodstart.setFullYear(periodstart.getFullYear()-1);
+				periodstart.setMonth(periodstart.getMonth()-3+12);
+			}
+			if (periodstart.getDate()<olddate) {
+				periodstart.setTime(periodstart.getTime()-periodstart.getDate()*24*60*60*1000);
+			}
+			break;
+		case 'lastquarter':
+			while ((periodstart.getMonth()!=0) && (periodstart.getMonth()!=3) && (periodstart.getMonth()!=6) && (periodstart.getMonth()!=9)) periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodend.setTime(periodstart.getTime());
+			while ((periodstart.getMonth()!=0) && (periodstart.getMonth()!=3) && (periodstart.getMonth()!=6) && (periodstart.getMonth()!=9)) periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'thishalfyear':
+			while ((periodstart.getMonth()!=0) && (periodstart.getMonth()!=6)) periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			while ((periodend.getMonth()!=0) && (periodend.getMonth()!=6)) periodend.setTime(periodend.getTime()+24*60*60*1000);
+			periodend.setTime(periodend.getTime()-24*60*60*1000);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'last6months':
+			var olddate = periodstart.getDate();
+			if (periodstart.getMonth()>5) {
+				periodstart.setMonth(periodstart.getMonth()-6);
+			} else {
+				periodstart.setFullYear(periodstart.getFullYear()-1);
+				periodstart.setMonth(periodstart.getMonth()-6+12);
+			}
+			if (periodstart.getDate()<olddate) {
+				periodstart.setTime(periodstart.getTime()-periodstart.getDate()*24*60*60*1000);
+			}
+			break;
+		case 'lasthalfyear':
+			while ((periodstart.getMonth()!=0) && (periodstart.getMonth()!=6)) periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodend.setTime(periodstart.getTime());
+			while ((periodstart.getMonth()!=0) && (periodstart.getMonth()!=6)) periodstart.setTime(periodstart.getTime()-24*60*60*1000);
+			periodstart.setTime(periodstart.getTime()-(periodstart.getDate()-1)*24*60*60*1000);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'thisyear':
+			periodstart.setMonth(0);
+			periodstart.setDate(1);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setMonth(11);
+			periodend.setDate(31);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'last12months':
+			var olddate = periodstart.getDate();
+			periodstart.setFullYear(periodstart.getFullYear()-1);
+			break;
+		case 'lastyear':
+			periodstart.setFullYear(periodstart.getFullYear()-1);
+			periodstart.setMonth(0);
+			periodstart.setDate(1);
+			periodstart.setHours(0);
+			periodstart.setMinutes(0);
+			periodstart.setSeconds(0);
+			periodstart.setMilliseconds(0);
+			periodend.setFullYear(periodend.getFullYear()-1);
+			periodend.setMonth(11);
+			periodend.setDate(31);
+			periodend.setHours(23);
+			periodend.setMinutes(59);
+			periodend.setSeconds(59);
+			periodend.setMilliseconds(999);
+			break;
+		case 'all':
+			periodstart = "";
+			periodend = "";
+			break;
+		default:
+			periodstart = "";
+			periodend = "";
+	}
+	$('#period_start').attr('value', formatdate(periodstart));
+	$('#period_end').attr('value', formatdate(periodend));
+}
+
+function formatdate(datetime) {
+	if (! datetime) return "";
+	var myyear = "" + datetime.getFullYear(); while (myyear.length < 4) myyear = "0" + myyear;
+	var mymonth = "" + (datetime.getMonth()+1); while (mymonth.length < 2) mymonth = "0" + mymonth;
+	var mydate = "" + datetime.getDate(); while (mydate.length < 2) mydate = "0" + mydate;
+	var myhour = "" + datetime.getHours(); while (myhour.length < 2) myhour = "0" + myhour;
+	var myminute = "" + datetime.getMinutes(); while (myminute.length < 2) myminute = "0" + myminute;
+	var mysecond = "" + datetime.getSeconds(); while (mysecond.length < 2) mysecond = "0" + mysecond;
+	return "" + myyear + "-" + mymonth + "-" + mydate + " " + myhour + ":" + myminute + ":" + mysecond;
+}
+
+</script>
+	:
+          <input type="text" size="20" id="period_start" name="period_start" value="<%= mysession.get("admin_usage_period_start") %>"><input type="button" value="..." id="period_start_trigger">
+	-
+          <input type="text" size="20" id="period_end" name="period_end" value="<%= mysession.get("admin_usage_period_end") %>"><input type="button" value="..." id="period_end_trigger">
+			<input type="submit" value="<%= mytext.display("usage.period.refresh") %>">
+		</form>
+	</div>
+	<p>

@@ -1,0 +1,67 @@
+<%
+if ((HashMap)usage.get("searchenginescounthits") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("searchenginescountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("searchenginescountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("searchenginescountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("searchenginescountpageviews"));
+	long maxhits = reportUsage.maxValue((HashMap)usage.get("searchenginescounthits"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("searchenginescountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("searchenginescountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("searchenginescountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("searchenginescountpageviews"));
+	long totalhits = reportUsage.totalValue((HashMap)usage.get("searchenginescounthits"));
+%>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><nobr><%= mytext.display("usage.searchengines.searchengine") %></nobr></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableHits"><%= mytext.display("usage.hits") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator mysearchenginescounthits = Common.LinkedHashMapKeysSortedByNumericValues(usage, "searchenginescounthits", "searchenginescountpageviews", "searchenginescountvisits", "searchenginescountvisitors", "searchenginescountclienthosts", false).keySet().iterator();
+	while (mysearchenginescounthits.hasNext()) {
+		String mysearchengine = "" + mysearchenginescounthits.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="center">&nbsp;<img width="16" height="16" src="searchengine/<%= reportUsage.searchengineIcon(mysearchengine) %>.gif"></td>
+				<td align="left"><nobr><%= reportUsage.searchengineName(mysearchengine) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("searchenginescountclienthosts")).get(mysearchengine)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("searchenginescountclienthosts")).get(mysearchengine))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("searchenginescountvisitors")).get(mysearchengine)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("searchenginescountvisitors")).get(mysearchengine))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("searchenginescountvisits")).get(mysearchengine)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("searchenginescountvisits")).get(mysearchengine))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("searchenginescountpageviews")).get(mysearchengine)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("searchenginescountpageviews")).get(mysearchengine))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("searchenginescounthits")).get(mysearchengine)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalhits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("searchenginescounthits")).get(mysearchengine))*100/totalhits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("searchenginescountclienthosts")).get(mysearchengine))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("searchenginescountclienthosts")).get(mysearchengine))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("searchenginescountvisitors")).get(mysearchengine))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("searchenginescountvisitors")).get(mysearchengine))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("searchenginescountvisits")).get(mysearchengine))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("searchenginescountvisits")).get(mysearchengine))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("searchenginescountpageviews")).get(mysearchengine))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("searchenginescountpageviews")).get(mysearchengine))*100/maxpageviews) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("searchenginescounthits")).get(mysearchengine))*100/maxhits) > 0) { %><img src="hits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("searchenginescounthits")).get(mysearchengine))*100/maxhits) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalhits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>

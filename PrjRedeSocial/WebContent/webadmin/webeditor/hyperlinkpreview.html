@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('hyperlinkpreview_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_title = requestParameter("title");
+request_href = requestParameter("href");
+
+function setPreviewColor(color) {
+	if (color) {
+		window.parent.previewColor = color;
+		document.getElementById("preview").style.background = color;
+	}
+}
+
+base_href = document.location.pathname.replace("hyperlinkpreview\.html", "");
+
+document.write('<base href="' + webeditor.baseHref + '">');
+
+</script>
+</head>
+<body onLoad="setPreviewColor(window.parent.previewColor);">
+<div>
+<table summary="" border="0"><tr>
+<td><div class="dtree"><script type="text/javascript">document.write(Text('hyperlinkpreview_text'));</script></div></td>
+</tr></table>
+</div>
+<hr>
+<table summary="" width="100%"><tr><td align="center" valign="middle">
+<script type="text/javascript">
+if (request_href != "") {
+	if (request_title != "") {
+		document.writeln('<div class="dtree" align="left"><img src="'+base_href+'dtree/page.gif"> ' + request_title + '<\/div>');
+	}
+	document.writeln('<div class="dtree" align="center">&nbsp;<\/div>');
+	if (( request_href.substr(0,1) == "/") && (request_href.indexOf("@@@") >= 0 )) {
+		document.writeln('<div id="preview" class="dtree" align="left" style="padding: 10px; padding-left: 20px;"><a href="javascript:;">' + request_href + '<\/a><\/div>');
+	} else if (( request_href.substr(0,1) == "/") && (request_href.indexOf("?") >= 0)) {
+		document.writeln('<div id="preview" class="dtree" align="left" style="padding: 10px; padding-left: 20px;"><a target="_blank" href="' + request_href + '&mode=preview">' + request_href + '<\/a><\/div>');
+	} else if ( request_href.substr(0,1) == "/") {
+		document.writeln('<div id="preview" class="dtree" align="left" style="padding: 10px; padding-left: 20px;"><a target="_blank" href="' + request_href + '?mode=preview">' + request_href + '<\/a><\/div>');
+	} else {
+		document.writeln('<div id="preview" class="dtree" align="left" style="padding: 10px; padding-left: 20px;"><a target="_blank" href="' + request_href + '">' + request_href + '<\/a><\/div>');
+	}
+}
+</script>
+</td></tr></table>
+</body>
+</html>

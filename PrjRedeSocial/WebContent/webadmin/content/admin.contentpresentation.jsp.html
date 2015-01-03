@@ -1,0 +1,141 @@
+	<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template"))) { %>
+
+<div id="Content Presentation" class="Content_Presentation st_view"><div class="st_view_inner">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.contentpresentation.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="2" height="7"><%= mytext.display("content.contentpresentation.intro") %></td></tr>
+
+	<% if ((myconfig.get(db, "use_presentation").equals("yes")) && ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template")))) { %>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.contentpresentation.template") %></th></tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" colspan="2">
+
+		<% if (update) { %>
+
+				<nobr>
+					<select id="template" name="template" style="width: 400px;" onChange="changeWebEditorTemplate(this, document.getElementById('stylesheet'))">
+
+			<% if (! mypage.getContentClass().equals("template")) { %>
+
+						<option value="<%= mypage.getTemplate() %>"><% if (mypage.getTemplate().equals("")) { %>&nbsp;<% } else if (mypage.getTemplate().equals("-")) { %>&nbsp;<% } else if (mypage.getTemplate().equals("0")) { %>&nbsp;<% } else { %><%= mypage.getTemplateContent().getTitle() %><% } %></option> &nbsp;
+						<option value="" <% if (mypage.getTemplate().equals("")) { %>selected<% } %>><%= mytext.display("default") %> <%= mytext.display("default.session") %></option>
+
+			<% } else { %>
+
+						<option value="<%= mypage.getTemplate() %>"><% if (mypage.getTemplate().equals("")) { %>&nbsp;<% } else if (mypage.getTemplate().equals("-")) { %>&nbsp;<% } else if (mypage.getTemplate().equals("0")) { %>&nbsp;<% } else { %><%= mypage.getTemplateContent().getTitle() %><% } %></option> &nbsp;
+
+			<% } %>
+						<option value="-" <% if (mypage.getTemplate().equals("-")) { %>selected<% } %>><%= mytext.display("default") %> <%= mytext.display("default.website") %></option>
+						<option value="0" <% if (mypage.getTemplate().equals("0")) { %>selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+					<input type="button" id="select_template" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('template', 'Templates', '', 'Templates', 'template');">
+				</nobr>
+
+		<% } else { %>
+			<% if (mypage.getTemplate().equals("")) { %>
+				<% if (! mypage.getContentClass().equals("template")) { %>
+
+				<%= mytext.display("default") %>
+
+				<% } else { %>
+
+				<%= mytext.display("none") %>
+
+				<% } %>
+			<% } else if (mypage.getTemplate().equals("-")) { %>
+
+				<%= mytext.display("default") %>
+
+			<% } else if (mypage.getTemplate().equals("0")) { %>
+
+				<%= mytext.display("none") %>
+
+			<% } else { %>
+
+				<%= mypage.getTemplateContent().getTitle() %>&nbsp;
+
+			<% } %>
+		<% } %>
+
+			</td>
+		</tr>
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.contentpresentation.stylesheet") %></th></tr>
+		<tr>
+			<td class="WCMinnerContentInputValue" colspan="2">
+
+		<% if (update) { %>
+
+				<nobr>
+					<input type="hidden" id="stylesheetinput" name="stylesheet" value="<%= mypage.getStyleSheet() %>">
+					<select multiple id="stylesheet" name="selectstylesheet" style="width: 400px;" onChange="changeWebEditorStylesheet(this)">
+
+		<% } %>
+
+		<%
+		String[] mystylesheets = mypage.getStyleSheet().split(",");
+		HashMap myselectedstylesheet = new HashMap();
+		for (int i=0; i<mystylesheets.length; i++) {
+			String mystylesheet = "" + mystylesheets[i];
+			myselectedstylesheet.put(mystylesheet, mystylesheet);
+		}
+		%>
+
+		<% if (update) { %>
+
+						<option value="" <% if (myselectedstylesheet.get("") != null) { %>selected<% } %>><%= mytext.display("default") %></option>
+						<option value="0" <% if (myselectedstylesheet.get("0") != null) { %>selected<% } %>><%= mytext.display("none") %></option>
+
+		<% } else { %>
+			<% if (myselectedstylesheet.get("") != null) { %>
+
+						<%= mytext.display("default") %><br>
+
+			<% } %>
+			<% if (myselectedstylesheet.get("0") != null) { %>
+
+						<%= mytext.display("none") %><br>
+
+			<% } %>
+		<% } %>
+		<%
+		for (int i=0; i<mystylesheets.length; i++) {
+			String mystylesheet = "" + mystylesheets[i];
+			if ((! mystylesheet.equals("")) && (! mystylesheet.equals("0"))) {
+				if (update) {
+
+						%><option value="<%= mystylesheet %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mystylesheet) %></option> &nbsp;<%
+
+				} else {
+
+						%><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mystylesheet) %> &nbsp;<br><%
+
+				}
+			}
+		}
+		%>
+		<% if (update) { %>
+
+					</select>
+					<input type="button" id="select_stylesheet" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('stylesheet', 'Style Sheets', '', 'Style Sheets', 'stylesheet');">
+				</nobr>
+
+		<% } %>
+
+			</td>
+		</tr>
+
+	<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.contentpresentation.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.contentpresentation.enableconfig") %><% } else { %><%= mytext.display("content.contentpresentation.enablesuperadmin") %><% } %></td></tr>
+
+	<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.contentpresentation.about.heading") %></th></tr>
+		<tr><td align="left" colspan="4"><%= mytext.display("content.contentpresentation.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>
+
+	<% } %>

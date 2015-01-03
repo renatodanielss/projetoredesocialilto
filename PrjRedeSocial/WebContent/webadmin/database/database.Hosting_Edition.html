@@ -1,0 +1,46 @@
+<img src="/webadmin/database/database.Hosting_Edition.gif" align="left">
+Hosting edition example website with order pages for hosting packages, shopping cart and automated setup of websites. Also includes a FAQ section, a discussion forum and support tickets functionality.
+<br clear="all">
+
+<div class="import_parameters" style="display:none">
+
+<div>Domain name: <input disabled type="text" name="import_domain" value="asbruweb.com"></div>
+
+<div>Database and programming language:
+<div>
+ - Microsoft Access:
+
+<input disabled type="radio" name="dbconnect" onclick="document.getElementById('dbprefix').value='DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=@@@import:rootpath@@@database.';document.getElementById('dbpostfix').value='.mdb';document.getElementById('dbproductdelivery').value='DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=@@@import:rootpath@@@database.@@@domain@@@.mdb';document.getElementById('dbrootpath').value='C:\\inetpub\\wwwroot\\webadmin\\';">ASP
+
+<input disabled type="radio" name="dbconnect" onclick="document.getElementById('dbprefix').value='access:DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=@@@import:rootpath@@@database.';document.getElementById('dbpostfix').value='.mdb';document.getElementById('dbproductdelivery').value='access:DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=@@@import:rootpath@@@database.@@@domain@@@.mdb';document.getElementById('dbrootpath').value='C:\\inetpub\\wwwroot\\webadmin\\';">.NET
+
+<input disabled type="radio" name="dbconnect" onclick="document.getElementById('dbprefix').value='access:sun.jdbc.odbc.JdbcOdbcDriver::@jdbc:odbc:DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=@@@import:rootpath@@@database.';document.getElementById('dbpostfix').value='.mdb';document.getElementById('dbproductdelivery').value='access:sun.jdbc.odbc.JdbcOdbcDriver::@jdbc:odbc:DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=@@@import:rootpath@@@database.@@@domain@@@.mdb';document.getElementById('dbrootpath').value='C:\\inetpub\\wwwroot\\webadmin\\';">JSP
+
+<input disabled type="radio" name="dbconnect" onclick="document.getElementById('dbprefix').value='access:odbc://TCP()DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=@@@import:rootpath@@@database.';document.getElementById('dbpostfix').value='.mdb';document.getElementById('dbproductdelivery').value='access:odbc://TCP()DRIVER={Microsoft Access Driver (*.mdb)}; DBQ=@@@import:rootpath@@@database.@@@domain@@@.mdb';document.getElementById('dbrootpath').value='C:\\inetpub\\wwwroot\\webadmin\\';">PHP
+
+<br>
+ - MySQL:
+
+<input disabled type="radio" name="dbconnect" onclick="document.getElementById('dbprefix').value='mysql:Driver={MySQL ODBC 3.51 Driver};SERVER=localhost;DATABASE=';document.getElementById('dbpostfix').value=';UID=@@@import:username@@@;PWD=@@@import:password@@@;Extended Properties=\'OPTION=16387\'';document.getElementById('dbproductdelivery').value='mysql:Driver={MySQL ODBC 3.51 Driver};SERVER=localhost;DATABASE=@@@domain@@@;UID=@@@username@@@;PWD=@@@password@@@@;Extended Properties=\'OPTION=16387\'';document.getElementById('dbrootpath').value='C:\\Program Files\\MySQL\\MySQL Server 5.0\\data\\';">ASP
+
+<input disabled type="radio" name="dbconnect" onclick="document.getElementById('dbprefix').value='mysql:Driver={MySQL ODBC 3.51 Driver};SERVER=localhost;DATABASE=';document.getElementById('dbpostfix').value=';UID=@@@import:username@@@;PWD=@@@import:password@@@;Extended Properties=\'OPTION=16387\'';document.getElementById('dbproductdelivery').value='mysql:Driver={MySQL ODBC 3.51 Driver};SERVER=localhost;DATABASE=@@@domain@@@;UID=@@@username@@@;PWD=@@@password@@@@;Extended Properties=\'OPTION=16387\'';document.getElementById('dbrootpath').value='C:\\Program Files\\MySQL\\MySQL Server 5.0\\data\\';">.NET
+
+<input disabled type="radio" name="dbconnect" onclick="document.getElementById('dbprefix').value='mysql:com.mysql.jdbc.Driver:@@@import:username@@@:@@@import:password@@@@jdbc:mysql://localhost/';document.getElementById('dbpostfix').value='';document.getElementById('dbproductdelivery').value='mysql:com.mysql.jdbc.Driver:@@@username@@@:@@@password@@@@jdbc:mysql://localhost/@@@domain@@@';document.getElementById('dbrootpath').value='/var/lib/mysql/';">JSP
+
+<input disabled type="radio" name="dbconnect" onclick="document.getElementById('dbprefix').value='mysql:mysql://@@@import:username@@@:@@@import:password@@@@localhost/';document.getElementById('dbpostfix').value='';document.getElementById('dbproductdelivery').value='mysql:mysql://@@@username@@@:@@@password@@@@localhost/@@@domain@@@';document.getElementById('dbrootpath').value='/var/lib/mysql/';">PHP
+
+</div>
+</div>
+
+<div>Database connections - pre-defined hosting client websites:
+<nobr><input disabled type="text" size="60" id="dbprefix" name="import_dbprefix" value="mysql:mysql://@@@import:username@@@:@@@import:password@@@@localhost/">database<input disabled type="text" size="30" id="dbpostfix" name="import_dbpostfix" value=""></nobr>
+</div>
+<div>Database connections - automated product delivery hosting client websites:
+<input disabled type="text" size="100" id="dbproductdelivery" name="import_dbproductdelivery" value="mysql:mysql://@@@username@@@:@@@password@@@@localhost/@@@domain@@@">
+</div>
+
+<div>Database username: <input disabled type="text" name="import_username" value="username"></div>
+<div>Database password: <input disabled type="text" name="import_password" value="password"></div>
+<div>Database Data Folder Path/Name: <input disabled type="text" size="40" id="dbrootpath" name="import_rootpath" value="/var/lib/mysql/"></div>
+
+</div>

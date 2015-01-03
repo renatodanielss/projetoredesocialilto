@@ -1,0 +1,406 @@
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Management System">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('medialist_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_title = requestParameter("title");
+request_section = requestParameter("section");
+request_category = requestParameter("category");
+
+function openit(title, href, mediaclass, mediatype, id) {
+	if (! mediaclass) {
+		if (href.substring(href.length-4) == ".swf") {
+			mediaclass = "flash";
+			mediatype = "";
+		} else if (href.substring(href.length-6) == ".class") {
+			mediaclass = "applet";
+			mediatype = "";
+		} else if (href.substring(href.length-4) == ".mov") {
+			mediaclass = "quicktime";
+			mediatype = "";
+		} else if (href.substring(href.length-4) == ".mp4") {
+			mediaclass = "video";
+			mediatype = "video/mp4";
+		} else if (href.substring(href.length-4) == ".m4v") {
+			mediaclass = "video";
+			mediatype = "video/mp4";
+		} else if (href.substring(href.length-4) == ".ogx") {
+			mediaclass = "video";
+			mediatype = "video/ogg";
+		} else if (href.substring(href.length-4) == ".ogv") {
+			mediaclass = "video";
+			mediatype = "video/ogg";
+		} else if (href.substring(href.length-5) == ".webm") {
+			mediaclass = "video";
+			mediatype = "video/webm";
+		} else if (href.substring(href.length-4) == ".mp3") {
+			mediaclass = "audio";
+			mediatype = "audio/mpeg";
+		} else if (href.substring(href.length-4) == ".wav") {
+			mediaclass = "audio";
+			mediatype = "audio/wav";
+		} else if (href.substring(href.length-4) == ".ogg") {
+			mediaclass = "audio";
+			mediatype = "audio/ogg";
+		} else if (href.substring(href.length-4) == ".oga") {
+			mediaclass = "audio";
+			mediatype = "audio/ogg";
+		} else {
+			mediaclass = "image";
+			mediatype = "";
+		}
+	}
+	if (href != "") {
+		parent.tag["href"] = href;
+		if (matches = href.match(/id=(\d+)\D*$/)) {
+//			id = matches[1];
+		} else {
+//			id = '';
+		}
+if (! id) id = '';
+<% if ((adminuser.getHardcoreUpload().equals("yes")) || ((adminuser.getHardcoreUpload().equals("")) && (myconfig.get(db, "hardcore_upload").equals("yes")))) { %>
+		if ((request_section == "Images") || (request_section == "Files")) {
+			if (document.getElementById) {
+				if (document.getElementById('create_file')) document.getElementById('create_file').href = 'mediauploader_wcm.jsp?id='+id+'&action=Create&section=' + escape(request_section) + '&' + request_category + '=' + escape(request_title) + '&editor=' + editor;
+				if (request_title != "") {
+					document.getElementById('update_file').href = 'mediauploader_wcm.jsp?id='+id+'&action=Update&section=' + escape(request_section) + '&title='+encodeURIComponent(title)+'&editor=' + editor;
+					document.getElementById('delete_file').href = 'mediauploader_wcm.jsp?id='+id+'&action=Delete&section=' + escape(request_section) + '&title='+encodeURIComponent(title)+'&href='+escape(href)+'&editor=' + editor;
+				}
+			} else if (document.all) {
+				if (document.all['create_file']) document.all['create_file'].href = 'mediauploader_wcm.jsp?id='+id+'&action=Create&section=' + escape(request_section) + '&' + request_category + '=' + escape(request_title) + '&editor=' + editor;
+				if (request_title != "") {
+					document.all['update_file'].href = 'mediauploader_wcm.jsp?id='+id+'&action=Update&section=' + escape(request_section) + '&title='+encodeURIComponent(title)+'&editor=' + editor;
+					document.all['delete_file'].href = 'mediauploader_wcm.jsp?id='+id+'&action=Delete&section=' + escape(request_section) + '&title='+encodeURIComponent(title)+'&href='+escape(href)+'&editor=' + editor;
+				}
+			}
+		}
+<% } %>
+	}
+	if (! href) href = parent.tag["href"];
+	if (href) {
+		if (href.indexOf("?") >= 0) {
+			if (parent.mediapreview && parent.mediapreview.location) parent.mediapreview.location.href = 'mediapreview.jsp?editor=' + editor + '&title='+encodeURIComponent(title)+'&href='+escape(href+'&mode=preview')+'&mediaclass='+escape(mediaclass)+'&mediatype='+escape(mediatype);
+		} else {
+			if (parent.mediapreview && parent.mediapreview.location) parent.mediapreview.location.href = 'mediapreview.jsp?editor=' + editor + '&title='+encodeURIComponent(title)+'&href='+escape(href+'?mode=preview')+'&mediaclass='+escape(mediaclass)+'&mediatype='+escape(mediatype);
+		}
+	}
+	if (parent.mediainsert && parent.mediainsert.location) parent.mediainsert.location.href = 'mediainsert_wcm.jsp?editor=' + editor + '&action=server&title='+encodeURIComponent(title)+'&href='+escape(href)+'&mediaclass='+escape(mediaclass)+'&mediatype='+escape(mediatype);
+}
+
+function initMenu() {
+	if ((request_category != "") && (request_title != "")) {
+		var menuname = 'medialistMenuContainer';
+		var seq = '';
+		var selected = '';
+		var submenus = document.getElementById('dtreeimages').innerHTML;
+		var t = document.getElementById(menuname+""+seq).innerHTML;
+		document.getElementById(menuname+""+seq).innerHTML = t + submenus;
+	}
+}
+
+</script>
+</head>
+<body onload="initMenu(); parent.medialist_ready();">
+<div class="dtree">
+<% if ((adminuser.getHardcoreUpload().equals("yes")) || ((adminuser.getHardcoreUpload().equals("")) && (myconfig.get(db, "hardcore_upload").equals("yes")))) { %>
+<script type="text/javascript">
+	if ((request_title != "") && ((request_section == "Images") || (request_section == "Files"))) {
+		document.writeln('<a id="create_file" target="mediainsert" href="mediauploader_wcm.jsp?action=Create&section=' + request_section + '&' + request_category + '=' + escape(request_title) + '&editor=' + editor + '"><img src="dtree/page.gif">' + Text('medialist_create') + '</a>');
+		if (request_title != "") {
+			document.writeln('<a id="update_file" target="mediainsert" href="javascript:alert(\'' + HtmlDecode(Text('medialist_updateimage')) + '\');"><img src="dtree/page.gif">' + Text('medialist_update') + '</a>');
+			document.writeln('<a id="delete_file" target="mediainsert" href="javascript:alert(\'' + HtmlDecode(Text('medialist_deleteimage')) + '\');"><img src="dtree/trash.gif">' + Text('medialist_delete') + '</a>');
+		}
+	}
+</script>
+<% } else { %>
+	&nbsp;
+<% } %>
+</div>
+<hr>
+<div class="dtree" id="medialistMenuContainer">
+	<script type="text/javascript">
+		<!--
+		menuitem = 0;
+		<% int menuitem = 0; %>
+		medialistMenu = new dTree('medialistMenu');
+		menuitem_images = menuitem;
+if ((request_category != "") && (request_title != "")) {
+		medialistMenu.add(menuitem++,-1,request_title,'','','',true,'imgfolder.gif');
+		<% menuitem++; %>
+}
+		medialistMenu.draw();
+		if (parent.tag["href"]) medialistMenu.selectURLsubstring(parent.tag["href"]);
+		//-->
+	</script>
+</div>
+
+<div id="dtreeimages" style="display: none">
+<% StringBuffer output = new StringBuffer(); %>
+<% if (myrequest.getParameter("section").equals("Images")) { %>
+<%
+	while (images.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		String id = images.getId();
+		String title = images.getTitle();
+		String version = images.getVersion();
+		String server_filename = images.getServerFilename();
+		String contentclass = images.getContentClass();
+		String mediaclass = "";
+		String mediatype = "";
+		String href = "";
+		if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".swf"))) {
+			mediaclass = "flash";
+			mediatype = "";
+			href = "/" + contentclass + ".jsp?id=" + id;
+		} else if ((server_filename.length()>6) && (server_filename.substring(server_filename.length()-6).equals(".class"))) {
+			mediaclass = "applet";
+			mediatype = "";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".mov"))) {
+			mediaclass = "quicktime";
+			mediatype = "";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".mp4"))) {
+			mediaclass = "video";
+			mediatype = "video/mp4";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".m4v"))) {
+			mediaclass = "video";
+			mediatype = "video/mp4";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".ogx"))) {
+			mediaclass = "video";
+			mediatype = "video/ogg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".ogv"))) {
+			mediaclass = "video";
+			mediatype = "video/ogg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>5) && (server_filename.substring(server_filename.length()-5).equals(".webm"))) {
+			mediaclass = "video";
+			mediatype = "video/webm";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".mp3"))) {
+			mediaclass = "audio";
+			mediatype = "audio/mpeg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".wav"))) {
+			mediaclass = "audio";
+			mediatype = "audio/wav";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".ogg"))) {
+			mediaclass = "audio";
+			mediatype = "audio/ogg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".oga"))) {
+			mediaclass = "audio";
+			mediatype = "audio/ogg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((contentclass.equals("file")) && (! server_filename.equals(""))) {
+			mediaclass = "image";
+			mediatype = "";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if (contentclass.equals("file")) {
+			mediaclass = "image";
+			mediatype = "";
+			href = "/file.jsp?id=" + id;
+		} else {
+			mediaclass = "image";
+			mediatype = "";
+			href = "/image.jsp?id=" + id;
+		}
+		if ((myconfig.get(db, "hardcore_image_hrefs").equals("direct")) && (! server_filename.equals(""))) {
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		}
+		if (! version.equals("")) {
+			version = " (" + version + ")";
+		}
+		String classname = "node";
+//		if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + URLEncoder.encode(imagegroup) + "&contenttype= &status= &version= &")) {
+//			classname = "nodeSel";
+//		} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + URLEncoder.encode(imagegroup).replaceAll("\\+", " ") + "&contenttype= &status= &version= &")) {
+//			classname = "nodeSel";
+//		} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + imagegroup + "&contenttype= &status= &version= &")) {
+//			classname = "nodeSel";
+//		}
+		if (! myconfig.get(db, "hide_accessrestricted_content_items").equals("yes")) {
+			images.setUser(true);
+		}
+		if ((myconfig.get(db, "hide_accessrestricted_menu_items").equals("yes")) && (myconfig.get(db, "hide_accessrestricted_menu_items_content").equals("yes"))) {
+			if (! images.getContentGroup().equals("")) {
+				Imagegroup mycontentgroup = new Imagegroup();
+				mycontentgroup.readImagegroup(db, images.getContentGroup());
+				if (! mycontentgroup.getAccessRestrictions(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig)) {
+					images.setUser(false);
+				}
+			}
+			if (! images.getContentType().equals("")) {
+				Imagetype mycontenttype = new Imagetype();
+				mycontenttype.readImagetype(db, images.getContentType());
+				if (! mycontenttype.getAccessRestrictions(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig)) {
+					images.setUser(false);
+				}
+			}
+		}
+		if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) {
+			images.setUser(true);
+		}
+		if (images.getUser()) {
+			output.append("<nobr><img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/join.gif\"><a href=\"javascript:openit('" + title.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\\\\\\\\'").replaceAll("\"", "%22") + "', '" + href + "', '" + mediaclass + "', '" + mediatype + "', '" + id + "', '', '', true, '')\" onclick=\"medialistMenu.select('medialistMenu','" + menuitem + "','javascript:openit(\\'" + title.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\\\\\\\\'").replaceAll("\"", "%22") + "\\', \\'" + href + "\\', \\'" + mediaclass + "\\', \\'" + mediatype + "\\', \\'" + id + "\\', \\'\\', \\'\\', true, \\'\\')')\"><img alt=\"\" id=\"medialistMenuIcon" + menuitem + "\" src=\"/" + mytext.display("adminpath") + "/dtree/page.gif\"></a><a id=\"medialistMenuLink" + menuitem + "\" class=\"" + classname + "\" href=\"javascript:openit('" + title.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\\\\\\\\'").replaceAll("\"", "%22") + "', '" + href + "', '" + mediaclass + "', '" + mediatype + "', '" + id + "', '', '', true, '')\" onclick=\"medialistMenu.select('medialistMenu','" + menuitem + "','javascript:openit(\\'" + title.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\\\\\\\\'").replaceAll("\"", "%22") + "\\', \\'" + href + "\\', \\'" + mediaclass + "\\', \\'" + mediatype + "\\', \\'" + id + "\\', \\'\\', \\'\\', true, \\'\\')')\">" + title + version + "</a><br></nobr>" + "\r\n");
+			%><%= "<script>medialistMenu.pid[" + menuitem + "] = menuitem_images;</script>" + "\r\n" %><%
+			menuitem++;
+		}
+	}
+%>
+<% } %>
+
+<% if (myrequest.getParameter("section").equals("Files")) { %>
+<%
+	while (files.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		String id = files.getId();
+		String title = files.getTitle();
+		String version = files.getVersion();
+		String server_filename = files.getServerFilename();
+		String contentclass = files.getContentClass();
+		String mediaclass = "";
+		String mediatype = "";
+		String href = "";
+		if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".swf"))) {
+			mediaclass = "flash";
+			mediatype = "";
+			href = "/" + contentclass + ".jsp?id=" + id;
+		} else if ((server_filename.length()>6) && (server_filename.substring(server_filename.length()-6).equals(".class"))) {
+			mediaclass = "applet";
+			mediatype = "";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".mov"))) {
+			mediaclass = "quicktime";
+			mediatype = "";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".mp4"))) {
+			mediaclass = "video";
+			mediatype = "video/mp4";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".m4v"))) {
+			mediaclass = "video";
+			mediatype = "video/mp4";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".ogx"))) {
+			mediaclass = "video";
+			mediatype = "video/ogg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".ogv"))) {
+			mediaclass = "video";
+			mediatype = "video/ogg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>5) && (server_filename.substring(server_filename.length()-5).equals(".webm"))) {
+			mediaclass = "video";
+			mediatype = "video/webm";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".mp3"))) {
+			mediaclass = "audio";
+			mediatype = "audio/mpeg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".wav"))) {
+			mediaclass = "audio";
+			mediatype = "audio/wav";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".ogg"))) {
+			mediaclass = "audio";
+			mediatype = "audio/ogg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((server_filename.length()>4) && (server_filename.substring(server_filename.length()-4).equals(".oga"))) {
+			mediaclass = "audio";
+			mediatype = "audio/ogg";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if ((contentclass.equals("file")) && (! server_filename.equals(""))) {
+			mediaclass = "image";
+			mediatype = "";
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		} else if (contentclass.equals("file")) {
+			mediaclass = "image";
+			mediatype = "";
+			href = "/file.jsp?id=" + id;
+		} else {
+			mediaclass = "image";
+			mediatype = "";
+			href = "/image.jsp?id=" + id;
+		}
+		if ((myconfig.get(db, "hardcore_image_hrefs").equals("direct")) && (! server_filename.equals(""))) {
+			href = myconfig.get(db, "URLrootpath") + server_filename;
+		}
+		if (! version.equals("")) {
+			version = " (" + version + ")";
+		}
+		String classname = "node";
+//		if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + URLEncoder.encode(imagegroup) + "&contenttype= &status= &version= &")) {
+//			classname = "nodeSel";
+//		} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + URLEncoder.encode(imagegroup).replaceAll("\\+", " ") + "&contenttype= &status= &version= &")) {
+//			classname = "nodeSel";
+//		} else if (selected.equals("/" + mytext.display("adminpath") + "/content/index.jsp?contentpackage= &contentclass=image&contentgroup=" + imagegroup + "&contenttype= &status= &version= &")) {
+//			classname = "nodeSel";
+//		}
+		if (! myconfig.get(db, "hide_accessrestricted_content_items").equals("yes")) {
+			files.setUser(true);
+		}
+		if ((myconfig.get(db, "hide_accessrestricted_menu_items").equals("yes")) && (myconfig.get(db, "hide_accessrestricted_menu_items_content").equals("yes"))) {
+			if (! files.getContentGroup().equals("")) {
+				Filegroup mycontentgroup = new Filegroup();
+				mycontentgroup.readFilegroup(db, files.getContentGroup());
+				if (! mycontentgroup.getAccessRestrictions(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig)) {
+					files.setUser(false);
+				}
+			}
+			if (! files.getContentType().equals("")) {
+				Filetype mycontenttype = new Filetype();
+				mycontenttype.readFiletype(db, files.getContentType());
+				if (! mycontenttype.getAccessRestrictions(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig)) {
+					files.setUser(false);
+				}
+			}
+		}
+		if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) {
+			files.setUser(true);
+		}
+		if (files.getUser()) {
+			output.append("<nobr><img alt=\"\" src=\"/" + mytext.display("adminpath") + "/dtree/join.gif\"><a href=\"javascript:openit('" + title.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\\\\\\\\'").replaceAll("\"", "%22") + "', '" + href + "', '" + mediaclass + "', '" + mediatype + "', '" + id + "', '', '', true, '')\" onclick=\"medialistMenu.select('medialistMenu','" + menuitem + "','javascript:openit(\\'" + title.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\\\\\\\\'").replaceAll("\"", "%22") + "\\', \\'" + href + "\\', \\'" + mediaclass + "\\', \\'" + mediatype + "\\', \\'" + id + "\\', \\'\\', \\'\\', true, \\'\\')')\"><img alt=\"\" id=\"medialistMenuIcon" + menuitem + "\" src=\"/" + mytext.display("adminpath") + "/dtree/page.gif\"></a><a id=\"medialistMenuLink" + menuitem + "\" class=\"" + classname + "\" href=\"javascript:openit('" + title.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\\\\\\\\'").replaceAll("\"", "%22") + "', '" + href + "', '" + mediaclass + "', '" + mediatype + "', '" + id + "', '', '', true, '')\" onclick=\"medialistMenu.select('medialistMenu','" + menuitem + "','javascript:openit(\\'" + title.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\\\\\\\\'").replaceAll("\"", "%22") + "\\', \\'" + href + "\\', \\'" + mediaclass + "\\', \\'" + mediatype + "\\', \\'" + id + "\\', \\'\\', \\'\\', true, \\'\\')')\">" + title + version + "</a><br></nobr>" + "\r\n");
+			%><%= "<script>medialistMenu.pid[" + menuitem + "] = menuitem_images;</script>" + "\r\n" %><%
+			menuitem++;
+		}
+	}
+%>
+<% } %>
+<%= "" + output %>
+</div>
+</body>
+</html>

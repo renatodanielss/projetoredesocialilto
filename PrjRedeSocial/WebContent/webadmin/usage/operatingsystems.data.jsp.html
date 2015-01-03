@@ -1,0 +1,132 @@
+<%
+if ((HashMap)usage.get("operatingsystemscounthits") != null) {
+	long maxvisits = reportUsage.maxValue((HashMap)usage.get("operatingsystemscountvisits"));
+	long maxclienthosts = reportUsage.maxValue((HashMap)usage.get("operatingsystemscountclienthosts"));
+	long maxvisitors = reportUsage.maxValue((HashMap)usage.get("operatingsystemscountvisitors"));
+	long maxpageviews = reportUsage.maxValue((HashMap)usage.get("operatingsystemscountpageviews"));
+	long maxhits = reportUsage.maxValue((HashMap)usage.get("operatingsystemscounthits"));
+	long totalvisits = reportUsage.totalValue((HashMap)usage.get("operatingsystemscountvisits"));
+	long totalclienthosts = reportUsage.totalValue((HashMap)usage.get("operatingsystemscountclienthosts"));
+	long totalvisitors = reportUsage.totalValue((HashMap)usage.get("operatingsystemscountvisitors"));
+	long totalpageviews = reportUsage.totalValue((HashMap)usage.get("operatingsystemscountpageviews"));
+	long totalhits = reportUsage.totalValue((HashMap)usage.get("operatingsystemscounthits"));
+%>
+	<div align="center">
+		<table border="0" class="WCMstatsTable sortable" id="stats">
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><%= mytext.display("usage.operatingsystems.operatingsystem") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableHits"><%= mytext.display("usage.hits") %></td>
+			</tr>
+<%
+	int j = 0;
+	Iterator myoperatingsystemscounthits = ((HashMap)usage.get("operatingsystemscounthits")).keySet().iterator();
+	while (myoperatingsystemscounthits.hasNext()) {
+		String myoperatingsystem = "" + myoperatingsystemscounthits.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+%>
+			<tr>
+				<td align="center">&nbsp;<img width="16" height="16" src="operatingsystem/<%= reportUsage.operatingsystemIcon(myoperatingsystem) %>.gif"></td>
+				<td align="left"><nobr><%= reportUsage.operatingsystemName(myoperatingsystem) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemscountclienthosts")).get(myoperatingsystem)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemscountclienthosts")).get(myoperatingsystem))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemscountvisitors")).get(myoperatingsystem)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemscountvisitors")).get(myoperatingsystem))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemscountvisits")).get(myoperatingsystem)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemscountvisits")).get(myoperatingsystem))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemscountpageviews")).get(myoperatingsystem)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemscountpageviews")).get(myoperatingsystem))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemscounthits")).get(myoperatingsystem)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalhits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemscounthits")).get(myoperatingsystem))*100/totalhits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscountclienthosts")).get(myoperatingsystem))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscountclienthosts")).get(myoperatingsystem))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscountvisitors")).get(myoperatingsystem))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscountvisitors")).get(myoperatingsystem))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscountvisits")).get(myoperatingsystem))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscountvisits")).get(myoperatingsystem))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscountpageviews")).get(myoperatingsystem))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscountpageviews")).get(myoperatingsystem))*100/maxpageviews) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscounthits")).get(myoperatingsystem))*100/maxhits) > 0) { %><img src="hits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemscounthits")).get(myoperatingsystem))*100/maxhits) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalhits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<table border="0" class="WCMstatsTable sortable" id="stats2">
+<%
+	maxvisits = reportUsage.maxValue((HashMap)usage.get("operatingsystemversionscountvisits"));
+	maxclienthosts = reportUsage.maxValue((HashMap)usage.get("operatingsystemversionscountclienthosts"));
+	maxvisitors = reportUsage.maxValue((HashMap)usage.get("operatingsystemversionscountvisitors"));
+	maxpageviews = reportUsage.maxValue((HashMap)usage.get("operatingsystemversionscountpageviews"));
+	maxhits = reportUsage.maxValue((HashMap)usage.get("operatingsystemversionscounthits"));
+	totalvisits = reportUsage.totalValue((HashMap)usage.get("operatingsystemversionscountvisits"));
+	totalclienthosts = reportUsage.totalValue((HashMap)usage.get("operatingsystemversionscountclienthosts"));
+	totalvisitors = reportUsage.totalValue((HashMap)usage.get("operatingsystemversionscountvisitors"));
+	totalpageviews = reportUsage.totalValue((HashMap)usage.get("operatingsystemversionscountpageviews"));
+	totalhits = reportUsage.totalValue((HashMap)usage.get("operatingsystemversionscounthits"));
+%>
+			<tr>
+				<td align="center" colspan="2" class="WCMstatsTableName"><%= mytext.display("usage.operatingsystems.operatingsystemversion") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableClienthosts"><%= mytext.display("usage.clienthosts") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisitors"><%= mytext.display("usage.visitors") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableVisits"><%= mytext.display("usage.visits") %></td>
+				<td align="center" colspan="2" class="WCMstatsTablePageViews"><%= mytext.display("usage.pageviews") %></td>
+				<td align="center" colspan="2" class="WCMstatsTableHits"><%= mytext.display("usage.hits") %></td>
+			</tr>
+<%
+	j = 0;
+	Iterator myoperatingsystemversionscounthits = ((HashMap)usage.get("operatingsystemversionscounthits")).keySet().iterator();
+	while (myoperatingsystemversionscounthits.hasNext()) {
+		String myoperatingsystemversion = "" + myoperatingsystemversionscounthits.next();
+		j = j + 1;
+		if ((! mysession.get("admin_usage_limit").equals("")) && (j > Common.integernumber(mysession.get("admin_usage_limit")))) break;
+		String[] tmp = myoperatingsystemversion.split(":::");
+		String myoperatingsystem = tmp[1];
+%>
+			<tr>
+				<td align="center">&nbsp;<img width="16" height="16" src="operatingsystem/<%= reportUsage.operatingsystemversionIcon(myoperatingsystemversion) %>.gif"></td>
+				<td align="left"><nobr><%= reportUsage.operatingsystemversionName(myoperatingsystemversion) %>&nbsp;</nobr></td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemversionscountclienthosts")).get(myoperatingsystemversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalclienthosts>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemversionscountclienthosts")).get(myoperatingsystemversion))*100/totalclienthosts, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemversionscountvisitors")).get(myoperatingsystemversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisitors>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemversionscountvisitors")).get(myoperatingsystemversion))*100/totalvisitors, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemversionscountvisits")).get(myoperatingsystemversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalvisits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemversionscountvisits")).get(myoperatingsystemversion))*100/totalvisits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemversionscountpageviews")).get(myoperatingsystemversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalpageviews>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemversionscountpageviews")).get(myoperatingsystemversion))*100/totalpageviews, 1) %>%)<% } %>&nbsp;</td>
+				<td align="right" width="50"><%= Common.intnumber(((HashMap)usage.get("operatingsystemversionscounthits")).get(myoperatingsystemversion)) %>&nbsp;</td>
+				<td align="right" width="50"><% if (totalhits>0) { %>(<%= Common.numberformat("" + Common.number("" + ((HashMap)usage.get("operatingsystemversionscounthits")).get(myoperatingsystemversion))*100/totalhits, 1) %>%)<% } %>&nbsp;</td>
+				<td align="left" width="100" class="WCMstatsChart"><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscountclienthosts")).get(myoperatingsystemversion))*100/maxclienthosts) > 0) { %><img src="clienthosts.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscountclienthosts")).get(myoperatingsystemversion))*100/maxclienthosts) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscountvisitors")).get(myoperatingsystemversion))*100/maxvisitors) > 0) { %><img src="visitors.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscountvisitors")).get(myoperatingsystemversion))*100/maxvisitors) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscountvisits")).get(myoperatingsystemversion))*100/maxvisits) > 0) { %><img src="visits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscountvisits")).get(myoperatingsystemversion))*100/maxvisits) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscountpageviews")).get(myoperatingsystemversion))*100/maxpageviews) > 0) { %><img src="pageviews.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscountpageviews")).get(myoperatingsystemversion))*100/maxpageviews) %>px;"><br><% } %><% if (Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscounthits")).get(myoperatingsystemversion))*100/maxhits) > 0) { %><img src="hits.gif" style="height:5px; width:<%= Math.round(Common.number("" + ((HashMap)usage.get("operatingsystemversionscounthits")).get(myoperatingsystemversion))*100/maxhits) %>px;"><% } %></td>
+			</tr>
+<%
+	}
+%>
+			<tr class="WCMstatsTableTotals,sortbottom">
+				<td align="left" colspan="2"><%= mytext.display("usage.total") %>&nbsp;</td>
+				<td align="right" width="50"><%= totalclienthosts %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisitors %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalvisits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalpageviews %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+				<td align="right" width="50"><%= totalhits %>&nbsp;</td>
+				<td align="right" width="50">&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+<%
+}
+%>

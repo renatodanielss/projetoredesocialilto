@@ -1,0 +1,1030 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("content.relations.title") %></title>
+<script type="text/javascript">
+
+function save_and_close() {
+	doLogin(false);
+}
+
+function doLogin(saveclose) {
+	if (saveclose) {
+		savewindow = window.open('/<%= mytext.display("adminpath") %>/saveclose.jsp','_save',"scrollbars=yes,width=800,height=600,resizable=yes,status=yes");
+	} else {
+		savewindow = window.open('/<%= mytext.display("adminpath") %>/save.jsp','_save',"scrollbars=yes,width=800,height=600,resizable=yes,status=yes");
+	}
+	if (typeof(savewindow.focus) == "function") savewindow.focus();
+}
+
+function doSave() {
+	if (document.relationsform.onsubmit) {
+		document.relationsform.onsubmit();
+	}
+	document.relationsform.submit();
+}
+
+</script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/webeditor/webeditor.js.jsp"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/sorttable.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/scriptaculous/scriptaculous.js"></script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("content.relations.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<form name="relationsform" action="relations_post.jsp?redirect=relations.jsp" method="POST" target="iframe_save">
+      <div align="right"><input type="button" value="<%= mytext.display("save") %>" onclick="save_and_close();"></div>
+      <br>
+      <div><%= mytext.display("content.relations.intro") %></div>
+      <br>
+      <table style="width: 100%;" class="sortable" id="contents">
+        <tr class="WCMindex"> 
+          <th class="WCMindex unsortable" style="width: 10px; text-align: left;">&nbsp;</th>
+          <% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <th class="WCMindex unsortable" style="width: 50px; text-align: left;"><%= mytext.display("content.group") %></th>
+          <% } %>
+          <% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <th class="WCMindex unsortable" style="width: 50px; text-align: left;"><%= mytext.display("content.type") %></th>
+          <% } %>
+          <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <th class="WCMindex unsortable" style="width: 50px; text-align: left;"><%= mytext.display("content.version") %></th>
+          <% } %>
+          <% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <th class="WCMindex unsortable" style="width: 50px; text-align: left;"><%= mytext.display("content.status") %></th>
+          <% } %>
+          <th class="WCMindex" style="text-align: left;" id="titles" colspan="2"><%= column_name %></th>
+          <th class="WCMindex unsortable" style="width: 20px;"><%= mytext.display("content.id") %></th>
+        </tr>
+<%
+	HashMap pageMaster = new HashMap();
+	HashMap pageRoot = new HashMap();
+	HashMap pageTop = new HashMap();
+	HashMap pageUp = new HashMap();
+	HashMap pageChildren = new HashMap();
+	HashMap pagePrevious = new HashMap();
+	HashMap pageNext = new HashMap();
+	while (pageEdit.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+	    if (pageEdit.getPublisher()) {
+		if ((! pageEdit.getVersionMaster().equals("0")) && (! pageEdit.getVersionMaster().equals(""))) {
+			pageMaster.put("" + pageEdit.getId(), pageEdit.getVersionMaster());
+		} else {
+			pageEdit.setVersionMaster("");
+		}
+		if ((! pageEdit.getPageTop().equals("0")) && (! pageEdit.getPageTop().equals(""))) {
+			pageTop.put("" + pageEdit.getId(), "" + pageEdit.getPageTop());
+			if ((pageEdit.getPageUp().equals("0")) || (pageEdit.getPageUp().equals(""))) {
+				pageEdit.setPageUp("" + pageEdit.getPageTop());
+			}
+		} else {
+			pageEdit.setPageTop("");
+		}
+		if ((! pageEdit.getPageUp().equals("0")) && (! pageEdit.getPageUp().equals(""))) {
+			pageUp.put("" + pageEdit.getId(), "" + pageEdit.getPageUp());
+			if (pageChildren.get("" + pageEdit.getPageUp()) == null) {
+				pageChildren.put("" + pageEdit.getPageUp(), new HashMap());
+			}
+			((HashMap)pageChildren.get("" + pageEdit.getPageUp())).put("" + pageEdit.getId(), "" + pageEdit.getId());
+		} else {
+			pageEdit.setPageUp("");
+		}
+		if ((! pageEdit.getPagePrevious().equals("0")) && (! pageEdit.getPagePrevious().equals(""))) {
+			pagePrevious.put("" + pageEdit.getId(), "" + pageEdit.getPagePrevious());
+			pageNext.put("" + pageEdit.getPagePrevious(), "" + pageEdit.getId());
+		} else {
+			pageEdit.setPagePrevious("");
+		}
+		if ((! pageEdit.getPageNext().equals("0")) && (! pageEdit.getPageNext().equals(""))) {
+			pageNext.put("" + pageEdit.getId(), "" + pageEdit.getPageNext());
+			pagePrevious.put("" + pageEdit.getPageNext(), "" + pageEdit.getId());
+		} else {
+			pageEdit.setPageNext("");
+		}
+		if ((pageEdit.getPageUp().equals("")) && (pageEdit.getPagePrevious().equals(""))) {
+			pageRoot.put("" + pageEdit.getId(), "" + pageEdit.getId());
+		} else {
+			pageRoot.put("" + pageEdit.getId(), "-1");
+		}
+		if ((! pageEdit.getPageTop().equals("")) && ((pageRoot.get("" + pageEdit.getPageTop()) == null) || (! pageRoot.get("" + pageEdit.getPageTop()).equals("-1")))) {
+			pageRoot.put("" + pageEdit.getPageTop(), "" + pageEdit.getPageTop());
+		}
+		if ((! pageEdit.getPageUp().equals("")) && ((pageRoot.get("" + pageEdit.getPageUp()) == null) || (! pageRoot.get("" + pageEdit.getPageUp()).equals("-1")))) {
+			pageRoot.put("" + pageEdit.getPageUp(), "" + pageEdit.getPageUp());
+		}
+%>
+        <tr class="WCMindex" onMouseOver="highlight(this)" onMouseOut="unhighlight(this)" id="row<%= pageEdit.getId() %>"> 
+          <td class="WCMindex"><input type="checkbox" id="top_<%= pageEdit.getId() %>" onchange="togglePageTop(this,<%= pageEdit.getId() %>);"></td>
+          <% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <td class="WCMindex" style="width: 50px;">
+            <%= pageEdit.getContentGroup() %>
+          </td>
+          <% } %>
+          <% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          <td class="WCMindex" style="width: 50px;">
+            <%= pageEdit.getContentType() %>
+          </td>
+          <% } %>
+          <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <td class="WCMindex" style="width: 50px;">
+            <%= pageEdit.getVersion() %>
+          </td>
+          <% } %>
+          <% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <td class="WCMindex" style="width: 50px;">
+            <%= pageEdit.display_status() %>
+          </td>
+          <% } %>
+          <td class="WCMindex WCMindex_title WCMindex_dragable" id="title_cell_<%= pageEdit.getId() %>" colspan="2">
+            <span id="title_<%= pageEdit.getId() %>" class="contentitem">
+            <%= pageEdit.getTitle() %>
+            <% if (! (myconfig.get(db, "use_versions").equals("yes")) && (! pageEdit.getVersion().equals(""))) { %>
+              (<%= pageEdit.getVersion() %>)
+            <% } %>
+            </span>
+            <input type="hidden" name="id" value="<%= pageEdit.getId() %>">
+            <input type="hidden" id="page_top_<%= pageEdit.getId() %>" name="page_top_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageTop() %>">
+            <input type="hidden" id="page_up_<%= pageEdit.getId() %>" name="page_up_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageUp() %>">
+            <input type="hidden" id="page_previous_<%= pageEdit.getId() %>" name="page_previous_<%= pageEdit.getId() %>" value="<%= pageEdit.getPagePrevious() %>">
+            <input type="hidden" id="page_next_<%= pageEdit.getId() %>" name="page_next_<%= pageEdit.getId() %>" value="<%= pageEdit.getPageNext() %>">
+          </td>
+          <td class="WCMindex" style="width: 20px; text-align: center;"><%= pageEdit.getId() %></td>
+        </tr>
+<%
+	    }
+	}
+%>
+      </table>
+</form>
+<script type="text/javascript">
+function preSortTable(column) {
+	unindentRows();
+}
+function onloadSortTable() {
+	indentRows(true,false);
+	setPageRelations();
+}
+function unindentRows() {
+	var rows = document.getElementById('contents').getElementsByTagName('tr');
+	for (var i=0; i<rows.length; i++) {
+		// MSIE may handle className changes very slowly - set style directly instead
+		//rows[i].className = rows[i].className.replace(/ WCMindex_indent(\d+)/g, "");
+		var id = rows[i].id.replace(/^row/,"");
+		if (id && document.getElementById("title_cell_"+id)) document.getElementById("title_cell_"+id).style.paddingLeft = "0px";
+	}
+}
+function rowSubrows(rows, row, pageParent) {
+	rows[rows.length] = row;
+	var nextrow = row.nextSibling;
+	while (nextrow && (pageParent[nextrow.id.substring(3)] == row.id.substring(3))) {
+		rows = rowSubrows(rows, nextrow, pageParent);
+		nextrow = rows[rows.length-1].nextSibling;
+	}
+	return rows;
+}
+function pageRootArray() {
+	var pageRoot = new Array();
+	var pageTop = pageTopArray();
+	for (var id in pageTop) if (typeof(pageTop[id]) != "function") {
+		if ((! document.getElementById("row"+pageTop[id])) && ((! document.getElementById("page_previous_"+pageTop[id])	) || (! document.getElementById("page_previous_"+pageTop[id]).value))) {
+			pageRoot[id] = pageTop[id];
+		}
+		if (pageTop[id] && (! document.getElementById("row"+pageTop[pageTop[id]])) && ((! document.getElementById("page_previous_"+pageTop[id])) || (! document.getElementById("page_previous_"+pageTop[id]).value))) {
+			pageRoot[pageTop[id]] = pageTop[pageTop[id]];
+		}
+	}
+	var pageUp = pageUpArray();
+	for (var id in pageUp) if (typeof(pageUp[id]) != "function") {
+		if ((! document.getElementById("row"+pageUp[id])) && ((! document.getElementById("page_previous_"+pageUp[id])) || (! document.getElementById("page_previous_"+pageUp[id]).value))) {
+			pageRoot[id] = pageUp[id];
+		}
+		if (pageUp[id] && (! document.getElementById("row"+pageUp[pageUp[id]])) && ((! document.getElementById("page_previous_"+pageUp[id])) || (! document.getElementById("page_previous_"+pageUp[id]).value))) {
+			pageRoot[pageUp[id]] = pageUp[pageUp[id]];
+		}
+	}
+	var table = document.getElementById("contents");
+	if (table) {
+		var rows = table.getElementsByTagName("TR");
+		for (var i=0; i<rows.length; i++) {
+			if (rows[i].id && rows[i].id.match(/^row(\d+)/)) {
+				id = "" + RegExp.$1;
+				break;
+			}
+		}
+		while (id) {
+			if (((! pageTop[id]) || (! document.getElementById("row"+pageTop[id]))) && ((! pageUp[id]) || (! document.getElementById("row"+pageUp[pageUp[id]]))) && (! document.getElementById("page_previous_"+id).value)) {
+				pageRoot[id] = id;
+			}
+			if (document.getElementById("row"+id).nextSibling) {
+				id = document.getElementById("row"+id).nextSibling.id.replace(/^row/,"");
+			} else {
+				id = false;
+			}
+		}
+	}
+	return pageRoot;
+}
+function pageTopArray() {
+	var pageTop = new Array();
+<%
+	Iterator pageTops = pageTop.keySet().iterator();
+	while (pageTops.hasNext()) {
+		String id = "" + pageTops.next();
+		String topid = ("" + pageTop.get(id)).replaceAll("undefined", "");
+		%><%= "pageTop[" + id + "] = " + topid + ";" + "\r\n" %><%
+	}
+%>
+	return pageTop;
+}
+function pageChildrenArray() {
+	var pageChildren = new Array();
+<%
+	Iterator pageChildrens = pageChildren.keySet().iterator();
+	while (pageChildrens.hasNext()) {
+		String parentid = "" + pageChildrens.next();
+		Iterator childrens = ((HashMap)pageChildren.get(parentid)).keySet().iterator();
+		%><%= "pageChildren[" + parentid + "] = new Array();" + "\r\n" %><%
+		while (childrens.hasNext()) {
+			String id = "" + childrens.next();
+			String childid = ("" + ((HashMap)pageChildren.get(parentid)).get(id)).replaceAll("undefined", "");
+			%><%= "pageChildren[" + parentid + "][" + childid + "] = " + childid + ";" + "\r\n" %><%
+		}
+	}
+%>
+	return pageChildren;
+}
+function pageUpArray() {
+	var pageUp = new Array();
+<%
+	Iterator pageUps = pageUp.keySet().iterator();
+	while (pageUps.hasNext()) {
+		String id = "" + pageUps.next();
+		String upid = ("" + pageUp.get(id)).replaceAll("undefined", "");
+		%><%= "pageUp[" + id + "] = " + upid + ";" + "\r\n" %><%
+	}
+%>
+	return pageUp;
+}
+function pagePreviousArray() {
+	var pagePrevious = new Array();
+<%
+	Iterator pagePreviouss = pagePrevious.keySet().iterator();
+	while (pagePreviouss.hasNext()) {
+		String id = "" + pagePreviouss.next();
+		String previousid = ("" + pagePrevious.get(id)).replaceAll("undefined", "");
+		%><%= "pagePrevious[" + id + "] = " + previousid + ";" + "\r\n" %><%
+	}
+%>
+	return pagePrevious;
+}
+function pageNextArray() {
+	var pageNext = new Array();
+<%
+	Iterator pageNexts = pageNext.keySet().iterator();
+	while (pageNexts.hasNext()) {
+		String id = "" + pageNexts.next();
+		String nextid = ("" + pageNext.get(id)).replaceAll("undefined", "");
+		%><%= "pageNext[" + id + "] = " + nextid + ";" + "\r\n" %><%
+	}
+%>
+	return pageNext;
+}
+
+
+
+function indentRows(byPageRelations, byVersion) {
+	unindentRows();
+	document.getElementById('titles').getElementsByTagName('span')[0].setAttribute('sortdir','up');
+	ts_resortTable(document.getElementById('titles').firstChild);
+	document.getElementById('titles').getElementsByTagName('span')[0].setAttribute('sortdir','up');
+	document.getElementById('titles').getElementsByTagName("span")[0].innerHTML = '&nbsp;&nbsp;&nbsp;';
+	document.getElementById('titles').innerHTML = '<%= column_name %>';
+	if (byPageRelations) {
+		var pageRoot = pageRootArray();
+		var pageChildren = pageChildrenArray();
+		var pagePrevious = new pagePreviousArray();
+		var pageNext = new pageNextArray();
+		// order root rows sequentially
+		for (var rootid in pageRoot) if (typeof(pageRoot[rootid]) != "function") {
+			var ids = new Array();
+			var id = rootid;
+			while (id && pageNext[id] && (! ids[id])) {
+				ids[id] = true;
+				indentRow(false, id, pageNext[id]);
+				id = pageNext[id];
+			}
+		}
+		// order and indent subrows
+		for (var rootid in pageRoot) if (typeof(pageRoot[rootid]) != "function") {
+			indentSubRows(rootid, pageChildren, pagePrevious, pageNext);
+			var ids = new Array();
+			var id = rootid;
+			while (id && (! ids[id])) {
+				ids[id] = true;
+				indentSubRows(id, pageChildren, pagePrevious, pageNext);
+				id = pageNext[id];
+			}
+		}
+	}
+	if (byVersion) {
+<%
+	Iterator pageMasters = pageMaster.keySet().iterator();
+	while (pageMasters.hasNext()) {
+		String id = "" + pageMasters.next();
+		String master = "" + pageMaster.get(id);
+		%><%= "indentRow(" + master + "," + master + "," + id + ");" + "\r\n" %><%
+	}
+%>
+	}
+}
+function indentSubRows(id, pageChildren, pagePrevious, pageNext) {
+	var insert_after_id = id;
+	// order child rows sequentially
+	for (var childid in pageChildren[id]) if (typeof(pageChildren[id][childid]) != "function") {
+		if (! pagePrevious[childid]) {
+			var myids = new Array();
+			var myid = childid;
+			while (myid && (! myids[myid])) {
+				myids[myid] = true;
+				indentRow(id, insert_after_id, myid);
+				insert_after_id = myid;
+				myid = pageNext[myid];
+			}
+		}
+	}
+	// order and indent subrows
+	for (var childid in pageChildren[id]) if (typeof(pageChildren[id][childid]) != "function") {
+		indentSubRows(childid, pageChildren, pagePrevious, pageNext);
+	}
+}
+function indentRow(parentid, previousid, childid) {
+	// order two rows sequentially - optionally indented under parent
+	var parentrow = document.getElementById("row"+parentid);
+	var previousrow = document.getElementById("row"+previousid);
+	var childrow = document.getElementById("row"+childid);
+	if (previousrow && childrow) {
+		if (parentrow) {
+			// set indentation
+			var indent = 1;
+			// MSIE may handle className changes very slowly - set style directly instead
+			//if (parentrow.className.match(/WCMindex_indent(\d+)/)) {
+			//	indent += parseInt(RegExp.$1);
+			//	if (indent > 20) indent = 20;
+			//}
+			//childrow.className = "WCMindex WCMindex_indent" + indent;
+			indent += parseInt(document.getElementById("title_cell_"+parentid).style.paddingLeft)/10;
+			document.getElementById("title_cell_"+childid).style.paddingLeft = "" + (indent*10) + "px";
+		}
+		// move row
+		if (previousrow && previousrow.nextSibling) {
+			previousrow.parentNode.insertBefore(childrow, previousrow.nextSibling);
+		} else if (previousrow) {
+			previousrow.parentNode.appendChild(childrow);
+		} else if (parentrow.nextSibling) {
+			parentrow.parentNode.insertBefore(childrow, parentrow.nextSibling);
+		} else {
+			parentrow.parentNode.appendChild(childrow);
+		}
+	}
+}
+</script>
+<script type="text/javascript">
+
+function togglePageTop(checkbox,id) {
+	var page_top;
+	var row = document.getElementById("row"+id);
+	if (checkbox.checked) {
+		row.className += " WCMindex_top";
+		page_top = id;
+	} else {
+		var row = document.getElementById("row"+id);
+		row.className = row.className.replace(" WCMindex_top","");
+		page_top = document.getElementById("page_top_"+id).value;
+	}
+	var indent = getIndentation(id);
+	var next_row = row;
+	var set_page_top = true;
+	while (next_row = next_row.nextSibling) {
+		var next_row_id = next_row.id.replace(/^row/,"");
+		var next_row_indent = getIndentation(next_row_id);
+		if (indent >= next_row_indent) {
+			// indented same as toggled row - end reached - stop
+			break;
+		} else {
+			document.getElementById("page_top_"+next_row_id).value = page_top;
+			if (document.getElementById("top_"+next_row_id) && document.getElementById("top_"+next_row_id).checked) {
+				// child row is its own top - skip its children
+				var skip_row = next_row;
+				while (skip_row = skip_row.nextSibling) {
+					var skip_row_id = skip_row.id.replace(/^row/,"");
+					var skip_row_indent = getIndentation(skip_row_id);
+					if (next_row_indent >= skip_row_indent) {
+						break;
+					} else {
+						next_row = skip_row;
+					}
+				}
+			}
+		}
+	}
+}
+
+function setOldPageRelations(id, indent, old_page_top, old_page_up, page_top, page_up) {
+	if (indent == 0) {
+		if (old_page_top[id] && (! document.getElementById("row"+old_page_top[id]))) {
+			document.getElementById("page_top_"+id).value = old_page_top[id];
+			page_top[indent] = old_page_top[id];
+			page_top[indent+1] = old_page_top[id];
+		} else {
+			document.getElementById("page_top_"+id).value = "";
+			page_top[indent] = "";
+			page_top[indent+1] = "";
+		}
+		if (old_page_up[id] && (! document.getElementById("row"+old_page_up[id]))) {
+			document.getElementById("page_up_"+id).value = old_page_up[id];
+			page_up[indent] = old_page_up[id];
+			page_up[indent+1] = old_page_up[id];
+		} else {
+			document.getElementById("page_up_"+id).value = "";
+			page_up[indent] = "";
+			page_up[indent+1] = "";
+		}
+	}
+}
+
+function setPageRelations(id) {
+	var initial_id = id;
+	if (! id) {
+		// find id for first content row in contents table
+		var table = document.getElementById("contents");
+		if (table) {
+			var rows = table.getElementsByTagName("TR");
+			for (var i=0; i<rows.length; i++) {
+				if (rows[i].id && rows[i].id.match(/^row(\d+)/)) {
+					id = "" + RegExp.$1;
+					break;
+				}
+			}
+			if (id) {
+				document.getElementById("page_previous_"+id).value = "";
+			}
+		}
+	}
+	if (! id ) return;
+	var indent = getIndentation(id);
+	var page_top = new Array();
+	var page_up = new Array();
+	var old_page_top = pageTopArray();
+	var old_page_up = pageUpArray();
+
+	// find parent+previous rows
+	document.getElementById("page_previous_"+id).value = "";
+	var previous_row = document.getElementById("row"+id);
+	while (previous_row = previous_row.previousSibling) {
+		if (! previous_row.id) break;
+		var previous_row_id = previous_row.id.replace(/^row/,"");
+		if (indent > getIndentation(previous_row_id)) {
+			// found parent
+			document.getElementById("page_up_"+id).value = previous_row_id;
+			if (document.getElementById("top_"+previous_row_id) && document.getElementById("top_"+previous_row_id).checked) {
+				document.getElementById("page_top_"+id).value = previous_row_id;
+			} else {
+				document.getElementById("page_top_"+id).value = document.getElementById("page_top_"+previous_row_id).value;
+			}
+			break;
+		} else if ((indent == getIndentation(previous_row_id)) && (document.getElementById("page_previous_"+id).value == "")) {
+			// found previous
+			document.getElementById("page_previous_"+id).value = previous_row_id;
+			if (indent == 0) break;
+		}
+	}
+
+	setOldPageRelations(id, indent, old_page_top, old_page_up, page_top, page_up);
+
+	if (document.getElementById("top_"+id) && document.getElementById("top_"+id).checked) {
+		page_top[indent] = id;
+		page_top[indent+1] = id;
+	} else {
+		page_top[indent] = document.getElementById("page_top_"+id).value || "";
+		page_top[indent+1] = document.getElementById("page_top_"+id).value || "";
+	}
+	page_up[indent] = document.getElementById("page_up_"+id).value;
+	page_up[indent+1] = id;
+	var page_previous = new Array();
+	page_previous[indent] = id;
+
+	var previous_row_id;
+	var previous_row_indent;
+	var next_row_id;
+	var next_row_indent;
+	var next_row = document.getElementById("row"+id);
+	var adjust_indent = -1;
+	while (next_row = next_row.nextSibling) {
+		previous_row_id = next_row_id;
+		previous_row_indent = next_row_indent;
+		next_row_id = next_row.id.replace(/^row/,"");
+		next_row_indent = getIndentation(next_row_id);
+
+		// adjust indent
+		if (adjust_indent == -1) {
+			// adjust indentation if the first next row is indented more than one level
+			adjust_indent = next_row_indent - indent - 1;
+		}
+		if (adjust_indent > 0) {
+			if (next_row_indent <= indent+1) {
+				// stop adjust indent for remaining rows
+				adjust_indent = 0;
+			} else {
+				setIndentation(next_row_id, next_row_indent - adjust_indent);
+			}
+		}
+		if (adjust_indent < 0) adjust_indent = 0;
+
+		if (previous_row_indent > next_row_indent) {
+			// this row is outdented - clear page_next for terminated previous rows
+			document.getElementById("page_next_"+previous_row_id).value = "";
+			for (var i=previous_row_indent; i>next_row_indent; i--) {
+				if (page_previous[i]) document.getElementById("page_next_"+page_previous[i]).value = "";
+			}
+		}
+		if (indent > next_row_indent) {
+			// outdented relative to initial indentiation - end reached - stop
+			document.getElementById("page_next_"+id).value = "";
+			break;
+		} else {
+			// check page top for this row
+			var top = document.getElementById("page_top_"+next_row_id).value;
+			if (top) {
+				if (document.getElementById("top_"+top) && (! document.getElementById("top_"+top).checked)) {
+					document.getElementById("top_"+top).checked = true;
+					document.getElementById("row"+top).className += " WCMindex_top";
+					page_top[next_row_indent - adjust_indent] = top;
+				}
+			}
+
+			// set page relations for this row
+			setOldPageRelations(next_row_id, next_row_indent, old_page_top, old_page_up, page_top, page_up);
+			document.getElementById("page_top_"+next_row_id).value = page_top[next_row_indent - adjust_indent];
+			if (document.getElementById("top_"+next_row_id) && document.getElementById("top_"+next_row_id).checked) {
+				page_top[next_row_indent - adjust_indent + 1] = next_row_id;
+			} else {
+				page_top[next_row_indent - adjust_indent + 1] = page_top[next_row_indent - adjust_indent];
+			}
+			document.getElementById("page_up_"+next_row_id).value = page_up[next_row_indent - adjust_indent];
+			page_up[next_row_indent - adjust_indent + 1] = next_row_id;
+			if (page_previous[next_row_indent - adjust_indent]) {
+				document.getElementById("page_previous_"+next_row_id).value = page_previous[next_row_indent - adjust_indent];
+				if (page_previous[next_row_indent - adjust_indent]) document.getElementById("page_next_"+page_previous[next_row_indent - adjust_indent]).value = next_row_id;
+			} else {
+				document.getElementById("page_previous_"+next_row_id).value = "";
+			}
+			page_previous[next_row_indent - adjust_indent] = next_row_id;
+
+			if (! next_row.nextSibling) {
+				// end reached - clear page_next for terminated previous rows
+				document.getElementById("page_next_"+next_row_id).value = "";
+				for (var i=0; i<(next_row_indent - adjust_indent); i++) {
+					if (page_previous[i] && document.getElementById("page_next_"+page_previous[i])) document.getElementById("page_next_"+page_previous[i]).value = "";
+				}
+			}
+
+			// clear previous page handles for outdented levels
+			for (var i=(next_row_indent - adjust_indent + 1); i<page_previous.length; i++) {
+				page_previous[i] = "";
+			}
+		}
+		if (initial_id && (indent == next_row_indent)) {
+			// sibling to initial id - end reached - stop
+			break;
+		}
+	}
+}
+
+</script>
+<script type="text/javascript">
+
+function highlight(row) {
+	row.style.backgroundColor = "#fcffd2";
+}
+
+function unhighlight(row) {
+	var id = row.id.replace(/^row/,"");
+	if (document.getElementById("top_"+id) && document.getElementById("top_"+id).checked) {
+		row.style.backgroundColor = "#dddddd";
+	} else {
+		row.style.backgroundColor = "#eeeeee";
+	}
+}
+
+
+
+function getIndentation(id) {
+	var indent = 0;
+	id = (""+id).replace(/^row/,"");
+	// MSIE may handle className changes very slowly - set style directly instead
+	//if (id && document.getElementById("row"+id) && document.getElementById("row"+id).className.match(/WCMindex_indent(\d+)/)) {
+	//	indent += parseInt(RegExp.$1);
+	//}
+	if (id && document.getElementById("title_cell_"+id) && document.getElementById("title_cell_"+id).style) {
+		indent += parseInt(document.getElementById("title_cell_"+id).style.paddingLeft)/10;
+	}
+	return indent;
+}
+
+function setIndentation(id,indent) {
+	if (indent < 0) indent = 0;
+	if (indent > 20) indent = 20;
+	// MSIE may handle className changes very slowly - set style directly instead
+	//document.getElementById("row"+id).className = document.getElementById("row"+id).className.replace(/WCMindex_indent(\d+)/,"") + " WCMindex_indent" + indent;
+	document.getElementById("title_cell_"+id).style.paddingLeft = "" + (parseInt(indent)*10) + "px";
+}
+
+function droppedBetweenIds(element, dropat) {
+	var id = element.id.replace(/^title_/,"");
+	var previous_row_id = '';
+	var next_row_id = '';
+	var element_position = Position.cumulativeOffset(element)[1];
+	var dropat_position = Position.cumulativeOffset(dropat)[1];
+	if (element_position < dropat_position) {
+		if (dropat.previousSibling && dropat.previousSibling.id) {
+			previous_row_id = dropat.previousSibling.id.replace(/^row/,"");
+		} else {
+			previous_row_id = "";
+		}
+		next_row_id = dropat.id.replace(/^row/,"");
+	} else {
+		previous_row_id = dropat.id.replace(/^row/,"");
+		if (dropat.nextSibling && dropat.nextSibling.id) {
+			next_row_id = dropat.nextSibling.id.replace(/^row/,"");
+		} else {
+			next_row_id = '';
+		}
+		if (previous_row_id == id) {
+			if (dropat.previousSibling && dropat.previousSibling.id) {
+				previous_row_id = dropat.previousSibling.id.replace(/^row/,"");
+			} else {
+				previous_row_id = '';
+			}
+		}
+	}
+	return [previous_row_id, id, next_row_id, (element_position-dropat_position)];
+}
+
+function droppedChildIds(id) {
+	var ids = new Array();
+	var indent = getIndentation(id);
+	var element = document.getElementById("row"+id);
+	while (element && element.nextSibling && (getIndentation(element.nextSibling.id.replace(/^row/,"")) > indent)) {
+		element = element.nextSibling;
+		ids[ids.length] = element.id.replace(/^row/,"");
+	}
+	return ids;
+}
+
+
+
+var onHover_element = false;
+var onHover_node = false;
+var onHover_previous_row_id = false;
+var onHover_id = false;
+var onHover_next_row_id = false;
+var table = document.getElementById("contents");
+var rows = table.getElementsByTagName("span");
+for (var i=0; i<rows.length; i++) {
+	if (rows[i].id.match(/^title_/)) {
+		new Draggable(rows[i].id,{revert:true});
+		// MSIE may crash if table row is made dropable so drop at table cell and get parent row
+		Droppables.add(rows[i].parentNode.id,{
+// MSIE and Safari may not handle a large number of rows efficiently
+//			accept:'contentitem',
+			overlap:true,
+			
+			onHover: function(element,dropat,event) {
+				// MSIE may crash if table row is made dropable so drop at table cell and get parent row
+				if (dropat.nodeName == "TD") dropat = dropat.parentNode;
+
+				var dropat_id = dropat.id.replace(/^row/,"");
+				var ids = droppedBetweenIds(element, dropat);
+				var previous_row_id = ids[0];
+				var id = ids[1];
+				var next_row_id = ids[2];
+
+				if ((onHover_node != dropat) || (onHover_previous_row_id != previous_row_id) || (onHover_next_row_id != next_row_id)) {
+					if (onHover_node && (onHover_node != dropat)) {
+						// MSIE may handle className changes very slowly - set style directly instead
+						// onHover_node.className = onHover_node.className.replace(/ WCMindex_dropable_highlight[_a-z]*/,"");
+						var onHover_node_id = onHover_node.id.replace(/^row/,"");
+						if (document.getElementById("top_"+onHover_node_id) && document.getElementById("top_"+onHover_node_id).checked) {
+							onHover_node.style.backgroundColor = "#dddddd";
+						} else {
+							onHover_node.style.backgroundColor = "#eeeeee";
+						}
+					}
+					var highlight = " WCMindex_dropable_highlight_ok";
+					if (dropat_id == id) {
+						highlight = " WCMindex_dropable_highlight";
+					} else if ((dropat_id == previous_row_id) && (id == next_row_id)) {
+						highlight = " WCMindex_dropable_highlight_no";
+					} else if ((dropat_id == next_row_id) && (id == previous_row_id)) {
+						highlight = " WCMindex_dropable_highlight_no";
+					} else {
+						var child_ids = droppedChildIds(id);
+						for (var i=0; i<child_ids.length; i++) {
+							if (dropat_id == child_ids[i]) {
+								highlight = " WCMindex_dropable_highlight_no";
+								break;
+							}
+							if (previous_row_id == child_ids[i]) {
+								highlight = " WCMindex_dropable_highlight_no";
+								break;
+							}
+							if (next_row_id == child_ids[i]) {
+								highlight = " WCMindex_dropable_highlight_no";
+								break;
+							}
+						}
+					}
+					// MSIE may handle className changes very slowly - set style directly instead
+					// dropat.className = dropat.className.replace(/ WCMindex_dropable_highlight[_a-z]*/,"") + highlight;
+					if (highlight == " WCMindex_dropable_highlight") {
+						dropat.style.backgroundColor = "#fcffd2";
+					} else if (highlight == " WCMindex_dropable_highlight_ok") {
+						dropat.style.backgroundColor = "#ccffcc";
+					} else if (highlight == " WCMindex_dropable_highlight_no") {
+						dropat.style.backgroundColor = "#ffcccc";
+					}
+					onHover_node = dropat;
+				}
+			},
+			
+			onDrop: function(element,dropat,event) {
+				// MSIE may crash if table row is made dropable so drop at table cell and get parent row
+				if (dropat.nodeName == "TD") dropat = dropat.parentNode;
+
+				// MSIE may handle className changes very slowly - set style directly instead
+				// if (onHover_node) onHover_node.className = onHover_node.className.replace(/ WCMindex_dropable_highlight[_a-z]*/,"");
+				if (onHover_node) {
+					var onHover_node_id = onHover_node.id.replace(/^row/,"");
+					if (document.getElementById("top_"+onHover_node_id) && document.getElementById("top_"+onHover_node_id).checked) {
+						onHover_node.style.backgroundColor = "#dddddd";
+					} else {
+						onHover_node.style.backgroundColor = "#eeeeee";
+					}
+				}
+
+				// get dropped position
+				var top = Position.cumulativeOffset(element)[1];
+				var left = Position.cumulativeOffset(element)[0];
+				// get dropped row ids
+				var ids = droppedBetweenIds(element, dropat);
+				var previous_row_id = ids[0];
+				var id = ids[1];
+				var next_row_id = ids[2];
+
+				// get the dragged element's child rows
+				var child_ids = droppedChildIds(id);
+
+				// if not dropped onto self
+				if (element.id.replace(/^title_/,"") != dropat.id.replace(/^row/,"")) {
+					// cancel if dropped onto own child rows
+					var previous_row_is_child = false;
+					var next_row_is_child = false;
+					for (var i=0; i<child_ids.length; i++) {
+						if (previous_row_id == child_ids[i]) previous_row_is_child = true;
+						if (next_row_id == child_ids[i]) next_row_is_child = true;
+					}
+					if (previous_row_is_child || next_row_is_child) return;
+				}
+
+				// move the dragged/dropped element row
+				if (next_row_id && document.getElementById("row"+next_row_id)) {
+					element.parentNode.parentNode.parentNode.insertBefore(element.parentNode.parentNode, document.getElementById("row"+next_row_id));
+				} else {
+					element.parentNode.parentNode.parentNode.appendChild(element.parentNode.parentNode);
+				}
+
+				// calculate the dragged element's new indentation
+				var indent = getIndentation(id);
+				var previous_row_indent = getIndentation(previous_row_id);
+				var next_row_indent = getIndentation(next_row_id);
+				// temporarily move dragged element to final position
+				element.style.position = "static";
+				if (! previous_row_id) {
+					setIndentation(id, 0);
+				} else if (((left+(indent*10))-(Position.cumulativeOffset(element)[0]+(previous_row_indent*10))) > 10) {
+					setIndentation(id, previous_row_indent + 1);
+				} else if (((left+(indent*10))-(Position.cumulativeOffset(element)[0]+(previous_row_indent*10))) < 10) {
+					setIndentation(id, previous_row_indent + Math.round((((left+(indent*10))-(Position.cumulativeOffset(element)[0]+(previous_row_indent*10)))/10)));
+				}
+				var indent_change = getIndentation(id) - indent;
+				// move dragged element to new relative position
+				element.style.top = top - Position.cumulativeOffset(element)[1] + "px";
+				element.style.left = left - Position.cumulativeOffset(element)[0] + "px";
+				// move dragged element back to dropped position (and slide to final position from there)
+				element.style.position = "relative";
+
+				// move dragged element's child rows
+				var insertafter = element.parentNode.parentNode;
+				for (var i=0; i<child_ids.length; i++) {
+					if (document.getElementById("row"+child_ids[i]) && insertafter.nextSibling) {
+						insertafter.parentNode.insertBefore(document.getElementById("row"+child_ids[i]), insertafter.nextSibling);
+					} else {
+						insertafter.parentNode.appendChild(document.getElementById("row"+child_ids[i]));
+					}
+					setIndentation(child_ids[i], getIndentation(child_ids[i]) + indent_change);
+					insertafter = document.getElementById("row"+child_ids[i]);
+				}
+
+				// set new page relations for all elements
+				//setPageRelations();
+
+				// remove dragged element from previous siblings
+				var dragged_parent_id = document.getElementById("page_up_"+id).value;
+				var dragged_previous_id = document.getElementById("page_previous_"+id).value;
+				var dragged_next_id = document.getElementById("page_next_"+id).value;
+				if (dragged_previous_id) {
+					document.getElementById("page_next_"+dragged_previous_id).value = dragged_next_id;
+				}
+				if (dragged_next_id) {
+					document.getElementById("page_previous_"+dragged_next_id).value = dragged_previous_id;
+				}
+
+				// set new page relations for dropped element
+				var dropped_id = id;
+				var dropped_previous_id = previous_row_id;
+				var dropped_next_id = next_row_id;
+				var dropped_indent = getIndentation(id);
+				var dropped_previous_indent = getIndentation(previous_row_id);
+				var dropped_next_indent = getIndentation(next_row_id);
+				if (dropped_previous_id && dropped_next_id && (dropped_indent == dropped_previous_indent) && (dropped_indent == dropped_next_indent)) {
+					// insert dragged element between siblings
+					document.getElementById("page_next_"+dropped_previous_id).value = dropped_id;
+					document.getElementById("page_previous_"+dropped_next_id).value = dropped_id;
+					document.getElementById("page_previous_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_next_"+dropped_id).value = dropped_next_id;
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && dropped_next_id && (dropped_indent < dropped_previous_indent) && (dropped_indent < dropped_next_indent)) {
+					// insert dragged element outdented
+					setPageRelations(dropped_id);
+					setPageRelations(document.getElementById("page_previous_"+dropped_id).value);
+				} else if (dropped_previous_id && dropped_next_id && (dropped_indent > dropped_previous_indent) && (dropped_indent > dropped_next_indent)) {
+					// insert dragged element indented between siblings
+					document.getElementById("page_next_"+dropped_id).value = "";
+					document.getElementById("page_previous_"+dropped_id).value = "";
+					document.getElementById("page_up_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_top_"+dropped_id).value = dropped_previous_id;
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && dropped_next_id && (dropped_indent == dropped_previous_indent) && (dropped_indent < dropped_next_indent)) {
+					document.getElementById("page_up_"+dropped_id).value = document.getElementById("page_up_"+dropped_previous_id).value;
+					document.getElementById("page_top_"+dropped_id).value = document.getElementById("page_top_"+dropped_previous_id).value;
+					document.getElementById("page_previous_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_next_"+dropped_id).value = document.getElementById("page_next_"+dropped_previous_id).value;
+					if (document.getElementById("page_next_"+dropped_previous_id).value) {
+						document.getElementById("page_previous_"+document.getElementById("page_next_"+dropped_previous_id).value).value = dropped_id;
+					}
+					document.getElementById("page_next_"+dropped_previous_id).value = dropped_id;
+					document.getElementById("page_previous_"+dropped_next_id).value = "";
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && dropped_next_id && (dropped_indent > dropped_previous_indent) && (dropped_indent == dropped_next_indent)) {
+					document.getElementById("page_up_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_top_"+dropped_id).value = document.getElementById("page_top_"+dropped_next_id).value;
+					document.getElementById("page_previous_"+dropped_id).value = "";
+					document.getElementById("page_next_"+dropped_id).value = dropped_next_id;
+					document.getElementById("page_previous_"+dropped_next_id).value = dropped_id;
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && dropped_next_id && (dropped_indent < dropped_previous_indent) && (dropped_indent == dropped_next_indent)) {
+					document.getElementById("page_up_"+dropped_id).value = document.getElementById("page_up_"+dropped_next_id).value;
+					document.getElementById("page_top_"+dropped_id).value = document.getElementById("page_top_"+dropped_next_id).value;
+					document.getElementById("page_previous_"+dropped_id).value = document.getElementById("page_previous_"+dropped_next_id).value;
+					document.getElementById("page_next_"+dropped_id).value = dropped_next_id;
+					if (document.getElementById("page_previous_"+dropped_next_id).value) {
+						document.getElementById("page_next_"+document.getElementById("page_previous_"+dropped_next_id).value).value = dropped_id;
+					}
+					document.getElementById("page_previous_"+dropped_next_id).value = dropped_id;
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && dropped_next_id && (dropped_indent == dropped_previous_indent) && (dropped_indent > dropped_next_indent)) {
+					document.getElementById("page_up_"+dropped_id).value = document.getElementById("page_up_"+dropped_previous_id).value;
+					document.getElementById("page_top_"+dropped_id).value = document.getElementById("page_top_"+dropped_previous_id).value;
+					document.getElementById("page_previous_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_next_"+dropped_id).value = "";
+					document.getElementById("page_next_"+dropped_previous_id).value = dropped_id;
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && dropped_next_id && (dropped_indent < dropped_previous_indent) && (dropped_indent > dropped_next_indent)) {
+					setPageRelations(dropped_id);
+					setPageRelations(document.getElementById("page_previous_"+dropped_id).value);
+				} else if ((! dropped_previous_id) && dropped_next_id) {
+					document.getElementById("page_up_"+dropped_id).value = "";
+					document.getElementById("page_top_"+dropped_id).value = "";
+					document.getElementById("page_previous_"+dropped_id).value = "";
+					document.getElementById("page_next_"+dropped_id).value = dropped_next_id;
+					document.getElementById("page_previous_"+dropped_next_id).value = dropped_id;
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && (! dropped_next_id) && (dropped_indent == dropped_previous_indent)) {
+					document.getElementById("page_up_"+dropped_id).value = document.getElementById("page_up_"+dropped_previous_id).value;
+					document.getElementById("page_top_"+dropped_id).value = document.getElementById("page_top_"+dropped_previous_id).value;
+					document.getElementById("page_previous_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_next_"+dropped_id).value = "";
+					document.getElementById("page_next_"+dropped_previous_id).value = dropped_id;
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && (! dropped_next_id) && (dropped_indent > dropped_previous_indent)) {
+					document.getElementById("page_up_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_top_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_previous_"+dropped_id).value = "";
+					document.getElementById("page_next_"+dropped_id).value = "";
+					setPageRelations(dropped_id);
+				} else if (dropped_previous_id && (! dropped_next_id) && (dropped_indent < dropped_previous_indent)) {
+					setPageRelations(dropped_id);
+					setPageRelations(document.getElementById("page_previous_"+dropped_id).value);
+				} else if (dropped_previous_id && dropped_next_id && (dropped_indent > dropped_previous_indent) && (dropped_indent < dropped_next_indent)) {
+					document.getElementById("page_up_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_top_"+dropped_id).value = dropped_previous_id;
+					document.getElementById("page_previous_"+dropped_id).value = "";
+					document.getElementById("page_next_"+dropped_id).value = "";
+					setPageRelations(dropped_id);
+				} else {
+					// set new page relations for all elements
+					setPageRelations();
+				}
+			}
+		});
+	}
+}
+</script>
+<script type="text/javascript">
+	if ((typeof(browserIs) != "undefined") && browserIs("Safari")) {
+		document.write('<div style="overflow: hidden; top: 0px; left: 0px; z-index: -1; position: absolute; opacity: 0;">');
+		document.write('<iframe name="iframe_save" src="/<%= mytext.display("adminpath") %>/dummy.html"></iframe>');
+		document.write('</div>');
+	} else {
+		document.write('<div style="display: none;">');
+		document.write('<iframe name="iframe_save" src="/<%= mytext.display("adminpath") %>/dummy.html"></iframe>');
+		document.write('</div>');
+	}
+</script>
+<div id="draggable_overlay" class="WCMindex_title" style="display: none; position: absolute; white-space: nowrap;"></div>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

@@ -1,0 +1,167 @@
+<div id="Content Version" class="Content_Version st_view"><div class="st_view_inner">
+	<table width="100%" border="0">
+		<tr align="left" valign="top"><th class="WCMinnerContentHeading1"><%= mytext.display("content.contentversion.heading") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentIntro"><%= mytext.display("content.contentversion.intro") %></td></tr>
+
+	<% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr align="left" valign="top"><th class="WCMinnerContentHeading1"><%= mytext.display("content.contentversion.master.heading") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentIntro"><%= mytext.display("content.contentversion.master.intro") %></td></tr>
+
+		<% if (update) { %>
+
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.master") %></th></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue">
+				<nobr>
+					<select id="version_master" name="version_master" style="width: 400px;">
+						<option value="<%= mypage.getVersionMaster() %>"><%= mypage.getVersionMasterTitle() %> &nbsp;</option>
+						<option value="0"<% if ((mypage.getVersionMaster().equals("0")) || (mypage.getVersionMaster().equals(""))) { %> selected<% } %>><%= mytext.display("none") %></option>
+					</select>
+
+			<% if (mypage.getContentClass().equals("page")) { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Pages', '', 'Pages', 'page');">
+
+			<% } else if (mypage.getContentClass().equals("image")) { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Images', '', 'Images', 'image');">
+
+			<% } else if (mypage.getContentClass().equals("file")) { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Files', '', 'Files', 'file');">
+
+			<% } else if (mypage.getContentClass().equals("link")) { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Links', '', 'Links', 'link');">
+
+			<% } else if (mypage.getContentClass().equals("product")) { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Products', '', 'Products', 'product');">
+
+			<% } else if (mypage.getContentClass().equals("template")) { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Templates', '', 'Templates', 'template');">
+
+			<% } else if (mypage.getContentClass().equals("stylesheet")) { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Style Sheets', '', 'Style Sheets', 'stylesheet');">
+
+			<% } else if (mypage.getContentClass().equals("script")) { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Scripts', '', 'Scripts', 'script');">
+
+			<% } else { %>
+
+					<input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Elements', '', 'Elements', 'element');">
+
+			<% } %>
+
+				</nobr>
+			</td>
+		</tr>
+
+          	<tr><td>&nbsp;</td></tr>
+
+          	<tr align="left" valign="top"><th class="WCMinnerContentHeading1"><%= mytext.display("content.contentversion.versions.heading") %></th></tr>
+	          <tr align="left" valign="top"><td class="WCMinnerContentIntro"><%= mytext.display("content.contentversion.versions.intro") %></td></tr>
+
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.version") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.version.intro") %></td></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue">
+				<select name="version" style="width: 400px;">
+					<option value="">&nbsp;</option>
+					<%= mypage.version_select_options(db, mypage.getVersion()) %>
+				</select>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.device") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.device.intro") %></td></tr>
+          <tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue">
+				<select name="device" style="width: 400px;">
+					<option value="">&nbsp;</option>
+					<%= mypage.device_select_options(db, mypage.getDevice()) %>
+				</select>
+			</td>
+		</tr>
+<% if (License.valid(db, myconfig, "experience")) { %>
+		<tr><td>&nbsp;</td></tr>
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.usersegment") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.usersegment.intro") %></td></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue">
+				<select name="usersegment" style="width: 400px;">
+					<option value="">&nbsp;</option>
+					<%= mypage.usersegment_select_options(db, mypage.getUsersegment()) %>
+				</select>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.usertest") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.usertest.intro") %></td></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue">
+				<select name="usertest" style="width: 400px;">
+					<option value="">&nbsp;</option>
+					<%= mypage.usertest_select_options(db, mypage.getUsertest()) %>
+				</select>
+			</td>
+		</tr>
+<% } %>
+
+		<% } else { %>
+
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.master") %></th></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue"><%= mypage.getVersionMasterTitle() %> &nbsp;</td>
+		</tr>
+
+          	<tr><td>&nbsp;</td></tr>
+
+          	<tr align="left" valign="top"><th class="WCMinnerContentHeading1"><%= mytext.display("content.contentversion.versions.heading") %></th></tr>
+	          <tr align="left" valign="top"><td class="WCMinnerContentIntro"><%= mytext.display("content.contentversion.versions.intro") %></td></tr>
+
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.version") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.version.intro") %></td></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue"><%= mypage.getVersion() %> &nbsp;</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.device") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.device.intro") %></td></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue"><%= mypage.getDevice() %> &nbsp;</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.usersegment") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.usersegment.intro") %></td></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue"><%= mypage.getUsersegment() %> &nbsp;</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.usertest") %></th></tr>
+		<tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.usertest.intro") %></td></tr>
+		<tr align="left" valign="top">
+			<td class="WCMinnerContentInputValue"><%= mypage.getUsertest() %> &nbsp;</td>
+		</tr>
+
+		<% } %>
+
+		</tr>
+
+	<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue" align="left" colspan="5"><div><b><%= mytext.display("content.contentversion.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.contentversion.enableconfig") %><% } else { %><%= mytext.display("content.contentversion.enablesuperadmin") %><% } %></td></tr>
+
+	<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left" colspan="5"><%= mytext.display("content.contentversion.about.heading") %></th></tr>
+		<tr><td align="left" colspan="5"><%= mytext.display("content.contentversion.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>

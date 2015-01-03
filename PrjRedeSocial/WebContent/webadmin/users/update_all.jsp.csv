@@ -1,0 +1,16 @@
+<%
+
+while (user.records("", "", "", "", "", db, myconfig, "")) {
+	user.read(db, user.getId());
+	%><%= "" + user.getId() + " - " + user.getUsername() + " - " + user.getPassword() %><%
+	String save_password = "" + user.getPassword();
+	user.setPassword("dummy");
+	user.update(db);
+	user.read(db, user.getId());
+	user.setPassword(save_password);
+	user.update(db);
+	user.read(db, user.getId());
+	%><%= " - " + user.getPassword() + "\r\n" %><%
+}
+
+%>

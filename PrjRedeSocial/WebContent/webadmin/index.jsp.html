@@ -1,0 +1,764 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("intro.index.title") %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+<script type="text/javascript">
+
+function getPersonalWorkspace() {
+	getPersonalWorkspaceSection("checkedout");
+	getPersonalWorkspaceSection("workflow");
+	getPersonalWorkspaceSection("updated");
+	getPersonalWorkspaceSection("created");
+	getPersonalWorkspaceSection("expired");
+}
+function getPersonalWorkspaceSection(name) {
+	var container = document.getElementById("contents_"+name);
+	if (container) {
+		GET("/<%= mytext.display("adminpath") %>/index.workspace.jsp?section="+name+'&'+Math.random(), "contents_"+name, initPersonalWorkspaceSection);
+	}
+}
+function initPersonalWorkspaceSection() {
+	sortables_init();
+	var width = $("#workspacesection").width();
+//	if (width > $("#WCMadminpagewrapper").width()) {
+//		$("#WCMadminpagewrapper").width(width);
+//	}
+	if (width > $("#WCMadminpage").width()) {
+		$("#WCMadminpage").width(width);
+	}
+}
+
+var workflowoptions = new Array();
+function refreshWorkflow(myform) {
+	if (document.getElementById("status")) {
+		if (! workflowoptions[0]) {
+			workflowoptions[0] = document.getElementById("status").innerHTML;
+		}
+		var myoptions = workflowoptions[0].match(new RegExp("<option.*?<\/option>", "gim"));
+		for (var i=0; i<myform.elements.length; i++) {
+			if ((myform.elements[i].name == "id") && (myform.elements[i].checked || (myform.elements[i].type == "hidden"))) {
+				for (var j=0; j<myoptions.length; j++) {
+					myoptions[j] = myoptions[j].replace(new RegExp('&quot;', 'gim'), '"');
+					myoptions[j] = myoptions[j].replace(new RegExp('&gt;', 'gim'), '>');
+					myoptions[j] = myoptions[j].replace(new RegExp('&lt;', 'gim'), '<');
+					if (myoptions[j].match(new RegExp('<option.*?value="?([0-9]+)"?.*?>(.*?)</option>', 'gim'))) {
+						myoptions[j] = myoptions[j].replace(new RegExp('<option.*?value="?([0-9]+)"?.*?>(.*?)</option>', 'gim'), '<option value="$1">$2</option>');
+						myoptions[j] = myoptions[j].replace(new RegExp(" \\[.*\\]", 'gim'), '');
+						workflowoptions[myform.elements[i].value] = workflowoptions[myform.elements[i].value].replace(new RegExp('&quot;', 'gim'), '"');
+						workflowoptions[myform.elements[i].value] = workflowoptions[myform.elements[i].value].replace(new RegExp('&gt;', 'gim'), '>');
+						workflowoptions[myform.elements[i].value] = workflowoptions[myform.elements[i].value].replace(new RegExp('&lt;', 'gim'), '<');
+						workflowoptions[myform.elements[i].value] = workflowoptions[myform.elements[i].value].replace(new RegExp(" \\[.*\\]", 'gim'), '');
+						if (workflowoptions[myform.elements[i].value].toLowerCase().indexOf(myoptions[j].toLowerCase()) < 0) {
+							// myoptions[j] = myoptions[j].replace(/<option value/i, "<option disabled value");
+							myoptions[j] = "";
+						}
+					}
+				}
+			}
+		}
+		var myhtmloptions = myoptions.join("\n").replace("\n\n","\n");
+		if (document.getElementById("status").outerHTML) {
+			document.getElementById("status").outerHTML = '<select id="status" name="status">' + myhtmloptions + '</select>';
+		} else {
+			document.getElementById("status").innerHTML = myhtmloptions;
+		}
+	}
+}
+
+function selectAll(myform) {
+	var myelements = new Array();
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id") {
+			if (! myform.elements[i].checked) myform.elements[i].click();
+			myform.elements[i].checked = true;
+		} else if (myform.elements[i].name == "dummy") {
+			if (! myform.elements[i].checked) myform.elements[i].click();
+			myform.elements[i].checked = true;
+			myelements[myelements.length] = myform.elements[i].value;
+		}
+	}
+	for (var i=0; i<myelements.length; i++) {
+		if (toggleCheckbox) toggleCheckbox( myelements[i], true );
+	}
+}
+
+function unselectAll(myform) {
+	var myelements = new Array();
+	for (var i=0; i<myform.elements.length; i++) {
+		if (myform.elements[i].name == "id") {
+			myform.elements[i].checked = false;
+		} else if (myform.elements[i].name == "dummy") {
+			myform.elements[i].checked = false;
+			myelements[myelements.length] = myform.elements[i].value;
+		}
+	}
+	for (var i=0; i<myelements.length; i++) {
+		if (toggleCheckbox) toggleCheckbox( myelements[i], false );
+	}
+}
+
+function selectedItems(myform) {
+	for (var i=0; i<myform.elements.length; i++) {
+		if ((myform.elements[i].name == "id") || (myform.elements[i].name == "dummy")) {
+			if ((myform.elements[i].type == "checkbox") && (myform.elements[i].checked)) {
+				return true;
+			}
+		}
+	}
+}
+
+function publishSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "/<%= mytext.display("adminpath") %>/content/publish_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function deleteSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "/<%= mytext.display("adminpath") %>/content/delete_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function archiveSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "/<%= mytext.display("adminpath") %>/content/archive_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function checkoutSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "/<%= mytext.display("adminpath") %>/content/checkout_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function checkinSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "/<%= mytext.display("adminpath") %>/content/checkin_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function moveSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "/<%= mytext.display("adminpath") %>/content/move_multiple.jsp";
+	myform.target = "_self";
+	myform.submit();
+}
+
+function printSelected(myform) {
+	if (! selectedItems(myform)) return;
+	myform.action = "/<%= mytext.display("adminpath") %>/content/print.jsp";
+	myform.target = "_blank";
+	myform.submit();
+}
+
+</script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/sorttable.js"></script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("intro.index.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" --><p>&nbsp;</p><!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+
+
+
+<% boolean administrator = false; %>
+<% String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()); %>
+<% String workflowoptions = ""; %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_workspace")) { %>
+<a name="workspace"></a>
+<form id="workspaceform" method="POST">
+<input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.jsp#workspace">
+
+
+
+<%
+	String workspace = adminuser.getWorkspaceSections();
+	if (workspace.equals("")) {
+		workspace = myconfig.get(db, "workspace_sections");
+	}
+	if (workspace.equals("")) {
+		workspace = "intro checkedout updated created expired workflow actions";
+	}
+	workspace = "BEGIN " + workspace + " END";
+	String[] workspacesections = workspace.replaceAll("[\r\n]+", " ").split(" ");
+	for (int myworkspacesection=0; myworkspacesection<workspacesections.length; myworkspacesection++) {
+		String workspacesection = "" + workspacesections[myworkspacesection];
+%>
+
+
+
+
+
+<% String reportsection = workspacesection; %>
+<%@ include file="usage/report.data.jsp.html" %>
+
+
+
+
+
+<% if (workspacesection.equals("BEGIN")) { %>
+      <table id="workspacesection" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="left" valign="top">
+            <% if (! myrequest.getParameter("error").equals("")) { %>
+            <p><font color="red"><%= myrequest.getParameter("error") %></font></p>
+            <% } %>
+                  <table width="100%" border="0">
+                    <tr align="left" valign="top"> 
+                      <th class="WCMinnerContentHeading1" colspan="4"><%= mytext.display("intro.index.welcome") %> <%= mysession.get("username") %></th>
+                    </tr>
+                  </table>
+<% } %>
+
+
+
+
+
+<% if (workspacesection.equals("intro")) { %>
+                  <table width="100%" border="0">
+                    <tr align="left" valign="top"> 
+                      <td class="WCMinnerContentSectionIntro" colspan="4"><%= mytext.display("intro.index.text") %></td>
+                    </tr>
+<% int cellcount = 0; %>
+                    <tr align="left" valign="top"> 
+<% if (! adminuser.permission(db, "forbid", "webadmin_browseedit")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/index.jsp?mode=admin&menu=none"><img src="toolbar_browse_edit.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><b><font color="#CC0000"><a href="/index.jsp?mode=admin&menu=none"><%= mytext.display("intro.index.browseedit.heading") %></a></font></b><br>
+                          <%= mytext.display("intro.index.browseedit.text") %><br>&nbsp;</p>
+                      </td>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="#" onclick="window.open('/<%= mytext.display("adminpath") %>/help/index.jsp', 'help_window', 'scrollbars=yes,width=640,height=550,resizable=yes,status=yes', true);"><img src="toolbar_help.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><b><font color="#CC0000"><a href="#" onclick="window.open('/<%= mytext.display("adminpath") %>/help/index.jsp', 'help_window', 'scrollbars=yes,width=640,height=550,resizable=yes,status=yes', true);"><%= mytext.display("intro.index.userguide.heading") %></a></font></b><br>
+                          <%= mytext.display("intro.index.userguide.text") %><br>&nbsp;</p>
+                      </td>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_content")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/index.content.jsp?menu=content"><img src="toolbar_content.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/index.content.jsp?menu=content"><%= mytext.display("intro.index.content.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.content.text") %><br>&nbsp;</p></td>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_library")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/index.library.jsp?menu=library"><img src="toolbar_library.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/index.library.jsp?menu=library"><%= mytext.display("intro.index.library.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.library.text") %><br>&nbsp;</p></td>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_ecommerce")) { %>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/index.ecommerce.jsp?menu=ecommerce"><img src="toolbar_ecommerce.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/index.ecommerce.jsp?menu=ecommerce"><%= mytext.display("intro.index.products.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.products.text") %><br>&nbsp;</p></td>
+<% } %>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+
+<% if (! adminuser.permission(db, "forbid", "webadmin_databases")) { %>
+<% if (License.valid(db, myconfig, "databases")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/index.databases.jsp?menu=databases"><img src="toolbar_databases.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/index.databases.jsp?menu=databases"><%= mytext.display("intro.index.databases.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.databases.text") %><br>&nbsp;</p></td>
+<% } %>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+
+<% if (! adminuser.permission(db, "forbid", "webadmin_experience")) { %>
+<% if (License.valid(db, myconfig, "experience")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/index.experience.jsp?menu=experience"><img src="toolbar_experience.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/index.experience.jsp?menu=experience"><%= mytext.display("intro.index.experience.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.experience.text") %><br>&nbsp;</p></td>
+<% } %>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+
+<% if (! adminuser.permission(db, "forbid", "webadmin_user")) { %>
+<% if (myconfig.get(db, "use_userdatabase").equals("yes")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/index.users.jsp?menu=user"><img src="toolbar_users.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/index.users.jsp?menu=user"><%= mytext.display("intro.index.users.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.users.text") %><br>&nbsp;</p></td>
+<% } %>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+
+<% if (! adminuser.permission(db, "forbid", "webadmin_statistics")) { %>
+<% if (License.valid(db, myconfig, "statistics")) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/index.statistics.jsp?menu=statistics"><img src="toolbar_statistics.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/index.statistics.jsp?menu=statistics"><%= mytext.display("intro.index.statistics.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.statistics.text") %><br>&nbsp;</p></td>
+<% } %>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+
+<% for (int i=0; i<module.size(); i++) { %>
+<% if ((moduleHomeIntroTitle.size()>i) && (! moduleHomeIntroTitle.get(i).equals(""))) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="<%= moduleHomeIntroLink.get(i) %>"><img src="<%= moduleHomeIntroImage.get(i) %>" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="<%= moduleHomeIntroLink.get(i) %>"><%= moduleHomeIntroTitle.get(i) %></a></font></b><br>
+                        <%= moduleHomeIntroText.get(i) %><br>&nbsp;</p>
+                      </td>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% } %>
+<% } %>
+
+<% if (License.valid(db, myconfig, "hosting") || (myconfig.get(db, "hosting_license").equals("TRIAL"))) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?menu=clients"><img src="toolbar_clients.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?menu=clients"><%= mytext.display("intro.index.clients.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.clients.text") %><br>&nbsp;</p>
+                      </td>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% if ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) || (myconfig.get(db, "superadmin").equals(""))) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=config"><img src="toolbar_configuration.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=config"><%= mytext.display("intro.index.configuration.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.configuration.text") %><br>&nbsp;</p></td>
+<% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% if ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) || (myconfig.get(db, "superadmin").equals(""))) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="75"> 
+                        <p><a href="/<%= mytext.display("adminpath") %>/config/addons.jsp"><img src="toolbar_configuration.gif" width="58" height="65" border="0"></a></p>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td width="50%" class="WCMfrontpage"><p><b><font color="#CC0000"><a href="/<%= mytext.display("adminpath") %>/config/addons.jsp"><%= mytext.display("intro.index.addons.heading") %></a></font></b><br>
+                        <%= mytext.display("intro.index.addons.text") %><br>&nbsp;</p></td>
+<% } %>
+                    </tr>
+                  </table>
+          </td>
+          <td align="right" valign="top" width="110">
+            <p><img src="content1.gif" width="100" height="100"></p>
+            <p><img src="users2.gif" width="100" height="100"></p>
+            <p><img src="configuration3.gif" width="100" height="100"></p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+<% } %>
+
+
+
+
+
+<% if (workspacesection.equals("checkedout")) { %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_workspace_checkedout")) { %>
+<% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+            <table style="width: 100%;" border="0">
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage"> 
+                              <p><b><font color="#CC0000"><%= mytext.display("workspace.checkedout") %></font></b></p>
+                            </td>
+                          </tr>
+            </table>
+            <table style="width: 100%;" border="0" class="sortable" id="contents_checkedout">
+              <tr><td class="WCMindex unsortable"><%= mytext.display("wait.data.loading") %></td></tr>
+            </table>
+<% } %>
+<% } %>
+<% } %>
+
+
+
+
+
+<% if (workspacesection.equals("updated")) { %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_workspace_updated")) { %>
+<% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+            <table style="width: 100%;" border="0">
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage">&nbsp;</td>
+                          </tr>
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage"> 
+                              <p><b><font color="#CC0000"><%= mytext.display("workspace.updated") %></font></b></p>
+                            </td>
+                          </tr>
+            </table>
+            <table style="width: 100%;" border="0" class="sortable" id="contents_updated">
+              <tr><td class="WCMindex unsortable"><%= mytext.display("wait.data.loading") %></td></tr>
+            </table>
+<% } %>
+<% } %>
+<% } %>
+
+
+
+
+
+<% if (workspacesection.equals("created")) { %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_workspace_created")) { %>
+<% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+            <table style="width: 100%;" border="0">
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage">&nbsp;</td>
+                          </tr>
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage"> 
+                              <p><b><font color="#CC0000"><%= mytext.display("workspace.created") %></font></b></p>
+                            </td>
+                          </tr>
+            </table>
+            <table style="width: 100%;" border="0" class="sortable" id="contents_created">
+              <tr><td class="WCMindex unsortable"><%= mytext.display("wait.data.loading") %></td></tr>
+            </table>
+<% } %>
+<% } %>
+<% } %>
+
+
+
+
+
+<% if (workspacesection.equals("expired")) { %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_workspace_expired")) { %>
+<% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+            <table style="width: 100%;" border="0">
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage">&nbsp;</td>
+                          </tr>
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage"> 
+                              <p><b><font color="#CC0000"><%= mytext.display("workspace.expired") %></font></b></p>
+                            </td>
+                          </tr>
+            </table>
+            <table style="width: 100%;" border="0" class="sortable" id="contents_expired">
+              <tr><td class="WCMindex unsortable"><%= mytext.display("wait.data.loading") %></td></tr>
+            </table>
+<% } %>
+<% } %>
+<% } %>
+
+
+
+
+
+<% if (workspacesection.equals("workflow")) { %>
+<% if (! adminuser.permission(db, "forbid", "webadmin_workspace_workflow")) { %>
+<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+            <table style="width: 100%;" border="0">
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage">&nbsp;</td>
+                          </tr>
+                          <tr align="left" valign="top"> 
+                            <td colspan="13" class="WCMfrontpage"> 
+                              <p><b><font color="#CC0000"><%= mytext.display("workspace.workflow") %></font></b></p>
+                            </td>
+                          </tr>
+            </table>
+            <table style="width: 100%;" border="0" class="sortable" id="contents_workflow">
+              <tr><td class="WCMindex unsortable"><%= mytext.display("wait.data.loading") %></td></tr>
+            </table>
+<% } %>
+<% } %>
+<% } %>
+
+
+
+
+
+<% if (workspacesection.equals("actions")) { %>
+<% if ((! myconfig.get(db, "use_checkout").equals("none")) || (! myconfig.get(db, "use_publish").equals("auto-on-save"))) { %>
+<div>&nbsp;</div>
+<input type="button" value="<%= mytext.display("selectall") %>" onClick="selectAll(this.form);refreshWorkflow(this.form);">
+&nbsp;
+<input type="button" value="<%= mytext.display("unselectall") %>" onClick="unselectAll(this.form);refreshWorkflow(this.form);">
+<% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+&nbsp;
+<input type="button" value="<%= mytext.display("publishselected") %>" onClick="publishSelected(this.form)">
+<% } %>
+&nbsp;
+<input type="button" value="<%= mytext.display("deleteselected") %>" onClick="deleteSelected(this.form)">
+<% if (! myconfig.get(db, "use_archive").equals("none")) { %>
+&nbsp;
+<input type="button" value="<%= mytext.display("archiveselected") %>" onClick="archiveSelected(this.form)">
+<% } %>
+<% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+&nbsp;
+<input type="button" value="<%= mytext.display("checkoutselected") %>" onClick="checkoutSelected(this.form)">
+&nbsp;
+<input type="button" value="<%= mytext.display("checkinselected") %>" onClick="checkinSelected(this.form)">
+<% } %>
+<% } %>
+<% if ((((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) || (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product"))))) { %>
+	&nbsp;
+	<nobr>
+	<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+		<input type="button" value="<%= mytext.display("moveselected") %>" onClick="moveSelected(this.form)">
+	<% } %>
+<!--
+	<% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          	<%= mytext.display("content.contentcategories.group") %>
+		<select name="contentgroup" style="width: 150px">
+		<option value="">
+		<option value=" "><%= mytext.display("none") %>
+		<% if (mysession.get("admin_contentclass").equals("file")) { %>
+                <%= HardCore.Common.select_options(db, "filegroups", "filegroup", mysession.get("admin_contentgroup")) %> 
+		<% } else if (mysession.get("admin_contentclass").equals("image")) { %>
+                <%= HardCore.Common.select_options(db, "imagegroups", "imagegroup", mysession.get("admin_contentgroup")) %> 
+		<% } else if (mysession.get("admin_contentclass").equals("link")) { %>
+                <%= HardCore.Common.select_options(db, "linkgroups", "linkgroup", mysession.get("admin_contentgroup")) %> 
+		<% } else if (mysession.get("admin_contentclass").equals("product")) { %>
+                <%= HardCore.Common.select_options(db, "productgroups", "productgroup", mysession.get("admin_contentgroup")) %> 
+		<% } else if (! mysession.get("admin_contentclass").equals("")) { %>
+                <%= HardCore.Common.select_options(db, "contentgroups", "contentgroup", mysession.get("admin_contentgroup")) %> 
+		<% } %>
+		</select>
+	<% } %>
+	<% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (! mysession.get("admin_contentclass").equals("product")) && (! mysession.get("admin_contentclass").equals("file")) && (! mysession.get("admin_contentclass").equals("image")) && (! mysession.get("admin_contentclass").equals("link")) && (! mysession.get("admin_contentclass").equals("stylesheet"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mysession.get("admin_contentclass") != null) && (mysession.get("admin_contentclass").equals("product")))) { %>
+          	<%= mytext.display("content.contentcategories.type") %>
+		<select name="contenttype" style="width: 150px">
+		<option value="">
+		<option value=" "><%= mytext.display("none") %>
+		<% if (mysession.get("admin_contentclass").equals("file")) { %>
+                <%= HardCore.Common.select_options(db, "filetypes", "filetype", mysession.get("admin_contenttype")) %> 
+		<% } else if (mysession.get("admin_contentclass").equals("image")) { %>
+                <%= HardCore.Common.select_options(db, "imagetypes", "imagetype", mysession.get("admin_contenttype")) %> 
+		<% } else if (mysession.get("admin_contentclass").equals("link")) { %>
+                <%= HardCore.Common.select_options(db, "linktypes", "linktype", mysession.get("admin_contenttype")) %> 
+		<% } else if (mysession.get("admin_contentclass").equals("product")) { %>
+                <%= HardCore.Common.select_options(db, "producttypes", "producttype", mysession.get("admin_contenttype")) %> 
+		<% } else if (! mysession.get("admin_contentclass").equals("")) { %>
+                <%= HardCore.Common.select_options(db, "contenttypes", "contenttype", mysession.get("admin_contenttype")) %> 
+		<% } %>
+		</select>
+	<% } %>
+-->
+	<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+		<%= mytext.display("content.workflow") %>
+		<select id="status" name="status" style="width: 150px">
+		<option value="">&nbsp;</option>
+		<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>
+		<option value="0"><%= mytext.display("end") %></option>
+		<% } %>
+		<%
+		String fromstate = "*";
+		String usergroup = mysession.get("usergroup")+"|"+mysession.get("usergroups");
+		String usertype = mysession.get("usertype")+"|"+mysession.get("usertypes");
+		String contentclass = "*";
+		String contentgroup = "*";
+		String contenttype = "*";
+		String version = "*";
+		if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) {
+			administrator = true;
+		}
+		%>
+		<%= workflow.workflow_action_select_options(db, fromstate, usergroup, usertype, contentclass, contentgroup, contenttype, version, administrator) %>
+		</select>
+
+<script type="text/javascript">
+<%= workflowoptions %>
+refreshWorkflow(document.getElementById("workspaceform"));
+</script>
+
+	<% } %>
+	</nobr>
+<% } %>
+<% if (! myconfig.get(db, "print_contents").equals("")) { %>
+	&nbsp;
+	<nobr>
+	<input type="button" value="<%= mytext.display("print") %>" onClick="printSelected(this.form)">
+	<select id="print" name="print">
+	  <%= mypage.select_options_ids(db, "", myconfig.get(db, "print_contents").replaceAll(",", "|")) %>
+	</select>
+	</nobr>
+<% } %>
+<% } %>
+
+
+
+
+
+<% if (workspacesection.equals("END")) { %>
+          </td>
+        </tr>
+      </table>
+<% } %>
+
+
+
+
+
+<%
+	}
+%>
+
+
+
+
+
+</form>
+<% } %>
+
+
+
+
+
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

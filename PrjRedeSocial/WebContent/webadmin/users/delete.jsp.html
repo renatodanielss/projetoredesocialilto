@@ -1,0 +1,1590 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("users.delete.title") %>&nbsp;<%= user.getUsername() %></title>
+<script type="text/javascript">
+
+$(function(){
+	initForm('userinfo');
+	mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	$('#tabs').find('[rel=User_Login]').click();
+});
+
+</script>
+
+<script type="text/javascript">
+
+var inputCount = new Object();
+
+var update = false;
+
+<jsp:include page="admin.script.jsp" />
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<script type="text/javascript">
+
+$(function(){
+
+	$('#scheduled_publish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_publish').attr('value').length >= 10) ? $('#scheduled_publish').attr('value').substring(0,10) : $('#scheduled_publish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish_trigger').datepicker( "option", "defaultDate", $('#scheduled_publish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish').attr('value', dateText + $('#scheduled_publish').attr('value').substring(10));
+				} else {
+					$('#scheduled_publish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#scheduled_notify_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_notify').attr('value').length >= 10) ? $('#scheduled_notify').attr('value').substring(0,10) : $('#scheduled_notify').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_notify').attr('value').length >= 10) {
+					$('#scheduled_notify_trigger').datepicker( "option", "defaultDate", $('#scheduled_notify').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_notify').attr('value').length >= 10) {
+					$('#scheduled_notify').attr('value', dateText + $('#scheduled_notify').attr('value').substring(10));
+				} else {
+					$('#scheduled_notify').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#scheduled_unpublish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_unpublish').attr('value').length >= 10) ? $('#scheduled_unpublish').attr('value').substring(0,10) : $('#scheduled_unpublish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish_trigger').datepicker( "option", "defaultDate", $('#scheduled_unpublish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish').attr('value', dateText + $('#scheduled_unpublish').attr('value').substring(10));
+				} else {
+					$('#scheduled_unpublish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+});
+
+</script>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("users.delete.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<% if (! user.getPublisher()) { %>
+	<p><%= mytext.display("users.delete.nopermission") %></p>
+<% } %>
+<% if (user.getPublisher()) { %>
+      <form action="delete_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&redirect=<% if (! myrequest.getParameter("redirect").equals("")) { %><%= URLEncoder.encode(myrequest.getParameter("redirect")) %><% } %>" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("delete") %>">
+        </p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#User_Details" rel="User_Details"><%= mytext.display("users.details.tab") %></a></li>
+                <li><a href="#User_Login" rel="User_Login"><%= mytext.display("users.login.tab") %></a></li>
+                <li><a href="#User_Categories" rel="User_Categories"><%= mytext.display("users.categories.tab") %></a></li>
+                <li><a href="#Access_Restrictions" rel="Access_Restrictions"><%= mytext.display("users.accessrestrictions.tab") %></a></li>
+                <li><a href="#Activation" rel="Activation"><%= mytext.display("users.activation.tab") %></a></li>
+                <li><a href="#Invoice_Details" rel="Invoice_Details"><%= mytext.display("users.invoice.tab") %></a></li>
+                <li><a href="#Delivery_Details" rel="Delivery_Details"><%= mytext.display("users.delivery.tab") %></a></li>
+                <li><a href="#Payment_Details" rel="Payment_Details"><%= mytext.display("users.payment.tab") %></a></li>
+                <li><a href="#Administrator_Preferences" rel="Administrator_Preferences"><%= mytext.display("users.adminpreferences.tab") %></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="User_Details" class="User_Details st_view"><div class="st_view_inner">
+<input type="hidden" id="userinfo" name="userinfo" value="<%= html.encode(user.getUserinfo()) %>">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("users.details.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("users.details.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.details.title") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= user.getTitle() %>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.details.name") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= user.getName() %>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.details.organisation") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= user.getOrganisation() %>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.details.email") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= user.getEmail() %>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.details.gender") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><% if (user.getGender().equals("1")) { %><%= mytext.display("users.details.gender.male") %><% } %><% if (user.getGender().equals("0")) { %><%= mytext.display("users.details.gender.female") %><% } %>&nbsp;</td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.details.birthdate") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <%= mytext.display("users.details.birthdate.day") %>:
+              <select id="birthday" name="birthday">
+              	 <option value="">&nbsp;</option>
+              	 <option value="01"<% if (user.getBirthDay().equals("01")) { %> selected<% } %>>01</option>
+              	 <option value="02"<% if (user.getBirthDay().equals("02")) { %> selected<% } %>>02</option>
+              	 <option value="03"<% if (user.getBirthDay().equals("03")) { %> selected<% } %>>03</option>
+              	 <option value="04"<% if (user.getBirthDay().equals("04")) { %> selected<% } %>>04</option>
+              	 <option value="05"<% if (user.getBirthDay().equals("05")) { %> selected<% } %>>05</option>
+              	 <option value="06"<% if (user.getBirthDay().equals("06")) { %> selected<% } %>>06</option>
+              	 <option value="07"<% if (user.getBirthDay().equals("07")) { %> selected<% } %>>07</option>
+              	 <option value="08"<% if (user.getBirthDay().equals("08")) { %> selected<% } %>>08</option>
+              	 <option value="09"<% if (user.getBirthDay().equals("09")) { %> selected<% } %>>09</option>
+              	 <option value="10"<% if (user.getBirthDay().equals("10")) { %> selected<% } %>>10</option>
+              	 <option value="11"<% if (user.getBirthDay().equals("11")) { %> selected<% } %>>11</option>
+              	 <option value="12"<% if (user.getBirthDay().equals("12")) { %> selected<% } %>>12</option>
+              	 <option value="13"<% if (user.getBirthDay().equals("13")) { %> selected<% } %>>13</option>
+              	 <option value="14"<% if (user.getBirthDay().equals("14")) { %> selected<% } %>>14</option>
+              	 <option value="15"<% if (user.getBirthDay().equals("15")) { %> selected<% } %>>15</option>
+              	 <option value="16"<% if (user.getBirthDay().equals("16")) { %> selected<% } %>>16</option>
+              	 <option value="17"<% if (user.getBirthDay().equals("17")) { %> selected<% } %>>17</option>
+              	 <option value="18"<% if (user.getBirthDay().equals("18")) { %> selected<% } %>>18</option>
+              	 <option value="19"<% if (user.getBirthDay().equals("19")) { %> selected<% } %>>19</option>
+              	 <option value="20"<% if (user.getBirthDay().equals("20")) { %> selected<% } %>>20</option>
+              	 <option value="21"<% if (user.getBirthDay().equals("21")) { %> selected<% } %>>21</option>
+              	 <option value="22"<% if (user.getBirthDay().equals("22")) { %> selected<% } %>>22</option>
+              	 <option value="23"<% if (user.getBirthDay().equals("23")) { %> selected<% } %>>23</option>
+              	 <option value="24"<% if (user.getBirthDay().equals("24")) { %> selected<% } %>>24</option>
+              	 <option value="25"<% if (user.getBirthDay().equals("25")) { %> selected<% } %>>25</option>
+              	 <option value="26"<% if (user.getBirthDay().equals("26")) { %> selected<% } %>>26</option>
+              	 <option value="27"<% if (user.getBirthDay().equals("27")) { %> selected<% } %>>27</option>
+              	 <option value="28"<% if (user.getBirthDay().equals("28")) { %> selected<% } %>>28</option>
+              	 <option value="29"<% if (user.getBirthDay().equals("29")) { %> selected<% } %>>29</option>
+              	 <option value="30"<% if (user.getBirthDay().equals("30")) { %> selected<% } %>>30</option>
+              	 <option value="31"<% if (user.getBirthDay().equals("31")) { %> selected<% } %>>31</option>
+              </select>
+              <%= mytext.display("users.details.birthdate.month") %>:
+              <select id="birthmonth" name="birthmonth">
+              	 <option value="">&nbsp;</option>
+              	 <option value="01"<% if (user.getBirthMonth().equals("01")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.january") %></option>
+              	 <option value="02"<% if (user.getBirthMonth().equals("02")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.february") %></option>
+              	 <option value="03"<% if (user.getBirthMonth().equals("03")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.march") %></option>
+              	 <option value="04"<% if (user.getBirthMonth().equals("04")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.april") %></option>
+              	 <option value="05"<% if (user.getBirthMonth().equals("05")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.may") %></option>
+              	 <option value="06"<% if (user.getBirthMonth().equals("06")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.june") %></option>
+              	 <option value="07"<% if (user.getBirthMonth().equals("07")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.july") %></option>
+              	 <option value="08"<% if (user.getBirthMonth().equals("08")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.august") %></option>
+              	 <option value="09"<% if (user.getBirthMonth().equals("09")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.september") %></option>
+              	 <option value="10"<% if (user.getBirthMonth().equals("10")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.october") %></option>
+              	 <option value="11"<% if (user.getBirthMonth().equals("11")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.november") %></option>
+              	 <option value="12"<% if (user.getBirthMonth().equals("12")) { %> selected<% } %>><%= mytext.display("users.details.birthdate.month.december") %></option>
+              </select>
+              <%= mytext.display("users.details.birthdate.year") %>:
+              <input id="birthyear" type="text" size="4" maxlength="4" name="birthyear" value="<%= html.encode(user.getBirthYear()) %>">
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.details.notes") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><pre><%= user.getNotes() %></pre>&nbsp;</td>
+          </tr>
+          <tr id="userinfoaddnew"><td>&nbsp;</td></tr>
+          <tr><td colspan="2"><input id="userinfoname" type="hidden" name="userinfoname"></td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("users.details.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("users.details.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="User_Login" class="User_Login st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("users.login.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("users.login.intro") %></td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.login.username") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= user.getUsername() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("users.login.password") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue"><%= user.getPassword() %>&nbsp;</td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("users.login.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("users.login.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="User_Categories" class="User_Categories st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="2" align="left"><%= mytext.display("users.categories.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="2" align="left"><%= mytext.display("users.categories.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+	<% if (! myconfig.get(db, "use_userclasses").equals("")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" colspan="2" align="left"><%= mytext.display("users.categories.class") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2"><% if (user.getUserclass().equals("administrator")) { %><%= mytext.display("users.categories.administrator") %><% } else { %><%= user.getUserclass() %><% } %>&nbsp;</td>
+          </tr>
+	<% } %>
+          <tr>
+	<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("users.categories.group") %></th>
+	<% } %>
+	<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("users.categories.type") %></th>
+	<% } %>
+          </tr>
+          <tr>
+	<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" width="50%"><%= user.getUsergroup() %>&nbsp;</td>
+	<% } %>
+	<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" width="50%"><%= user.getUsertype() %>&nbsp;</td>
+	<% } %>
+          </tr>
+          <tr>
+	<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("users.categories.groups") %></th>
+	<% } %>
+	<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" width="50%" align="left"><%= mytext.display("users.categories.types") %></th>
+	<% } %>
+          </tr>
+          <tr>
+	<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" width="50%" valign="top"><%= user.usergroups_list(db) %>&nbsp;</td>
+	<% } %>
+	<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" width="50%" valign="top"><%= user.usertypes_list(db) %>&nbsp;</td>
+	<% } %>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("users.categories.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("users.categories.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("users.categories.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("users.categories.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("users.categories.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Access_Restrictions" class="Access_Restrictions st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.users") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><%= user.getUsersGroup() %>&nbsp;</td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><%= user.getUsersType() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentIntro" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.users.text") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.creators") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><% if (user.getCreatorsGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (user.getCreatorsGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= user.getCreatorsGroup() %><% } %> &nbsp; </td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><% if (user.getCreatorsType().equals("0")) { %><%= mytext.display("public") %><% } else if (user.getCreatorsType().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= user.getCreatorsType() %><% } %> &nbsp; </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentIntro" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.creators.text") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.editors") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><%= user.getEditorsGroup() %>&nbsp;</td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><%= user.getEditorsType() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentIntro" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.editors.text") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.publishers") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><% if (user.getPublishersGroup().equals("0")) { %><%= mytext.display("public") %><% } else if (user.getPublishersGroup().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= user.getPublishersGroup() %><% } %> &nbsp; </td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><% if (user.getPublishersType().equals("0")) { %><%= mytext.display("public") %><% } else if (user.getPublishersType().equals("*")) { %><%= mytext.display("restricted") %><% } else { %><%= user.getPublishersType() %><% } %> &nbsp; </td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentIntro" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.publishers.text") %></th>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentInputName" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.administrators") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><%= user.getAdministratorsGroup() %>&nbsp;</td>
+            <td class="WCMinnerContentInputName" width="50"><%= mytext.display("users.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><%= user.getAdministratorsType() %>&nbsp;</td>
+          </tr>
+          <tr> 
+            <th class="WCMinnerContentIntro" colspan="4" align="left"><%= mytext.display("users.accessrestrictions.administrators.text") %></th>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("users.accessrestrictions.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("users.accessrestrictions.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("users.accessrestrictions.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("users.accessrestrictions.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="6">
+            <%= mytext.display("users.accessrestrictions.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Activation" class="Activation st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("users.activation.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("users.activation.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_useractivation").equals("yes")) { %>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("users.activation.activate") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_publish" name="scheduled_publish" value="<%= html.encode(user.getScheduledPublish()) %>"><input type="button" value="..." id="scheduled_publish_trigger">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("users.activation.activate.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="scheduled_publish_email" name="scheduled_publish_email" style="width: 400px;">
+                <option value="<%= scheduled_publish_email.getId() %>"><%= scheduled_publish_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_publish_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_publish_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("users.activation.notify") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_notify" name="scheduled_notify" value="<%= html.encode(user.getScheduledNotify()) %>"><input type="button" value="..." id="scheduled_notify_trigger">
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("users.activation.notify.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="scheduled_notify_email" name="scheduled_notify_email" style="width: 400px;">
+                <option value="<%= scheduled_notify_email.getId() %>"><%= scheduled_notify_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_notify_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_notify_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("users.activation.expire") %></td>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" maxlength="20" id="scheduled_unpublish" name="scheduled_unpublish" value="<%= html.encode(user.getScheduledUnpublish()) %>"><input type="button" value="..." id="scheduled_unpublish_trigger">
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="200"><%= mytext.display("users.activation.expire.email") %></td>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="scheduled_unpublish_email" name="scheduled_unpublish_email" style="width: 400px;">
+                <option value="<%= scheduled_unpublish_email.getId() %>"><%= scheduled_unpublish_email.getTitle() %> &nbsp;
+                <option value="" <% if (scheduled_unpublish_email.getId().equals("")) { %>selected<% } %>><%= mytext.display("none") %>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scheduled_unpublish_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("users.activation.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("users.activation.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("users.activation.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("users.activation.about.heading") %></th>
+          </tr>
+          <tr>
+            <td align="left" colspan="4">
+            <%= mytext.display("users.activation.about.text") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+</div></div>
+<div id="Invoice_Details" class="Invoice_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("users.invoice.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("users.invoice.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userdetails").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("users.invoice.name") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoiceName() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("users.invoice.organisation") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoiceOrganisation() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left" valign="top"><%= mytext.display("users.invoice.address") %></td>
+            <td class="WCMinnerContentInputValue"><pre><%= user.getInvoiceAddress() %></pre> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.invoice.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoicePostalcode() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.invoice.city") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoiceCity() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.invoice.state") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoiceState() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.invoice.country") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoiceCountry() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.invoice.phone") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoicePhone() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.invoice.fax") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoiceFax() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.invoice.email") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoiceEmail() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.invoice.website") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getInvoiceWebsite() %> &nbsp;</td>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("users.invoice.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("users.invoice.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("users.invoice.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+</div></div>
+<div id="Delivery_Details" class="Delivery_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("users.delivery.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("users.delivery.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userdetails").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("users.delivery.name") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryName() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("users.delivery.organisation") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryOrganisation() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left" valign="top"><%= mytext.display("users.delivery.address") %></td>
+            <td class="WCMinnerContentInputValue"><pre><%= user.getDeliveryAddress() %></pre> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.delivery.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryPostalcode() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.delivery.city") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryCity() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.delivery.state") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryState() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.delivery.country") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryCountry() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.delivery.phone") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryPhone() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.delivery.fax") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryFax() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.delivery.email") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryEmail() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.delivery.website") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getDeliveryWebsite() %> &nbsp;</td>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("users.delivery.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("users.delivery.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("users.delivery.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+</div></div>
+<div id="Payment_Details" class="Payment_Details st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("users.payment.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("users.payment.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userdetails").equals("yes")) { %>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("users.payment.type") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getCardType() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.payment.number") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getCardNumber() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.payment.issued") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getCardIssuedMonth() %>&nbsp;/&nbsp;<%= user.getCardIssuedYear() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.payment.expiry") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getCardExpiryMonth() %>&nbsp;/&nbsp;<%= user.getCardExpiryYear() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.payment.name") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getCardName() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.payment.cvc") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getCardCVC() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.payment.issue") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getCardIssue() %> &nbsp;</td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputName" align="left"><%= mytext.display("users.payment.postalcode") %></td>
+            <td class="WCMinnerContentInputValue"><%= user.getCardPostalcode() %> &nbsp;</td>
+          </tr>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("users.payment.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("users.payment.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("users.payment.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+</div></div>
+<div id="Administrator_Preferences" class="Administrator_Preferences st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" colspan="4" align="left"><%= mytext.display("users.adminpreferences.heading") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentIntro" colspan="4" align="left"><%= mytext.display("users.adminpreferences.intro") %></td>
+          </tr>
+<% if (myconfig.get(db, "use_userpreferences").equals("yes")) { %>
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.contenteditor.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left">
+              <% if (user.getContentEditor().equals("")) { %><%= mytext.display("default") %><% } %>
+              <% if (user.getContentEditor().equals("HardCore")) { %><%= mytext.display("config.editor.contenteditor.hardcore") %><% } %>
+              <% if (user.getContentEditor().equals("HardCore1")) { %><%= mytext.display("config.editor.contenteditor.hardcore1") %><% } %>
+              <% if (user.getContentEditor().equals("HardCore2")) { %><%= mytext.display("config.editor.contenteditor.hardcore2") %><% } %>
+              <% if (user.getContentEditor().equals("textarea")) { %><%= mytext.display("config.editor.contenteditor.textarea") %><% } %>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.imageupload") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <% if (user.getHardcoreUpload().equals("")) { %><%= mytext.display("default") %><% } %>
+              <% if (user.getHardcoreUpload().equals("yes")) { %><%= mytext.display("config.editor.hardcore.imageupload.enable") %><% } %>
+              <% if (user.getHardcoreUpload().equals("no")) { %><%= mytext.display("config.editor.hardcore.imageupload.disable") %><% } %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.format") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <% if (user.getHardcoreFormat().equals("")) { %> <%= mytext.display("default") %><% } %>
+              <% if (user.getHardcoreFormat().equals("html")) { %> <%= mytext.display("config.editor.hardcore.format.html") %><% } %>
+              <% if (user.getHardcoreFormat().equals("html4")) { %> <%= mytext.display("config.editor.hardcore.format.html4") %><% } %>
+              <% if (user.getHardcoreFormat().equals("html5")) { %> <%= mytext.display("config.editor.hardcore.format.html5") %><% } %>
+              <% if (user.getHardcoreFormat().equals("xhtml")) { %> <%= mytext.display("config.editor.hardcore.format.xhtml") %><% } %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.size") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.size.width") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <%= user.getHardcoreWidth() %> &nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.size.height") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <%= user.getHardcoreHeight() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.enter") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.enter.onEnter") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <%= user.getHardcoreOnEnter() %> &nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.enter.onCtrlEnter") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <%= user.getHardcoreOnCtrlEnter() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.enter.onShiftEnter") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <%= user.getHardcoreOnShiftEnter() %> &nbsp;
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1">
+              <%= mytext.display("config.editor.hardcore.enter.onAltEnter") %>
+            </td>
+            <td class="WCMinnerContentInputValue" colspan="1" width="50%">
+              <%= user.getHardcoreOnAltEnter() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.toolbar") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getHardcoreToolbar1() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getHardcoreToolbar2() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getHardcoreToolbar3() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getHardcoreToolbar4() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getHardcoreToolbar5() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.formatblock") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <textarea disabled rows="10" cols="70" style="width: 100%;" name="hardcore_formatblock"><%= html.encode(user.getHardcoreFormatBlock()) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.fontname") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <textarea disabled rows="10" cols="70" style="width: 100%;" name="hardcore_fontname"><%= html.encode(user.getHardcoreFontName()) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.fontsize") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <textarea disabled rows="10" cols="70" style="width: 100%;" name="hardcore_fontsize"><%= html.encode(user.getHardcoreFontSize()) %></textarea>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.hardcore.customscript") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <textarea disabled rows="20" cols="70" style="width: 100%;" name="hardcore_customscript"><%= html.encode(user.getHardcoreCustomScript()) %></textarea>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="6"><%= mytext.display("config.editor.webadmin.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_workspace" value="forbid" <% if (user.permission(db, "forbid", "webadmin_workspace")) { %>checked<% } %> ><%= mytext.display("menu.workspace") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_workspace_checkedout" value="forbid" <% if (user.permission(db, "forbid", "webadmin_workspace_checkedout")) { %>checked<% } %> ><%= mytext.display("menu.workspace.checkedout") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_workspace_updated" value="forbid" <% if (user.permission(db, "forbid", "webadmin_workspace_updated")) { %>checked<% } %> ><%= mytext.display("menu.workspace.updated") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_workspace_created" value="forbid" <% if (user.permission(db, "forbid", "webadmin_workspace_created")) { %>checked<% } %> ><%= mytext.display("menu.workspace.created") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_workspace_expired" value="forbid" <% if (user.permission(db, "forbid", "webadmin_workspace_expired")) { %>checked<% } %> ><%= mytext.display("menu.workspace.expired") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_workspace_workflow" value="forbid" <% if (user.permission(db, "forbid", "webadmin_workspace_workflow")) { %>checked<% } %> ><%= mytext.display("menu.workspace.workflow") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_browseedit" value="forbid" <% if (user.permission(db, "forbid", "webadmin_browseedit")) { %>checked<% } %> ><%= mytext.display("menu.browseedit") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_structure" value="forbid" <% if (user.permission(db, "forbid", "webadmin_structure")) { %>checked<% } %> ><%= mytext.display("menu.structure") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_content" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content")) { %>checked<% } %> ><%= mytext.display("menu.content") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_content_structure" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content_structure")) { %>checked<% } %> ><%= mytext.display("menu.content.structure") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_content_pages" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content_pages")) { %>checked<% } %> ><%= mytext.display("menu.content.pages") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_content_elements" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content_elements")) { %>checked<% } %> ><%= mytext.display("menu.content.elements") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_content_templates" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content_templates")) { %>checked<% } %> ><%= mytext.display("menu.content.templates") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_content_stylesheets" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content_stylesheets")) { %>checked<% } %> ><%= mytext.display("menu.content.stylesheets") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_content_scripts" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content_scripts")) { %>checked<% } %> ><%= mytext.display("menu.content.scripts") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_content_packages" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content_packages")) { %>checked<% } %> ><%= mytext.display("menu.content.packages") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_content_bundles" value="forbid" <% if (user.permission(db, "forbid", "webadmin_content_bundles")) { %>checked<% } %> ><%= mytext.display("menu.content.bundles") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_library" value="forbid" <% if (user.permission(db, "forbid", "webadmin_library")) { %>checked<% } %> ><%= mytext.display("menu.library") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_library_images" value="forbid" <% if (user.permission(db, "forbid", "webadmin_library_images")) { %>checked<% } %> ><%= mytext.display("menu.library.images") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_library_files" value="forbid" <% if (user.permission(db, "forbid", "webadmin_library_files")) { %>checked<% } %> ><%= mytext.display("menu.library.files") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_library_links" value="forbid" <% if (user.permission(db, "forbid", "webadmin_library_links")) { %>checked<% } %> ><%= mytext.display("menu.library.links") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_library_packages" value="forbid" <% if (user.permission(db, "forbid", "webadmin_library_packages")) { %>checked<% } %> ><%= mytext.display("menu.library.packages") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_library_bundles" value="forbid" <% if (user.permission(db, "forbid", "webadmin_library_bundles")) { %>checked<% } %> ><%= mytext.display("menu.library.bundles") %>
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_ecommerce" value="forbid" <% if (user.permission(db, "forbid", "webadmin_ecommerce")) { %>checked<% } %> ><%= mytext.display("menu.ecommerce") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_ecommerce_products" value="forbid" <% if (user.permission(db, "forbid", "webadmin_ecommerce_products")) { %>checked<% } %> ><%= mytext.display("menu.ecommerce.products") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_ecommerce_stock" value="forbid" <% if (user.permission(db, "forbid", "webadmin_ecommerce_stock")) { %>checked<% } %> ><%= mytext.display("menu.ecommerce.stock") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_ecommerce_orders" value="forbid" <% if (user.permission(db, "forbid", "webadmin_ecommerce_orders")) { %>checked<% } %> ><%= mytext.display("menu.ecommerce.orders") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_ecommerce_packages" value="forbid" <% if (user.permission(db, "forbid", "webadmin_ecommerce_packages")) { %>checked<% } %> ><%= mytext.display("menu.ecommerce.packages") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_ecommerce_bundles" value="forbid" <% if (user.permission(db, "forbid", "webadmin_ecommerce_bundles")) { %>checked<% } %> ><%= mytext.display("menu.ecommerce.bundles") %>
+            </td>
+          </tr>
+<% } %>
+<% if (License.valid(db, myconfig, "databases")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_databases" value="forbid" <% if (user.permission(db, "forbid", "webadmin_databases")) { %>checked<% } %> ><%= mytext.display("menu.databases") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_databases_data" value="forbid" <% if (user.permission(db, "forbid", "webadmin_databases_data")) { %>checked<% } %> ><%= mytext.display("menu.databases.data") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_databases_export" value="forbid" <% if (user.permission(db, "forbid", "webadmin_databases_export")) { %>checked<% } %> ><%= mytext.display("menu.databases.export") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_databases_import" value="forbid" <% if (user.permission(db, "forbid", "webadmin_databases_import")) { %>checked<% } %> ><%= mytext.display("menu.databases.import") %>
+            </td>
+          </tr>
+<% } %>
+<% if (License.valid(db, myconfig, "experience")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_experience" value="forbid" <% if (user.permission(db, "forbid", "webadmin_experience")) { %>checked<% } %> ><%= mytext.display("menu.experience") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_experience_segments" value="forbid" <% if (user.permission(db, "forbid", "webadmin_experience_segments")) { %>checked<% } %> ><%= mytext.display("menu.experience.segments") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_experience_usertests" value="forbid" <% if (user.permission(db, "forbid", "webadmin_experience_usertests")) { %>checked<% } %> ><%= mytext.display("menu.experience.usertests") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_experience_heatmaps" value="forbid" <% if (user.permission(db, "forbid", "webadmin_experience_heatmaps")) { %>checked<% } %> ><%= mytext.display("menu.experience.heatmaps") %>
+            </td>
+          </tr>
+<% } %>
+<% if (myconfig.get(db, "use_userdatabase").equals("yes")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_user" value="forbid" <% if (user.permission(db, "forbid", "webadmin_user")) { %>checked<% } %> ><%= mytext.display("menu.users") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_user_administrators" value="forbid" <% if (user.permission(db, "forbid", "webadmin_user_administrators")) { %>checked<% } %> ><%= mytext.display("menu.users.administrators") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_user_templates" value="forbid" <% if (user.permission(db, "forbid", "webadmin_user_templates")) { %>checked<% } %> ><%= mytext.display("menu.users.templates") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_user_users" value="forbid" <% if (user.permission(db, "forbid", "webadmin_user_users")) { %>checked<% } %> ><%= mytext.display("menu.users.users") %>
+            </td>
+          </tr>
+<% } %>
+<% if (License.valid(db, myconfig, "statistics")) { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_statistics" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics")) { %>checked<% } %> ><%= mytext.display("menu.statistics") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_summary" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_summary")) { %>checked<% } %> ><%= mytext.display("menu.statistics.summary") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_what" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_what")) { %>checked<% } %> ><%= mytext.display("menu.statistics.what") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_what_websites" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_what_websites")) { %>checked<% } %> ><%= mytext.display("menu.statistics.what.websites") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_what_contents" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_what_contents")) { %>checked<% } %> ><%= mytext.display("menu.statistics.what.content") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_what_library" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_what_library")) { %>checked<% } %> ><%= mytext.display("menu.statistics.what.library") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_what_ecommerce" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_what_ecommerce")) { %>checked<% } %> ><%= mytext.display("menu.statistics.what.ecommerce") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_what_databases" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_what_databases")) { %>checked<% } %> ><%= mytext.display("menu.statistics.what.databases") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_daily" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_daily")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.daily") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_weekly" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_weekly")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.weekly") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_monthly" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_monthly")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.monthly") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_yearly" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_yearly")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.yearly") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_hours" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_hours")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.hours") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_weekdays" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_weekdays")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.weekdays") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_days" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_days")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.days") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_weeks" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_weeks")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.weeks") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_when_months" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_when_months")) { %>checked<% } %> ><%= mytext.display("menu.statistics.when.months") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who_countries" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who_countries")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who.countries") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who_clienthosts" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who_clienthosts")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who.clienthosts") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who_visitors" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who_visitors")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who.visitors") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who_robots" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who_robots")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who.robots") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who_operatingsystems" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who_operatingsystems")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who.operatingsystems") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who_webbrowsers" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who_webbrowsers")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who.webbrowsers") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who_devices" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who_devices")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who.devices") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_who_users" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_who_users")) { %>checked<% } %> ><%= mytext.display("menu.statistics.who.users") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_why" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_why")) { %>checked<% } %> ><%= mytext.display("menu.statistics.why") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_why_referers" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_why_referers")) { %>checked<% } %> ><%= mytext.display("menu.statistics.why.referers") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_why_searchengines" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_why_searchengines")) { %>checked<% } %> ><%= mytext.display("menu.statistics.why.searchengines") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_why_searchqueries" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_why_searchqueries")) { %>checked<% } %> ><%= mytext.display("menu.statistics.why.searchqueries") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_why_searchwords" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_why_searchwords")) { %>checked<% } %> ><%= mytext.display("menu.statistics.why.searchwords") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_how" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_how")) { %>checked<% } %> ><%= mytext.display("menu.statistics.how") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_how_entry" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_how_entry")) { %>checked<% } %> ><%= mytext.display("menu.statistics.how.entry") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_how_paths" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_how_paths")) { %>checked<% } %> ><%= mytext.display("menu.statistics.how.paths") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_how_exit" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_how_exit")) { %>checked<% } %> ><%= mytext.display("menu.statistics.how.exit") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_how_duration" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_how_duration")) { %>checked<% } %> ><%= mytext.display("menu.statistics.how.duration") %>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              &nbsp; &nbsp; &nbsp; &nbsp; <input disabled type="checkbox" name="webadmin_statistics_how_visits" value="forbid" <% if (user.permission(db, "forbid", "webadmin_statistics_how_visits")) { %>checked<% } %> ><%= mytext.display("menu.statistics.how.visits") %>
+            </td>
+          </tr>
+<% } %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="6">
+              <input disabled type="checkbox" name="webadmin_updates" value="forbid" <% if (user.permission(db, "forbid", "webadmin_updates")) { %>checked<% } %> ><%= mytext.display("menu.updates") %>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.workspace.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getWorkspaceSections() %> &nbsp;
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.index.heading") %></th>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.workspace") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexWorkspace() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.content") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexContent() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.library") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexLibrary() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.product") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexProduct() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.stock") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexStock() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.order") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexOrder() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.usersegments") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexSegments() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.usertests") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexUsertests() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.heatmaps") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexHeatmaps() %> &nbsp;
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.user") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexUser() %> &nbsp;
+            </td>
+          </tr>
+<!--
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.databases") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexDatabases() %> &nbsp;
+            </td>
+          </tr>
+-->
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.websites") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexWebsites() %> &nbsp;
+            </td>
+          </tr>
+<% if ((License.valid(db, myconfig, "hosting") || (myconfig.get(db, "hosting_license").equals("TRIAL"))) && ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) || (myconfig.get(db, "superadmin").equals("")))) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.editor.index.hosting") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <%= user.getIndexHosting() %> &nbsp;
+            </td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("config.editor.index.menu.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="6">
+              <input disabled type="radio" name="menu_selection" value=""<% if (user.getMenuSelection().equals("")) { %> checked<% } %>> <%= mytext.display("config.editor.index.menu.default") %><br>
+              <input disabled type="radio" name="menu_selection" value="multi"<% if (user.getMenuSelection().equals("multi")) { %> checked<% } %>> <%= mytext.display("config.editor.index.menu.multi") %><br>
+              <input disabled type="radio" name="menu_selection" value="single"<% if (user.getMenuSelection().equals("single")) { %> checked<% } %>> <%= mytext.display("config.editor.index.menu.single") %><br>
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "statistics")) { %>
+        </table>
+        <br>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.statistics.index.reports") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <%= html.encode(user.getStatisticsReports()).replaceAll("[\r\n]+","<p>") %> &nbsp;
+            </td>
+          </tr>
+<% } %>
+<% if (License.valid(db, myconfig, "ecommerce")) { %>
+        </table>
+        <br>
+        <table width="100%">
+          <tr> 
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("config.ecommerce.orderadmin.sales.index.reports") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <%= html.encode(user.getSalesReports()).replaceAll("[\r\n]+","<p>") %> &nbsp;
+            </td>
+          </tr>
+<% } %>
+<% } else { %>
+          <tr> 
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("users.adminpreferences.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("users.adminpreferences.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("users.adminpreferences.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+</div></div>
+
+    </div>
+</div>
+
+      </form>
+<% } %>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

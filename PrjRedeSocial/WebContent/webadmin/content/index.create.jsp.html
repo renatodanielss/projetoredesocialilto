@@ -1,0 +1,16 @@
+            <% if ((mysession.get("username") != null) && (mysession.get("username").equals(myconfig.get(db, "superadmin")))) { %>
+            <option value=""><%= mytext.display("blank") %></option>
+            <% } else if (pageCreate.getCreator()) { %>
+            <option value=""><%= mytext.display("blank") %></option>
+            <% } %>
+<%
+	while (pageCreate.records(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "")) {
+		if ((myconfig.get(db, "use_workflow").equals("yes")) && (! pageCreate.getAdministrator()) && (! workflow.permissions(db, pageCreate.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), pageCreate.getContentClass(), pageCreate.getContentGroup(), pageCreate.getContentType(), pageCreate.getVersion(), (pageCreate.getStatusBy().equals(mysession.get("username")))))) {
+			// skip
+		} else if (pageCreate.getCreator()) {
+%>
+            <option value="<%= pageCreate.getId() %>"><%= pageCreate.getTitle() %><% if (! pageCreate.getVersion().equals("")) { %> (<%= pageCreate.getVersion() %>)<% } %><% if (! pageCreate.getDevice().equals("")) { %> (<%= pageCreate.getDevice() %>)<% } %><% if (! pageCreate.getUsersegment().equals("")) { %> (<%= pageCreate.getUsersegment() %>)<% } %><% if (! pageCreate.getUsertest().equals("")) { %> (<%= pageCreate.getUsertest() %>)<% } %> (<%= pageCreate.getId() %>)</option>
+<%
+		}
+	}
+%>

@@ -1,0 +1,593 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= title %></title>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= title %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<% if ((! wizard.equals("")) || (! myrequest.getParameter("quickstart").equals(""))) { %>
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+<% } else { %>
+<div id="WCMadminpage" class="WCMadminpage WCMadminindex"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+<% } %>
+
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="left" valign="top">
+            <% if (wizard.equals("importing")) { %>
+              <%
+              java.util.Date timestamp = new java.util.Date();
+              String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+              String fiveminsago = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date(timestamp.getTime()-5*60*1000));
+              String database_import_started = myconfig.get(db, "database_import_started");
+              String database_import_last_modified = Common.fileLastModified(DOCUMENT_ROOT + "/" + mytext.display("adminpath") + "/database/importing.html");
+              String database_import_completed = myconfig.get(db, "database_import_completed");
+              boolean database_import_running = (database_import_last_modified.compareTo(fiveminsago)>0);
+              boolean database_import_stopped = (database_import_last_modified.compareTo(fiveminsago)<0);
+              if (database_import_started.equals("")) {
+              	database_import_running = false;
+              	database_import_stopped = false;
+              }
+              %>
+              <p class="WCMinnerContentHeading1"><%= mytext.display("config.database.importing.progress") %></p>
+              <p><%= mytext.display("config.database.importing.progress.now") %> <%= now %></p>
+              <p><%= mytext.display("config.database.importing.progress.started") %> <%= database_import_started %></p>
+              <p><%= mytext.display("config.database.importing.progress.modified") %> <%= database_import_last_modified %></p>
+              <p><a target="_blank" href="/<%= mytext.display("adminpath") %>/database/importing.html"><%= mytext.display("config.database.importing.progress.log") %></a></p>
+              <% if (! database_import_completed.equals("")) { %>
+                <p><%= mytext.display("config.database.importing.progress.completed").replaceAll("\\.xxx", ".jsp") %> <%= database_import_completed %></p>
+              <% } %>
+              <% if (database_import_stopped) { %>
+                <p><%= mytext.display("config.database.importing.progress.stopped").replaceAll("\\.xxx", ".jsp") %> <%= database_import_last_modified %></p>
+              <% } %>
+              <% if (database_import_running) { %>
+                <p><%= mytext.display("config.database.importing.progress.running").replaceAll("\\.xxx", ".jsp") %></p>
+              <% } %>
+            <% } else if (wizard.equals("upgrade")) { %>
+              <p class="WCMinnerContentHeading1"><%= mytext.display("intro.config.databaseupgrade.heading") %></p>
+              <%= mytext.display("intro.config.databaseupgrade.text") %>
+              <p><a href="database/upgrade.jsp"><%= mytext.display("intro.config.databaseupgrade.link") %></a>.</p>
+            <% } else if ((! wizard.equals("")) || (! myrequest.getParameter("quickstart").equals(""))) { %>
+          </td>
+        </tr>
+      </table>
+      <div style="width:100%;">
+        <div style="float:left; width:80%;">
+              <p class="WCMinnerContentHeading1"><%= mytext.display("intro.config.quickstart.heading") %></p>
+              <p class="WCMinnerContentSectionIntro"><%= mytext.display("intro.config.quickstart.intro") %></p>
+              <%@ include file="index.config.quickstart.jsp.html" %>
+        </div>
+        <div style="float:right; margin-left:0px;">
+          <p><img src="system1.gif" width="100" height="100"></p>
+          <p><img src="system2.gif" width="100" height="100"></p>
+          <p><img src="system3.gif" width="100" height="100"></p>
+        </div>
+      </div>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="left" valign="top">
+            <% } else { %>
+            <table width="100%" border="0">
+              <tr align="left" valign="top"> 
+                <th class="WCMinnerContentHeading1" colspan="2"><%= mytext.display("intro.config.configuration.heading") %></th>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td class="WCMinnerContentSectionIntro" colspan="2"><%= mytext.display("intro.config.configuration.intro") %></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td colspan="2"><%= mytext.display("intro.config.configuration.text") %></td>
+              </tr>
+              <tr><td>&nbsp;</td></tr>
+
+
+
+              <% if (mysession.get("menu").equals("config")) { %>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.system") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.features") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.content") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.images") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.files") %><br>&nbsp;</p></td>
+<% int cellcount = 1; %>
+              <% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.links") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (! myconfig.get(db, "use_userdefinition").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.users") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.versions") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (License.valid(db, myconfig, "ecommerce")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.ecommerce") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (License.valid(db, myconfig, "databases")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.databases") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.packages") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.bundles") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+
+<% for(int i=0; i<module.size(); i++) { %>
+<% if ((moduleConfigIntroTitle.size()>i) && (! moduleConfigIntroTitle.get(i).equals(""))) { %>
+<% cellcount = cellcount+1; %>
+                      <td width="50%" class="WCMfrontpage"> 
+                        <p><b><%= moduleConfigIntroTitle.get(i) %></b><br><%= moduleConfigIntroText.get(i) %><br>&nbsp;</p>
+                      </td>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+                    </tr>
+                    <tr align="left" valign="top"> 
+<% } %>
+<% } %>
+<% } %>
+
+              </tr>
+              <% } %>
+
+
+
+              <% if (mysession.get("menu").equals("configsystem")) { %>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.system.database") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.system.license") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.system.superadmin") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.system.website") %><br>&nbsp;</p></td>
+              </tr>
+<% int cellcount = 0; %>
+              <tr align="left" valign="top"> 
+                <% if (License.valid(db, myconfig, "ecommerce")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.system.ecommerce") %><br>&nbsp;</p></td>
+                <% } %>
+                <% if (License.valid(db, myconfig, "professional")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.system.microwebsites") %><br>&nbsp;</p></td>
+                <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+                <% if (License.valid(db, myconfig, "statistics")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.system.statistics") %><br>&nbsp;</p></td>
+                <% } %>
+              </tr>
+              <% } %>
+
+
+
+              <% if (mysession.get("menu").equals("configfeatures")) { %>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.accessrestrictions") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.additionalcontent") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.advancedscripting") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.archiving") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.checkoutcheckin") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.contentcategories") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.contentdependencies") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.contenteditor") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.contentrelations") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.contentversions") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.metainformation") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.presentation") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.publishing") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.revisionhistory") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.useractivation") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.usercategories") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.userdatabase") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.userdetails") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.userpreferences") %><br>&nbsp;</p></td>
+              </tr>
+              <% } %>
+
+
+
+              <% if (mysession.get("menu").equals("configcontent")) { %>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.all") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.templates") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.stylesheets") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.scripts") %><br>&nbsp;</p></td>
+              </tr>
+<% int cellcount = 0; %>
+              <tr align="left" valign="top"> 
+              <% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+              <% if (! myconfig.get(db, "use_contentgroups").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.contentgroups") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (! myconfig.get(db, "use_contenttypes").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.contenttypes") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (! myconfig.get(db, "use_contentclasses").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.contentclasses") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% } %>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td colspan="2" class="WCMfrontpage">
+		<form action="/<%= mytext.display("adminpath") %>/content/move_multiple.jsp" method="get">
+		<%= mytext.display("intro.config.configuration.content.folder.from") %> <input type="text" size="20" name="from_folder">
+		<%= mytext.display("intro.config.configuration.content.folder.to") %> <input type="text" size="20" name="to_folder">
+		<input type="hidden" name="contentclass" value="content">
+		<input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configcontent">
+		<input type="submit" value="<%= mytext.display("intro.config.configuration.content.folder.submit") %>">
+		</form>
+		</td>
+              </tr>
+              <% } %>
+
+
+
+              <% if (mysession.get("menu").equals("configimages")) { %>
+              <tr align="left" valign="top"> 
+<% int cellcount = 0; %>
+              <% if (! myconfig.get(db, "use_contentdefinition"). equals("")) { %>
+              <% if (! myconfig.get(db, "use_imagegroups").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.imagegroups") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (! myconfig.get(db, "use_imagetypes").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.imagetypes") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% } %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.imageformats") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td colspan="2" class="WCMfrontpage">
+		<form action="/<%= mytext.display("adminpath") %>/content/move_multiple.jsp" method="get">
+		<%= mytext.display("intro.config.configuration.images.folder.from") %> <input type="text" size="20" name="from_folder">
+		<%= mytext.display("intro.config.configuration.images.folder.to") %> <input type="text" size="20" name="to_folder">
+		<input type="hidden" name="contentclass" value="image">
+		<input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configcontent">
+		<input type="submit" value="<%= mytext.display("intro.config.configuration.images.folder.submit") %>">
+		</form>
+		</td>
+              </tr>
+              <% } %>
+
+
+
+              <% if (mysession.get("menu").equals("configfiles")) { %>
+              <tr align="left" valign="top"> 
+<% int cellcount = 0; %>
+              <% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+              <% if (! myconfig.get(db, "use_filegroups").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.filegroups") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% if (! myconfig.get(db, "use_filetypes").equals("")) { %>
+<% cellcount = cellcount+1; %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.filetypes") %><br>&nbsp;</p></td>
+              <% } %>
+<% if (cellcount == 2) { %>
+<% cellcount = 0; %>
+              </tr>
+              <tr align="left" valign="top"> 
+<% } %>
+              <% } %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.fileformats") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td colspan="2" class="WCMfrontpage">
+		<form action="/<%= mytext.display("adminpath") %>/content/move_multiple.jsp" method="get">
+		<%= mytext.display("intro.config.configuration.files.folder.from") %> <input type="text" size="20" name="from_folder">
+		<%= mytext.display("intro.config.configuration.files.folder.to") %> <input type="text" size="20" name="to_folder">
+		<input type="hidden" name="contentclass" value="file">
+		<input type="hidden" name="redirect" value="/<%= mytext.display("adminpath") %>/index.config.jsp?menu=configcontent">
+		<input type="submit" value="<%= mytext.display("intro.config.configuration.files.folder.submit") %>">
+		</form>
+		</td>
+              </tr>
+              <% } %>
+
+
+
+              <% if (mysession.get("menu").equals("configlinks")) { %>
+              <% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+              <tr align="left" valign="top"> 
+              <% if (! myconfig.get(db, "use_linkgroups").equals("")) { %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.linkgroups") %><br>&nbsp;</p></td>
+              <% } %>
+              <% if (! myconfig.get(db, "use_linktypes").equals("")) { %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.linktypes") %><br>&nbsp;</p></td>
+              <% } %>
+              </tr>
+              <% } %>
+              <% } %>
+
+
+
+              <% if (mysession.get("menu").equals("configusers")) { %>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.exportusers") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.importusers") %><br>&nbsp;</p></td>
+              </tr>
+              <% if (! myconfig.get(db, "use_userdefinition").equals("")) { %>
+              <tr align="left" valign="top"> 
+              <% if (! myconfig.get(db, "use_usergroups").equals("")) { %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.usergroups") %><br>&nbsp;</p></td>
+              <% } %>
+              <% if (! myconfig.get(db, "use_usertypes").equals("")) { %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.usertypes") %><br>&nbsp;</p></td>
+              <% } %>
+              </tr>
+              <% } %>
+              <% } %>
+
+
+
+              <% if (License.valid(db, myconfig, "ecommerce")) { %>
+
+
+
+              <% if (mysession.get("menu").equals("configecommerce")) { %>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.currencies") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.products") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.discounts") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.shipping") %><br>&nbsp;</p></td>
+              </tr>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.tax") %><br>&nbsp;</p></td>
+              </tr>
+              <% } %>
+
+
+
+              <% if ((mysession.get("menu").equals("configproducts")) || (mysession.get("menu").equals("configecommerceproducts"))) { %>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.exportproducts") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.importproducts") %><br>&nbsp;</p></td>
+              </tr>
+              <% if (! myconfig.get(db, "use_contentdefinition").equals("")) { %>
+              <tr align="left" valign="top"> 
+              <% if (! myconfig.get(db, "use_productgroups").equals("")) { %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.productgroups") %><br>&nbsp;</p></td>
+              <% } %>
+              <% if (! myconfig.get(db, "use_producttypes").equals("")) { %>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.producttypes") %><br>&nbsp;</p></td>
+              <% } %>
+              </tr>
+              <% } %>
+              <% } %>
+
+
+
+              <% } %>
+
+
+
+              <% if (License.valid(db, myconfig, "hosting")) { %>
+
+
+
+              <% if (mysession.get("menu").equals("confighosting")) { %>
+              <tr align="left" valign="top"> 
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.hostinggroups") %><br>&nbsp;</p></td>
+                <td width="50%" class="WCMfrontpage"><p><%= mytext.display("intro.config.configuration.hostingtypes") %><br>&nbsp;</p></td>
+              </tr>
+              <% } %>
+
+
+
+              <% } %>
+
+
+
+            </table>
+            <% } %>
+          </td>
+          <td align="right" valign="top" width="110">
+            <% if (mysession.get("menu").equals("configsystem")) { %>
+<!--
+            <p><img src="system1.gif" width="100" height="100"></p>
+            <p><img src="system2.gif" width="100" height="100"></p>
+            <p><img src="system3.gif" width="100" height="100"></p>
+-->
+            <% } else if (mysession.get("menu").equals("configfeatures")) { %>
+            <p><img src="features1.gif" width="100" height="100"></p>
+            <p><img src="features2.gif" width="100" height="100"></p>
+            <p><img src="features3.gif" width="100" height="100"></p>
+            <% } else if (mysession.get("menu").equals("configcontent")) { %>
+            <p><img src="content1.gif" width="100" height="100"></p>
+            <p><img src="content2.gif" width="100" height="100"></p>
+            <p><img src="content3.gif" width="100" height="100"></p>
+            <% } else if (mysession.get("menu").equals("configimages")) { %>
+            <p><img src="images1.gif" width="100" height="100"></p>
+            <p><img src="images2.gif" width="100" height="100"></p>
+            <p><img src="images3.gif" width="100" height="100"></p>
+            <% } else if (mysession.get("menu").equals("configfiles")) { %>
+            <p><img src="files1.gif" width="100" height="100"></p>
+            <p><img src="files2.gif" width="100" height="100"></p>
+            <p><img src="files3.gif" width="100" height="100"></p>
+            <% } else if (mysession.get("menu").equals("configlinks")) { %>
+            <p><img src="links1.gif" width="100" height="100"></p>
+            <p><img src="links2.gif" width="100" height="100"></p>
+            <p><img src="links3.gif" width="100" height="100"></p>
+            <% } else if (mysession.get("menu").equals("configusers")) { %>
+            <p><img src="users1.gif" width="100" height="100"></p>
+            <p><img src="users2.gif" width="100" height="100"></p>
+            <p><img src="users3.gif" width="100" height="100"></p>
+            <% } else { %>
+            <p><img src="configuration1.gif" width="100" height="100"></p>
+            <p><img src="configuration2.gif" width="100" height="100"></p>
+            <p><img src="configuration3.gif" width="100" height="100"></p>
+            <% } %>
+          </td>
+        </tr>
+      </table>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

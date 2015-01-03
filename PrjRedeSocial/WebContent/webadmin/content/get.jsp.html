@@ -1,0 +1,40 @@
+
+{
+    "title": "<%= mypage.getTitle().replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "content": "<%= mypage.getContent().replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "contentclass": "<%= mypage.getContentClass().replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+
+    "productCode": "<%= mypage.getProductCode().replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "productCurrency": "<% if (mypage.getProductCurrency().equals("")) { %><%= mypage.currency_symbol(db, myconfig.get(db, "default_currency")) %><% } else { %><%= mypage.currency_symbol(db, mypage.getProductCurrency()) %><% } %>",
+    "productCost": "<%= mypage.getProductCost().replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "productPrice": "<%= mypage.getProductPrice().replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "productPeriod": "<%= mypage.getProductPeriod().replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+
+    "user": <%= mypage.getUser() ? "true" : "false" %>,
+    "creator": <%= mypage.getCreator() ? "true" : "false" %>,
+    "editor": <%= mypage.getEditor() ? "true" : "false" %>,
+    "publisher": <%= mypage.getPublisher() ? "true" : "false" %>,
+    "developer": <%= mypage.getDeveloper() ? "true" : "false" %>,
+    "administrator": <%= mypage.getAdministrator() ? "true" : "false" %>,
+
+    "baseHref": "<%= baseHref.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "baseHrefPrefix": "<%= baseHrefPrefix.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+
+    "toolbar": "<%= toolbar.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "toolbar1": "<%= toolbar1.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "toolbar2": "<%= toolbar2.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "toolbar3": "<%= toolbar3.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "toolbar4": "<%= toolbar4.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "toolbar5": "<%= toolbar5.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "stylesheet": "<%= stylesheet.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "onenter": "<%= onenter.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "onshiftenter": "<%= onshiftenter.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "onctrlenter": "<%= onctrlenter.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "width": "<%= width.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "height": "<%= height.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "format": "<%= format.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "encoding": "<%= encoding.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+    "webeditor_format": "<%= webeditor_format.replaceAll("\"", "\\\\\"").replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n") %>",
+
+    "dummy": "dummy"
+}

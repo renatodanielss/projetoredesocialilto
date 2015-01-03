@@ -1,0 +1,54 @@
+
+<% if (mysession.get("menu").equals("clients")) { %>
+	<% if ((License.valid(db, myconfig, "hosting") || (myconfig.get(db, "hosting_license").equals("TRIAL"))) && ((myconfig.get(db, "superadmin").equals(mysession.get("username"))) || (myconfig.get(db, "superadmin").equals("")))) { %>
+	<br>
+	<div id="clientsMenu" style="display: none;">
+		<ul>
+			<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_hosting"><a href="#"><%= mytext.display("menu.clients") %></a>
+				<ul>
+					<li rel="pagefolder" class="jstree-closed initopen" id="menuitem_hosting_templates"><a class="<% if ((myrequest.getParameter("hostingclass").equals("-"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?hostingclass=-&hostingtype=%20&hostinggroup=%20&status=%20&"><%= mytext.display("menu.clients.templates") %></a>
+						<ul>
+							<li rel="folder" class="jstree-closed" id="menuitem_hosting_templates_groups"><a href="#"><%= mytext.display("menu.group") %></a></li>
+							<li rel="folder" class="jstree-closed" id="menuitem_hosting_templates_types"><a href="#"><%= mytext.display("menu.type") %></a></li>
+							<li rel="folder" class="jstree-closed initclosed" id="menuitem_hosting_templates_status"><a href="#"><%= mytext.display("menu.status") %></a>
+								<ul>
+		<% if (! single_menu_selection) { %>
+									<li rel="page" id="menuitem_hosting_templates_status_all"><a class="<% if ((myrequest.getParameter("hostingclass").equals("-")) && (myrequest.getParameter("status").equals(" "))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=-&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=%20&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("all") %></a></li>
+		<% } %>
+									<li rel="page" id="menuitem_hosting_templates_status_pending"><a class="<% if ((myrequest.getParameter("hostingclass").equals("-")) && (myrequest.getParameter("status").equals("pending"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=-&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=pending&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("menu.status.pending") %></a></li>
+									<li rel="page" id="menuitem_hosting_templates_status_active"><a class="<% if ((myrequest.getParameter("hostingclass").equals("-")) && (myrequest.getParameter("status").equals("active"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=-&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=active&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("menu.status.active") %></a></li>
+									<li rel="page" id="menuitem_hosting_templates_status_expiring"><a class="<% if ((myrequest.getParameter("hostingclass").equals("-")) && (myrequest.getParameter("status").equals("expiring"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=-&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=expiring&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("menu.status.expiring") %></a></li>
+									<li rel="page" id="menuitem_hosting_templates_status_expired"><a class="<% if ((myrequest.getParameter("hostingclass").equals("-")) && (myrequest.getParameter("status").equals("expired"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=-&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=expired&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("menu.status.expired") %></a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li rel="pagefolder" class="jstree-closed initopen" id="menuitem_hosting_clients"><a class="<% if ((myrequest.getParameter("hostingclass").equals(" ")) && (myrequest.getParameter("hostinggroup").equals(" ")) && (myrequest.getParameter("hostingtype").equals(" ")) && (myrequest.getParameter("status").equals(" "))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?hostingclass=%20&hostingtype=%20&hostinggroup=%20&status=%20&"><%= mytext.display("menu.clients") %></a>
+						<ul>
+							<li rel="folder" class="jstree-closed" id="menuitem_hosting_clients_groups"><a href="#"><%= mytext.display("menu.group") %></a></li>
+							<li rel="folder" class="jstree-closed" id="menuitem_hosting_clients_types"><a href="#"><%= mytext.display("menu.type") %></a></li>
+							<li rel="folder" class="jstree-closed initclosed" id="menuitem_hosting_clients_status"><a href="#"><%= mytext.display("menu.status") %></a>
+								<ul>
+		<% if (! single_menu_selection) { %>
+									<li rel="page" id="menuitem_hosting_clients_status_all"><a class="<% if ((myrequest.getParameter("hostingclass").equals(" ")) && (myrequest.getParameter("status").equals(" "))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=%20&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=%20&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("all") %></a></li>
+		<% } %>
+									<li rel="page" id="menuitem_hosting_clients_status_pending"><a class="<% if ((myrequest.getParameter("hostingclass").equals(" ")) && (myrequest.getParameter("status").equals("pending"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=%20&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=pending&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("menu.status.pending") %></a></li>
+									<li rel="page" id="menuitem_hosting_clients_status_active"><a class="<% if ((myrequest.getParameter("hostingclass").equals(" ")) && (myrequest.getParameter("status").equals("active"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=%20&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=active&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("menu.status.active") %></a></li>
+									<li rel="page" id="menuitem_hosting_clients_status_expiring"><a class="<% if ((myrequest.getParameter("hostingclass").equals(" ")) && (myrequest.getParameter("status").equals("expiring"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=%20&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=expiring&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("menu.status.expiring") %></a></li>
+									<li rel="page" id="menuitem_hosting_clients_status_expired"><a class="<% if ((myrequest.getParameter("hostingclass").equals(" ")) && (myrequest.getParameter("status").equals("expired"))) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/hosting/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&hostingclass=%20&hostinggroup=<%= URLEncoder.encode(_hostinggroup) %>&hostingtype=<%= URLEncoder.encode(_hostingtype) %>&status=expired&menu=<%= myrequest.getParameter("menu") %>&"><%= mytext.display("menu.status.expired") %></a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+	<% for (int i=0; i<module.size(); i++) { %>
+		<% if ((moduleHostingMenuTitle.size()>i) && (! moduleHostingMenuTitle.get(i).equals(""))) { %>
+			<li rel="page" class="jstree-leaf" id="menuitem_hosting_module<%= i %>"><a href="<%= moduleHostingMenuLink.get(i) %>"><%= moduleHostingMenuTitle.get(i) %></a></li>
+		<% } %>
+	<% } %>
+		</ul>
+	</div>
+	<br>
+	<% } %>
+<% } %>

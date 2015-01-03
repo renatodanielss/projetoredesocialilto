@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("orderitems.create.title") %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+<script type="text/javascript">
+
+<jsp:include page="../content/admin.script.jsp" />
+
+function doRecalculate(input) {
+	var price = 1 * document.getElementById("product_price").value;
+	if (price != (1 * document.getElementById("product_price").value)) {
+		document.getElementById("product_price").value = price;
+	}
+	var quantity = 1 * document.getElementById("item_quantity").value;
+	if (quantity != (1 * document.getElementById("item_quantity").value)) {
+		document.getElementById("item_quantity").value = quantity;
+	}
+	var subtotal = price * quantity;
+	document.getElementById("item_subtotal").value = subtotal;
+	var discount = 1 * document.getElementById("discount_total").value;
+	var total = subtotal - discount;
+	if (total != (1 * document.getElementById("item_total").value)) {
+		document.getElementById("item_total").value = total;
+	}
+	var tax = 1 * document.getElementById("tax_total").value;
+	var shipping = 1 * document.getElementById("shipping_total").value;
+	var net = total + tax + shipping;
+	if (net != (1 * document.getElementById("net_total").value)) {
+		document.getElementById("net_total").value = net;
+	}
+}
+
+function getProductDetails() {
+	var id = document.getElementById('product_id').value;
+	var content = eval('(' + GET('/<%= mytext.display("adminpath") %>/content/get.jsp?id=' + id + "&" + Math.random()) + ')');
+	if (content) {
+		document.getElementById('title').value = content.title;
+		document.getElementById('product_code').value = content.productCode;
+		document.getElementById('product_currency').value = content.productCurrency;
+		document.getElementById('product_price').value = content.productPrice;
+		document.getElementById('product_period').value = content.productPeriod;
+	}
+}
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("orderitems.create.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="create_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&redirect=<%= URLEncoder.encode(myrequest.getParameter("redirect")) %>" method="POST" onsubmit="doRecalculate(this)">
+        <input type="hidden" name="order_id" value="<%= html.encodeHtmlEntities(myrequest.getParameter("order_id")) %>">
+        <input type="hidden" id="product_options" name="product_options" value="<%= html.encode(orderitem.getProductOptions()) %>">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("orderitems.heading") %></th>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("orderitems.product") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.id") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <nobr>
+                <select id="product_id" name="product_id" style="width: 400px;" onchange="getProductDetails(); doRecalculate(this)">
+                  <option value="<%= orderitem.getProductId() %>"><%= orderitem.getProductIdTitle(db, myconfig) %> &nbsp;
+                </select>
+                <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('product_id', 'Products', '', 'Products', 'product');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.title") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="80" id="title" name="title" value="<%= orderitem.getTitle() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.code") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="20" id="product_code" name="product_code" value="<%= orderitem.getProductCode() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.currency") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="10" id="product_currency" name="product_currency" value="<%= orderitem.getProductCurrency() %>"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.price") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="10" id="product_price" name="product_price" value="<%= Common.numberformat(orderitem.getProductPrice(), 2) %>" onchange="doRecalculate(this)"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.period") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <select id="product_period" name="product_period">
+                <option value="" <% if (orderitem.getProductPeriod().equals("")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.once") %>
+                <option value="daily" <% if (orderitem.getProductPeriod().equals("daily")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.daily") %>
+                <option value="weekly" <% if (orderitem.getProductPeriod().equals("weekly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.weekly") %>
+                <option value="biweekly" <% if (orderitem.getProductPeriod().equals("biweekly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.biweekly") %>
+                <option value="monthly" <% if (orderitem.getProductPeriod().equals("monthly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.monthly") %>
+                <option value="bimonthly" <% if (orderitem.getProductPeriod().equals("bimonthly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.bimonthly") %>
+                <option value="quarterly" <% if (orderitem.getProductPeriod().equals("quarterly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.quarterly") %>
+                <option value="biquarterly" <% if (orderitem.getProductPeriod().equals("biquarterly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.biquarterly") %>
+                <option value="yearly" <% if (orderitem.getProductPeriod().equals("yearly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.yearly") %>
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("orderitems.order") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.quantity") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="10" id="item_quantity" name="item_quantity" value="<% if (orderitem.getItemQuantity().equals("")) { %>1<% } else { %><%= orderitem.getItemQuantity() %><% } %>" onchange="doRecalculate(this)"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.gross") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="10" id="item_subtotal" name="item_subtotal" value="<%= Common.numberformat(Common.number(orderitem.getItemTotal())+Common.number(orderitem.getDiscountTotal()), 2) %>" onchange="doRecalculate(this)"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" valign="top" width="20%"><%= mytext.display("orderitems.discount") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><input type="text" size="10" id="discount_total" name="discount_total" value="<%= Common.numberformat(orderitem.getDiscountTotal(), 2) %>" onchange="doRecalculate(this)"></td>
+            <td class="WCMinnerContentInputValue"><textarea cols="80" rows="4" id="discount_description" name="discount_description"><%= html.encode(orderitem.getDiscountDescription().replaceAll("<span class=\"discount\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.subtotal") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input type="text" size="10" id="item_total" name="item_total" value="<%= Common.numberformat(orderitem.getItemTotal(), 2) %>" onchange="doRecalculate(this)"></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" valign="top" width="20%"><%= mytext.display("orderitems.tax") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><input type="text" size="10" id="tax_total" name="tax_total" value="<%= Common.numberformat(orderitem.getTaxTotal(), 2) %>" onchange="doRecalculate(this)"></td>
+            <td class="WCMinnerContentInputValue"><textarea cols="80" rows="4" id="tax_description" name="tax_description"><%= html.encode(orderitem.getTaxDescription().replaceAll("<span class=\"tax\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" valign="top" width="20%"><%= mytext.display("orderitems.shipping") %></td>
+            <td class="WCMinnerContentInputValue" valign="top"><input type="text" size="10" id="shipping_total" name="shipping_total" value="<%= Common.numberformat(orderitem.getShippingTotal(), 2) %>" onchange="doRecalculate(this)"></td>
+            <td class="WCMinnerContentInputValue"><textarea cols="80" rows="4" id="shipping_description" name="shipping_description"><%= html.encode(orderitem.getShippingDescription().replaceAll("<span class=\"shipping\">[ \r\n]*", "").replaceAll("[ \r\n]*</span>[ \r\n]*", "\r\n")) %></textarea></td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputName" width="20%"><%= mytext.display("orderitems.total") %></td>
+            <td class="WCMinnerContentInputValue" colspan="2"><input disabled type="text" size="10" id="net_total" name="net_total" value="<%= Common.numberformat(Common.number(orderitem.getItemTotal())+Common.number(orderitem.getTaxTotal())+Common.number(orderitem.getShippingTotal()), 2) %>"></td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("orderitems.options") %></th>
+          </tr>
+          <tr id="product_optionsaddnew"><td>&nbsp;</td></tr>
+        </table>
+      </form>
+<script type="text/javascript">initForm('product_options');</script>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

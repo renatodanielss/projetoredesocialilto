@@ -1,0 +1,1885 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("content.update.title") %>&nbsp;<%= mypage.getTitle() %></title>
+<%
+String basehref = "";
+// basehref = myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort();
+if (((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) && (myconfig.get(db, "use_static_filenames").equals("yes"))) {
+	String server_filename = html.encode(mypage.getServerFilename());
+	if (! server_filename.equals("")) {
+		basehref += "/" + server_filename;
+	}
+}
+%>
+<script type="text/javascript">
+document.write('<base href="' + document.location.protocol + "//" + document.location.host + '<%= basehref %>' + '"><!--[if IE]></base><![endif]-->');
+</script>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+<script type="text/javascript">
+
+var baseHref = "/";
+var baseHrefPrefix = "/";
+<% if (((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) && (myconfig.get(db, "use_static_filenames").equals("yes"))) { %>
+var server_filename = "<%= html.encode(mypage.getServerFilename()) %>";
+if (server_filename) {
+	baseHref = "/"+server_filename;
+	baseHrefPrefix = "";
+}
+<% } %>
+
+var update = true;
+
+<jsp:include page="admin.script.jsp" />
+
+</script>
+
+<%
+String mywebeditor = "HardCore";
+if ((mypage.getContentFormat().equals("text")) || (mypage.getContentFormat().equals("xml")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) {
+	mywebeditor = "textarea";
+} else if (! adminuser.getContentEditor().equals("")) {
+	mywebeditor = adminuser.getContentEditor();
+} else if (! myconfig.get(db, "content_editor").equals("")) {
+	mywebeditor = myconfig.get(db, "content_editor");
+}
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<link type="text/css" rel="stylesheet" href="/<%= mytext.display("adminpath") %>/jquery/css/jquery-ui.css" />
+<style> .ui-datepicker { font-size: small; z-index: 999; } </style>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/jquery/jquery-ui-i18n.js"></script>
+<% if (myrequest.getHeader("Accept-Language").length() >= 4) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,4) %>'] || $.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getHeader("Accept-Language").length() >= 2) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getHeader("Accept-Language").substring(0,2) %>'] || $.datepicker.regional['']); });</script>
+<% } else if (myrequest.getLocale().getLanguage().length() > 0) { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['<%= myrequest.getLocale().getLanguage() %>'] || $.datepicker.regional['']); });</script>
+<% } else { %>
+<script type="text/javascript">jQuery(function($){ $.datepicker.setDefaults($.datepicker.regional['']); });</script>
+<% } %>
+
+<script type="text/javascript">
+
+function validateScheduledDateTime(input) {
+	var now = '<%= new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()) %>';
+	if (input && (input.value != "") && (input.value < now)) {
+		alert('<%= mytext.display("content.scheduled.invalid") %>');
+	}
+}
+
+$(function(){
+
+	if ((typeof(WebEditorInit) == "function") && (document.getElementById('content')) && (document.getElementById('summary'))) {
+		WebEditorInit('content');
+		WebEditorInit('summary');
+		if (WebEditorDisplayReady('content') && WebEditorDisplayReady('summary')) {
+			mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+		}
+	} else if ((typeof(WebEditorInit) == "function") && (document.getElementById('content'))) {
+		WebEditorInit('content');
+		if (WebEditorDisplayReady('content')) {
+			mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+		}
+	} else {
+		mySlideTabs = $('#tabs').slidetabs({ autoHeight: true, externalLinking: true, urlLinking: true, responsive: true });
+	}
+
+	changeWebEditorTemplate(document.getElementById('template'), document.getElementById('stylesheet'));
+
+	$('#scheduled_publish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_publish').attr('value').length >= 10) ? $('#scheduled_publish').attr('value').substring(0,10) : $('#scheduled_publish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish_trigger').datepicker( "option", "defaultDate", $('#scheduled_publish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_publish').attr('value').length >= 10) {
+					$('#scheduled_publish').attr('value', dateText + $('#scheduled_publish').attr('value').substring(10));
+				} else {
+					$('#scheduled_publish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+				validateScheduledDateTime($('#scheduled_publish')[0]);
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	$('#scheduled_unpublish_trigger').click(function() {
+		$(this).datepicker({
+			dateFormat: 'yy-mm-dd',
+			defaultDate: ($('#scheduled_unpublish').attr('value').length >= 10) ? $('#scheduled_unpublish').attr('value').substring(0,10) : $('#scheduled_unpublish').attr('value'),
+			constrainInput: false,
+			beforeShow: function(input, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish_trigger').datepicker( "option", "defaultDate", $('#scheduled_unpublish').attr('value').substring(0,10) );
+				}
+			},
+			onSelect: function(dateText, inst) {
+				if ($('#scheduled_unpublish').attr('value').length >= 10) {
+					$('#scheduled_unpublish').attr('value', dateText + $('#scheduled_unpublish').attr('value').substring(10));
+				} else {
+					$('#scheduled_unpublish').attr('value', dateText + " 00:00");
+				}
+				this.value = "...";
+				validateScheduledDateTime($('#scheduled_unpublish')[0]);
+			},
+			onClose: function(dateText, inst) {
+				this.value = "...";
+			}
+		});
+		$(this).datepicker('show');
+	});
+
+	var dropzone = $('.WCMadminpage');
+	dropzone.on('dragover', function() {
+		//add hover class when drag over
+		dropzone.addClass('hover');
+		return false;
+	});
+	dropzone.on('dragleave', function() {
+		//remove hover class when drag out
+		dropzone.removeClass('hover');
+		return false;
+	});
+	dropzone.on('drop', function(evt) {
+		evt.stopPropagation();
+		evt.preventDefault();
+		dropzone.removeClass('hover');
+		selectedInputFile(evt.originalEvent.dataTransfer.files);
+		return false;
+	});
+
+	$('#file').on('change', function(evt) {
+		selectedInputFile(evt.originalEvent.target.files);
+	});
+
+});
+
+</script>
+
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("content.update.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadmintabs"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+<% if (! (((mypage.getEditor()) && ((mypage.getScheduledPublish().equals("")) || mypage.getPublisher())) || (mypage.getPublisher() && (! myconfig.get(db, "inherit_accessrestrictions").equals("no"))) || ((myconfig.get(db, "use_scheduled_publish").equals("yes")) && (myconfig.get(db, "use_schedule").equals("yes")) && (mypage.getUser()) && (mypage.isScheduled(db))))) { %>
+	<p><%= mytext.display("content.update.nopermission") %></p>
+<% } else if ((myconfig.get(db, "use_workflow").equals("yes")) && (! mypage.getAdministrator()) && (! workflow.permissions(db, mypage.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), (mypage.getStatusBy().equals(mysession.get("username")))))) { %>
+	<p><%= mytext.display("content.update.nopermission.workflow") %></p>
+<% } else { %>
+	<p id="errorcontainer" style="display:none;"></p>
+<% } %>
+<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+<% String[] editorsEmails = mypage.editorsEmails(mysession, myconfig, db); %>
+<% String[] publishersEmails = mypage.publishersEmails(mysession, myconfig, db); %>
+<% String[] administratorsEmails = mypage.administratorsEmails(mysession, myconfig, db); %>
+<% if ((editorsEmails.length>0) || (publishersEmails.length>0) || (administratorsEmails.length>0)) { %>
+<p align="right">
+<% if (editorsEmails.length>0) { %><a href="mailto:<%= Common.join(",",editorsEmails) %>?subject=<%= mypage.getTitle().replaceAll("&", "%26").replaceAll(":", "%3A").replaceAll("=", "%3D") + " (" + mypage.getId() + ")" %>"><%= mytext.display("content.update.email.editors") %></a><% } %>
+&nbsp;
+<% if (publishersEmails.length>0) { %><a href="mailto:<%= Common.join(",",publishersEmails) %>?subject=<%= mypage.getTitle().replaceAll("&", "%26").replaceAll(":", "%3A").replaceAll("=", "%3D") + " (" + mypage.getId() + ")" %>"><%= mytext.display("content.update.email.publishers") %></a><% } %>
+&nbsp;
+<% if (administratorsEmails.length>0) { %><a href="mailto:<%= Common.join(",",administratorsEmails) %>?subject=<%= mypage.getTitle().replaceAll("&", "%26").replaceAll(":", "%3A").replaceAll("=", "%3D") + " (" + mypage.getId() + ")" %>"><%= mytext.display("content.update.email.administrators") %></a><% } %>
+</p>
+<% } %>
+<% } %>
+<% if ((myconfig.get(db, "use_workflow").equals("yes")) && (! mypage.getAdministrator()) && (! workflow.permissions(db, mypage.getStatus(), mysession.get("usergroups"), mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), (mypage.getStatusBy().equals(mysession.get("username")))))) { %>
+<% } else if (((mypage.getEditor()) && ((mypage.getScheduledPublish().equals("")) || mypage.getPublisher())) || (mypage.getPublisher() && (! myconfig.get(db, "inherit_accessrestrictions").equals("no"))) || ((myconfig.get(db, "use_scheduled_publish").equals("yes")) && (myconfig.get(db, "use_schedule").equals("yes")) && (mypage.getUser()) && (mypage.isScheduled(db)))) { %>
+	<% if ((! myconfig.get(db, "use_archive").equals("none")) || (myconfig.get(db, "use_schedule").equals("yes"))) { %>
+      <div align="right">
+        <form action="/<%= mytext.display("adminpath") %>/content/update.jsp" method="GET">
+          <input type="hidden" id="webeditor_stylesheet" name="webeditor_stylesheet" value="<%= stylesheet %>">
+<% if (! webeditor_format.equals("")) { %>
+          <input type="hidden" id="webeditor_format" name="webeditor_format" value="<%= webeditor_format %>">
+<% } %>
+          <input type="hidden" name="id" value="<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>">
+          <input type="hidden" name="redirect" value="<%= html.encodeHtmlEntities(myrequest.getParameter("redirect")) %>">
+<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link"))) { %>
+          <input type="button" value="<%= mytext.display("compare") %>" onclick="doCompare(this.form);">
+<% } %>
+          <input type="submit" value="<%= mytext.display("restore") %>">
+          <select name="archive">
+            <option value=""><%= mytext.display("current") %></option>
+		<% if (! mypage.getPublished().equals("")) { %>
+            <option value="public" <% if (myrequest.getParameter("archive").equals("public")) { %>selected<% } %>><%= mytext.display("published") %></option>
+		<% } %>
+            <%= mypage.archive_select_options(db, myrequest.getParameter("id"), myrequest.getParameter("archive")) %>
+          </select>
+        </form>
+      </div>
+	<% } %>
+      <form name="contentform" action="/<%= mytext.display("adminpath") %>/content/update_post.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&redirect=<% if (! myrequest.getParameter("redirect").equals("")) { %><%= URLEncoder.encode(myrequest.getParameter("redirect"), myconfig.get(db, "charset")) %><% } %>" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="restore" value="<%= html.encodeHtmlEntities(myrequest.getParameter("archive")) %>">
+        <p><nobr>
+          <input type="button" value="<%= mytext.display("saveclose") %>" onclick="doSaveAndClose(true);">
+          <input type="button" value="<%= mytext.display("save") %>" onclick="doSaveAndClose(false);">
+	<% if ((! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image"))) { %>
+          <input type="button" value="<%= mytext.display("preview") %>" onClick="doPreview(this.form)">
+          <select id="simulator" name="simulator">
+            <option value=""><%= mytext.display("simulators.default") %></option>
+            <%= simulator.select_options(servletcontext, myrequest, db, "") %>
+          </select>
+	<% if ((! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("script"))) { %>
+          <input type="button" value="<%= mytext.display("content.primarycontent.validatemarkup") %>" onClick="doValidateMarkup(document.contentform)">
+	<% } %>
+	<% } %>
+	<br>&nbsp;<br>
+	<% if (myconfig.get(db, "use_archive").equals("manual-on")) { %>
+          <input type="checkbox" name="archive" value="Save & Archive" checked><%= mytext.display("archive") %>
+	<% } else if (myconfig.get(db, "use_archive").equals("manual-off")) { %>
+          <input type="checkbox" name="archive" value="Save & Archive"><%= mytext.display("archive") %>
+	<% } %>
+	<% if (mypage.getPublisher()) { %>
+		<% if (myconfig.get(db, "use_publish").equals("manual-on")) { %>
+          <input type="checkbox" name="publish" value="Save & Publish" checked><%= mytext.display("publish") %>
+		<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>
+          <input type="checkbox" name="publish" value="Save & Publish"><%= mytext.display("publish") %>
+		<% } else if (myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+          <input type="hidden" name="publish" value="Save & Publish">
+		<% } %>
+		<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+		<% if (myconfig.get(db, "use_schedule").equals("yes")) { %>
+          <input type="checkbox" name="schedule" value="schedule"><%= mytext.display("schedule") %>
+		<% } %>
+		<% } %>
+	<% } else if (! myconfig.get(db, "use_workflow").equals("yes")) { %>
+		<% if (myconfig.get(db, "use_publish").equals("manual-on")) { %>
+          <input type="checkbox" name="ready_to_publish" value="Ready To Publish" checked><%= mytext.display("ready") %>
+		<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>
+          <input type="checkbox" name="ready_to_publish" value="Ready To Publish"><%= mytext.display("ready") %>
+		<% } %>
+	<% } %>
+
+					</nobr> <nobr>
+
+	<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+          - <%= mytext.display("content.scheduledpublish") %>
+          <input type="text" size="20" id="scheduled_publish" name="scheduled_publish" value="<% if (! mypage.getScheduledPublish().equals("")) { %><%= mypage.getScheduledPublish() %><% } else if (! mypage.getRequestedPublish().equals("")) { %><%= mypage.getRequestedPublish() %><% } else { %><%= new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()) %><% } %>" onchange="validateScheduledDateTime(this)"><input type="button" value="..." id="scheduled_publish_trigger">
+	<% } %>
+
+					</nobr> <nobr>
+
+	<% if (myconfig.get(db, "use_scheduled_unpublish").equals("yes")) { %>
+          - <%= mytext.display("content.scheduledunpublish") %>
+          <input type="text" size="20" id="scheduled_unpublish" name="scheduled_unpublish" value="<% if (! mypage.getScheduledUnpublish().equals("")) { %><%= mypage.getScheduledUnpublish() %><% } else if (! mypage.getRequestedUnpublish().equals("")) { %><%= mypage.getRequestedUnpublish() %><% } %>" onchange="validateScheduledDateTime(this)"><input type="button" value="..." id="scheduled_unpublish_trigger">
+	<% } %>
+
+<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+</p><p>
+<%= mytext.display("content.workflow") %>
+<select id="status" name="status" onchange="changeWorkflowStatus(this.value)">
+<% if (! mytext.display("content.workflow.select.static").equals("content.workflow.select.static")) { %>
+<option value=""><%= mytext.display("content.workflow.select.static") %></option>
+<% } else { %>
+<option value=""><% if (! mytext.display("content.workflow.select.prefix").equals("content.workflow.select.prefix")) { %><%= mytext.display("content.workflow.select.prefix") %><% } %><% if (! mypage.getStatus().equals("")) { %><%= mypage.getStatus() %><% } else { %><%= mytext.display("none") %><% } %></option>
+<% } %>
+<% if (myconfig.get(db, "superadmin").equals(mysession.get("username"))) { %>
+<option value="0"><%= mytext.display("end") %></option>
+<% } %>
+<%= workflow.workflow_action_select_options(db, mypage.getStatus(), mysession.get("usergroup")+"|"+mysession.get("usergroups"), mysession.get("usertype")+"|"+mysession.get("usertypes"), mypage.getContentClass(), mypage.getContentGroup(), mypage.getContentType(), mypage.getVersion(), mypage.getAdministrator(), (mypage.getStatusBy().equals(mysession.get("username")))) %>
+</select>
+&nbsp;
+<% } %>
+
+					</nobr> <nobr>
+
+	<% if ((! myconfig.get(db, "use_assign").equals("no")) && (! myconfig.get(db, "use_checkout").equals("none")) && ((myconfig.get(db, "use_publish").equals("manual-on")) || (myconfig.get(db, "use_publish").equals("manual-off")))) { %>
+          <%= mytext.display("content.checkedout") %>
+          <select id="checkedout" name="checkedout">
+            <option value=""></option> &nbsp;
+            <option value="-creators-"<% if (mypage.getCheckedOut().equals("-creators-")) { %> selected<% } %>><%= mytext.display("content.checkedout.creators") %></option>
+            <option value="-editors-"<% if (mypage.getCheckedOut().equals("-editors-")) { %> selected<% } %>><%= mytext.display("content.checkedout.editors") %></option>
+            <option value="-developers-"<% if (mypage.getCheckedOut().equals("-developers-")) { %> selected<% } %>><%= mytext.display("content.checkedout.developers") %></option>
+            <option value="-publishers-"<% if (mypage.getCheckedOut().equals("-publishers-")) { %> selected<% } %>><%= mytext.display("content.checkedout.publishers") %></option>
+            <option value="-administrators-"<% if (mypage.getCheckedOut().equals("-administrators-")) { %> selected<% } %>><%= mytext.display("content.checkedout.administrators") %></option>
+            <option value="<%= myconfig.get(db, "superadmin") %>"<% if (mypage.getCheckedOut().equals(myconfig.get(db, "superadmin"))) { %> selected<% } %>><%= myconfig.get(db, "superadmin") %></option>
+	    <%= adminuser.select_options_where(db, mypage.getCheckedOut(), "where userclass='administrator'") %>
+          </select>
+	<% } %>
+
+<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+<br><%= mytext.display("content.workflow.comments") %><textarea rows="3" cols="75" name="comments" style="vertical-align: text-top;"></textarea>
+<% } %>
+        </nobr></p>
+
+<div id="tabs" class="wcm-horizontal">
+
+    <div class="st_tabs" onclick="return false;">
+        <div class="st_tabs_wrap">
+            <ul class="st_tabs_ul">
+                <li><a href="#Revision_History" rel="Revision_History"><%= mytext.display("content.revisionhistory.tab") %></a></li>
+<% if (mypage.getContentClass().equals("product")) { %>
+                <li><a href="#Product_Details" rel="Product_Details"><%= mytext.display("content.productdetails.tab") %></a></li>
+                <li><a href="#Product_Delivery" rel="Product_Delivery"><%= mytext.display("content.productdelivery.tab") %></a></li>
+                <li><a href="#Product_Stock" rel="Product_Stock"><%= mytext.display("content.productstock.tab") %></a></li>
+<% } %>
+                <li><a href="#Primary_Content" rel="Primary_Content" class="st_tab_active"><%= mytext.display("content.primarycontent.tab") %></a></li>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template"))) { %>
+                <li><a href="#Content_Presentation" rel="Content_Presentation"><%= mytext.display("content.contentpresentation.tab") %></a></li>
+<% } %>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+                <li><a href="#Additional_Content" rel="Additional_Content"><%= mytext.display("content.additionalcontent.tab") %></a></li>
+<% } %>
+                <li><a href="#Meta_Information" rel="Meta_Information"><%= mytext.display("content.metainformation.tab") %></a></li>
+<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script"))) { %>
+                <li><a href="#Advanced_Scripting" rel="Advanced_Scripting"><%= mytext.display("content.advancedscripting.tab") %></a></li>
+<% } %>
+<% if ((myconfig.get(db, "use_contentpackages").equals("yes")) || ((! mypage.getContentClass().equals("template")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")))) { %>
+                <li><a href="#Content_Categories" rel="Content_Categories"><%= mytext.display("content.contentcategories.tab") %></a></li>
+<% } %>
+                <li><a href="#Content_Version" rel="Content_Version"><%= mytext.display("content.contentversion.tab") %></a></li>
+                <li><a href="#Access_Restrictions" rel="Access_Restrictions"><%= mytext.display("content.accessrestrictions.tab") %></a></li>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("link"))) { %>
+                <li><a href="#Content_Relations" rel="Content_Relations"><%= mytext.display("content.contentrelations.tab") %></a></li>
+<% } %>
+                <li><a href="/<%= mytext.display("adminpath") %>/content/dependencies.jsp?id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&<%= Math.random() %>" data-target="#Content_Dependencies" rel="Content_Dependencies"><%= mytext.display("content.contentdependencies.tab") %></a></li>
+
+<% for (int i=0; i<module.size(); i++) { %>
+<% if ((moduleContentTab.size()>i) && (! moduleContentTab.get(i).equals(""))) { %>
+<% if ((! moduleContentTabScript.get(i).equals("")) && (! moduleContentTabURL.get(i).equals(""))) { %>
+                <li><a onclick="<%= moduleContentTabScript.get(i) %>" href="<%= moduleContentTabURL.get(i) %>" data-target="#<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>" rel="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>"><%= moduleContentTabTitle.get(i) %></a></li>
+<% } else if (! moduleContentTabScript.get(i).equals("")) { %>
+                <li><a onclick="<%= moduleContentTabScript.get(i) %>" href="#<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>" rel="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>"><%= moduleContentTabTitle.get(i) %></a></li>
+<% } else if (! moduleContentTabURL.get(i).equals("")) { %>
+                <li><a href="<%= moduleContentTabURL.get(i) %>" data-target="#<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>" rel="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>"><%= moduleContentTabTitle.get(i) %></a></li>
+<% } else { %>
+                <li><a href="#<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>" rel="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %>"><%= moduleContentTabTitle.get(i) %></a></li>
+<% } %>
+<% } %>
+<% } %>
+
+<!--
+                <li><a href="javascript:displayAll()" rel="showall"><%= mytext.display("showall").replaceAll(" ", "<br>") %></a></li>
+-->
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="st_views">
+
+<div id="Revision History" class="Revision_History st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="4"><%= mytext.display("content.revisionhistory.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="4"><%= mytext.display("content.revisionhistory.intro") %></td></tr>
+<% if (myconfig.get(db, "use_revisionhistory").equals("yes")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.revisionhistory.created") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.revisionhistory.updated") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.revisionhistory.published") %></th>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.revisionhistory.unpublished") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mypage.getCreated() %>&nbsp; </td>
+            <td class="WCMinnerContentInputValue"><%= mypage.getUpdated() %>&nbsp; </td>
+            <td class="WCMinnerContentInputValue"><%= mypage.getPublished() %>&nbsp; </td>
+            <td class="WCMinnerContentInputValue"><%= mypage.getUnpublished() %>&nbsp; </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue"><%= mypage.getCreatedBy() %>&nbsp; </td>
+            <td class="WCMinnerContentInputValue"><%= mypage.getUpdatedBy() %>&nbsp; </td>
+            <td class="WCMinnerContentInputValue"><%= mypage.getPublishedBy() %>&nbsp; </td>
+            <td class="WCMinnerContentInputValue"><%= mypage.getUnpublishedBy() %>&nbsp; </td>
+          </tr>
+          <tr>
+<% User myuser = new User(); %>
+<% myuser.readByUsername(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mypage.getCreatedBy()); %>
+            <td class="WCMinnerContentInputValue"><%= myuser.getName() %>&nbsp; </td>
+<% myuser.readByUsername(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mypage.getUpdatedBy()); %>
+            <td class="WCMinnerContentInputValue"><%= myuser.getName() %>&nbsp; </td>
+<% myuser.readByUsername(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mypage.getPublishedBy()); %>
+            <td class="WCMinnerContentInputValue"><%= myuser.getName() %>&nbsp; </td>
+<% myuser.readByUsername(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mypage.getUnpublishedBy()); %>
+            <td class="WCMinnerContentInputValue"><%= myuser.getName() %>&nbsp; </td>
+          </tr>
+          <tr><th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("content.revisionhistory.revision") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue" colspan="4"><textarea name="revision" cols="80" rows="10">
+<%= html.encode(mypage.getRevision()) %></textarea></td></tr>
+<% } else { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("content.revisionhistory.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("content.revisionhistory.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("content.revisionhistory.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.revisionhistory.about.heading") %></th></tr>
+          <tr><td align="left" colspan="4"><%= mytext.display("content.revisionhistory.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<div id="Primary Content" class="Primary_Content st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.primarycontent.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left"><%= mytext.display("content.primarycontent.intro") %></td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.title") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="60" maxlength="250" name="title" value="<%= mypage.getTitle().replaceAll("\"", "&quot;") %>"></td></tr>
+<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.content") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" id="content_container">
+              <textarea id="content" name="content" cols="80" rows="25"><%= html.encode(mypage.getContent()) %></textarea>
+            </td>
+          </tr>
+<% } %>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.summary") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" id="summary_container">
+              <textarea id="summary" name="summary" cols="80" rows="25"><%= html.encode(mypage.getSummary()) %></textarea>
+            </td>
+          </tr>
+<% } %>
+<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("stylesheet"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.format") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue">
+            <input type="radio" name="contentformat" value=""<% if (mypage.getContentFormat().equals("")) { %> checked<% } %>><%= mytext.display("content.format.default") %>
+            - <input type="radio" name="contentformat" value="html"<% if (mypage.getContentFormat().equals("html")) { %> checked<% } %>><%= mytext.display("content.format.html") %>
+            - <input type="radio" name="contentformat" value="html4"<% if (mypage.getContentFormat().equals("html4")) { %> checked<% } %>><%= mytext.display("content.format.html4") %>
+            - <input type="radio" name="contentformat" value="html5"<% if (mypage.getContentFormat().equals("html5")) { %> checked<% } %>><%= mytext.display("content.format.html5") %>
+            - <input type="radio" name="contentformat" value="xhtml"<% if (mypage.getContentFormat().equals("xhtml")) { %> checked<% } %>><%= mytext.display("content.format.xhtml") %>
+            - <input type="radio" name="contentformat" value="xml"<% if (mypage.getContentFormat().equals("xml")) { %> checked<% } %>><%= mytext.display("content.format.xml") %>
+            - <input type="radio" name="contentformat" value="text"<% if (mypage.getContentFormat().equals("text")) { %> checked<% } %>><%= mytext.display("content.format.text") %>
+          </td></tr>
+<% } %>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("link"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.searchable") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="hidden" id="searchable" name="searchable" value="<%= mypage.getSearchable() %>"><input onclick="document.getElementById('searchable').value = (this.checked ? 'no' : '')" type="checkbox" name="searchable_dummy" value="no"<% if (mypage.getSearchable().equals("no")) { %> checked<% } %>><%= mytext.display("content.primarycontent.searchable.no") %></td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.menuitem") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="hidden" id="menuitem" name="menuitem" value="<%= mypage.getMenuitem() %>"><input onclick="document.getElementById('menuitem').value = (this.checked ? 'no' : '')" type="checkbox" name="menuitem_dummy" value="no"<% if (mypage.getMenuitem().equals("no")) { %> checked<% } %>><%= mytext.display("content.primarycontent.menuitem.no") %></td></tr>
+<% } %>
+<% if (((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) && (myconfig.get(db, "use_static_filenames").equals("yes"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.filename") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="60" maxlength="250" id="server_filename" name="server_filename" value="<%= mypage.getServerFilename() %>"> <input type="button" id="select_server_filename" value="<%= mytext.display("select") %>" onclick="openSelectFile(this.form.server_filename, '<%= mypage.getContentClass() %>');"></td></tr>
+<% } %>
+<% if (mypage.getContentClass().equals("link")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.url") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="80" maxlength="250" name="url" value="<%= mypage.getUrl().replaceAll("\"", "&quot;") %>"></td></tr>
+<% } %>
+<% if ((mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+          <tr id="file_input"><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.file") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <input type="file" id="file" name="file" value="">
+              <input type="hidden" id="file_data" name="file_data" value="">
+	<% if (mypage.getContentClass().equals("file")) { %>
+              <br>
+              <br>
+              <% if (myrequest.getParameter("archive").equals("")) { %><a id="contentfile" target="_blank" href="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>"><%= mypage.getUploadFilename() %></a><% } else { %><a id="contentfile" target="_blank" href="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>?<%= Math.random() %>"><%= mypage.getUploadFilename() %></a><% } %>
+              <br>
+              <br>
+	<% } else if (mypage.getContentClass().equals("image")) { %>
+              <% if ((myrequest.getParameter("archive").equals("")) || (myrequest.getParameter("archive").equals("public"))) { %>
+              <% if (mypage.getServerFilename().endsWith(".swf")) { %>
+              <br>
+              <br>
+              <object codeBase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param name="movie" value="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>"><param name="quality" value="high"><embed src="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high"></embed></object>
+              <% } else if (mypage.getServerFilename().endsWith(".class")) { %>
+              <%
+              	String code = "";
+              	String codebase = "";
+              	if (mypage.getServerFilename().indexOf("/") > -1) {
+              		code = mypage.getServerFilename().substring(mypage.getServerFilename().lastIndexOf("/")+1);
+              		codebase = myconfig.get(db, "URLrootpath") + mypage.getServerFilename().substring(0, mypage.getServerFilename().lastIndexOf("/")+1);
+              	} else {
+              		code = mypage.getServerFilename();
+              		codebase = "/";
+              	}
+              %>
+              <br>
+              <br>
+              <object codebase="http://java.sun.com/products/plugin/autodl/jinstall-1_4_2-windows-i586.cab" classid="clsid:CAFEEFAC-0014-0002-0000-ABCDEFFEDCBA"><param name="codebase" value="<%= codebase %>"><param name="code" value="<%= code %>"><param name="type" value="application/x-java-applet"><comment><embed pluginspage="http://java.sun.com/products/plugin/index.html#download" codebase="<%= codebase %>" code="<%= code %>" type="application/x-java-applet"><noembed><applet codebase="<%= codebase %>" code="<%= code %>">Java applet</applet></noembed></embed></comment></object>
+              <% } else { %>
+              <input id="contentimage_edit" type="button" value="<%= mytext.display("content.primarycontent.file.edit.image") %>" onclick="doEditImage('<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>')">
+              <br>
+              <br>
+              <img id="contentimage" title="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>" src="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %>?<%= Math.random() %>">
+              <% } %>
+              <% } else { %>
+              <% if (mypage.getServerFilename().endsWith(".swf")) { %>
+              <br>
+              <br>
+              <object codeBase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param name="movie" value="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>?<%= Math.random() %>"><param name="quality" value="high"><embed src="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>?<%= Math.random() %>" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high"></embed></object>
+              <% } else if (mypage.getServerFilename().endsWith(".class")) { %>
+              <%
+              	String code = "";
+              	String codebase = "";
+              	if (mypage.getServerFilename().indexOf("/") > -1) {
+              		code = mypage.getServerFilename().substring(mypage.getServerFilename().lastIndexOf("/")+1);
+              		codebase = myconfig.get(db, "URLrootpath") + mypage.getServerFilename().substring(0, mypage.getServerFilename().lastIndexOf("/")+1);
+              	} else {
+              		code = mypage.getServerFilename();
+              		codebase = "/";
+              	}
+              %>
+              <br>
+              <br>
+              <object codebase="http://java.sun.com/products/plugin/autodl/jinstall-1_4_2-windows-i586.cab" classid="clsid:CAFEEFAC-0014-0002-0000-ABCDEFFEDCBA"><param name="codebase" value="<%= codebase %>"><param name="code" value="<%= code %>"><param name="type" value="application/x-java-applet"><comment><embed pluginspage="http://java.sun.com/products/plugin/index.html#download" codebase="<%= codebase %>" code="<%= code %>" type="application/x-java-applet"><noembed><applet codebase="<%= codebase %>" code="<%= code %>">Java applet</applet></noembed></embed></comment></object>
+              <% } else { %>
+              <input id="contentimage_edit" type="button" value="<%= mytext.display("content.primarycontent.file.edit.image") %>" onclick="doEditImage('/image.jsp?mode=preview&archive=<%= myrequest.getParameter("archive") %>&<%= Math.random() %>')">
+              <br>
+              <br>
+              <img id="contentimage" title="<%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() + "." + myrequest.getParameter("archive") %>" src="/image.jsp?mode=preview&archive=<%= myrequest.getParameter("archive") %>&<%= Math.random() %>">
+              <% } %>
+              <% } %>
+	<% } else { %>
+              <br>
+              <br>
+              <%= mypage.getUploadFilename() %>
+	<% } %>
+            </td>
+          </tr>
+<% } %>
+<% if (((mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) && (myconfig.get(db, "use_static_filenames").equals("yes"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.filename") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="60" maxlength="250" id="server_filename" name="server_filename" value="<%= mypage.getServerFilename() %>"> <input type="button" id="select_server_filename" value="<%= mytext.display("select") %>" onclick="openSelectFile(this.form.server_filename, '<%= mypage.getContentClass() %>');"></td></tr>
+<% } %>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("link")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script")) || (mypage.getContentClass().equals("product"))) { %>
+        <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.primarycontent.url") %></th></tr>
+        <tr>
+          <td class="WCMinnerContentInputValue">
+	<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("stylesheet")) || (mypage.getContentClass().equals("script"))) { %>
+          <% if (! mypage.getServerFilename().equals("")) { %>
+          <%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %><br>
+          <% } %>
+	<% } %>
+	<% if (mypage.getContentClass().equals("page")) { %>
+          <%= "/page.jsp?id=" + mypage.getId() %> &nbsp;
+	<% } else if (mypage.getContentClass().equals("file")) { %>
+          <%= "/file.jsp?id=" + mypage.getId() %> &nbsp;<br>
+          <%= "/file.jsp?" + mypage.getServerFilename() %> &nbsp;
+	<% } else if (mypage.getContentClass().equals("image")) { %>
+          <%= "/image.jsp?id=" + mypage.getId() %> &nbsp;
+	<% } else if (mypage.getContentClass().equals("link")) { %>
+          <%= "/link.jsp?id=" + mypage.getId() %> &nbsp;
+	<% } else if (mypage.getContentClass().equals("stylesheet")) { %>
+          <%= "/stylesheet.jsp?id=" + mypage.getId() %> &nbsp;
+	<% } else if (mypage.getContentClass().equals("script")) { %>
+          <%= "/script.jsp?id=" + mypage.getId() %> &nbsp;
+	<% } else if (mypage.getContentClass().equals("product")) { %>
+          <%= "/product.jsp?id=" + mypage.getId() %> &nbsp;
+	<% } %>
+          </td>
+        </tr>
+	<% if ((mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+        <tr><td class="WCMinnerContentInputValue"><%= myconfig.get(db, "URLrootpath") + mypage.getServerFilename() %> &nbsp; </td></tr>
+	<% } %>
+<% } %>
+        </table>
+        <br>
+</div></div>
+<% if (mypage.getContentClass().equals("product")) { %>
+<div id="Product Details" class="Product_Details st_view"><div class="st_view_inner">
+<input type="hidden" id="product_info" name="product_info" value="<%= html.encode(mypage.getProductInfo()) %>">
+<input type="hidden" id="product_options" name="product_options" value="<%= html.encode(mypage.getProductOptions()) %>">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("content.productdetails.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="3"><%= mytext.display("content.productdetails.intro") %></td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.code") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("content.productdetails.price") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.cost") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="25%"><input type="text" size="20" name="product_code" value="<%= mypage.getProductCode() %>"></td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="product_currency">
+                <option value="<%= mypage.getProductCurrency() %>"><%= mytext.display("pleaseselect") %></option>
+                <option value="" <% if (mypage.getProductCurrency().equals("")) { %>selected<% } %>><%= mytext.display("default") %> (<%= mypage.currency_symbol(db, myconfig.get(db, "default_currency")) %>)</option>
+                <%= mypage.currency_options(db, mypage.getProductCurrency()) %>
+              </select>
+              <input type="text" size="10" name="product_price" value="<%= mypage.getProductPrice() %>">
+              <select name="product_period">
+                <option value="" <% if (mypage.getProductPeriod().equals("")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.once") %></option>
+                <option value="daily" <% if (mypage.getProductPeriod().equals("daily")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.daily") %></option>
+                <option value="weekly" <% if (mypage.getProductPeriod().equals("weekly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.weekly") %></option>
+                <option value="biweekly" <% if (mypage.getProductPeriod().equals("biweekly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.biweekly") %></option>
+                <option value="monthly" <% if (mypage.getProductPeriod().equals("monthly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.monthly") %></option>
+                <option value="bimonthly" <% if (mypage.getProductPeriod().equals("bimonthly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.bimonthly") %></option>
+                <option value="quarterly" <% if (mypage.getProductPeriod().equals("quarterly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.quarterly") %></option>
+                <option value="biquarterly" <% if (mypage.getProductPeriod().equals("biquarterly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.biquarterly") %></option>
+                <option value="yearly" <% if (mypage.getProductPeriod().equals("yearly")) { %>selected<% } %>><%= mytext.display("content.productdetails.period.yearly") %></option>
+              </select>
+            </td>
+            <td class="WCMinnerContentInputValue" width="25%">
+              <input type="text" size="10" name="product_cost" value="<%= mypage.getProductCost() %>">
+            </td>
+          </tr>
+<!--
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.stock") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.productdetails.comment") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="25%"><input type="text" size="10" name="product_stock" value="<%= mypage.getProductStock() %>"></td>
+            <td class="WCMinnerContentInputValue" width="75%" colspan="2"><input type="text" size="30" name="product_comment" value="<%= mypage.getProductComment() %>"></td>
+          </tr>
+-->
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.weight") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("content.productdetails.width") %> x <%= mytext.display("content.productdetails.height") %> x <%= mytext.display("content.productdetails.depth") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.productdetails.volume") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="25%"><input type="text" size="10" name="product_weight" value="<%= mypage.getProductWeight() %>"><%= mytext.display("content.productdetails.weight.unit") %></td>
+            <td class="WCMinnerContentInputValue" width="50%"><input type="text" size="10" name="product_width" value="<%= mypage.getProductWidth() %>"><%= mytext.display("content.productdetails.width.unit") %> x <input type="text" size="10" name="product_height" value="<%= mypage.getProductHeight() %>"><%= mytext.display("content.productdetails.height.unit") %> x <input type="text" size="10" name="product_depth" value="<%= mypage.getProductDepth() %>"><%= mytext.display("content.productdetails.depth.unit") %></td>
+            <td class="WCMinnerContentInputValue" width="25%"><input type="text" size="10" name="product_volume" value="<%= mypage.getProductVolume() %>"><%= mytext.display("content.productdetails.volume.unit") %></td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="100%" colspan="3"><%= mytext.display("content.productdetails.brand") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="100%" colspan="3"><input type="text" size="80" name="product_brand" value="<%= mypage.getProductBrand() %>"></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="100%" colspan="3"><%= mytext.display("content.productdetails.colour") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="100%" colspan="3"><input type="text" size="80" name="product_colour" value="<%= mypage.getProductColour() %>"></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="100%" colspan="3"><%= mytext.display("content.productdetails.size") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="100%" colspan="3"><input type="text" size="80" name="product_size" value="<%= mypage.getProductSize() %>"></td>
+          </tr>
+          <tr id="product_infoaddnew"><td>&nbsp;</td></tr>
+          <tr><td colspan="2"><input id="product_infoname" type="text" size="80" maxlength="255" name="product_infoname"> <input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('product_info')"></td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.productoptions.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("content.productoptions.intro") %></td></tr>
+          <tr id="product_optionsaddnew"><td>&nbsp;</td></tr>
+          <tr><td colspan="2"><input id="product_optionsname" type="text" size="60" maxlength="255" name="product_optionsname"> <input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('product_options')"></td></tr>
+        </table>
+        <br>
+</div></div>
+<div id="Product Delivery" class="Product_Delivery st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.productdelivery.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("content.productdelivery.intro") %></td></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="2">
+              <input type="radio" name="product_delivery" value="new"<% if (mypage.getProductDelivery().equals("new")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.new") %>
+              <input type="radio" name="product_delivery" value="renew"<% if (mypage.getProductDelivery().equals("renew")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.renew") %>
+              <input type="radio" name="product_delivery" value="addon"<% if (mypage.getProductDelivery().equals("addon")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.addon") %>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.email") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="2">
+              <nobr>
+              <select id="product_email" name="product_email" style="width: 400px;">
+                <option value="<%= mypage.getProductEmail() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getProductEmail()) %></option> &nbsp;
+                <option value="" <% if (mypage.getProductEmail().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" id="select_product_email" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('product_email', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.page") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="2">
+              <nobr>
+              <select id="product_page" name="product_page" style="width: 400px;">
+                <option value="<%= mypage.getProductPage() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getProductPage()) %></option> &nbsp;
+                <option value="" <% if (mypage.getProductPage().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" id="select_product_page" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('product_page', 'Pages', '', 'Pages', 'page');">
+              </nobr>
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "professional")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.program") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="2">
+              <select id="product_program" name="product_program" style="width: 400px;">
+                <option value="<%= mypage.getProductProgram() %>"><%= mypage.getProductProgram() %></option> &nbsp;
+                <option value="" <% if (mypage.getProductProgram().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+	        <%= mypage.productdelivery_select_options(DOCUMENT_ROOT, mypage.getProductProgram()) %>
+              </select>
+            </td>
+          </tr>
+<% } %>
+<% if (myconfig.get(db,"use_userdatabase").equals("yes")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.user") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="2">
+              <select id="product_user" name="product_user" style="width: 400px;">
+                <option value="<%= mypage.getProductUser() %>"><%= mypage.getProductUser() %></option> &nbsp;
+                <option value="" <% if (mypage.getProductUser().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= mypage.User_template_select_options(db, mypage.getProductUser()) %>
+              </select>
+            </td>
+          </tr>
+<% } %>
+<% if (License.valid(db, myconfig, "hosting")) { %>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.productdelivery.hosting") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="2">
+              <select id="product_hosting" name="product_hosting" style="width: 400px;">
+                <option value="<%= mypage.getProductHosting() %>"><%= mypage.getProductHosting() %></option> &nbsp;
+                <option value="" <% if (mypage.getProductHosting().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= mypage.Hosting_template_select_options(db, mypage.getProductHosting()) %>
+              </select>
+            </td>
+          </tr>
+<% } %>
+        </table>
+        <br>
+</div></div>
+<% } %>
+	<% if (mypage.getContentClass().equals("product")) { %>
+
+<div id="Product Stock" class="Product_Stock st_view"><div class="st_view_inner">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("content.productstock.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="3"><%= mytext.display("content.productstock.intro") %></td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.in") %></th></tr>
+		<tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.in.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><span id="product_stock_amount_current"><%= Common.intnumber(mypage.getProductStockAmount(db)) %></span> &nbsp;</td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="1">
+				<nobr>
+					<select id="product_stock_amount_update" name="product_stock_amount_update">
+						<option value="add"><%= mytext.display("content.productstock.stock.in.add") %></option> &nbsp;
+						<option value="subtract"><%= mytext.display("content.productstock.stock.in.subtract") %></option> &nbsp;
+						<option value="set"><%= mytext.display("content.productstock.stock.in.set") %></option> &nbsp;
+					</select>
+					<input type="input" id="product_stock_amount_input" name="product_stock_amount_input" value="0">
+					<input type="hidden" id="product_stock_amount" name="product_stock_amount" value="0">
+				</nobr>
+			</td>
+
+		</tr>
+		<tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.in.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="80" maxlength="250" name="product_stock_text" value="<%= html.encode(mypage.getProductStockText()) %>"></td>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.restocked") %></th></tr>
+		<tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.restocked.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><span id="product_restocked_amount_current"><%= Common.intnumber(mypage.getProductRestockedAmount(db)) %></span> &nbsp;</td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="1">
+				<nobr>
+					<select id="product_restocked_amount_update" name="product_restocked_amount_update">
+						<option value="add"><%= mytext.display("content.productstock.stock.restocked.add") %></option> &nbsp;
+						<option value="subtract"><%= mytext.display("content.productstock.stock.restocked.subtract") %></option> &nbsp;
+						<option value="set"><%= mytext.display("content.productstock.stock.restocked.set") %></option> &nbsp;
+					</select>
+					<input type="input" id="product_restocked_amount_input" name="product_restocked_amount_input" value="0">
+					<input type="hidden" id="product_restocked_amount" name="product_restocked_amount" value="0">
+				</nobr>
+			</td>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.low") %></th></tr>
+		<tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.low.amount") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="5" maxlength="20" name="product_lowstock_amount" value="<%= Common.intnumber(mypage.getProductLowStockAmount()) %>"></td>
+
+		</tr>
+		<tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.low.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="80" maxlength="250" name="product_lowstock_text" value="<%= html.encode(mypage.getProductLowStockText()) %>"></td>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.no") %></th></tr>
+		<tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.no.order") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<input type="radio" name="product_nostock_order" value="yes"<% if (mypage.getProductNoStockOrder().equals("yes")) { %> checked<% } %>><%= mytext.display("content.productstock.stock.no.order.enabled") %>
+				<input type="radio" name="product_nostock_order" value="no"<% if (mypage.getProductNoStockOrder().equals("no")) { %> checked<% } %>><%= mytext.display("content.productstock.stock.no.order.disabled") %>
+				<input type="radio" name="product_nostock_order" value=""<% if (mypage.getProductNoStockOrder().equals("")) { %> checked<% } %>><%= mytext.display("content.productstock.stock.no.order.unlimited") %>
+			</td>
+
+		</tr>
+		<tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.no.description") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="80" maxlength="250" name="product_nostock_text" value="<%= html.encode(mypage.getProductNoStockText()) %>"></td>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="3"><%= mytext.display("content.productstock.stock.location") %></th></tr>
+		<tr>
+
+			<td class="WCMinnerContentInputValue" align="left" colspan="1"><%= mytext.display("content.productstock.stock.location") %></td>
+			<td class="WCMinnerContentInputValue" align="left" colspan="2"><input type="text" size="80" maxlength="250" name="product_location" value="<%= html.encode(mypage.getProductLocation()) %>"></td>
+
+		</tr>
+
+<!--
+			<td class="WCMinnerContentInputValue" align="left" colspan="2">
+				<input type="radio" name="product_delivery" value="new"<% if (mypage.getProductDelivery().equals("new")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.new") %>
+				<input type="radio" name="product_delivery" value="renew"<% if (mypage.getProductDelivery().equals("renew")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.renew") %>
+				<input type="radio" name="product_delivery" value="addon"<% if (mypage.getProductDelivery().equals("addon")) { %> checked<% } %>><%= mytext.display("content.productdelivery.productdelivery.addon") %>
+			</td>
+-->
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left" colspan="3"><%= mytext.display("content.productstock.about.heading") %></th></tr>
+		<tr><td align="left" colspan="4"><%= mytext.display("content.productstock.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>
+
+	<% } %>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template"))) { %>
+<div id="Content Presentation" class="Content_Presentation st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.contentpresentation.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="2" height="7"><%= mytext.display("content.contentpresentation.intro") %></td></tr>
+<% if ((myconfig.get(db, "use_presentation").equals("yes")) && ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template")))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.contentpresentation.template") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <nobr>
+              <select id="template" name="template" style="width: 400px;" onChange="changeWebEditorTemplate(this, document.getElementById('stylesheet'))">
+	<% if (! mypage.getContentClass().equals("template")) { %>
+                <option value="<%= mypage.getTemplate() %>"><% if (mypage.getTemplate().equals("")) { %>&nbsp;<% } else if (mypage.getTemplate().equals("-")) { %>&nbsp;<% } else if (mypage.getTemplate().equals("0")) { %>&nbsp;<% } else { %><%= mypage.getTemplateContent().getTitle() %><% } %></option> &nbsp;
+                <option value="" <% if (mypage.getTemplate().equals("")) { %>selected<% } %>><%= mytext.display("default") %> <%= mytext.display("default.session") %></option>
+	<% } else { %>
+                <option value="<%= mypage.getTemplate() %>"><% if (mypage.getTemplate().equals("")) { %>&nbsp;<% } else if (mypage.getTemplate().equals("-")) { %>&nbsp;<% } else if (mypage.getTemplate().equals("0")) { %>&nbsp;<% } else { %><%= mypage.getTemplateContent().getTitle() %><% } %></option> &nbsp;
+	<% } %>
+                <option value="-" <% if (mypage.getTemplate().equals("-")) { %>selected<% } %>><%= mytext.display("default") %> <%= mytext.display("default.website") %></option>
+                <option value="0" <% if (mypage.getTemplate().equals("0")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              <input type="button" id="select_template" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('template', 'Templates', '', 'Templates', 'template');">
+              </nobr>
+            </td>
+          </tr>
+          <tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.contentpresentation.stylesheet") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <nobr>
+              <input type="hidden" id="stylesheetinput" name="stylesheet" value="<%= mypage.getStyleSheet() %>">
+              <select multiple id="stylesheet" name="selectstylesheet" style="width: 400px;" onChange="changeWebEditorStylesheet(this)">
+		<%
+		String[] mystylesheets = mypage.getStyleSheet().split(",");
+		HashMap myselectedstylesheet = new HashMap();
+		for (int i=0; i<mystylesheets.length; i++) {
+			String mystylesheet = "" + mystylesheets[i];
+			myselectedstylesheet.put(mystylesheet, mystylesheet);
+		}
+		%>
+                <option value="" <% if (myselectedstylesheet.get("") != null) { %>selected<% } %>><%= mytext.display("default") %></option>
+                <option value="0" <% if (myselectedstylesheet.get("0") != null) { %>selected<% } %>><%= mytext.display("none") %></option>
+		<%
+		for (int i=0; i<mystylesheets.length; i++) {
+			String mystylesheet = "" + mystylesheets[i];
+			if ((! mystylesheet.equals("")) && (! mystylesheet.equals("0"))) {
+				%><option value="<%= mystylesheet %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mystylesheet) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" id="select_stylesheet" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('stylesheet', 'Style Sheets', '', 'Style Sheets', 'stylesheet');">
+              </nobr>
+            </td>
+          </tr>
+<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.contentpresentation.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.contentpresentation.enableconfig") %><% } else { %><%= mytext.display("content.contentpresentation.enablesuperadmin") %><% } %></td></tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.contentpresentation.about.heading") %></th></tr>
+          <tr><td align="left" colspan="4"><%= mytext.display("content.contentpresentation.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<% } %>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+<div id="Additional Content" class="Additional_Content st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="3"><%= mytext.display("content.additionalcontent.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="3"><%= mytext.display("content.additionalcontent.intro") %></td></tr>
+<% if ((myconfig.get(db, "use_additionalcontent").equals("yes")) && ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("template")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")))) { %>
+<%
+	if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file"))) {
+%>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.additionalcontent.element") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.additionalcontent.content") %></th>
+          </tr>
+<%
+	int j = 0;
+	Iterator contentelements = Common.SortedHashMapKeySetIterator(mypage.elements(db, myconfig));
+	while (contentelements.hasNext()) {
+		String element = "" + contentelements.next();
+%>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><input type="hidden" name="element<%= j %>name" value="<%= element %>"><%= element %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <input type="hidden" id="element<%= j %>value" name="element<%= j %>value" value="<%= mypage.getElement(element) %>">
+              <% String[] myelementvalues = mypage.getElement(element).split(","); %>
+              <select multiple size="<%= 4+myelementvalues.length %>" id="element<%= j %>values" name="element<%= j %>values" style="width: 400px;" onchange="changedSelectedOptions(this, document.getElementById('element<%= j %>value'))">
+<!--
+                <option value="<%= mypage.getElement(element) %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getElement(element)) %></option> &nbsp;
+-->
+                <option value="-1" <% if ((mypage.getElement(element).equals("-1")) || (mypage.getElement(element).equals(""))) { %>selected<% } %>><%= mytext.display("default") %></option>
+                <option value="0" <% if (mypage.getElement(element).equals("0")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <option value="-2" <% if (mypage.getElement(element).equals("-2")) { %>selected<% } %>><%= mytext.display("random") %></option>
+                <%
+                for (int i=0; i<myelementvalues.length; i++) {
+                  String myelementvalue = myelementvalues[i];
+                  if ((! myelementvalue.equals("")) && (! myelementvalue.equals("0")) && (! myelementvalue.equals("-1")) && (! myelementvalue.equals("-2"))) {
+                %>
+                <option value="<%= myelementvalue %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myelementvalue) %></option> &nbsp;
+                <%
+                  } 
+                }
+                %>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_element<%= j %>" value="<%= mytext.display("add") %>" onclick="openSelectContentItem('element<%= j %>values', 'Elements', 'contentclass', '<%= URLEncoder.encode(element) %>', 'element');">
+              &nbsp;
+              <input type="button" value="&#9650;" onclick="moveSelectedOptionsUp(document.getElementById('element<%= j %>values'))">
+              <input type="button" value="&#9660;" onclick="moveSelectedOptionsDown(document.getElementById('element<%= j %>values'))">
+              &nbsp;
+              <input type="button" value="<%= mytext.display("remove") %>" onclick="deleteSelectedOptions(document.getElementById('element<%= j %>values'))">
+              </nobr>
+            </td>
+          </tr>
+<%
+		j = j + 1;
+	}
+%>
+<%
+	}
+%>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file"))) { %>
+<%
+	if (! mypage.getContentClass().equals("file")) {
+%>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.additionalcontent.image") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.additionalcontent.content") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.image1") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="image1" name="image1" style="width: 400px;">
+                <option value="<%= mypage.getImage1() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage1()) %></option> &nbsp;
+                <option value="" <% if (mypage.getImage1().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_image1" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('image1', 'Images', '', 'Images', 'image');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.image2") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="image2" name="image2" style="width: 400px;">
+                <option value="<%= mypage.getImage2() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage2()) %></option> &nbsp;
+                <option value="" <% if (mypage.getImage2().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_image2" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('image2', 'Images', '', 'Images', 'image');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.image3") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="image3" name="image3" style="width: 400px;">
+                <option value="<%= mypage.getImage3() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getImage3()) %></option> &nbsp;
+                <option value="" <% if (mypage.getImage3().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_image3" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('image3', 'Images', '', 'Images', 'image');">
+              </nobr>
+            </td>
+          </tr>
+<%
+	}
+%>
+<%
+	if (! mypage.getContentClass().equals("image")) {
+%>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.additionalcontent.file") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.additionalcontent.content") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.file1") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="file1" name="file1" style="width: 400px;">
+                <option value="<%= mypage.getFile1() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile1()) %></option> &nbsp;
+                <option value="" <% if (mypage.getFile1().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_file1" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('file1', 'Files', '', 'Files', 'file');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.file2") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="file2" name="file2" style="width: 400px;">
+                <option value="<%= mypage.getFile2() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile2()) %></option> &nbsp;
+                <option value="" <% if (mypage.getFile2().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_file2" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('file2', 'Files', '', 'Files', 'file');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.file3") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="file3" name="file3" style="width: 400px;">
+                <option value="<%= mypage.getFile3() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getFile3()) %></option> &nbsp;
+                <option value="" <% if (mypage.getFile3().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_file3" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('file3', 'Files', '', 'Files', 'file');">
+              </nobr>
+            </td>
+          </tr>
+<%
+	}
+%>
+<%
+	if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file"))) {
+%>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="25%"><%= mytext.display("content.additionalcontent.link") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="75%" colspan="2"><%= mytext.display("content.additionalcontent.content") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.link1") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="link1" name="link1" style="width: 400px;">
+                <option value="<%= mypage.getLink1() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink1()) %></option> &nbsp;
+                <option value="" <% if (mypage.getLink1().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_link1" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('link1', 'Links', '', 'Links', 'link');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.link2") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="link2" name="link2" style="width: 400px;">
+                <option value="<%= mypage.getLink2() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink2()) %></option> &nbsp;
+                <option value="" <% if (mypage.getLink2().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_link2" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('link2', 'Links', '', 'Links', 'link');">
+              </nobr>
+            </td>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left"><%= mytext.display("content.additionalcontent.link3") %></td>
+            <td class="WCMinnerContentInputValue" align="left">
+              <nobr>
+              <select id="link3" name="link3" style="width: 400px;">
+                <option value="<%= mypage.getLink3() %>"><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, "" + mypage.getLink3()) %></option> &nbsp;
+                <option value="" <% if (mypage.getLink3().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+              </select>
+              </nobr>
+            </td>
+            <td class="WCMinnerContentInputValue WCMinnerContentInputValueSelector" align="left">
+              <nobr>
+              <input type="button" id="select_link3" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('link3', 'Links', '', 'Links', 'link');">
+              </nobr>
+            </td>
+          </tr>
+<%
+	}
+%>
+<% } %>
+<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.additionalcontent.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.additionalcontent.enableconfig") %><% } else { %><%= mytext.display("content.additionalcontent.enablesuperadmin") %><% } %></td></tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.additionalcontent.about.heading") %></th></tr>
+          <tr><td align="left" colspan="4"><%= mytext.display("content.additionalcontent.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<% } %>
+<div id="Meta Information" class="Meta_Information st_view"><div class="st_view_inner">
+<input type="hidden" id="metainfo" name="metainfo" value="<%= mypage.getMetaInfo().replaceAll("\"", "&quot;") %>">
+<input type="hidden" id="segmentation" name="segmentation" value="<%= mypage.getSegmentation().replaceAll("\"", "&quot;") %>">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.metainformation.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left"><%= mytext.display("content.metainformation.intro") %></td></tr>
+<% if (myconfig.get(db, "use_metainformation").equals("yes")) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.metainformation.author") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="80" maxlength="250" name="author" value="<%= mypage.getAuthor().replaceAll("\"", "&quot;") %>"></td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.metainformation.description") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="80" maxlength="250" name="description" value="<%= mypage.getDescription().replaceAll("\"", "&quot;") %>"></td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.metainformation.keywords") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="80" maxlength="250" name="keywords" value="<%= mypage.getKeywords().replaceAll("\"", "&quot;") %>"></td></tr>
+          <tr id="metainfoaddnew"><td>&nbsp;</td></tr>
+          <tr><td><input id="metainfoname" type="text" size="60" maxlength="255" name="metainfoname"> <input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('metainfo')"> <input type="checkbox" id="metainfointernal" name="metainfointernal" value="yes"> <%= mytext.display("content.metainformation.internal") %></td></tr>
+<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left"><div><b><%= mytext.display("content.metainformation.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.metainformation.enableconfig") %><% } else { %><%= mytext.display("content.metainformation.enablesuperadmin") %><% } %></td></tr>
+<% } %>
+<% if ((License.valid(db, myconfig, "experience")) && ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("link")) || (mypage.getContentClass().equals("script")) || (mypage.getContentClass().equals("stylesheet")))) { %>
+	<tr><td>&nbsp;</td></tr>
+	<tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.segmentation.heading") %></th></tr>
+	<tr><td class="WCMinnerContentIntro" align="left"><%= mytext.display("content.segmentation.intro") %></td></tr>
+	<tr id="segmentationaddnew"><td>&nbsp;</td></tr>
+	<tr>
+		<td class="WCMinnerContentInputValue">
+			<%= mytext.display("content.segmentation.segment") %>:
+			<select id="segmentationname" name="segmentationname" style="width: 150px;">
+				<option value=""></option>
+				<%= mypage.usersegment_select_options(db, mypage.getUsersegment()) %>
+			</select>
+			&nbsp;
+			<%= mytext.display("content.segmentation.weight") %>:
+			<input id="segmentationvalue" name="segmentationvalue" type="text" size="5" maxlength="10">
+			<input type="button" value="<%= mytext.display("addnew") %>" onClick="addInfo('segmentation')">
+		</td>
+	</tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left"><%= mytext.display("content.metainformation.about.heading") %></th></tr>
+          <tr><td align="left"><%= mytext.display("content.metainformation.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<% if ((! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script"))) { %>
+<div id="Advanced Scripting" class="Advanced_Scripting st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left"><%= mytext.display("content.advancedscripting.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left"><%= mytext.display("content.advancedscripting.intro") %></td></tr>
+<% if (mypage.getDeveloper()) { %>
+<% if ((myconfig.get(db, "use_advancedscripting").equals("yes")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.advancedscripting.scripts") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <nobr>
+              <input type="hidden" id="scriptsinput" name="scripts" value="<%= mypage.getScripts() %>">
+              <select multiple id="scripts" name="selectscripts" style="width: 600px;" onChange="changeScripts(this)">
+                <option value=""> &nbsp; </option>
+		<%
+		String[] myscripts = mypage.getScripts().split(",");
+		HashMap myselectedscript = new HashMap();
+		for (int i=0; i<myscripts.length; i++) {
+			String myscript = "" + myscripts[i];
+			myselectedscript.put(myscript, myscript);
+		}
+		%>
+		<%
+		for (int i=0; i<myscripts.length; i++) {
+			String myscript = "" + myscripts[i];
+			if (! myscript.equals("")) {
+				%><option value="<%= myscript %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myscript) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" id="select_scripts" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('scripts', 'Scripts', '', 'Scripts', 'script');">
+              </nobr>
+            </td>
+          </tr>
+		<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template"))) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.website.specialsettings.doctype") %></th>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="4"> 
+              <textarea name="doctype" rows="2" cols="100" wrap="off" style="width: 100%;"><%= html.encode(mypage.getDocType()) %></textarea>
+            </td>
+          </tr>
+          <tr> 
+            <td class="WCMinnerContentInputValue" valign="top" colspan="4"> 
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("")) { %> checked<% } %> onclick="this.form.doctype.value=''"> <%= mytext.display("default") %>
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;>'"> HTML 4.01 Transitional
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;http://www.w3.org/TR/html4/strict.dtd&quot;>'"> HTML 4.01 Strict
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;>'"> XHTML 1.0 Transitional
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;>'"> XHTML 1.0 Strict
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;>'"> XHTML 1.1
+              </nobr>
+              <nobr>
+              <input type="radio" name="doctype_option" <% if (mypage.getDocType().equals("<!DOCTYPE html>")) { %> checked<% } %> onclick="this.form.doctype.value='<!DOCTYPE html>'"> HTML 5
+              </nobr>
+            </td>
+          </tr>
+		<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlattributes") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="100" maxlength="250" style="width: 100%;" name="htmlattributes" value="<%= html.encode(mypage.getHtmlAttributes()) %>"></td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlheader") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><textarea cols="80" rows="25" wrap="off" style="width: 100%;" name="htmlheader">
+<%= html.encode(mypage.getHtmlHeader()) %></textarea></td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlbodyonload") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><input type="text" size="80" style="width: 100%;" name="htmlbodyonload" value="<%= mypage.getHtmlBodyOnload().replaceAll("\"", "&quot;") %>"></td></tr>
+<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.advancedscripting.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.advancedscripting.enableconfig") %><% } else { %><%= mytext.display("content.advancedscripting.enablesuperadmin") %><% } %></td></tr>
+<% } %>
+<% } else { %>
+<% if ((myconfig.get(db, "use_advancedscripting").equals("yes")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("link"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left" colspan="2"><%= mytext.display("content.advancedscripting.scripts") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" colspan="2">
+		<%
+		String[] myscripts = mypage.getScripts().split(",");
+		for (int i=0; i<myscripts.length; i++) {
+			String myscript = "" + myscripts[i];
+			if (! myscript.equals("")) {
+				%><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myscript) %> &nbsp;<br><%
+			}
+		}
+		%>
+            </td>
+          </tr>
+		<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("template"))) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left" colspan="6"><%= mytext.display("config.website.specialsettings.doctype") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue" valign="top" colspan="4"><%= html.encode(mypage.getDocType()).replaceAll("\r\n", "\n").replaceAll("\r", "\n").replaceAll("\n", "<BR>") %> &nbsp;</td></tr>
+		<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlheader") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= html.encode(mypage.getHtmlHeader()).replaceAll("\r\n", "\n").replaceAll("\r", "\n").replaceAll("\n", "<BR>") %>&nbsp;</td></tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.advancedscripting.htmlbodyonload") %></th></tr>
+          <tr><td class="WCMinnerContentInputValue"><%= html.encode(mypage.getHtmlBodyOnload()).replaceAll("\r\n", "\n").replaceAll("\r", "\n").replaceAll("\n", "<BR>") %>&nbsp;</td></tr>
+<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.advancedscripting.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.advancedscripting.enableconfig") %><% } else { %><%= mytext.display("content.advancedscripting.enablesuperadmin") %><% } %></td></tr>
+<% } %>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.advancedscripting.about.heading") %></th></tr>
+          <tr><td align="left" colspan="4"><%= mytext.display("content.advancedscripting.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<% } %>
+<div id="Content Categories" class="Content_Categories st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="4"><%= mytext.display("content.contentcategories.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="4"><%= mytext.display("content.contentcategories.intro") %></td></tr>
+<% if (mypage.getAdministrator()) { %>
+	<% if (myconfig.get(db, "use_contentdefinition").equals("yes")) { %>
+          <tr>
+		<% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.package") %></th>
+		<% } %>
+		<% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.bundle") %></th>
+		<% } %>
+          </tr>
+          <tr>
+		<% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue">
+              <input type="text" size="20" name="contentpackage" value="<%= html.encode(mypage.getContentPackage()) %>">
+            </td>
+		<% } %>
+		<% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="20" name="contentbundle" value="<%= html.encode(mypage.getContentBundle()) %>">
+              <select name="mycontentbundles" onchange="this.form.contentbundle.value=this.value">
+                <option value="<%= html.encode(mypage.getContentBundle()) %>"><%= mytext.display("pleaseselect") %></option>
+                <%= mypage.contentbundle_select_options(db, mypage.getContentBundle()) %>
+              </select>
+            </td>
+		<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+		<% if ((myconfig.get(db, "use_contentclasses").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.class") %></th>
+		<% } %>
+		<% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mypage.getContentClass().equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mypage.getContentClass().equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mypage.getContentClass().equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mypage.getContentClass().equals("product")))) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.group") %></th>
+		<% } %>
+		<% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mypage.getContentClass().equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mypage.getContentClass().equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mypage.getContentClass().equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mypage.getContentClass().equals("product")))) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.type") %></th>
+		<% } %>
+          </tr>
+          <tr>
+		<% if ((myconfig.get(db, "use_contentclasses").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) { %>
+            <td class="WCMinnerContentInputValue">
+              <select id="contentclass" name="contentclass">
+                <option value="<%= html.encode(mypage.getContentClass()) %>"><%= mytext.display("pleaseselect") %></option>
+                <%= mypage.pageclass_select_options(db, mypage.getContentClass()) %>
+              </select>
+            </td>
+		<% } else { %>
+<input type="hidden" id="contentclass" name="contentclass" value="<%= mypage.getContentClass() %>">
+		<% } %>
+		<% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mypage.getContentClass().equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mypage.getContentClass().equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mypage.getContentClass().equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mypage.getContentClass().equals("product")))) { %>
+            <td class="WCMinnerContentInputValue">
+              <select id="contentgroup" name="contentgroup" onChange="changeWebEditorTemplate(document.getElementById('template'), document.getElementById('stylesheet'))">
+                <option value="<%= html.encode(mypage.getContentGroup()) %>"><%= mytext.display("pleaseselect") %></option>
+                <option value="" <% if (mypage.getContentGroup().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= mypage.contentgroup_select_options(db, mypage.getContentGroup()) %>
+              </select>
+            </td>
+		<% } %>
+		<% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mypage.getContentClass().equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mypage.getContentClass().equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mypage.getContentClass().equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mypage.getContentClass().equals("product")))) { %>
+            <td class="WCMinnerContentInputValue">
+              <select id="contenttype" name="contenttype" onChange="changeWebEditorTemplate(document.getElementById('template'), document.getElementById('stylesheet'))">
+                <option value="<%= html.encode(mypage.getContentType()) %>"><%= mytext.display("pleaseselect") %></option>
+                <option value="" <% if (mypage.getContentType().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= mypage.contenttype_select_options(db, mypage.getContentType()) %>
+              </select>
+            </td>
+		<% } %>
+          </tr>
+	<% } else { %>
+	<input type="hidden" id="contentclass" name="contentclass" value="<%= mypage.getContentClass() %>">
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.contentcategories.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.contentcategories.enableconfig") %><% } else { %><%= mytext.display("content.contentcategories.enablesuperadmin") %><% } %></td></tr>
+	<% } %>
+<% } else { %>
+	<input type="hidden" id="contentclass" name="contentclass" value="<%= mypage.getContentClass() %>">
+	<% if (myconfig.get(db, "use_contentdefinition").equals("yes")) { %>
+          <tr>
+		<% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.package") %></th>
+		<% } %>
+		<% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.bundle") %></th>
+		<% } %>
+          </tr>
+          <tr>
+		<% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue"><%= mypage.getContentPackage() %> &nbsp; </td>
+		<% } %>
+		<% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" colspan="2">
+              <input type="text" size="20" name="contentbundle" value="<%= html.encode(mypage.getContentBundle()) %>">
+              <select name="mycontentbundles" onchange="this.form.contentbundle.value=this.value">
+                <option value="<%= html.encode(mypage.getContentBundle()) %>"><%= mytext.display("pleaseselect") %></option>
+                <%= mypage.contentbundle_select_options(db, mypage.getContentBundle()) %>
+              </select>
+            </td>
+		<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr>
+		<% if ((myconfig.get(db, "use_contentclasses").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.class") %></th>
+		<% } %>
+		<% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mypage.getContentClass().equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mypage.getContentClass().equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mypage.getContentClass().equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mypage.getContentClass().equals("product")))) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.group") %></th>
+		<% } %>
+		<% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mypage.getContentClass().equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mypage.getContentClass().equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mypage.getContentClass().equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mypage.getContentClass().equals("product")))) { %>
+            <th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentcategories.type") %></th>
+		<% } %>
+          </tr>
+          <tr>
+		<% if ((myconfig.get(db, "use_contentclasses").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) { %>
+            <td class="WCMinnerContentInputValue"><%= mypage.getContentClass() %> &nbsp; </td>
+		<% } %>
+		<% if (((myconfig.get(db, "use_contentgroups").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) || ((myconfig.get(db, "use_imagegroups").equals("yes")) && (mypage.getContentClass().equals("image"))) || ((myconfig.get(db, "use_filegroups").equals("yes")) && (mypage.getContentClass().equals("file"))) || ((myconfig.get(db, "use_linkgroups").equals("yes")) && (mypage.getContentClass().equals("link"))) || ((myconfig.get(db, "use_productgroups").equals("yes")) && (mypage.getContentClass().equals("product")))) { %>
+            <td class="WCMinnerContentInputValue"><%= mypage.getContentGroup() %> &nbsp; </td>
+		<% } %>
+		<% if (((myconfig.get(db, "use_contenttypes").equals("yes")) && (! mypage.getContentClass().equals("file")) && (! mypage.getContentClass().equals("image")) && (! mypage.getContentClass().equals("link")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script")) && (! mypage.getContentClass().equals("product"))) || ((myconfig.get(db, "use_imagetypes").equals("yes")) && (mypage.getContentClass().equals("image"))) || ((myconfig.get(db, "use_filetypes").equals("yes")) && (mypage.getContentClass().equals("file"))) || ((myconfig.get(db, "use_linktypes").equals("yes")) && (mypage.getContentClass().equals("link"))) || ((myconfig.get(db, "use_producttypes").equals("yes")) && (mypage.getContentClass().equals("product")))) { %>
+            <td class="WCMinnerContentInputValue"><%= mypage.getContentType() %> &nbsp; </td>
+		<% } %>
+          </tr>
+	<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.contentcategories.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.contentcategories.enableconfig") %><% } else { %><%= mytext.display("content.contentcategories.enablesuperadmin") %><% } %></td></tr>
+	<% } %>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.contentcategories.about.heading") %></th></tr>
+          <tr><td align="left" colspan="4"><%= mytext.display("content.contentcategories.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<div id="Content Version" class="Content_Version st_view"><div class="st_view_inner">
+        <table width="100%" border="0">
+          <tr align="left" valign="top"><th class="WCMinnerContentHeading1"><%= mytext.display("content.contentversion.heading") %></th></tr>
+          <tr align="left" valign="top"><td class="WCMinnerContentIntro"><%= mytext.display("content.contentversion.intro") %></td></tr>
+<% if (myconfig.get(db, "use_versions").equals("yes")) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr align="left" valign="top"><th class="WCMinnerContentHeading1"><%= mytext.display("content.contentversion.master.heading") %></th></tr>
+          <tr align="left" valign="top"><td class="WCMinnerContentIntro"><%= mytext.display("content.contentversion.master.intro") %></td></tr>
+          <tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.master") %></th></tr>
+          <tr align="left" valign="top">
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="version_master" name="version_master" style="width: 400px;">
+                <option value="<%= mypage.getVersionMaster() %>"><%= mypage.getVersionMasterTitle() %> &nbsp;</option>
+<% if (((! myrequest.getParameter("usersegment").equals("")) || (! myrequest.getParameter("usertest").equals(""))) && (! myrequest.getParameter("version_master").equals(""))) { %>
+                <option value="0"><%= mytext.display("none") %></option>
+                <option value="<%= html.encode(myrequest.getParameter("version_master")) %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myrequest.getParameter("version_master")) %> &nbsp;</option>
+<% } else { %>
+                <option value="0"<% if ((mypage.getVersionMaster().equals("0")) || (mypage.getVersionMaster().equals(""))) { %> selected<% } %>><%= mytext.display("none") %></option>
+<% } %>
+              </select>
+<% if (mypage.getContentClass().equals("page")) { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Pages', '', 'Pages', 'page');">
+<% } else if (mypage.getContentClass().equals("image")) { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Images', '', 'Images', 'image');">
+<% } else if (mypage.getContentClass().equals("file")) { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Files', '', 'Files', 'file');">
+<% } else if (mypage.getContentClass().equals("link")) { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Links', '', 'Links', 'link');">
+<% } else if (mypage.getContentClass().equals("product")) { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Products', '', 'Products', 'product');">
+<% } else if (mypage.getContentClass().equals("template")) { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Templates', '', 'Templates', 'template');">
+<% } else if (mypage.getContentClass().equals("stylesheet")) { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Style Sheets', '', 'Style Sheets', 'stylesheet');">
+<% } else if (mypage.getContentClass().equals("script")) { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Scripts', '', 'Scripts', 'script');">
+<% } else { %>
+              <input type="button" id="select_version_master" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('version_master', 'Elements', '', 'Elements', 'element');">
+<% } %>
+              </nobr>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr align="left" valign="top"><th class="WCMinnerContentHeading1"><%= mytext.display("content.contentversion.versions.heading") %></th></tr>
+          <tr align="left" valign="top"><td class="WCMinnerContentIntro"><%= mytext.display("content.contentversion.versions.intro") %></td></tr>
+
+          <tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.version") %></th></tr>
+          <tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.version.intro") %></td></tr>
+          <tr align="left" valign="top">
+            <td class="WCMinnerContentInputValue">
+              <select name="version" style="width: 400px;">
+                <option value="">&nbsp;</option>
+                <%= mypage.version_select_options(db, mypage.getVersion()) %>
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.device") %></th></tr>
+          <tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.device.intro") %></td></tr>
+          <tr align="left" valign="top">
+            <td class="WCMinnerContentInputValue">
+              <select name="device" style="width: 400px;">
+                <option value="">&nbsp;</option>
+                <%= mypage.device_select_options(db, mypage.getDevice()) %>
+              </select>
+            </td>
+          </tr>
+<% if (License.valid(db, myconfig, "experience")) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.usersegment") %></th></tr>
+          <tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.usersegment.intro") %></td></tr>
+          <tr align="left" valign="top">
+            <td class="WCMinnerContentInputValue">
+              <select name="usersegment" style="width: 400px;">
+                <option value="">&nbsp;</option>
+<% if (! myrequest.getParameter("usersegment").equals("")) { %>
+                <%= mypage.usersegment_select_options(db, myrequest.getParameter("usersegment")) %>
+<% } else { %>
+                <%= mypage.usersegment_select_options(db, mypage.getUsersegment()) %>
+<% } %>
+              </select>
+            </td>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr align="left" valign="top"><th class="WCMinnerContentInputName"><%= mytext.display("content.contentversion.usertest") %></th></tr>
+          <tr align="left" valign="top"><td class="WCMinnerContentInputIntro"><%= mytext.display("content.contentversion.usertest.intro") %></td></tr>
+          <tr align="left" valign="top">
+            <td class="WCMinnerContentInputValue">
+              <select name="usertest" style="width: 400px;">
+                <option value="">&nbsp;</option>
+<% if (! myrequest.getParameter("usertest").equals("")) { %>
+                <%= mypage.usertest_select_options(db, myrequest.getParameter("usertest")) %>
+<% } else { %>
+                <%= mypage.usertest_select_options(db, mypage.getUsertest()) %>
+<% } %>
+              </select>
+            </td>
+          </tr>
+<% } %>
+<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="5"><div><b><%= mytext.display("content.contentversion.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.contentversion.enableconfig") %><% } else { %><%= mytext.display("content.contentversion.enablesuperadmin") %><% } %></td></tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="5"><%= mytext.display("content.contentversion.about.heading") %></th></tr>
+          <tr><td align="left" colspan="5"><%= mytext.display("content.contentversion.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<jsp:include page="accessrestrictions.jsp" />
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product")) || (mypage.getContentClass().equals("image")) || (mypage.getContentClass().equals("file")) || (mypage.getContentClass().equals("link"))) { %>
+<div id="Content Relations" class="Content_Relations st_view"><div class="st_view_inner">
+        <table width="100%">
+          <tr><th class="WCMinnerContentHeading1" align="left" colspan="2"><%= mytext.display("content.contentrelations.heading") %></th></tr>
+          <tr><td class="WCMinnerContentIntro" align="left" colspan="2"><%= mytext.display("content.contentrelations.intro") %></td></tr>
+<% if ((! myconfig.get(db, "use_contentrelations").equals("")) && (! mypage.getContentClass().equals("stylesheet")) && (! mypage.getContentClass().equals("script"))) { %>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.top") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="page_top" name="page_top" style="width: 400px;">
+                <option value="<%= mypage.getPageTop() %>"><%= mypage.getPageTopTitle() %> &nbsp;
+                <option value="0"><%= mytext.display("none") %>
+              </select>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+              <input type="button" id="select_page_top" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_top', 'Pages', '', 'Pages', 'page');">
+<% } else { %>
+              <input type="button" id="select_page_top" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_top', '', '', '', '');">
+<% } %>
+              </nobr>
+            </td>
+          </tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.up") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="page_up" name="page_up" style="width: 400px;">
+                <option value="<%= mypage.getPageUp() %>"><%= mypage.getPageUpTitle() %> &nbsp;
+                <option value="0"><%= mytext.display("none") %>
+              </select>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+              <input type="button" id="select_page_up" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_up', 'Pages', '', 'Pages', 'page');">
+<% } else { %>
+              <input type="button" id="select_page_up" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_up', '', '', '', '');">
+<% } %>
+              </nobr>
+            </td>
+          </tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.previous") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="page_previous" name="page_previous" style="width: 400px;">
+                <option value="<%= mypage.getPagePrevious() %>"><%= mypage.getPagePreviousTitle() %> &nbsp;
+                <option value="0"><%= mytext.display("none") %>
+              </select>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+              <input type="button" id="select_page_previous" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_previous', 'Pages', '', 'Pages', 'page');">
+<% } else { %>
+              <input type="button" id="select_page_previous" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_previous', '', '', '', '');">
+<% } %>
+              </nobr>
+            </td>
+          </tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.next") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="page_next" name="page_next" style="width: 400px;">
+                <option value="<%= mypage.getPageNext() %>"><%= mypage.getPageNextTitle() %> &nbsp;
+                <option value="0"><%= mytext.display("none") %>
+              </select>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+              <input type="button" id="select_page_next" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_next', 'Pages', '', 'Pages', 'page');">
+<% } else { %>
+              <input type="button" id="select_page_next" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_next', '', '', '', '');">
+<% } %>
+              </nobr>
+            </td>
+          </tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.first") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="page_first" name="page_first" style="width: 400px;">
+                <option value="<%= mypage.getPageFirst() %>"><%= mypage.getPageFirstTitle() %> &nbsp;
+                <option value="0"><%= mytext.display("none") %>
+              </select>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+              <input type="button" id="select_page_first" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_first', 'Pages', '', 'Pages', 'page');">
+<% } else { %>
+              <input type="button" id="select_page_first" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_first', '', '', '', '');">
+<% } %>
+              </nobr>
+            </td>
+          </tr>
+          <tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.last") %></th></tr>
+          <tr>
+            <td class="WCMinnerContentInputValue">
+              <nobr>
+              <select id="page_last" name="page_last" style="width: 400px;">
+                <option value="<%= mypage.getPageLast() %>"><%= mypage.getPageLastTitle() %> &nbsp;
+                <option value="0"><%= mytext.display("none") %>
+              </select>
+<% if ((mypage.getContentClass().equals("page")) || (mypage.getContentClass().equals("product"))) { %>
+              <input type="button" id="select_page_last" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_last', 'Pages', '', 'Pages', 'page');">
+<% } else { %>
+              <input type="button" id="select_page_last" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('page_last', '', '', '', '');">
+<% } %>
+              </nobr>
+            </td>
+          </tr>
+
+<% boolean update = true; %>
+
+		<tr><th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.contentrelations.related") %></th></tr>
+
+		<tr>
+			<td class="WCMinnerContentInputValue">
+
+		<% if (update) { %>
+
+				<nobr>
+					<input type="hidden" id="relatedinput" name="related" value="<%= mypage.getRelated() %>">
+					<select multiple id="related" name="selectrelated" style="width: 400px;" onChange="changeRelated(this)">
+
+		<% } %>
+
+		<%
+		String[] myrelated = mypage.getRelated().split(",");
+		HashMap myselectedrelated = new HashMap();
+		for (int i=0; i<myrelated.length; i++) {
+			String mycontent = "" + myrelated[i];
+			myselectedrelated.put(mycontent, mycontent);
+		}
+		%>
+
+		<% if (update) { %>
+
+						<option value="" <% if (myselectedrelated.get("") != null) { %>selected<% } %>><%= mytext.display("none") %></option>
+
+		<% } else { %>
+			<% if (myselectedrelated.get("") != null) { %>
+
+						<%= mytext.display("none") %><br>
+
+			<% } %>
+		<% } %>
+		<%
+		for (int i=0; i<myrelated.length; i++) {
+			String mycontent = "" + myrelated[i];
+			if (! mycontent.equals("")) {
+				if (update) {
+
+						%><option value="<%= mycontent %>" selected><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mycontent) %></option> &nbsp;<%
+
+				} else {
+
+						%><%= mypage.elementTitle(mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mycontent) %> &nbsp;<br><%
+
+				}
+			}
+		}
+		%>
+		<% if (update) { %>
+
+					</select>
+					<input type="button" id="select_related" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('related', '', '', '', '');">
+				</nobr>
+
+		<% } %>
+
+			</td>
+		</tr>
+
+<% } else { %>
+          <tr><td class="WCMinnerContentInputValue" align="left" colspan="4"><div><b><%= mytext.display("content.contentrelations.disabled") %></b></div><% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %><%= mytext.display("content.contentrelations.enableconfig") %><% } else { %><%= mytext.display("content.contentrelations.enablesuperadmin") %><% } %></td></tr>
+<% } %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.contentrelations.about.heading") %></th></tr>
+          <tr><td align="left" colspan="4"><%= mytext.display("content.contentrelations.about.text") %></td></tr>
+        </table>
+        <br>
+</div></div>
+<% } %>
+<div id="Content Dependencies" class="Content_Dependencies st_view"><div class="st_view_inner"></div></div>
+
+<% for (int i=0; i<module.size(); i++) { %>
+<% if ((moduleContentTab.size()>i) && (! moduleContentTab.get(i).equals(""))) { %>
+	<div id="<%= moduleContentTab.get(i) %>" class="<%= ("" + moduleContentTab.get(i)).replaceAll(" ", "_") %> st_view"><div class="st_view_inner"><%= moduleContentTabContent.get(i) %></div></div>
+<% } %>
+<% } %>
+
+    </div>
+</div>
+
+      </form>
+
+<div style="display:none;">
+<form name="validationform" action="http://validator.w3.org/check" method="post" enctype="multipart/form-data" target="_validate">
+<textarea name="fragment"></textarea>
+<textarea name="text"></textarea>
+</form>
+</div>
+
+<script type="text/javascript">initForm('metainfo');</script>
+<script type="text/javascript">initForm('segmentation');</script>
+<% if (mypage.getContentClass().equals("product")) { %>
+<script type="text/javascript">initForm('product_info');</script>
+<script type="text/javascript">initForm('product_options');</script>
+<% } %>
+<script type="text/javascript">
+	if ((typeof(browserIs) != "undefined") && browserIs("Safari")) {
+		document.write('<div style="overflow: hidden; top: 0px; left: 0px; z-index: -1; position: absolute; opacity: 0;">');
+		document.write('<iframe id="iframe_save" name="iframe_save" src="/<%= mytext.display("adminpath") %>/dummy.html"></iframe>');
+		document.write('</div>');
+	} else {
+		document.write('<div style="display: none;">');
+		document.write('<iframe id="iframe_save" name="iframe_save" src="/<%= mytext.display("adminpath") %>/dummy.html"></iframe>');
+		document.write('</div>');
+	}
+</script>
+<% } %>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>

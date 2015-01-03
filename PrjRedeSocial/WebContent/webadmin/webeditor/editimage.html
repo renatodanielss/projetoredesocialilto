@@ -1,0 +1,376 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Editor">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+
+<script type="text/javascript" src="/webadmin/jquery/jquery.js"></script>
+<script type="text/javascript" src="/webadmin/jquery/jquery-ui.js"></script>
+<script type="text/javascript" src="/webadmin/jquery/jquery-ui-i18n.js"></script>
+<link type="text/css" rel="stylesheet" href="/webadmin/jquery/css/jquery-ui.css" />
+<script type="text/javascript" src="/webadmin/jcrop/js/jquery.Jcrop.js"></script>
+<link rel="stylesheet" type="text/css" href="/webadmin/jcrop/css/jquery.Jcrop.css" />
+
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('editimage_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.webeditor && top.webeditor.window_proxy && top.webeditor.window_proxy[editor]) webeditor = top.webeditor.window_proxy[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent.webeditor && parent.webeditor.window_proxy && parent.webeditor.window_proxy[editor]) webeditor = parent.webeditor.window_proxy[editor];
+request_focus = requestParameter("focus");
+request_action = requestParameter("action");
+
+// jQuery resizable option aspectRatio change may not work correctly
+(function() {
+    var oldSetOption = $.ui.resizable.prototype._setOption;
+    $.ui.resizable.prototype._setOption = function(key, value) {
+        oldSetOption.apply(this, arguments);
+        if (key === "aspectRatio") {
+            this._aspectRatio = !!value;
+        }
+    };
+})();
+
+function InitForm(id) {
+	document.getElementById(id + "_container").innerHTML = '<img id="image" src="">';
+	var image = document.getElementById(id);
+	image.onload = function() {
+		image_info(id);
+//		$("#"+id+"_width").val(parseInt(image.width));
+//		$("#"+id+"_height").val(parseInt(image.height));
+	}
+	var image_format = "";
+	var imagedata = webeditor.editImage(false);
+	if (imagedata.match(/^data:image\//)) {
+		image.src = imagedata;
+		image_format = imagedata.replace(/^data:image\/([a-zA-Z0-9]+).*$/, "$1");
+	} else if (imagedata != "") {
+		image.src = imagedata;
+		image_format = imagedata.replace(/\?.*$/, "");
+		if (image_format.match(/^.*\.([^.]+)$/)) {
+			image_format = image_format.replace(/^.*\.([^.]+)$/, "$1").replace(/^jpg$/, "jpeg");
+		} else {
+			image_format = "png";
+		}
+	} else {
+		image.src = requestParameter("url");
+		image_format = requestParameter("url").replace(/\?.*$/, "");
+		if (image_format.match(/^.*\.([^.]+)$/)) {
+			image_format = image_format.replace(/^.*\.([^.]+)$/, "$1").replace(/^jpg$/, "jpeg");
+		} else {
+			image_format = "png";
+		}
+	}
+	$("#"+id+"_format").val(image_format);
+}
+
+function image_save(id) {
+	var imagedata = image_process(id);
+	var format = $("#"+id+"_format").val();
+	if (imagedata.indexOf("image/" + format) >= 0) {
+		webeditor.editImage(imagedata, format, format);
+	} else {
+		webeditor.editImage(imagedata, format, "png");
+	}
+	webeditor.window_close(top);
+}
+
+function image_cancel(id) {
+	webeditor.window_close(top);
+}
+
+function image_undo(id) {
+	InitForm(id);
+}
+
+function image_info(id) {
+	$("#"+id+"_top").val(0);
+	$("#"+id+"_left").val(0);
+	$("#"+id+"_width").val($("#"+id).width());
+	$("#"+id+"_height").val($("#"+id).height());
+}
+
+function image_size(id, input) {
+	if (id && ($("#"+id).is('.ui-resizable'))) {
+		if (input && input.name && (input.name == "image_width")) {
+			var width = parseInt($("#"+id+"_width").val());
+			if ((width > 0) && (width != $("#"+id).width())) {
+				image_resize(id, false);
+				var scale = width / $("#"+id).width();
+				$("#"+id).width(width);
+				$("#"+id+"_width").val(width);
+				var lockaspectratio = $("#"+id+"_lockaspectratio").is(":checked");
+				if (lockaspectratio) {
+					var height = parseInt($("#"+id+"_height").val());
+					height = height * scale;
+					$("#"+id).height(height);
+					$("#"+id+"_height").val(height);
+				}
+				image_resize(id, true);
+			}
+		}
+		if (input && input.name && (input.name == "image_height")) {
+			var height = parseInt($("#"+id+"_height").val());
+			if ((height > 0) && (height != $("#"+id).height())) {
+				image_resize(id, false);
+				var scale = height / $("#"+id).height();
+				$("#"+id).height(height);
+				$("#"+id+"_height").val(height);
+				var lockaspectratio = $("#"+id+"_lockaspectratio").is(":checked");
+				if (lockaspectratio) {
+					var width = parseInt($("#"+id+"_width").val());
+					width = width * scale;
+					$("#"+id).width(width);
+					$("#"+id+"_width").val(width);
+				}
+				image_resize(id, true);
+			}
+		}
+	}
+}
+
+function image_process(id, rotate) {
+	var imagedata = "";
+	var image = document.getElementById(id);
+	var preview = document.getElementById(id + "_preview");
+	if (image) {
+		var srctop = 0;
+		var srcleft = 0;
+		var srcwidth = image.naturalWidth;
+		var srcheight = image.naturalHeight;
+		var desttop = 0;
+		var destleft = 0;
+		var destwidth = parseInt($("#"+id).width());
+		var destheight = parseInt($("#"+id).height());
+		if ((parseInt($("#"+id+"_top").val()) > 0) || (parseInt($("#"+id+"_left").val()) > 0) || (parseInt($("#"+id+"_width").val()) < destwidth) || (parseInt($("#"+id+"_height").val()) < destheight)) {
+			var scalewidth = parseInt($("#"+id).width()) / image.naturalWidth;
+			var scaleheight = parseInt($("#"+id).height()) / image.naturalHeight;
+			srctop = parseInt(parseInt($("#"+id+"_top").val()) / scaleheight);
+			srcleft = parseInt(parseInt($("#"+id+"_left").val()) / scalewidth);
+			srcwidth = parseInt(parseInt($("#"+id+"_width").val()) / scalewidth);
+			srcheight = parseInt(parseInt($("#"+id+"_height").val()) / scaleheight);
+			destwidth = parseInt($("#"+id+"_width").val());
+			destheight = parseInt($("#"+id+"_height").val());
+		}
+		var canvas = document.createElement('canvas');
+		var context = canvas.getContext('2d');
+		context.save();
+		if ((rotate == 180) || (rotate == -180)) {
+			canvas.width = destwidth;
+			canvas.height = destheight;
+			context.translate(canvas.width,canvas.height);
+			context.rotate(180*Math.PI/180);
+		} else if ((rotate == 90) || (rotate == -270)) {
+			// rotate right
+			canvas.width = destheight;
+			canvas.height = destwidth;
+			context.translate(canvas.width,0);
+			context.rotate(90*Math.PI/180);
+		} else if ((rotate == -90) || (rotate == 270)) {
+			// rotate left
+			canvas.width = destheight;
+			canvas.height = destwidth;
+			context.translate(0,canvas.height);
+			context.rotate(-90*Math.PI/180);
+		} else {
+			canvas.width = destwidth;
+			canvas.height = destheight;
+		}
+		try {
+			context.drawImage(image, srcleft, srctop, srcwidth, srcheight, 0, 0, destwidth, destheight);
+			imagedata = canvas.toDataURL("image/" + $("#"+id+"_format").val());
+			preview.src = imagedata;
+		} catch (e) {
+		}
+		context.restore();
+	}
+	return imagedata;
+}
+
+function image_resize(id, state) {
+	if (id && state && (! $("#"+id).is('.ui-resizable'))) {
+		image_crop(id, false);
+		image_info(id);
+		var preview = document.getElementById(id + "_preview");
+		preview.style.display = "none";
+		$("#"+id+"_width").attr("disabled", false);
+		$("#"+id+"_height").attr("disabled", false);
+		var myaspectratio = $("#"+id+"_lockaspectratio").is(":checked");
+		var image_resize_info = function(evt, ui) {
+			$("#"+id+"_top").val(parseInt(ui.position.top));
+			$("#"+id+"_left").val(parseInt(ui.position.left));
+			$("#"+id+"_width").val(parseInt(ui.size.width));
+			$("#"+id+"_height").val(parseInt(ui.size.height));
+			image_process(id);
+		}
+		$("#"+id).resizable({ aspectRatio: myaspectratio, start: image_resize_info, resize: image_resize_info, stop: image_resize_info });
+
+		// add jcrop-like handles for consistency
+		$(".ui-wrapper").css("overflow", "visible");
+		$("#"+id).after($('<div id="s" class="ord-s jcrop-handle" style="cursor: s-resize; position: absolute; z-index: 375; opacity: 0.5;"></div>'));
+		$("#"+id).after($('<div id="e" class="ord-e jcrop-handle" style="cursor: e-resize; position: absolute; z-index: 376; opacity: 0.5;"></div>'));
+		$("#"+id).after($('<div id="se" class="ord-se jcrop-handle" style="cursor: se-resize; position: absolute; z-index: 380; opacity: 0.5;"></div>'));
+
+	} else if (id && ($("#"+id).is('.ui-resizable'))) {
+		$("#"+id+"_width").attr("disabled", true);
+		$("#"+id+"_height").attr("disabled", true);
+		$("#"+id).resizable('destroy');
+	}
+}
+
+function image_crop(id, state) {
+	if (id && state && (! $("#"+id).data('Jcrop'))) {
+		image_resize(id, false);
+		var preview = document.getElementById(id + "_preview");
+		preview.style.display = "inline";
+		var myaspectratio = $("#"+id+"_lockaspectratio").is(":checked");
+		var image_crop_info = function(ui) {
+			$("#"+id+"_top").val(parseInt(ui.y));
+			$("#"+id+"_left").val(parseInt(ui.x));
+			$("#"+id+"_width").val((parseInt(ui.x2) - parseInt(ui.x)));
+			$("#"+id+"_height").val((parseInt(ui.y2) - parseInt(ui.y)));
+			image_process(id);
+		}
+		// Chrome may restore/undo resized image unless width/height is read first
+		var mywidth = $("#"+id).width();
+		var myheight = $("#"+id).height();
+		$("#"+id).Jcrop({ aspectRatio: myaspectratio, onSelect: image_crop_info, onChange: image_crop_info, onRelease: image_crop_info });
+	} else if (id && ($("#"+id).data('Jcrop'))) {
+		$("#"+id).data('Jcrop').destroy();
+	}
+}
+
+function image_aspectratio(id, state) {
+	if ($("#"+id).is('.ui-resizable')) {
+		$("#"+id).resizable("option", "aspectRatio", state);
+	} else if (id && ($("#"+id).data('Jcrop'))) {
+		var aspectratio = false;
+		if (state) {
+			var selected = $("#"+id).data('Jcrop').tellSelect();
+			var top = parseInt(selected.y);
+			var left = parseInt(selected.x);
+			var height = parseInt(selected.y2) - parseInt(selected.y);
+			var width = parseInt(selected.x2) - parseInt(selected.x);
+			if ((width > 0) && (width > 0)) {
+				aspectratio = width / height;
+			} else {
+				aspectratio = 1;
+			}
+		}
+		$("#"+id).data('Jcrop').setOptions({ aspectRatio: aspectratio });
+	}
+}
+
+function image_rotate(id, rotate) {
+	if (id) {
+		image_resize(id, false);
+		image_crop(id, false);
+		image_info(id);
+		var preview = document.getElementById(id + "_preview");
+		preview.style.display = "none";
+		$("#"+id+"_angle").val((parseInt($("#"+id+"_angle").val()) + rotate) % 360);
+		var imagedata = image_process(id, rotate);
+		var image = document.getElementById(id);
+		if (rotate != 0) {
+			var height = parseInt($("#"+id).width());
+			var width = parseInt($("#"+id).height());
+			$("#"+id).width(width);
+			$("#"+id).height(height);
+			$("#"+id+"_width").val(width);
+			$("#"+id+"_height").val(height);
+		}
+		image.src = imagedata;
+	}
+}
+
+</script>
+</head>
+<body onload="InitForm('image'); if (request_focus == 'true') self.focus();">
+
+<form action="#" onsubmit="javascript:image_save('image'); return false;" method="post">
+	<input type="hidden" id="image_format" name="image_format" value="">
+	<table summary="" width="100%" border="0" class="dtree">
+		<tr align="left" valign="top"> 
+			<td class="webeditor_window_title"><script type="text/javascript">document.write(Text('editimage_title'));</script></td>
+		</tr>
+		<tr align="left" valign="top"> 
+			<td>
+				<p>
+					<div align="left">
+					<script type="text/javascript">document.write('<input type="button" value="' + Text('editimage_resize') + '" onclick="image_resize(\'image\', true);">');</script>
+					<script type="text/javascript">document.write('<input type="button" value="' + Text('editimage_crop') + '" onclick="image_crop(\'image\', true);">');</script>
+					<script type="text/javascript">document.write('<input type="button" value="' + Text('editimage_rotate_left') + '" onclick="image_rotate(\'image\', -90);">');</script>
+					<script type="text/javascript">document.write('<input type="button" value="' + Text('editimage_rotate_right') + '" onclick="image_rotate(\'image\', +90);">');</script>
+					 &nbsp; - &nbsp;  
+					<script type="text/javascript">document.write('<input type="button" value="' + Text('undo') + '" onclick="image_undo(\'image\');">');</script>
+					 &nbsp; - &nbsp;  
+					<script type="text/javascript">document.write('<input type="button" value="' + Text('ok') + '" onclick="image_save(\'image\');">');</script>
+					<script type="text/javascript">document.write('<input type="button" value="' + Text('cancel') + '" onclick="image_cancel(\'image\');">');</script>
+					</div>
+				</p>
+			</td>
+		</tr>
+		<tr align="left" valign="top"> 
+			<td valign="top">
+				<fieldset>
+					<legend class="webeditor_window_heading"><script type="text/javascript">document.write(Text('editimage_info'));</script></legend>
+					<table summary="" style="width: 100%; height: 100%;">
+						<tr align="left" valign="top"> 
+							<td class="webeditor_window_attribute" valign="bottom"><script type="text/javascript">document.write(Text('editimage_top'));</script></td>
+							<td class="webeditor_window_attribute" valign="bottom"><script type="text/javascript">document.write(Text('editimage_left'));</script></td>
+							<td class="webeditor_window_attribute" valign="bottom"><script type="text/javascript">document.write(Text('editimage_height'));</script></td>
+							<td class="webeditor_window_attribute" valign="bottom"><script type="text/javascript">document.write(Text('editimage_width'));</script></td>
+							<td class="webeditor_window_attribute" valign="bottom"><script type="text/javascript">document.write(Text('editimage_lockaspectratio'));</script></td>
+							<td class="webeditor_window_attribute" valign="bottom"><script type="text/javascript">document.write(Text('editimage_rotate'));</script></td>
+						</tr>
+						<tr align="left" valign="top"> 
+							<td><input disabled type="text" size="5" id="image_top" name="image_top" value="0" onblur="image_size('image', this);"></td>
+							<td><input disabled type="text" size="5" id="image_left" name="image_left" value="0" onblur="image_size('image', this);"></td>
+							<td><input disabled type="text" size="5" id="image_height" name="image_height" value="" onblur="image_size('image', this);"></td>
+							<td><input disabled type="text" size="5" id="image_width" name="image_width" value="" onblur="image_size('image', this);"></td>
+							<td><input type="checkbox" id="image_lockaspectratio" name="image_lockaspectratio" value="" onchange="image_aspectratio('image', this.checked);"></td>
+							<td><input disabled type="text" size="5" id="image_angle" name="image_angle" value="0"></td>
+						</tr>
+					</table>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+</form>
+
+<hr>
+
+<div align="left" style="margin: 20px;" id="image_container"><img id="image" src=""></div>
+
+<hr>
+
+<div align="left" style="margin: 20px;" id="image_preview_container"><img id="image_preview" src""></div>
+
+</body>
+</html>

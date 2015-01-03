@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<database name="Asbru Web Content Management">
+ <table name="content">
+  <row>
+   <column name="id" value="1" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-06-11 05:44:34" />
+   <column name="updated" value="2007-06-11 14:44:16" />
+   <column name="published" value="2007-06-11 14:44:16" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="@@@import:name@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+html {
+ background: @@@import:pagebackcol@@@; 			/* default background colour */
+ border: 0;
+ margin: 0;
+ padding: 0;
+ height: 100%;
+ max-height: 100%;
+ /* \*/
+ overflow: hidden;
+ /* */
+}
+
+body {
+ border: 0;
+ margin: 0;
+ padding: 0;
+ height: 100%;
+ max-height: 100%;
+ overflow: hidden;
+}
+
+#header {
+ background: @@@import:headerbackcol@@@;		/* header background colour */
+ color: @@@import:headertextcol@@@;			/* header text colour */
+ height: @@@import:headerheight@@@;				/* header height */
+ display: block;
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ margin: 0;
+ width: 100%;
+ overflow: visible;
+ z-index: 5;
+}
+
+#left, #leftcenter, #center, #rightcenter, #right {
+ position: absolute;
+ left: 0px;
+ top: @@@import:headerheight@@@;				/* header height */
+ bottom: @@@import:footerheight@@@;				/* footer height */
+ overflow:auto;
+}
+
+* html #left, * html #leftcenter, * html #center, * html #rightcenter, * html #right {
+ height: 100%;
+ top: 0px;
+ bottom: 0px;
+ border-top-style: solid;
+ border-top-width: @@@import:headerheight@@@;		/* header height */
+ border-top-color: @@@import:headerbackcol@@@;	/* header background colour */
+ border-bottom-style: solid;
+ border-bottom-width: @@@import:footerheight@@@;		/* footer height */
+ border-bottom-color: @@@import:footerbackcol@@@;	/* footer background colour */
+}
+
+#left {
+ left: 0px;
+ width: 20%;				/* left column width */
+ background: @@@import:leftbackcol@@@;			/* left column background colour */
+ color: @@@import:lefttextcol@@@;			/* left column text colour */
+ z-index: 3;
+}
+
+#leftcenter {
+ left: 20%;				/* left column width */
+ width: 20%;				/* left-center column width */
+ background: @@@import:leftcenterbackcol@@@;			/* left-center column background colour */
+ color: @@@import:leftcentertextcol@@@;			/* left-center column text colour */
+ z-index: 2;
+}
+
+#center {
+ left: 40%;				/* left column width + left-center column width */
+ width: 20%;				/* center column width */
+ background: @@@import:centerbackcol@@@;			/* center column background colour */
+ color: @@@import:centertextcol@@@;			/* center column text colour */
+}
+
+#rightcenter {
+ left: 60%;				/* left column width + left-center column width + center column width */
+ width: 20%;				/* right-center column width */
+ background: @@@import:rightcenterbackcol@@@;			/* right-center column background colour */
+ color: @@@import:rightcentertextcol@@@;			/* right-center column text colour */
+}
+
+#right {
+ left: 80%;				/* left column width + left-center column width + center column width + right-center column width */
+ width: 20%;				/* right column width */
+ background: @@@import:rightbackcol@@@;			/* right column background colour */
+ color: @@@import:righttextcol@@@;			/* right column text colour */
+}
+
+#footer {
+ background: @@@import:footerbackcol@@@;			/* footer background colour */
+ color: @@@import:footertextcol@@@;			/* footer text colour */
+ height: @@@import:footerheight@@@;				/* footer height */
+ display: block;
+ position: absolute;
+ bottom: 0px;
+ left: 0px;
+ margin: 0;
+ width: 100%;
+ z-index: 4;
+}
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;div id=&quot;header&quot;&gt;
+@@@logo.content@@@ @@@banner.content@@@
+&lt;/div&gt;
+
+&lt;div id=&quot;left&quot;&gt;
+@@@menu.content@@@
+&lt;/div&gt;
+
+&lt;div id=&quot;leftcenter&quot;&gt;
+...
+&lt;/div&gt;
+
+&lt;div id=&quot;center&quot;&gt;
+&lt;div style=&quot;padding: 10px; position: relative;&quot;&gt;
+&lt;br&gt;
+&lt;h1&gt;@@@title@@@&lt;/h1&gt;
+@@@content@@@
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;rightcenter&quot;&gt;
+...
+&lt;/div&gt;
+
+&lt;div id=&quot;right&quot;&gt;
+@@@news.content@@@
+&lt;/div&gt;
+
+&lt;div id=&quot;footer&quot;&gt;
+@@@toolbar.content@@@
+&lt;/div&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="template" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+ </table>
+ <table name="content_public">
+  <row>
+   <column name="id" value="1" />
+   <column name="locked" value="0" />
+   <column name="created" value="2002-06-11 05:44:34" />
+   <column name="updated" value="2007-06-11 14:44:16" />
+   <column name="published" value="2007-06-11 14:44:16" />
+   <column name="scheduled_publish" value="" />
+   <column name="scheduled_unpublish" value="" />
+   <column name="status" value="" />
+   <column name="created_by" value="admin" />
+   <column name="updated_by" value="admin" />
+   <column name="published_by" value="admin" />
+   <column name="revision" value="" />
+   <column name="version" value="" />
+   <column name="version_master" value="0" />
+   <column name="title" value="@@@import:name@@@" />
+   <column name="searchable" value="" />
+   <column name="author" value="" />
+   <column name="keywords" value="" />
+   <column name="description" value="" />
+   <column name="metainfo" value="" />
+   <column name="htmlheader" value="&lt;style type=&quot;text/css&quot;&gt;
+
+html {
+ background: @@@import:pagebackcol@@@; 			/* default background colour */
+ border: 0;
+ margin: 0;
+ padding: 0;
+ height: 100%;
+ max-height: 100%;
+ /* \*/
+ overflow: hidden;
+ /* */
+}
+
+body {
+ border: 0;
+ margin: 0;
+ padding: 0;
+ height: 100%;
+ max-height: 100%;
+ overflow: hidden;
+}
+
+#header {
+ background: @@@import:headerbackcol@@@;		/* header background colour */
+ color: @@@import:headertextcol@@@;			/* header text colour */
+ height: @@@import:headerheight@@@;				/* header height */
+ display: block;
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ margin: 0;
+ width: 100%;
+ overflow: visible;
+ z-index: 5;
+}
+
+#left, #leftcenter, #center, #rightcenter, #right {
+ position: absolute;
+ left: 0px;
+ top: @@@import:headerheight@@@;				/* header height */
+ bottom: @@@import:footerheight@@@;				/* footer height */
+ overflow:auto;
+}
+
+* html #left, * html #leftcenter, * html #center, * html #rightcenter, * html #right {
+ height: 100%;
+ top: 0px;
+ bottom: 0px;
+ border-top-style: solid;
+ border-top-width: @@@import:headerheight@@@;		/* header height */
+ border-top-color: @@@import:headerbackcol@@@;	/* header background colour */
+ border-bottom-style: solid;
+ border-bottom-width: @@@import:footerheight@@@;		/* footer height */
+ border-bottom-color: @@@import:footerbackcol@@@;	/* footer background colour */
+}
+
+#left {
+ left: 0px;
+ width: 20%;				/* left column width */
+ background: @@@import:leftbackcol@@@;			/* left column background colour */
+ color: @@@import:lefttextcol@@@;			/* left column text colour */
+ z-index: 3;
+}
+
+#leftcenter {
+ left: 20%;				/* left column width */
+ width: 20%;				/* left-center column width */
+ background: @@@import:leftcenterbackcol@@@;			/* left-center column background colour */
+ color: @@@import:leftcentertextcol@@@;			/* left-center column text colour */
+ z-index: 2;
+}
+
+#center {
+ left: 40%;				/* left column width + left-center column width */
+ width: 20%;				/* center column width */
+ background: @@@import:centerbackcol@@@;			/* center column background colour */
+ color: @@@import:centertextcol@@@;			/* center column text colour */
+}
+
+#rightcenter {
+ left: 60%;				/* left column width + left-center column width + center column width */
+ width: 20%;				/* right-center column width */
+ background: @@@import:rightcenterbackcol@@@;			/* right-center column background colour */
+ color: @@@import:rightcentertextcol@@@;			/* right-center column text colour */
+}
+
+#right {
+ left: 80%;				/* left column width + left-center column width + center column width + right-center column width */
+ width: 20%;				/* right column width */
+ background: @@@import:rightbackcol@@@;			/* right column background colour */
+ color: @@@import:righttextcol@@@;			/* right column text colour */
+}
+
+#footer {
+ background: @@@import:footerbackcol@@@;			/* footer background colour */
+ color: @@@import:footertextcol@@@;			/* footer text colour */
+ height: @@@import:footerheight@@@;				/* footer height */
+ display: block;
+ position: absolute;
+ bottom: 0px;
+ left: 0px;
+ margin: 0;
+ width: 100%;
+ z-index: 4;
+}
+
+&lt;/style&gt;" />
+   <column name="htmlbodyonload" value="" />
+   <column name="url" value="" />
+   <column name="content" value="&lt;div id=&quot;header&quot;&gt;
+@@@logo.content@@@ @@@banner.content@@@
+&lt;/div&gt;
+
+&lt;div id=&quot;left&quot;&gt;
+@@@menu.content@@@
+&lt;/div&gt;
+
+&lt;div id=&quot;leftcenter&quot;&gt;
+...
+&lt;/div&gt;
+
+&lt;div id=&quot;center&quot;&gt;
+&lt;div style=&quot;padding: 10px; position: relative;&quot;&gt;
+&lt;br&gt;
+&lt;h1&gt;@@@title@@@&lt;/h1&gt;
+@@@content@@@
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;rightcenter&quot;&gt;
+...
+&lt;/div&gt;
+
+&lt;div id=&quot;right&quot;&gt;
+@@@news.content@@@
+&lt;/div&gt;
+
+&lt;div id=&quot;footer&quot;&gt;
+@@@toolbar.content@@@
+&lt;/div&gt;" />
+   <column name="summary" value="" />
+   <column name="template" value="" />
+   <column name="stylesheet" value="" />
+   <column name="image1" value="" />
+   <column name="image2" value="" />
+   <column name="image3" value="" />
+   <column name="file1" value="" />
+   <column name="file2" value="" />
+   <column name="file3" value="" />
+   <column name="link1" value="" />
+   <column name="link2" value="" />
+   <column name="link3" value="" />
+   <column name="contentformat" value="" />
+   <column name="contentclass" value="template" />
+   <column name="contenttype" value="" />
+   <column name="contentgroup" value="" />
+   <column name="users_type" value="" />
+   <column name="users_group" value="" />
+   <column name="developers_type" value="" />
+   <column name="developers_group" value="" />
+   <column name="creators_type" value="" />
+   <column name="creators_group" value="" />
+   <column name="editors_type" value="" />
+   <column name="editors_group" value="" />
+   <column name="publishers_type" value="" />
+   <column name="publishers_group" value="" />
+   <column name="administrators_type" value="" />
+   <column name="administrators_group" value="" />
+   <column name="checkedout" value="" />
+   <column name="page_top" value="0" />
+   <column name="page_up" value="0" />
+   <column name="page_next" value="0" />
+   <column name="page_previous" value="0" />
+   <column name="page_first" value="0" />
+   <column name="page_last" value="0" />
+   <column name="upload_filename" value="" />
+   <column name="server_filename" value="" />
+   <column name="product_code" value="" />
+   <column name="product_currency" value="" />
+   <column name="product_price" value="" />
+   <column name="product_period" value="" />
+   <column name="product_stock" value="" />
+   <column name="product_comment" value="" />
+   <column name="product_email" value="" />
+   <column name="product_url" value="" />
+   <column name="product_info" value="" />
+   <column name="product_delivery" value="" />
+   <column name="product_user" value="" />
+   <column name="product_page" value="" />
+   <column name="product_program" value="" />
+   <column name="product_hosting" value="" />
+   <column name="product_options" value="" />
+  </row>
+ </table>
+ <table name="config">
+  <row>
+   <column name="configname" value="use_advancedscripting" />
+   <column name="configvalue" value="yes" />
+  </row>
+ </table>
+</database>

@@ -1,0 +1,92 @@
+<div id="Revision History" class="Revision_History st_view"><div class="st_view_inner">
+	<table width="100%">
+		<tr><th class="WCMinnerContentHeading1" align="left" colspan="4"><%= mytext.display("content.revisionhistory.heading") %></th></tr>
+		<tr><td class="WCMinnerContentIntro" align="left" colspan="4"><%= mytext.display("content.revisionhistory.intro") %></td></tr>
+
+	<% if (myconfig.get(db, "use_revisionhistory").equals("yes")) { %>
+
+		<tr>
+			<th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.revisionhistory.created") %></th>
+			<th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.revisionhistory.updated") %></th>
+			<th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.revisionhistory.published") %></th>
+			<th class="WCMinnerContentInputName" align="left"><%= mytext.display("content.revisionhistory.unpublished") %></th>
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue"><%= mypage.getCreated() %>&nbsp; </td>
+			<td class="WCMinnerContentInputValue"><%= mypage.getUpdated() %>&nbsp; </td>
+			<td class="WCMinnerContentInputValue"><%= mypage.getPublished() %>&nbsp; </td>
+			<td class="WCMinnerContentInputValue"><%= mypage.getUnpublished() %>&nbsp; </td>
+		</tr>
+		<tr>
+			<td class="WCMinnerContentInputValue"><%= mypage.getCreatedBy() %>&nbsp; </td>
+			<td class="WCMinnerContentInputValue"><%= mypage.getUpdatedBy() %>&nbsp; </td>
+			<td class="WCMinnerContentInputValue"><%= mypage.getPublishedBy() %>&nbsp; </td>
+			<td class="WCMinnerContentInputValue"><%= mypage.getUnpublishedBy() %>&nbsp; </td>
+		</tr>
+		<tr>
+
+		<% User myuser = new User(); %>
+		<% myuser.readByUsername(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mypage.getCreatedBy()); %>
+
+			<td class="WCMinnerContentInputValue"><%= myuser.getName() %>&nbsp; </td>
+
+		<% myuser.readByUsername(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mypage.getUpdatedBy()); %>
+
+			<td class="WCMinnerContentInputValue"><%= myuser.getName() %>&nbsp; </td>
+
+		<% myuser.readByUsername(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mypage.getPublishedBy()); %>
+
+			<td class="WCMinnerContentInputValue"><%= myuser.getName() %>&nbsp; </td>
+
+		<% myuser.readByUsername(mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mypage.getUnpublishedBy()); %>
+
+			<td class="WCMinnerContentInputValue"><%= myuser.getName() %>&nbsp; </td>
+		</tr>
+		<tr><th class="WCMinnerContentInputName" align="left" colspan="4"><%= mytext.display("content.revisionhistory.revision") %></th></tr>
+
+		<% if (update) { %>
+
+		<tr><td class="WCMinnerContentInputValue" colspan="4"><textarea name="revision" cols="80" rows="10">
+<%= html.encode(mypage.getRevision()) %></textarea></td></tr>
+
+		<% } else { %>
+
+			<% if (((myrequest.getParameter("archive").equals("")) && (myconfig.get(db, "use_workflow").equals("yes")) && ((mypage.getAdministrator()) || (workflowpermissions)))) { %>
+
+		<tr><td class="WCMinnerContentInputValue" colspan="4"><textarea id="revision_input" name="revision_input" cols="80" rows="10">
+<%= html.encode(mypage.getRevision()) %></textarea></td></tr>
+
+			<% } else { %>
+
+		<tr><td class="WCMinnerContentInputValue" colspan="4" valign="top"><%= mypage.getRevision().replaceAll("\r\n", "<br>").replaceAll("\r", "<br>").replaceAll("\n", "<br>") %>&nbsp; </td></tr>
+
+			<% } %>
+		<% } %>
+
+	<% } else { %>
+
+		<tr>
+			<td class="WCMinnerContentInputValue" align="left" colspan="4">
+				<div><b><%= mytext.display("content.revisionhistory.disabled") %></b></div>
+
+		<% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+
+				<%= mytext.display("content.revisionhistory.enableconfig") %>
+
+		<% } else { %>
+
+				<%= mytext.display("content.revisionhistory.enablesuperadmin") %>
+
+		<% } %>
+
+			</td>
+		</tr>
+
+	<% } %>
+
+		<tr><td>&nbsp;</td></tr>
+		<tr><th class="WCMinnerContentHeading2" align="left" colspan="4"><%= mytext.display("content.revisionhistory.about.heading") %></th></tr>
+		<tr><td align="left" colspan="4"><%= mytext.display("content.revisionhistory.about.text") %></td></tr>
+	</table>
+	<br>
+</div></div>

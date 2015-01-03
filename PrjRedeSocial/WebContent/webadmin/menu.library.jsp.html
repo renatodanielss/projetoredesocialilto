@@ -1,0 +1,172 @@
+
+<% if (mysession.get("menu").equals("library")) { %>
+	<br>
+	<div id="libraryMenu" style="display: none;">
+		<ul>
+			<li rel="root" class="jstree-closed jstree-wcm-root initopen" id="menu_library"><a class="<% if (selected_contentclass.equals("image,file,link") && selected_contentpackage.equals(" ") && selected_contentbundle.equals(" ") && selected_contentgroup.equals(" ") && selected_contenttype.equals(" ") && selected_status.equals(" ") && selected_version.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=%20&contentclass=image,file,link&contentbundle=%20&contentgroup=%20&contenttype=%20&status=%20&version=%20&menu=<%= _menu %>&"><%= mytext.display("menu.library") %></a>
+				<ul>
+	<% if (! adminuser.permission(db, "forbid", "webadmin_library_images")) { %>
+					<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_imagegroups").equals("")) || (! myconfig.get(db, "use_imagetypes").equals("")) || (! myconfig.get(db, "use_versions").equals("")) || ((! myconfig.get(db, "use_checkout").equals("none")) || (! myconfig.get(db, "use_publish").equals("auto-on-save")) || (myconfig.get(db, "use_workflow").equals("yes")))) { %>jstree-closed initopen<% } %>" id="menuitem_library_images"><a class="<% if (selected_contentclass.equals("image") && selected_contentbundle.equals(" ") && selected_contentgroup.equals(" ") && selected_contenttype.equals(" ") && selected_status.equals(" ") && selected_version.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=%20&contentgroup=%20&contenttype=%20&status=%20&version=%20&menu=<%= _menu %>&"><%= mytext.display("menu.library.images") %></a>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_library_bundles")) { %>
+			<% if (! myconfig.get(db, "use_contentbundles").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_images_bundles"><a href="#"><%= mytext.display("menu.bundle") %></a></li></ul>
+			<% } %>
+		<% } %>
+		<% if (! myconfig.get(db, "use_imagegroups").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_images_groups"><a href="#"><%= mytext.display("menu.group") %></a></li></ul>
+		<% } %>
+		<% if (! myconfig.get(db, "use_imagetypes").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_images_types"><a href="#"><%= mytext.display("menu.type") %></a></li></ul>
+		<% } %>
+		<% if (! myconfig.get(db, "use_versions").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_images_versions"><a href="#"><%= mytext.display("menu.version") %></a></li></ul>
+		<% } %>
+		<% if ((! myconfig.get(db, "use_checkout").equals("none")) || (! myconfig.get(db, "use_publish").equals("auto-on-save")) || (myconfig.get(db, "use_workflow").equals("yes"))) { %>
+						<ul>
+							<li rel="folder" class="jstree-closed initclosed" id="menuitem_library_images_status"><a href="#"><%= mytext.display("menu.status") %></a>
+								<ul>
+			<% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+        			<% if (! single_menu_selection) { %>
+									<li rel="page" id="menuitem_library_images_status_all"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=%20&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("all") %></a></li>
+        			<% } %>
+									<li rel="page" id="menuitem_library_images_status_new"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals("new")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=new&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.new") %></a></li>
+									<li rel="page" id="menuitem_library_images_status_updated"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals("updated")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=updated&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.updated") %></a></li>
+        			<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+									<li rel="page" id="menuitem_library_images_status_scheduled"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals("scheduled")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=scheduled&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.scheduled") %></a></li>
+        			<% } %>
+									<li rel="page" id="menuitem_library_images_status_published"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals("published")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=published&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.published") %></a></li>
+									<li rel="page" id="menuitem_library_images_status_unpublished"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals("unpublished")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=unpublished&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.unpublished") %></a></li>
+        			<% if (myconfig.get(db, "use_scheduled_unpublish").equals("yes")) { %>
+									<li rel="page" id="menuitem_library_images_status_expiring"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals("expiring")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=expiring&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.expiring") %></a></li>
+									<li rel="page" id="menuitem_library_images_status_expired"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals("expired")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=expired&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.expired") %></a></li>
+        			<% } %>
+        		<% } %>
+        		<% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+									<li rel="page" id="menuitem_library_images_status_checkedout"><a class="<% if (selected_contentclass.equals("image") && selected_status.equals("checkedout")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=image&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=checkedout&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.checkedout") %></a></li>
+        		<% } %>
+        		<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+									<li rel="folder" class="jstree-closed initclosed" id="menuitem_library_images_status_workflow"><a href="#"><%= mytext.display("menu.workflow") %></a></li>
+        		<% } %>
+								</ul>
+							</li>
+						</ul>
+		<% } %>
+					</li>
+	<% } %>
+	<% if (! adminuser.permission(db, "forbid", "webadmin_library_files")) { %>
+					<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_filegroups").equals("")) || (! myconfig.get(db, "use_filetypes").equals("")) || (! myconfig.get(db, "use_versions").equals("")) || ((! myconfig.get(db, "use_checkout").equals("none")) || (! myconfig.get(db, "use_publish").equals("auto-on-save")) || (myconfig.get(db, "use_workflow").equals("yes")))) { %>jstree-closed initopen<% } %>" id="menuitem_library_files"><a class="<% if (selected_contentclass.equals("file") && selected_contentbundle.equals(" ") && selected_contentgroup.equals(" ") && selected_contenttype.equals(" ") && selected_status.equals(" ") && selected_version.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=%20&contentgroup=%20&contenttype=%20&status=%20&version=%20&menu=<%= _menu %>&"><%= mytext.display("menu.library.files") %></a>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_library_bundles")) { %>
+			<% if (! myconfig.get(db, "use_contentbundles").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_files_bundles"><a href="#"><%= mytext.display("menu.bundle") %></a></li></ul>
+			<% } %>
+		<% } %>
+		<% if (! myconfig.get(db, "use_filegroups").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_files_groups"><a href="#"><%= mytext.display("menu.group") %></a></li></ul>
+		<% } %>
+		<% if (! myconfig.get(db, "use_filetypes").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_files_types"><a href="#"><%= mytext.display("menu.type") %></a></li></ul>
+		<% } %>
+		<% if (! myconfig.get(db, "use_versions").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_files_versions"><a href="#"><%= mytext.display("menu.version") %></a></li></ul>
+		<% } %>
+		<% if ((! myconfig.get(db, "use_checkout").equals("none")) || (! myconfig.get(db, "use_publish").equals("auto-on-save")) || (myconfig.get(db, "use_workflow").equals("yes"))) { %>
+						<ul>
+							<li rel="folder" class="jstree-closed initclosed" id="menuitem_library_files_status"><a href="#"><%= mytext.display("menu.status") %></a>
+								<ul>
+			<% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+        			<% if (! single_menu_selection) { %>
+									<li rel="page" id="menuitem_library_files_status_all"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=%20&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("all") %></a></li>
+        			<% } %>
+									<li rel="page" id="menuitem_library_files_status_new"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals("new")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=new&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.new") %></a></li>
+									<li rel="page" id="menuitem_library_files_status_updated"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals("updated")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=updated&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.updated") %></a></li>
+        			<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+									<li rel="page" id="menuitem_library_files_status_scheduled"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals("scheduled")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=scheduled&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.scheduled") %></a></li>
+        			<% } %>
+									<li rel="page" id="menuitem_library_files_status_published"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals("published")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=published&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.published") %></a></li>
+									<li rel="page" id="menuitem_library_files_status_unpublished"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals("unpublished")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=unpublished&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.unpublished") %></a></li>
+        			<% if (myconfig.get(db, "use_scheduled_unpublish").equals("yes")) { %>
+									<li rel="page" id="menuitem_library_files_status_expiring"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals("expiring")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=expiring&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.expiring") %></a></li>
+									<li rel="page" id="menuitem_library_files_status_expired"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals("expired")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=expired&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.expired") %></a></li>
+        			<% } %>
+        		<% } %>
+        		<% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+									<li rel="page" id="menuitem_library_files_status_checkedout"><a class="<% if (selected_contentclass.equals("file") && selected_status.equals("checkedout")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=file&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=checkedout&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.checkedout") %></a></li>
+        		<% } %>
+        		<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+									<li rel="folder" class="jstree-closed initclosed" id="menuitem_library_files_status_workflow"><a href="#"><%= mytext.display("menu.workflow") %></a></li>
+        		<% } %>
+								</ul>
+							</li>
+						</ul>
+		<% } %>
+					</li>
+	<% } %>
+	<% if (! adminuser.permission(db, "forbid", "webadmin_library_links")) { %>
+					<li rel="pagefolder" class="<% if ((! myconfig.get(db, "use_linkgroups").equals("")) || (! myconfig.get(db, "use_linktypes").equals("")) || (! myconfig.get(db, "use_versions").equals("")) || ((! myconfig.get(db, "use_checkout").equals("none")) || (! myconfig.get(db, "use_publish").equals("auto-on-save")) || (myconfig.get(db, "use_workflow").equals("yes")))) { %>jstree-closed initopen<% } %>" id="menuitem_library_links"><a class="<% if (selected_contentclass.equals("link") && selected_contentbundle.equals(" ") && selected_contentgroup.equals(" ") && selected_contenttype.equals(" ") && selected_status.equals(" ") && selected_version.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=%20&contentgroup=%20&contenttype=%20&status=%20&version=%20&menu=<%= _menu %>&"><%= mytext.display("menu.library.links") %></a>
+		<% if (! adminuser.permission(db, "forbid", "webadmin_library_bundles")) { %>
+			<% if (! myconfig.get(db, "use_contentbundles").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_links_bundles"><a href="#"><%= mytext.display("menu.bundle") %></a></li></ul>
+			<% } %>
+		<% } %>
+		<% if (! myconfig.get(db, "use_linkgroups").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_links_groups"><a href="#"><%= mytext.display("menu.group") %></a></li></ul>
+		<% } %>
+		<% if (! myconfig.get(db, "use_linktypes").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_links_types"><a href="#"><%= mytext.display("menu.type") %></a></li></ul>
+		<% } %>
+		<% if (! myconfig.get(db, "use_versions").equals("")) { %>
+						<ul><li rel="folder" class="jstree-closed initclosed" id="menuitem_library_links_versions"><a href="#"><%= mytext.display("menu.version") %></a></li></ul>
+		<% } %>
+		<% if ((! myconfig.get(db, "use_checkout").equals("none")) || (! myconfig.get(db, "use_publish").equals("auto-on-save")) || (myconfig.get(db, "use_workflow").equals("yes"))) { %>
+						<ul>
+							<li rel="folder" class="jstree-closed initclosed" id="menuitem_library_links_status"><a href="#"><%= mytext.display("menu.status") %></a>
+								<ul>
+			<% if (! myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+        			<% if (! single_menu_selection) { %>
+									<li rel="page" id="menuitem_library_links_status_all"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals(" ")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=%20&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("all") %></a></li>
+        			<% } %>
+									<li rel="page" id="menuitem_library_links_status_new"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals("new")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=new&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.new") %></a></li>
+									<li rel="page" id="menuitem_library_links_status_updated"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals("updated")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=updated&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.updated") %></a></li>
+        			<% if (myconfig.get(db, "use_scheduled_publish").equals("yes")) { %>
+									<li rel="page" id="menuitem_library_links_status_scheduled"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals("scheduled")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=scheduled&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.scheduled") %></a></li>
+        			<% } %>
+									<li rel="page" id="menuitem_library_links_status_published"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals("published")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=published&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.published") %></a></li>
+									<li rel="page" id="menuitem_library_links_status_unpublished"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals("unpublished")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=unpublished&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.unpublished") %></a></li>
+        			<% if (myconfig.get(db, "use_scheduled_unpublish").equals("yes")) { %>
+									<li rel="page" id="menuitem_library_links_status_expiring"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals("expiring")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=expiring&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.expiring") %></a></li>
+									<li rel="page" id="menuitem_library_links_status_expired"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals("expired")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=expired&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.expired") %></a></li>
+        			<% } %>
+        		<% } %>
+        		<% if (! myconfig.get(db, "use_checkout").equals("none")) { %>
+									<li rel="page" id="menuitem_library_links_status_checkedout"><a class="<% if (selected_contentclass.equals("link") && selected_status.equals("checkedout")) { %>jstree-wcm-menu-selected<% } %>" href="/<%= mytext.display("adminpath") %>/content/index.jsp?contentpackage=<%= URLEncoder.encode(_contentpackage) %>&contentclass=link&contentbundle=<%= URLEncoder.encode(_contentbundle) %>&contentgroup=<%= URLEncoder.encode(_contentgroup) %>&contenttype=<%= URLEncoder.encode(_contenttype) %>&status=checkedout&version=<%= URLEncoder.encode(_version) %>&menu=<%= _menu %>&"><%= mytext.display("menu.status.checkedout") %></a></li>
+        		<% } %>
+        		<% if (myconfig.get(db, "use_workflow").equals("yes")) { %>
+									<li rel="folder" class="jstree-closed initclosed" id="menuitem_library_links_status_workflow"><a href="#"><%= mytext.display("menu.workflow") %></a></li>
+        		<% } %>
+								</ul>
+							</li>
+						</ul>
+		<% } %>
+					</li>
+	<% } %>
+	<% if (! adminuser.permission(db, "forbid", "webadmin_library_packages")) { %>
+			<% if (myconfig.get(db, "use_contentpackages").equals("yes")) { %>
+					<li rel="folder" class="jstree-closed" id="menuitem_library_packages"><a href="#"><%= mytext.display("menu.library.packages") %></a></li>
+			<% } %>
+	<% } %>
+	<% if (! adminuser.permission(db, "forbid", "webadmin_library_bundles")) { %>
+			<% if (myconfig.get(db, "use_contentbundles").equals("yes")) { %>
+					<li rel="folder" class="jstree-closed" id="menuitem_library_bundles"><a href="#"><%= mytext.display("menu.library.bundles") %></a></li>
+			<% } %>
+	<% } %>
+				</ul>
+			</li>
+	<% for (int i=0; i<module.size(); i++) { %>
+		<% if ((moduleLibraryMenuTitle.size()>i) && (! moduleLibraryMenuTitle.get(i).equals(""))) { %>
+			<li rel="page" class="jstree-leaf" id="menuitem_library_module<%= i %>"><a href="<%= moduleLibraryMenuLink.get(i) %>"><%= moduleLibraryMenuTitle.get(i) %></a></li>
+		<% } %>
+	<% } %>
+		</ul>
+	</div>
+	<br>
+<% } %>

@@ -1,0 +1,348 @@
+<html>
+<head>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Generator" content="Asbru Web Content Management System">
+<meta http-equiv="Copyright" content="(C) 2002-2014 - Asbru Ltd. - www.asbrusoft.com">
+<script type="text/javascript" src="webeditor.properties.js"></script>
+<title>Asbru Web Content Editor</title>
+<link rel="stylesheet" href="dtree.css" type="text/css">
+<script type="text/javascript" src="dtree.js"></script>
+<link rel="stylesheet" type="text/css" href="webeditor.css">
+<script type="text/javascript">
+
+document.title = HtmlDecode(Text('selectoruploader_title'));
+
+function requestParameter(name) {
+	var value = "";
+	if (start = request.indexOf("?"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	} else if (start = request.indexOf("&"+name+"=")+1) {
+		value = request.substring(start+name.length+1);
+	}
+	if (value.indexOf("&")+1) {
+		value = value.substring(0, value.indexOf("&"));
+	}
+	value = unescape(decodeURI(value));
+	return value;
+}
+
+var request = "" + window.location;
+editor = requestParameter("editor");
+if ((typeof(webeditor) == "undefined") && editor && window.parent.opener && window.parent.opener[editor]) webeditor = window.parent.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && window.opener && window.opener[editor]) webeditor = window.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top.opener && top.opener[editor]) webeditor = top.opener[editor];
+if ((typeof(webeditor) == "undefined") && editor && top && top[editor]) webeditor = top[editor];
+if ((typeof(webeditor) == "undefined") && editor && parent && parent[editor]) webeditor = parent[editor];
+request_action = requestParameter("action");
+request_section = requestParameter("section");
+request_category = requestParameter("category");
+request_id = requestParameter("id");
+request_title = requestParameter("title");
+request_href = requestParameter("href");
+request_contentclass = requestParameter("contentclass");
+
+function checkExtension(file){
+	if (file == "") { return false; }
+
+	var file_extension = file;
+	file_extension = file_extension.split(".");
+	file_extension = file_extension[file_extension.length - 1];
+	file_extension = file_extension.toLowerCase();
+
+	valid_extensions = "";
+	<% if (myrequest.getParameter("section").equals("Images")) { %>
+	valid_extensions = "<%= HardCore.Image.filenameextension_list(db) %>";
+	<% } else if (myrequest.getParameter("section").equals("Files")) { %>
+	valid_extensions = "<%= HardCore.File.filenameextension_list(db) %>";
+	<% } %>
+	valid_extension = valid_extensions.split(",");
+	for (i=0; i<valid_extension.length; i++) {
+		if ( file_extension == valid_extension[i]) return true;
+	}
+	alert(HtmlDecode(Text('selectoruploader_error')) + ' ' + valid_extensions);
+	return false;
+}
+
+function getname(id, file, title, href){
+	if (document.upload.title.value == "") {
+		var file_name = file;
+		file_name = file_name.split("/");
+		file_name = file_name[file_name.length - 1];
+		file_name = file_name.split("\\");
+		file_name = file_name[file_name.length - 1];
+		document.upload.title.value = file_name;
+		title = file_name;
+	}
+	if (href) {
+		parent.selectorpreview.location.href = 'selectorpreview_wcm.jsp?editor=' + editor + '&title='+encodeURIComponent(title)+'&href='+escape(href);
+		return true;
+	} else if (checkExtension(file)){
+		parent.selectorpreview.location.href = 'selectorpreview_wcm.jsp?editor=' + editor + '&title='+encodeURIComponent(title)+'&href='+escape('file:///'+file);
+		return true;
+//	} else if ((title != "") && (file == "") && checkExtension(title)) {
+//		return true;
+	} else {
+		return false;
+	}
+}
+
+function doSubmit() {
+	if ((document.upload.file.type == "hidden") || (getname(document.upload.id.value, document.upload.file.value, document.upload.title.value, document.upload.url.value))) {
+		if (document.upload.attributes && document.upload.attributes.action && document.upload.attributes && document.upload.attributes.action.nodeValue) {
+			document.upload.attributes.action.nodeValue = document.upload.attributes.action.nodeValue + '&list=' + escape(parent.selectorlist.location.href.replace(new RegExp("https?://[^/]+"), ""));
+		} else {
+			document.upload.setAttribute("action", document.upload.getAttribute("action") + '&list=' + escape(parent.selectorlist.location.href.replace(new RegExp("https?://[^/]+"), "")));
+		}
+		parent.selectorlist.selectorlistMenu.clearCookie();
+		parent.selectorlist.location.href = 'wait.html';
+		return true;
+	} else {
+		return false;
+	}
+}
+
+</script>
+</head>
+<body>
+
+<% if ((adminuser.getHardcoreUpload().equals("yes")) || ((adminuser.getHardcoreUpload().equals("")) && (myconfig.get(db, "hardcore_upload").equals("yes")))) { %>
+
+<script type="text/javascript">
+document.writeln('<form action="selectornotification_wcm.jsp?<% if (! myrequest.getParameter("action").equals("Create")) { %>id=<%= html.encodeHtmlEntities(myrequest.getParameter("id")) %>&<% } %>action=<%= html.encodeHtmlEntities(myrequest.getParameter("action")) %>&editor=' + editor + '" method="POST" enctype="multipart/form-data" name="upload" onSubmit="return doSubmit();">');
+if (request_section == "Pages") {
+	document.writeln('<input type="hidden" name="contentclass" value="page">');
+} else if (request_section == "Images") {
+	document.writeln('<input type="hidden" name="contentclass" value="image">');
+} else if (request_section == "Files") {
+	document.writeln('<input type="hidden" name="contentclass" value="file">');
+} else if (request_section == "Links") {
+	document.writeln('<input type="hidden" name="contentclass" value="link">');
+} else if (request_section == "Products") {
+	document.writeln('<input type="hidden" name="contentclass" value="product">');
+} else if (request_section == "Elements") {
+	document.writeln('<input type="hidden" name="contentclass" value="' + request_contentclass + '">');
+} else if (request_section == "Scripts") {
+	document.writeln('<input type="hidden" name="contentclass" value="script">');
+} else if (request_section == "Style Sheets") {
+	document.writeln('<input type="hidden" name="contentclass" value="stylesheet">');
+} else if (request_section == "Templates") {
+	document.writeln('<input type="hidden" name="contentclass" value="template">');
+}
+</script>
+
+<table summary="" width="100%" border="0" class="dtree">
+	<tr>
+<script type="text/javascript">
+	if (request_action == "Create") {
+		if (request_section == "Pages") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_create_page') + '</th>');
+		} else if (request_section == "Images") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_create_image') + '</th>');
+		} else if (request_section == "Files") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_create_file') + '</th>');
+		} else if (request_section == "Links") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_create_link') + '</th>');
+		} else if (request_section == "Products") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_create_product') + '</th>');
+		}
+	} else if (request_action == "Update") {
+		if (request_section == "Pages") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_update_page') + '</th>');
+		} else if (request_section == "Images") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_update_image') + '</th>');
+		} else if (request_section == "Files") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_update_file') + '</th>');
+		} else if (request_section == "Links") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_update_link') + '</th>');
+		} else if (request_section == "Products") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_update_product') + '</th>');
+		}
+	} else if (request_action == "Delete") {
+		if (request_section == "Pages") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_delete_page') + '</th>');
+		} else if (request_section == "Images") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_delete_image') + '</th>');
+		} else if (request_section == "Files") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_delete_file') + '</th>');
+		} else if (request_section == "Links") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_delete_link') + '</th>');
+		} else if (request_section == "Products") {
+			document.writeln('<th colspan="2" align="left">' + Text('selectoruploader_delete_product') + '</th>');
+		}
+	}
+</script>
+<script type="text/javascript">
+		document.writeln('<th width="50%" align="right">');
+		if (request_action == "Delete") {
+			document.writeln('<input type="submit" name="delete" value="' + Text('selectoruploader_delete') + '">');
+		} else if (request_action == "Update") {
+			document.writeln('<input type="submit" name="update" value="' + Text('selectoruploader_update') + '">');
+			<% if (myconfig.get(db, "use_publish").equals("manual-on")) { %>
+			document.writeln('<input type="checkbox" name="publish" value="Save & Publish" checked>' + Text('selectoruploader_publish'));
+			<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>
+			document.writeln('<input type="checkbox" name="publish" value="Save & Publish">' + Text('selectoruploader_publish'));
+			<% } else if (myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+			document.writeln('<input type="hidden" name="publish" value="Save & Publish">');
+			<% } %>
+		} else {
+			document.writeln('<input type="submit" name="create" value="' + Text('selectoruploader_create') + '">');
+			<% if (myconfig.get(db, "use_publish").equals("manual-on")) { %>
+			document.writeln('<input type="checkbox" name="publish" value="Save & Publish" checked>' + Text('selectoruploader_publish'));
+			<% } else if (myconfig.get(db, "use_publish").equals("manual-off")) { %>
+			document.writeln('<input type="checkbox" name="publish" value="Save & Publish">' + Text('selectoruploader_publish'));
+			<% } else if (myconfig.get(db, "use_publish").equals("auto-on-save")) { %>
+			document.writeln('<input type="hidden" name="publish" value="Save & Publish">');
+			<% } %>
+		}
+		document.writeln('</th>');
+</script>
+	</tr>
+	<tr>
+		<td align="left" colspan="2"><script type="text/javascript">document.write(Text('selectoruploader_heading'));</script></td>
+<script type="text/javascript">
+		if (request_action == "Delete") {
+			document.writeln('<td width="50%" align="left">' + Text('selectoruploader_file') + '</td>');
+		} else if ((request_section == "Images") || (request_section == "Files")) {
+			document.writeln('<td width="50%" align="left">' + Text('selectoruploader_file') + '</td>');
+		} else if (request_section == "Links") {
+			document.writeln('<td width="50%" align="left">' + Text('selectoruploader_address') + '</td>');
+		} else {
+			document.writeln('<td width="50%" align="left">&nbsp;</td>');
+		}
+</script>
+	</tr>
+	<tr align="left" valign="top">
+		<td colspan="2">
+<script type="text/javascript">
+		if (request_action == "Delete") {
+			document.writeln('<input disabled type="text" name="title" size="40" maxlength="250" value="' + request_title + '">');
+		} else {
+			document.writeln('<input type="text" name="title" size="40" maxlength="250" value="' + request_title + '" onChange="getname(document.upload.id.value, document.upload.file.value, document.upload.title.value, document.upload.url.value);">');
+		}
+</script>
+		</td>
+		<td width="50%">
+<script type="text/javascript">
+		if (request_action == "Delete") {
+			document.writeln('<input type="hidden" name="file" value="">');
+			document.writeln('<input disabled type="text" name="url" size="40" maxlength="250" value="' + request_href + '">');
+		} else if ((request_section == "Images") || (request_section == "Files")) {
+			document.writeln('<input type="file" name="file" size="20" maxlength="256" align="middle" onChange="getname(document.upload.id.value, document.upload.file.value, document.upload.title.value, document.upload.url.value);">');
+			document.writeln('<input type="hidden" name="url" value="">');
+		} else if (request_section == "Links") {
+			document.writeln('<input type="hidden" name="file" value="">');
+			document.writeln('<input type="text" name="url" size="40" maxlength="250" value="' + request_href + '" onChange="getname(document.upload.id.value, document.upload.file.value, document.upload.title.value, document.upload.url.value);">');
+		} else {
+			document.writeln('<input type="hidden" name="file" value="">');
+			document.writeln('<input type="hidden" name="url" value="">');
+		}
+</script>
+		</td>
+	</tr>
+	<% if (myrequest.getParameter("action").equals("Create")) { %>
+	<tr><td colspan="3">&nbsp;</td></tr>
+	<tr align="left" valign="top">
+		<% if (myconfig.get(db, "use_contentdefinition").equals("yes")) { %>
+<% if ((myrequest.getParameter("section").equals("Pages")) || (myrequest.getParameter("section").equals("Images")) || (myrequest.getParameter("section").equals("Files")) || (myrequest.getParameter("section").equals("Links")) || (myrequest.getParameter("section").equals("Products"))) { %>
+		<% if (((myrequest.getParameter("section").equals("Pages")) && ((myconfig.get(db, "use_contenttypes").equals("yes")) || (myconfig.get(db, "use_contentgroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Images")) && ((myconfig.get(db, "use_imagetypes").equals("yes")) || (myconfig.get(db, "use_imagegroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Files")) && ((myconfig.get(db, "use_filetypes").equals("yes")) || (myconfig.get(db, "use_filegroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Links")) && ((myconfig.get(db, "use_linktypes").equals("yes")) || (myconfig.get(db, "use_linkgroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Products")) && ((myconfig.get(db, "use_producttypes").equals("yes")) || (myconfig.get(db, "use_productgroups").equals("yes"))))) { %>
+		<% if (((myrequest.getParameter("section").equals("Pages")) && (myconfig.get(db, "use_contentgroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Images")) && (myconfig.get(db, "use_imagegroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Files")) && (myconfig.get(db, "use_filegroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Links")) && (myconfig.get(db, "use_linkgroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Products")) && (myconfig.get(db, "use_productgroups").equals("yes")))) { %>
+		<td width="25%"><script type="text/javascript">document.write(Text('selectoruploader_group'));</script></td>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<% if (((myrequest.getParameter("section").equals("Pages")) && (myconfig.get(db, "use_contenttypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Images")) && (myconfig.get(db, "use_imagetypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Files")) && (myconfig.get(db, "use_filetypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Links")) && (myconfig.get(db, "use_linktypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Products")) && (myconfig.get(db, "use_producttypes").equals("yes")))) { %>
+		<td width="25%"><script type="text/javascript">document.write(Text('selectoruploader_type'));</script></td>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+<% } %>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<% if (! select_options.equals("")) { %>
+		<td width="50%" align="left"><script type="text/javascript">document.write(Text('selectoruploader_copy'));</script></td>
+		<% } %>
+	</tr>
+	<tr> 
+		<% if (myconfig.get(db, "use_contentdefinition").equals("yes")) { %>
+		<% if (((myrequest.getParameter("section").equals("Pages")) && ((myconfig.get(db, "use_contenttypes").equals("yes")) || (myconfig.get(db, "use_contentgroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Images")) && ((myconfig.get(db, "use_imagetypes").equals("yes")) || (myconfig.get(db, "use_imagegroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Files")) && ((myconfig.get(db, "use_filetypes").equals("yes")) || (myconfig.get(db, "use_filegroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Links")) && ((myconfig.get(db, "use_linktypes").equals("yes")) || (myconfig.get(db, "use_linkgroups").equals("yes")))) || ((myrequest.getParameter("section").equals("Products")) && ((myconfig.get(db, "use_producttypes").equals("yes")) || (myconfig.get(db, "use_productgroups").equals("yes"))))) { %>
+		<td width="25%">
+			<% if (((myrequest.getParameter("section").equals("Pages")) && (myconfig.get(db, "use_contentgroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Images")) && (myconfig.get(db, "use_imagegroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Files")) && (myconfig.get(db, "use_filegroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Links")) && (myconfig.get(db, "use_linkgroups").equals("yes"))) || ((myrequest.getParameter("section").equals("Products")) && (myconfig.get(db, "use_productgroups").equals("yes")))) { %>
+			<select name="contentgroup">
+				<option value=""><script type="text/javascript">document.write(Text('selectoruploader_none'));</script>
+			<% if (myrequest.getParameter("section").equals("Pages")) { %>
+				<%= Contentgroup.select_options(myrequest.getParameter("contentgroup"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Images")) { %>
+				<%= Imagegroup.select_options(myrequest.getParameter("imagegroup"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Files")) { %>
+				<%= Filegroup.select_options(myrequest.getParameter("filegroup"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Links")) { %>
+				<%= Linkgroup.select_options(myrequest.getParameter("linkgroup"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Products")) { %>
+				<%= Productgroup.select_options(myrequest.getParameter("productgroup"), db, myconfig, mysession) %> 
+			<% } %>
+			</select>
+			<% } %>
+		</td>
+		<td width="25%">
+			<% if (((myrequest.getParameter("section").equals("Pages")) && (myconfig.get(db, "use_contenttypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Images")) && (myconfig.get(db, "use_imagetypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Files")) && (myconfig.get(db, "use_filetypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Links")) && (myconfig.get(db, "use_linktypes").equals("yes"))) || ((myrequest.getParameter("section").equals("Products")) && (myconfig.get(db, "use_producttypes").equals("yes")))) { %>
+			<select name="contenttype">
+				<option value=""><script type="text/javascript">document.write(Text('selectoruploader_none'));</script>
+			<% if (myrequest.getParameter("section").equals("Pages")) { %>
+				<%= Contenttype.select_options(myrequest.getParameter("contenttype"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Images")) { %>
+				<%= Imagetype.select_options(myrequest.getParameter("imagetype"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Files")) { %>
+				<%= Filetype.select_options(myrequest.getParameter("filetype"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Links")) { %>
+				<%= Linktype.select_options(myrequest.getParameter("linktype"), db, myconfig, mysession) %> 
+			<% } else if (myrequest.getParameter("section").equals("Products")) { %>
+				<%= Producttype.select_options(myrequest.getParameter("producttype"), db, myconfig, mysession) %> 
+			<% } %>
+			</select>
+			<% } %>
+		</td>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<% } else { %>
+		<td width="25%">&nbsp;</td>
+		<td width="25%">&nbsp;</td>
+		<% } %>
+		<td width="50%">
+			<% if (! select_options.equals("")) { %>
+			<select name="id">
+				<% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+				<option value=""><script type="text/javascript">document.write(Text('selectoruploader_copy_blank'));</script>
+				<% } %>
+				<%= select_options %>
+			</select>
+			<% } %>
+		</td>
+	</tr>
+	<% } %>
+</table>
+
+</form>
+
+<% } else { %>
+
+<table width="100%" height="100%" border="0">
+	<tr>
+		<td align="center" valign="middle">
+			<script type="text/javascript">document.write(Text('selectoruploader_disabled'));</script>
+		</td>
+	</tr>
+</table>
+
+<% } %>
+
+</body>
+</html>

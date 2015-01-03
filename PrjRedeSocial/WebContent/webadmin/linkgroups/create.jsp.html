@@ -1,0 +1,568 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if lt IE 7]><html class="ie6"><![endif]-->
+<!--[if IE 7]><html class="ie7"><![endif]-->
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9"><![endif]-->
+<!--[if IE 10]><html class="ie10"><![endif]-->
+<!--[if gt IE 10]><html><![endif]-->
+<!--[if !IE]><!--><html><!--<![endif]-->
+<!-- #BeginTemplate "/Templates/admin.jsp.dwt" --><!-- DW6 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>">
+<meta http-equiv="Generator" content="<%= mytext.display("product") %> <%= mytext.display("version") %>">
+<meta http-equiv="Copyright" content="<%= mytext.display("copyright") %>">
+<%@ include file="/webadmin/scripts.jsp.html" %>
+<!-- #BeginEditable "doctitle" -->
+<title><%= mytext.display("linkgroups.create.title") %></title>
+<script type="text/javascript" src="/<%= mytext.display("adminpath") %>/ajax.js"></script>
+<%
+String mywebeditor = "HardCore";
+mywebeditor = "/" + mytext.display("adminpath") + "/webeditors/" + mywebeditor + "/webeditor.jsp";
+%>
+<jsp:include page="<%= mywebeditor %>" />
+
+<script type="text/javascript">
+
+<% if (! adminuser.getHardcoreCustomScript().equals("")) { %>
+<%= adminuser.getHardcoreCustomScript() %>
+<% } else { %>
+<%= myconfig.get(db, "hardcore_customscript") %>
+<% } %>
+
+</script>
+
+<script type="text/javascript">
+
+function checkName(name, id) {
+	var exists = "";
+	if (id) {
+		exists = GET("/<%= mytext.display("adminpath") %>/linkgroups/exists.jsp?id=" + encodeURI(id) + "&linkgroup=" + encodeURI(name) + "&" + Math.random());
+	} else {
+		exists = GET("/<%= mytext.display("adminpath") %>/linkgroups/exists.jsp?linkgroup=" + encodeURI(name) + "&" + Math.random());
+	}
+	if (exists == "YES") {
+		alert('<%= mytext.display("linkgroups.title.exists") %>');
+	}
+}
+
+function changeUsers(user) {
+	var users = "";
+	for (var i=0; i<user.options.length; i++) {
+		if (user.options[i].selected && user.options[i].value) {
+			if (users != "") users += ",";
+			users += user.options[i].value;
+		}
+	}
+	users = users.replace(/^-/, "");
+	document.getElementById(user.id+"input").value = users;
+}
+
+// MSIE document.getElementById may be broken also returning elements by NAME instead of just by ID
+if (/msie/i.test (navigator.userAgent)) {
+	document.nativeGetElementById = document.getElementById;
+	document.getElementById = function(id) {
+		var elem = document.nativeGetElementById(id);
+		if (elem) {
+			if (elem.id == id) {
+				return elem;
+			} else {
+				for (var i=1; i<document.all[id].length; i++) {
+					if (document.all[id][i].id == id) {
+						return document.all[id][i];
+					}
+				}
+			}
+		}
+		return null;
+	};
+}
+
+function openSelectContentItem(inputid, section, category, title, href_contentclass) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options) {
+		var contenttitle;
+		var contentid;
+		var contenthref;
+		if (inputnode.selectedIndex >= 0) {
+			contenttitle = inputnode.options[inputnode.selectedIndex].text;
+			contentid = inputnode.options[inputnode.selectedIndex].value;
+			contenthref = '/' + href_contentclass + '.jsp%3Fid%3D' + contentid;
+		}
+		if (! ((contentid > 0) && (contenttitle != ""))) {
+			contentid = '';
+			contenttitle = '';
+			contenthref = '';
+		}
+		contenttitle = encodeURIComponent(contenttitle);
+		webeditor.window_proxy['selector'] = webeditor;
+		webeditor_window('/<%= mytext.display("adminpath") %>/webeditor/selectormanager_wcm.jsp?editor=selector&input=' + inputid + '&section=' + section + '&category=' + category + '&title=' + title + '&id=' + contentid + '&link=' + contenttitle + '&href=' + contenthref, 'selector_window', 750, 450, 'scrollbars=yes,width=750,height=450,resizable=yes,status=yes', true);
+	}
+}
+
+function selectContentItem(inputid, contentid, contenttitle, href) {
+	var inputnode = document.getElementById(inputid);
+	if (inputnode && inputnode.options && (contentid != "") && (contenttitle != "")) {
+		var selected = false;
+		if (inputnode.type == "select-multiple") {
+			if (! selected) for (var i=0; i<inputnode.options.length; i++) {
+				if ((inputnode.options[i].text.toLowerCase() == contenttitle.toLowerCase()) && (inputnode.options[i].value == contentid)) {
+					inputnode.options[i].selected = true;
+					selected = true;
+					break;
+				}
+			}
+			var newoption = new Option(contenttitle, contentid, true, true);
+			if (! selected) for (var i=inputnode.options.length; i>0; i--) {
+				if (inputnode.options[i-1].text.toLowerCase() > contenttitle.toLowerCase()) {
+					var oldoption = inputnode.options[i-1];
+					oldoption = new Option(oldoption.text, oldoption.value, oldoption.defaultSelected, oldoption.selected);
+					inputnode.options[i] = new Option("", "", true, true);
+					inputnode.options[i-1] = newoption;
+					inputnode.options[i] = oldoption;
+					selected = true;
+				} else {
+					inputnode.options[i] = newoption;
+					selected = true;
+					break;
+				}
+			}
+			if (! selected) {
+				inputnode.options[inputnode.options.length] = newoption;
+			}
+			inputnode.size = inputnode.options.length;
+			if (inputid == "stylesheet") changeWebEditorStylesheet(inputnode);
+			if (inputid == "scripts") changeScripts(inputnode);
+			if (inputid.match(/_users$/)) changeUsers(inputnode);
+		} else {
+			inputnode.options[0].text = contenttitle;
+			inputnode.options[0].value = contentid;
+			inputnode.selectedIndex = 0;
+			if (inputnode.onchange) {
+				inputnode.onchange();
+			}
+		}
+	}
+}
+
+</script>
+<!-- #EndEditable -->
+<%
+	if (! myrequest.getParameter("menu").equals("")) {
+		mysession.set("menu", myrequest.getParameter("menu"));
+	}
+%>
+</head>
+<body>
+<div class="ui-layout-north">
+<div class="ui-layout-content">
+<table class="WCMheaderwrapper"><tr><td>
+<table class="WCMheader">
+  <tr>
+    <td class="WCMheader"><%= mytext.display("logo") %></td>
+    <td class="WCMlogin"><% if (! mysession.get("username").equals("")) { %><%= mytext.display("loggedin") %> <%= mysession.get("username") %><% } %></td>
+    <td class="WCMtitle"><!-- #BeginEditable "TITLE" --><%= mytext.display("linkgroups.create.title") %><!-- #EndEditable --></td>
+  </tr>
+</table>
+</td></tr><tr><td>
+<%@ include file="/webadmin/header.jsp.html" %>
+</td></tr></table>
+</div>
+</div>
+<div class="ui-layout-west">
+<div class="ui-layout-content">
+<% String myjspincludepage = "/" + mytext.display("adminpath") + "/menu.jsp"; %><jsp:include page="<%= myjspincludepage  %>" />
+<!-- #BeginEditable "MENU" -->
+<!-- #EndEditable -->
+</div>
+</div>
+<div class="ui-layout-east">
+<div class="ui-layout-content">
+</div>
+</div>
+<div class="ui-layout-center">
+
+<!-- #BeginEditable "MAIN" -->
+
+<div id="WCMadminpage" class="WCMadminpage WCMadminform"><div id="WCMadminpagewrapper" class="WCMadminpagewrapper">
+
+      <form action="create_post.jsp" method="POST">
+        <p>
+          <input type="submit" value="<%= mytext.display("save") %>">
+        </p>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" align="left"><%= mytext.display("linkgroups.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" align="left"><%= mytext.display("linkgroups.intro") %></td>
+          </tr>
+          <tr>
+            <th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("linkgroups.title") %></th>
+            <th class="WCMinnerContentInputName" align="left" width="50%"><%= mytext.display("linkgroups.parentgroup") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <input type="text" size="80" maxlength="250" name="linkgroup" value="<%= html.encode(linkgroup.getLinkgroup()) %>" onchange="checkName(this.value, '')">
+            </td>
+            <td class="WCMinnerContentInputValue" width="50%">
+              <select name="parentgroup">
+                <option value="<%= html.encode(linkgroup.getParentgroup()) %>"><%= mytext.display("pleaseselect") %></option>
+                <option value="" <% if (linkgroup.getParentgroup().equals("")) { %>selected<% } %>><%= mytext.display("none") %></option>
+                <%= linkgroup.select_options(db, linkgroup.getParentgroup()) %>
+              </select>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <table width="100%">
+          <tr>
+            <th class="WCMinnerContentHeading1" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.heading") %></th>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentIntro" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.intro") %></td>
+          </tr>
+	<% if (! myconfig.get(db, "use_accessrestrictions").equals("none")) { %>
+		<% if (myconfig.get(db, "use_userdefinition").equals("yes")) { %>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.users") %></th></tr>
+          <tr>
+			<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="users_group">
+                <option value="<%= linkgroup.getUsersGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getUsersGroup().equals("")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (linkgroup.getUsersGroup().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <%= linkgroup.usergroup_select_options(db, linkgroup.getUsersGroup()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="users_type">
+                <option value="<%= linkgroup.getUsersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getUsersType().equals("")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (linkgroup.getUsersType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+                <%= linkgroup.usertype_select_options(db, linkgroup.getUsersType()) %>
+              </select>
+            </td>
+			<% } %>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="users_usersinput" name="users_users" value="<%= linkgroup.getUsersUsers() %>">
+              <select multiple id="users_users" name="selectusers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = linkgroup.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('users_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+			<% if (myconfig.get(db, "use_accessrestrictions").equals("all")) { %>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.creators") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="creators_group">
+                <option value="<%= linkgroup.getCreatorsGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getCreatorsGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usergroup_select_options(db, linkgroup.getCreatorsGroup()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="creators_type">
+                <option value="<%= linkgroup.getCreatorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getCreatorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usertype_select_options(db, linkgroup.getCreatorsType()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="creators_usersinput" name="creators_users" value="<%= linkgroup.getCreatorsUsers() %>">
+              <select multiple id="creators_users" name="selectcreators_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = linkgroup.getCreatorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('creators_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+				<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.editors") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="editors_group">
+                <option value="<%= linkgroup.getEditorsGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getEditorsGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usergroup_select_options(db, linkgroup.getEditorsGroup()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="editors_type">
+                <option value="<%= linkgroup.getEditorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getEditorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usertype_select_options(db, linkgroup.getEditorsType()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="editors_usersinput" name="editors_users" value="<%= linkgroup.getEditorsUsers() %>">
+              <select multiple id="editors_users" name="selecteditors_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = linkgroup.getEditorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('editors_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+				<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.publishers") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="publishers_group">
+                <option value="<%= linkgroup.getPublishersGroup() %>"><%= mytext.display("pleaseselect") %> 
+                <option value="" <% if (linkgroup.getPublishersGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usergroup_select_options(db, linkgroup.getPublishersGroup()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="publishers_type">
+                <option value="<%= linkgroup.getPublishersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getPublishersType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usertype_select_options(db, linkgroup.getPublishersType()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="publishers_usersinput" name="publishers_users" value="<%= linkgroup.getPublishersUsers() %>">
+              <select multiple id="publishers_users" name="selectpublishers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = linkgroup.getPublishersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('publishers_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+				<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.developers") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="developers_group">
+                <option value="<%= linkgroup.getDevelopersGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getDevelopersGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usergroup_select_options(db, linkgroup.getDevelopersGroup()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="developers_type">
+                <option value="<%= linkgroup.getDevelopersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getDevelopersType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usertype_select_options(db, linkgroup.getDevelopersType()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="developers_usersinput" name="developers_users" value="<%= linkgroup.getDevelopersUsers() %>">
+              <select multiple id="developers_users" name="selectdevelopers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = linkgroup.getDevelopersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('developers_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+				<% } %>
+          </tr>
+          <tr><td>&nbsp;</td></tr>
+          <tr><th class="WCMinnerContentInputName" colspan="6" align="left"><%= mytext.display("content.accessrestrictions.administrators") %></th></tr>
+          <tr>
+				<% if (myconfig.get(db, "use_usergroups").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.group") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="administrators_group">
+                <option value="<%= linkgroup.getAdministratorsGroup() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getAdministratorsGroup().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usergroup_select_options(db, linkgroup.getAdministratorsGroup()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_usertypes").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.type") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" valign="top">
+              <select name="administrators_type">
+                <option value="<%= linkgroup.getAdministratorsType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getAdministratorsType().equals("")) { %>selected<% } %>><%= mytext.display("all_admins") %>
+                <%= linkgroup.usertype_select_options(db, linkgroup.getAdministratorsType()) %>
+              </select>
+            </td>
+				<% } %>
+				<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" width="50" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+            <td class="WCMinnerContentInputValue" width="33%" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="administrators_usersinput" name="administrators_users" value="<%= linkgroup.getAdministratorsUsers() %>">
+              <select multiple id="administrators_users" name="selectadministrators_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = linkgroup.getAdministratorsUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('administrators_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+				<% } %>
+          </tr>
+			<% } %>
+		<% } else { %>
+          <tr>
+            <th class="WCMinnerContentInputName" valign="top" align="left"><%= mytext.display("content.accessrestrictions.users") %></th>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputName" valign="top"><%= mytext.display("content.accessrestrictions.user") %></td>
+			<% } %>
+          </tr>
+          <tr>
+            <td class="WCMinnerContentInputValue" valign="top">
+              <select name="users_type">
+                <option value="<%= linkgroup.getUsersType() %>"><%= mytext.display("pleaseselect") %>
+                <option value="" <% if (linkgroup.getUsersType().equals("")) { %>selected<% } %>><%= mytext.display("public") %>
+                <option value="*" <% if (linkgroup.getUsersType().equals("*")) { %>selected<% } %>><%= mytext.display("restricted") %>
+              </select>
+            </td>
+			<% if (myconfig.get(db, "use_useraccessrestrictions").equals("yes")) { %>
+            <td class="WCMinnerContentInputValue" align="left" valign="top">
+              <nobr>
+              <input type="hidden" id="users_usersinput" name="users_users" value="<%= linkgroup.getUsersUsers() %>">
+              <select multiple id="users_users" name="selectusers_users" style="min-width: 200px;" onChange="changeUsers(this)">
+                <option value=""><%= mytext.display("all") %></option>
+		<%
+		String[] myusers = linkgroup.getUsersUsers().split(",");
+		for (int i=0; i<myusers.length; i++) {
+			String myuser = "" + myusers[i];
+			if ((! myuser.equals("")) && (! myuser.equals("0"))) {
+				%><option value="<%= myuser %>" selected><%= User.Username(db, myconfig, myuser) %></option> &nbsp;<%
+			}
+		}
+		%>
+              </select>
+              <input type="button" value="<%= mytext.display("select") %>" onclick="openSelectContentItem('users_users', 'Users', '', 'Users', '');">
+              </nobr>
+            </td>
+			<% } %>
+          </tr>
+		<% } %>
+        <% } else { %>
+          <tr>
+            <td class="WCMinnerContentInputValue" align="left" colspan="4">
+            <div><b><%= mytext.display("content.accessrestrictions.disabled") %></b></div>
+            <% if (mysession.get("username").equals(myconfig.get(db, "superadmin"))) { %>
+            <%= mytext.display("content.accessrestrictions.enableconfig") %>
+            <% } else { %>
+            <%= mytext.display("content.accessrestrictions.enablesuperadmin") %>
+            <% } %>
+            </td>
+          </tr>
+	<% } %>
+        </table>
+      </form>
+
+</div></div>
+
+<!-- #EndEditable -->
+
+</div>
+<div class="ui-layout-south">
+<div class="ui-layout-content">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td class="WCMfooter" colSpan="4" align="center"> 
+      <%= mytext.display("footer") %>
+    </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+<!-- #EndTemplate --></html>
