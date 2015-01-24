@@ -1,11 +1,22 @@
 package HardCore;
 
-import java.io.*;
-import java.util.*;
+import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.regex.*;
-import javax.mail.*;
-import javax.mail.internet.*;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 import javax.servlet.ServletContext;
 
 public class Email {
@@ -158,15 +169,26 @@ public class Email {
 		if ((myconfig != null) && (! myconfig.get(db, "contact_form_mailserver").equals(""))) {
 			String[] mailserver = myconfig.get(db, "contact_form_mailserver").split(":");
 			if (mailserver.length >= 2) {
-				properties.setProperty("mail.smtp.host", "" + mailserver[0]);
-				properties.setProperty("mail.smtp.port", "" + mailserver[1]);
+				properties.setProperty("mail.smtp.host", "smtp.gmail.com");
+				properties.setProperty("mail.smtp.port", "587");
 			} else {
-				properties.setProperty("mail.smtp.host", myconfig.get(db, "contact_form_mailserver"));
+				properties.setProperty("mail.smtp.host", "smtp.gmail.com");
 			}
 		} else {
-			properties.setProperty("mail.smtp.host", "localhost");
+			properties.setProperty("mail.smtp.host", "smtp.gmail.com");
 		}
-		javax.mail.Session session = javax.mail.Session.getDefaultInstance(properties, null);
+		
+		properties.put("mail.smtp.auth", "true");
+		properties.put("mail.smtp.starttls.enable", "true");
+		
+		
+		
+		javax.mail.Session session = javax.mail.Session.getInstance(properties, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication("contato.iliketo@gmail.com", "hdgfHTn6446NdjFD89ds");
+				}
+		});
+		
 		try {
 			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(from));
