@@ -180,7 +180,9 @@ public class Email {
 		
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true");
-		
+		properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+
+
 		
 		
 		javax.mail.Session session = javax.mail.Session.getInstance(properties, new javax.mail.Authenticator() {
