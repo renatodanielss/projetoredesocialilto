@@ -46,17 +46,6 @@ String original_database = "access:sun.jdbc.odbc.JdbcOdbcDriver::@jdbc:odbc:DRIV
 dummy_database = "";
 original_database = "";
 
-//POSTGRESQL - INIT
-String dbname = "db_asbru";
-String username = "asbru_user";
-String password = "dFGdMGV5d1fv0FCv3x4f";
-String hostname = "localhost";
-String port = "5432";
-//exemplo = pgsql:org.postgresql.Driver:username:password@jdbc:postgresql://localhost/database
-dummy_database = "pgsql:org.postgresql.Driver:" + username + ":" + password + "@jdbc:postgresql://" + hostname + ":" + port + "/" + dbname;
-original_database = "pgsql:org.postgresql.Driver:" + username + ":" + password + "@jdbc:postgresql://" + hostname + ":" + port + "/" + dbname;
-//POSTGRESQL – END
-
 String database = "" + dummy_database;
 %><%@ include file="../config.cloud.jsp" %><%
 String default_database = inidb.ReadINI(inifile, "default", "database", database, "", null, null);
