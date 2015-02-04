@@ -1,19 +1,23 @@
-<!-- Classe RequestDispatcher importada usada para redirecionamento -->
-<%@ page import="javax.servlet.RequestDispatcher"%>
-
 <%@ page buffer="256kb" %><%@ include file="webadmin.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%
 
 UCmaintainContent maintainContent = new UCmaintainContent(mytext);
 Page mypage = maintainContent.doRegister(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, website, database);
 
+
+//Solicitação post.jsp - INIT
 //Depois que chama o método "doRegister" acima, o sistema Asbru faz o insert na tabela users 
 //código abaixo faz o redicionamento com solicitação para pagina post.jsp
 System.out.println("username = " + request.getParameter("username"));
 System.out.println("password = " + request.getParameter("password"));
 System.out.println("name = " + request.getParameter("name"));
-RequestDispatcher rd = request.getRequestDispatcher("/post.jsp?database=dbmembers");
-rd.forward(request, response);
-	
+
+%>
+<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
+<jsp:forward page="/post.jsp?database=dbmembers">
+	<jsp:param value="/page.jsp?id=286" name="redirect"/>
+</jsp:forward>
+<%
+//Solicitação post.jsp - END
 
 cms.CMSpage(myrequest.getParameter("id"), mypage);
 cms.HttpHeaders(myrequest.getParameter("id"));
