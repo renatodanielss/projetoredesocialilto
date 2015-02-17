@@ -2,9 +2,9 @@
 
 <%
 
-//faz o set na sessão com uma variavel de controle para informar que a solicitação vem da jsp "post_collection"
-System.out.println("CONTROL - " + "post_collection");
-mysession.set("control", "post_collection");
+//faz o set na sessão com uma variavel de controle para informar que a solicitação vem da jsp "post_add_item"
+System.out.println("CONTROL - " + "post_add_item");
+mysession.set("control", "post_add_item");
 
 cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("database"));
 
@@ -17,7 +17,7 @@ if (! myrequest.getParameter("database").equals("")) {
 }
 
 
-//depois tentar remover da sessão o controle mysession.set("control", "post_collection");
+//depois tentar remover da sessão o controle mysession.set("control", "post_add_item");
 
 
 %>
