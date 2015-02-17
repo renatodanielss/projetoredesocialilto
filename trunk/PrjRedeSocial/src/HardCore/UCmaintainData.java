@@ -740,8 +740,7 @@ public class UCmaintainData {
 		} else if (! redirect.equals("")) {
 			myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + Common.crlf_clean(redirect + data_id));
 		} else {
-			//Não deixa realizar o response da pagina, sendo assim é possivel fazer outras solicitações de request
-			//myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/");
+			myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/");
 		}
 
 		return data;
@@ -1015,7 +1014,7 @@ public class UCmaintainData {
 	}
 	private Fileupload getFileupload(String DOCUMENT_ROOT, Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, int randomize) {
 		String save_content_editor = myconfig.get(db, "content_editor");
-		Fileupload filepost = new Fileupload(myrequest, DOCUMENT_ROOT + myconfig.get(db, "URLrootpath"), myconfig.get(db, "URLuploadpath"), randomize, mysession);
+		Fileupload filepost = new Fileupload(myrequest, DOCUMENT_ROOT + myconfig.get(db, "URLrootpath"), myconfig.get(db, "URLuploadpath"), randomize);
 		myconfig.setTemp("content_editor", save_content_editor);
 		return filepost;
 	}
