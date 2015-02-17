@@ -425,12 +425,13 @@ public class Fileupload {
 						//path_photo_collection = é o campo da dbcollection para armazenar o nome da imagem de coleção
 						setParameter("path_photo_collection", filename);
 						System.out.println("UPLOAD - photo collection = " + filename);
-					
+						System.out.println("path = " + pathname);					
 					}
 					if(myforminputname.equals("photo_item")){
 						//path_photo_item = é o campo da dbcollectionitem para armazenar o nome da imagem item
 						setParameter("path_photo_item", filename);
 						System.out.println("UPLOAD - photo item = " + filename);
+						System.out.println("path = " + pathname);
 					}
 					
 				} catch (Exception e) {
