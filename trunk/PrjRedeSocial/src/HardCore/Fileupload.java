@@ -4,9 +4,8 @@ import java.io.*;
 import java.nio.charset.*;
 import java.text.*;
 import java.util.*;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.regex.*;
+
 import javax.servlet.http.*;
 import javax.servlet.ServletInputStream;
 
@@ -416,6 +415,24 @@ public class Fileupload {
 						}
 					}
 					file = new FileOutputStream(pathname + myfilename);
+					
+					//Obs: parametro "photo_collection" corresponde ao campo type="file" para upload da imagem
+					//parametro "path_photo_collection" corresponde ao campo da database dbcollection usado para gravar nome completo da imagem
+					//parametro "photo_item" corresponde ao campo type=file para upload da imagem
+					//parametro "path_photo_item" corresponde ao campo da database dbcollectionitem usado para gravar nome completo da imagem
+					
+					if(myforminputname.equals("photo_collection")){
+						//path_photo_collection = é o campo da dbcollection para armazenar o nome da imagem de coleção
+						setParameter("path_photo_collection", filename);
+						System.out.println("UPLOAD - photo collection = " + filename);
+					
+					}
+					if(myforminputname.equals("photo_item")){
+						//path_photo_item = é o campo da dbcollectionitem para armazenar o nome da imagem item
+						setParameter("path_photo_item", filename);
+						System.out.println("UPLOAD - photo item = " + filename);
+					}
+					
 				} catch (Exception e) {
 					file = null;
 				}
