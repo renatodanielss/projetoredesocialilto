@@ -1,15 +1,16 @@
 <%@ include file="webadmin.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.UCmaintainData" %><%@ page import="HardCore.Data" %><%@ page import="HardCore.Page" %><%@ page import="HardCore.html" %>
-
+<%@ page import="HardCore.UCmaintainDataILiketo" %>
 <%
 
 //faz o set na sessão com uma variavel de controle para informar que a solicitação vem da jsp "post_add_item"
 System.out.println("CONTROL - " + "post_add_item");
-mysession.set("control", "post_add_item");
+//mysession.set("control", "post_add_item");
 
 cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("database"));
 
 if (! myrequest.getParameter("database").equals("")) {
-	UCmaintainData maintainData = new UCmaintainData(mytext);
+	//UCmaintainData maintainData = new UCmaintainData(mytext);
+	UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
 	Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
 } else {
 	UCmaintainContent maintainContent = new UCmaintainContent(mytext);
@@ -17,7 +18,6 @@ if (! myrequest.getParameter("database").equals("")) {
 }
 
 
-//depois tentar remover da sessão o controle mysession.set("control", "post_add_item");
 
 
 %>
