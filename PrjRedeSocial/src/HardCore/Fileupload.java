@@ -24,7 +24,7 @@ public class Fileupload {
 	public Charset parametercharset = Charset.forName("iso-8859-1");
 	public Charset fileuploadcharset = Charset.forName("ISO-8859-1");
 
-	public Session mysession;
+
 
 	public Fileupload(Request request, String rootpath, String myfilepathname) {
 		if ((request != null) && (rootpath != null) && (myfilepathname != null)) {
@@ -34,21 +34,6 @@ public class Fileupload {
 			pathname = rootpath + filepathname;
 			try {
 				processFileupload(request, pathname, 0);
-			} catch (Exception e) {
-				myfileupload = new HashMap<String,Object>();
-			}
-		}
-	}
-	//Adicionado um novo construtor de classe para passar a sessão como parametro
-	public Fileupload(Request request, String rootpath, String myfilepathname, int randomize, Session mysession) {
-		this.mysession = mysession;
-		if ((request != null) && (rootpath != null) && (myfilepathname != null)) {
-			httpservletrequest = request.getRequest();
-			setCharset(request.getCharset());
-			filepathname = myfilepathname;
-			pathname = rootpath + filepathname;
-			try {
-				processFileupload(request, pathname, randomize);
 			} catch (Exception e) {
 				myfileupload = new HashMap<String,Object>();
 			}
@@ -342,15 +327,6 @@ public class Fileupload {
 							addParameter(myforminputname, m.group(1));
 						}
 					}
-					
-					//se for control post_collection adiciona na sessão o nome da coleção
-					if(mysession.get("control").equals("post_collection")){
-						if(myforminputname.equals("name_collection")){							
-							mysession.set("selected_collection", myforminputvalue);
-							System.out.println("coleção selecionada na session = " + mysession.get("selected_collection"));
-						}
-					}
-
 					myforminputname = "";
 					myforminputvalue = "";
 					expected = "Content-Disposition";
@@ -440,17 +416,6 @@ public class Fileupload {
 						}
 					}
 					file = new FileOutputStream(pathname + myfilename);
-					
-					//verifica o controle para saber qual jsp está realizando a solicitação
-					if(mysession.get("control").equals("post_collection")){
-						//Faz o set do campo com o nome da nova imagem gerada pelo asbru, exemplo = imagem_qpbdegkaftyuurcljiodbnwaqeulidxo.jpg
-						setParameter("path_photo_collection", filename);
-						System.out.println("upload photo collection = " + filename);
-					}else if(mysession.get("control").equals("post_add_item")){
-						setParameter("path_photo_item", filename);
-						System.out.println("upload photo item = " + filename);
-					}
-					
 				} catch (Exception e) {
 					file = null;
 				}
