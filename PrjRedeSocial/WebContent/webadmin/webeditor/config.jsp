@@ -31,8 +31,8 @@ String root_path = "";
 
 // Which (if any) temporary folder to use for upload?
 // Must be the full absolute folder path/name of a temporary folder - not the final actual folder where files are stored
-String enable_upload = "no";
-//String enable_upload = "yes";
+//String enable_upload = "no";
+String enable_upload = "yes";
 String upload_path = "";
 //upload_path = getServletConfig().getServletContext().getRealPath("/upload/");
 //upload_path = "D:\\Asbru\\Web Content Editor\\upload\\";
