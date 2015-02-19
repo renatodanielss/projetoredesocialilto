@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.*;
 import java.util.TimeZone;
+
 import javax.servlet.*;
+
+import com.iliketo.util.Str;
 
 public class UCmaintainDataILiketo {
 	private String error = "";
@@ -434,6 +437,15 @@ public class UCmaintainDataILiketo {
 		Page mypage = new Page(text);
 		Fileupload filepost = new Fileupload(null, null, null);
 		filepost = getFileupload(DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, 32);
+		
+		//Recupera o nome da coleção para setar na session
+		String nameOfCollection = filepost.getParameter(Str.NAME_COLLECTION); //recupera nome da coleção
+		
+		if(nameOfCollection != null && !nameOfCollection.equals("")){ //verifica nome da coleção
+			//Seta o nome da coleção recuperado pelo parametro
+			mysession.set(myconfig.get(db, "getset") + Str.S_COLLECTION, nameOfCollection);//seta na session
+			System.out.println("Set session s_collection=" + nameOfCollection);
+		}
 
 		String redirect = myrequest.getParameter("redirect");
 		if (redirect.equals("")) redirect = filepost.getParameter("redirect");
@@ -740,7 +752,8 @@ public class UCmaintainDataILiketo {
 		} else if (! redirect.equals("")) {
 			myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + Common.crlf_clean(redirect + data_id));
 		} else {
-			myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/");
+			//se redirect for vazio, não redireciona para nenhum lugar! obs:por padrão estava pagina home codigo abaixo
+			//myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/");
 		}
 
 		return data;

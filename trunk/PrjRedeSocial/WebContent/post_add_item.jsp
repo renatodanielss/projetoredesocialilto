@@ -1,10 +1,11 @@
 <%@ include file="webadmin.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.UCmaintainData" %><%@ page import="HardCore.Data" %><%@ page import="HardCore.Page" %><%@ page import="HardCore.html" %>
 <%@ page import="HardCore.UCmaintainDataILiketo" %>
+
+
 <%
 
-//faz o set na sessão com uma variavel de controle para informar que a solicitação vem da jsp "post_add_item"
-System.out.println("CONTROL - " + "post_add_item");
-//mysession.set("control", "post_add_item");
+System.out.println("Log - " + "execute action post_add_item");
+
 
 cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("database"));
 
@@ -21,7 +22,6 @@ if (! myrequest.getParameter("database").equals("")) {
 
 
 %>
-
 
 
 <% if (db != null) db.close(); %><% if (logdb !=
