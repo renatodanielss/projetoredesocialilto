@@ -9,6 +9,8 @@ import java.util.regex.*;
 import javax.servlet.http.*;
 import javax.servlet.ServletInputStream;
 
+import com.iliketo.util.Str;
+
 public class Fileupload {
 	private HttpServletRequest httpservletrequest = null;
 	private HashMap<String,Object> myfileupload = new HashMap<String,Object>();
@@ -421,15 +423,15 @@ public class Fileupload {
 					//parametro "photo_item" corresponde ao campo type=file para upload da imagem
 					//parametro "path_photo_item" corresponde ao campo da database dbcollectionitem usado para gravar nome completo da imagem
 					
-					if(myforminputname.equals("photo_collection")){
+					if(myforminputname.equals(Str.PHOTO_COLLECTION)){
 						//path_photo_collection = é o campo da dbcollection para armazenar o nome da imagem de coleção
-						setParameter("path_photo_collection", filename);
+						setParameter(Str.PATH_PHOTO_COLLECTION, filename);
 						System.out.println("UPLOAD - photo collection = " + filename);
 						System.out.println("path = " + pathname);					
 					}
-					if(myforminputname.equals("photo_item")){
+					if(myforminputname.equals(Str.PHOTO_ITEM)){
 						//path_photo_item = é o campo da dbcollectionitem para armazenar o nome da imagem item
-						setParameter("path_photo_item", filename);
+						setParameter(Str.PATH_PHOTO_ITEM, filename);
 						System.out.println("UPLOAD - photo item = " + filename);
 						System.out.println("path = " + pathname);
 					}
