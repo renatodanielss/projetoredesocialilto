@@ -12,7 +12,7 @@ cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("databas
 if (! myrequest.getParameter("database").equals("")) {
 	//UCmaintainData maintainData = new UCmaintainData(mytext);
 	UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
-	Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
+	Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_collection");
 	
 	String ID = data.getId(); //reupera o ID gerado	
 	System.out.println("Log - ID gerado da coleção = " + ID);
