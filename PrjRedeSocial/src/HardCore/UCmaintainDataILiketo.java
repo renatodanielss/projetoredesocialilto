@@ -432,19 +432,22 @@ public class UCmaintainDataILiketo {
 
 
 
-	public Data doPost(ServletContext server, String DOCUMENT_ROOT, Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db) throws Exception {
+	public Data doPost(ServletContext server, String DOCUMENT_ROOT, Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, String action) throws Exception {
 		error = "";
 		Page mypage = new Page(text);
 		Fileupload filepost = new Fileupload(null, null, null);
 		filepost = getFileupload(DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, 32);
 		
-		//Recupera o nome da coleção para setar na session
-		String nameOfCollection = filepost.getParameter(Str.NAME_COLLECTION); //recupera nome da coleção
-		
-		if(nameOfCollection != null && !nameOfCollection.equals("")){ //verifica nome da coleção
-			//Seta o nome da coleção recuperado pelo parametro
-			mysession.set(myconfig.get(db, "getset") + Str.S_COLLECTION, nameOfCollection);//seta na session
-			System.out.println("Set session s_collection=" + nameOfCollection);
+		//se action for post_collection realiza o fluxo abaixo
+		if(action.equals("post_collection")){
+			//Recupera o nome da coleção para setar na session
+			String nameOfCollection = filepost.getParameter(Str.NAME_COLLECTION); //recupera nome da coleção
+			
+			if(nameOfCollection != null && !nameOfCollection.equals("")){ //verifica nome da coleção
+				//Seta o nome da coleção recuperado pelo parametro
+				mysession.set(myconfig.get(db, "getset") + Str.S_COLLECTION, nameOfCollection);//seta na session
+				System.out.println("Set session s_collection=" + nameOfCollection);
+			}
 		}
 
 		String redirect = myrequest.getParameter("redirect");
@@ -665,13 +668,46 @@ public class UCmaintainDataILiketo {
 				data.setUpdated(database.columns, timestamp, username);
 				data.update(db, "data" + database.getId(), database.columns);
 			} else {
-				data.getFormData(database.columns, filepost);
-				data.getFormData(database.columns, myrequest);
-				data.getFormData(database.columns, postedfiles);
-				data.adjustContent(database.columns);
-				data.setCreated(database.columns, timestamp, username);
-				data.setUpdated(database.columns, timestamp, username);
-				data.create(db, "data" + database.getId(), database.columns);
+				
+				//se a action for post_add_item reaiza o fluxo abaixo e verifca quais os parametros com nomes iguais para gravar no banco cada item de registro
+				if(action.equals("post_add_item")){
+					String[] arrayCampos = {"title_item", "description_item", "path_photo_item", "fk_collection_id"};//campos do form
+					String[] todosTitleItem = filepost.getParameters(arrayCampos[0]);		//retorna todos title item
+					String[] todosDescription = filepost.getParameters(arrayCampos[1]);	//retorns todos description item
+					String[] todosPathPhotoItem = filepost.getParameters(arrayCampos[2]);		//retorna todas photo item
+					String fk_collection_id = filepost.getParameter(arrayCampos[3]); //retorna um id_collection igual para todos
+					//caso adicionar mais campos na database, necessario colocar aqui tambem
+					
+					int quantItens = todosPathPhotoItem.length;	//quantidade de itens para adicionar no banco
+					
+					for(int i= 0; i < quantItens; i++){
+						Fileupload filepostCadaItem = new Fileupload(null, null, null);
+						filepostCadaItem.setParameter(arrayCampos[0], todosTitleItem[i]);
+						filepostCadaItem.setParameter(arrayCampos[1], todosDescription[i]);
+						filepostCadaItem.setParameter(arrayCampos[2], todosPathPhotoItem[i]);
+						filepostCadaItem.setParameter(arrayCampos[3], fk_collection_id);
+						//caso adicionar mais campos na database, necessario colocar aqui tambem
+						
+						//Chama a classe data para criar cada item e salvar na tabela
+						//filepostCadaItem >>> contem cada item ou linha para ser gravado no banco
+						data.getFormData(database.columns, filepostCadaItem);
+						data.getFormData(database.columns, myrequest);
+						data.getFormData(database.columns, postedfiles);
+						data.adjustContent(database.columns);
+						data.setCreated(database.columns, timestamp, username);
+						data.setUpdated(database.columns, timestamp, username);
+						data.create(db, "data" + database.getId(), database.columns);
+					}
+					
+				}else{//senão for post_add_item, faz o fluxo normal abaixo
+					data.getFormData(database.columns, filepost);
+					data.getFormData(database.columns, myrequest);
+					data.getFormData(database.columns, postedfiles);
+					data.adjustContent(database.columns);
+					data.setCreated(database.columns, timestamp, username);
+					data.setUpdated(database.columns, timestamp, username);
+					data.create(db, "data" + database.getId(), database.columns);
+				}
 			}
 			data_id = "" + data.getId();
 
