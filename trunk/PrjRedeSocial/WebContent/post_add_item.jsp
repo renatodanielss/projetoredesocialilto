@@ -5,7 +5,7 @@
 <%
 
 System.out.println("Log - " + "execute action post_add_item");
-
+System.out.println("Log - DOCUMENT_ROOT = " + DOCUMENT_ROOT);
 
 cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("database"));
 
