@@ -671,7 +671,7 @@ public class UCmaintainDataILiketo {
 				
 				//se a action for post_add_item reaiza o fluxo abaixo e verifca quais os parametros com nomes iguais para gravar no banco cada item de registro
 				if(action.equals("post_add_item")){
-					String[] arrayCampos = {"title_item", "description_item", "path_photo_item", "fk_collection_id"};//campos do form
+					String[] arrayCampos = {"title_item", "description_item", "path_photo_item", "fk_collection_id", "id_item"};//campos do form
 					String[] todosTitleItem = filepost.getParameters(arrayCampos[0]);		//retorna todos title item
 					String[] todosDescription = filepost.getParameters(arrayCampos[1]);	//retorns todos description item
 					String[] todosPathPhotoItem = filepost.getParameters(arrayCampos[2]);		//retorna todas photo item
@@ -697,6 +697,23 @@ public class UCmaintainDataILiketo {
 						data.setCreated(database.columns, timestamp, username);
 						data.setUpdated(database.columns, timestamp, username);
 						data.create(db, "data" + database.getId(), database.columns);
+						
+						//Após create e gerar o novo id de cada item pelo sistema, faz update para atualizar o id na database dbcollectionitem
+						String idUpdate = data.getId();	//recupera id gerado pelo sistema
+						Fileupload filepostUpateID = new Fileupload(null, null, null);
+						filepostUpateID.setParameter(arrayCampos[4], idUpdate);	//set parametro do id_item
+						
+						if ((! data.getId().equals("")) && data.getEditor()) {							
+							String created = data.getCreated(database.columns);
+							String createdby = data.getCreatedBy(database.columns);
+							data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro do id_item
+							data.getFormData(database.columns, myrequest);
+							data.getFormData(database.columns, postedfiles);
+							data.adjustContent(database.columns);
+							data.setCreated(database.columns, created, createdby);
+							data.setUpdated(database.columns, timestamp, username);
+							data.update(db, "data" + database.getId(), database.columns);
+						}
 					}
 					
 				}else{//senão for post_add_item, faz o fluxo normal abaixo
