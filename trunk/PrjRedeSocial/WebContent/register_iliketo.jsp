@@ -1,23 +1,52 @@
-<%@ page buffer="256kb" %><%@ include file="webadmin.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%
+<%@ page buffer="256kb" %><%@ include file="webadmin.jsp" %><%@ page import="HardCore.UCmaintainContent" %>
+<%@ page import="com.iliketo.control.UserController" %>
 
-UCmaintainContent maintainContent = new UCmaintainContent(mytext);
-Page mypage = maintainContent.doRegister(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, website, database);
-
-
-//Solicitação post.jsp - INIT
-//Depois que chama o método "doRegister" acima, o sistema Asbru faz o insert na tabela users 
-//código abaixo faz o redicionamento com solicitação para pagina post.jsp
-System.out.println("username = " + request.getParameter("username"));
-System.out.println("password = " + request.getParameter("password"));
-System.out.println("name = " + request.getParameter("name"));
-
-%>
-<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
-<jsp:forward page="/post.jsp?database=dbmembers">
-	<jsp:param value="/page.jsp?id=286" name="redirect"/>
-</jsp:forward>
 <%
-//Solicitação post.jsp - END
+
+//***Executa e valida Registro iliketo**** 
+String errorILiketo = "";
+UserController controller = new UserController();
+
+if(!controller.validateFieldsForm(db, request)){
+	if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
+		errorILiketo = (String) request.getAttribute("msgError");
+	}
+}
+
+Page mypage = null;
+
+if(!errorILiketo.equals("")){ //se conter error na validação do registro, adiciona o erro na page
+	
+	//Cria um UCbrowseWebsite
+	UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
+	mypage = browseWebsite.getPage(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+	
+	//coloca os valores do campo do form novamente na page para não perder os dados que o usuário digitou
+	mypage.parse_output_register_iliketo(errorILiketo, request);
+	website.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_doctype");
+	
+}else{
+	
+	UCmaintainContent maintainContent = new UCmaintainContent(mytext);
+	mypage = maintainContent.doRegister(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, website, database);
+	
+	//Solicitação post.jsp - INIT
+	//Depois que chama o método "doRegister" acima, o sistema Asbru faz o insert na tabela users 
+	//código abaixo faz o redicionamento com solicitação para pagina post.jsp
+	System.out.println("email = " + request.getParameter("email"));
+	System.out.println("username = " + request.getParameter("username"));
+	System.out.println("password = " + request.getParameter("password"));
+	
+	%>
+	<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
+	<jsp:forward page="/post.jsp?database=dbmembers">
+		<jsp:param value="/page.jsp?id=286" name="redirect"/>
+	</jsp:forward>
+	<%
+	//Solicitação post.jsp - END
+}
+
+//***Continua aplicação do sistema Asbru**** 
 
 cms.CMSpage(myrequest.getParameter("id"), mypage);
 cms.HttpHeaders(myrequest.getParameter("id"));

@@ -4,17 +4,13 @@ import java.io.*;
 import java.io.File;
 import java.sql.*;
 import java.text.*;
-import java.text.DateFormat;
 import java.util.*;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.regex.*;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.ServletContext;
 
 public class Page extends Content {
@@ -7271,7 +7267,31 @@ if (mycontent.contains("@@@invoice_")) {
 		body = adjust_links(session_version, body, db, config);
 	}
 
-
+	/**
+	 * Método criado para a validação de registro de membros, se conter erro
+	 * mostra na página pro usuario e preenche os campos do form para não precisar digitar novamente
+	 * Não é necesário mudar o método se adicionar mais campos no form
+	 */
+	public void parse_output_register_iliketo(String errorILiketo, HttpServletRequest request){
+		
+		//substitui o @@@error@@@ na page pelo errorILiketo
+		if (body.contains("@@@error@@@")){
+			body = body.replaceAll("@@@error@@@", ("" + errorILiketo).replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+		}
+		
+		Enumeration parameters = request.getParameterNames(); //recupera parametros do request que contem os campos do formulario
+		
+		while(parameters != null && parameters.hasMoreElements()){			
+			
+			String name = (String) parameters.nextElement();	//name campo do form
+			String value = request.getParameter(name); //valor campo form
+			
+			//coloca os parametros que o usuario digitou novamente nos campos
+			if (body.contains("@@@" + name + "@@@")){
+				body = body.replaceAll("@@@" + name + "@@@", ("" + value).replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));		
+			}
+		}
+	}
 
 	public void parse_output_register(String error, String email, String username, String password, String name, User user) {
 		if (body.contains("@@@error@@@")) body = body.replaceAll("@@@error@@@", ("" + error).replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
