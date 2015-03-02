@@ -28,6 +28,15 @@ public class Str {
 	/**String s_id_collection é a variável usada na sessão para guardar o id da coleção selecionada*/
 	public static final String S_ID_COLLECTION = "s_id_collection";
 	
+	/**String s_id_register_collection é a variável usada na sessão para guardar o id da coleção nova criada*/
+	public static final String S_ID_REGISTER_COLLECTION = "s_id_register_collection";
+	
+	/**String s_id_collector é a variável usada na sessão para guardar o id da coleção do colecionador*/
+	public static final String S_ID_COLLECTOR = "s_id_collector";
+	
+	/**String s_id_collector é a variável usada na sessão para guardar o id do usuario colecionador*/
+	public static final String S_ID_MEMBER_COLLECTOR = "s_id_member_collector";
+	
 	//construtor privado
 	private Str(){
 		

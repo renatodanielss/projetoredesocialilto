@@ -30,16 +30,21 @@ if(!errorILiketo.equals("")){ //se conter error na validação do registro, adicio
 	UCmaintainContent maintainContent = new UCmaintainContent(mytext);
 	mypage = maintainContent.doRegister(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, website, database);
 	
+	//recupera o registro do usuario criado na tabela users
+	String idRegisterUser = controller.getIdCreatedUser(db, "username", request.getParameter("username"));
+	
 	//Solicitação post.jsp - INIT
 	//Depois que chama o método "doRegister" acima, o sistema Asbru faz o insert na tabela users 
 	//código abaixo faz o redicionamento com solicitação para pagina post.jsp
 	System.out.println("email = " + request.getParameter("email"));
 	System.out.println("username = " + request.getParameter("username"));
 	System.out.println("password = " + request.getParameter("password"));
+	System.out.println("ID User = " + idRegisterUser);
 	
 	%>
 	<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
 	<jsp:forward page="/post.jsp?database=dbmembers">
+		<jsp:param value="<%=idRegisterUser%>" name="id_member"/>
 		<jsp:param value="/page.jsp?id=286" name="redirect"/>
 	</jsp:forward>
 	<%

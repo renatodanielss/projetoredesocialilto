@@ -48,4 +48,26 @@ public class IliketoDAO {
 		return readRecordExistsTable(db, dataTable, dataCol, value);	//chama método para consultar no banco de dados	
 		
 	}
+	
+	/**
+	 * Método static responsável por retornar o valor do id do usuario registrado na tabela users
+	 * Se existir retorna int
+	 * @param db
+	 * @param id
+	 * return exists
+	 */
+	public static String readIdCreatedTable(DB db, String table, String nameColumn, String value) {
+		
+		if (db == null) return null;
+		if (! value.equals("")) {
+			String SQL = "select id from " + table + " where " + nameColumn + "=" + db.quote(value);
+			HashMap<String,String> row = db.query_record(SQL);
+			if (row != null) {
+				String idCreated = row.get("id");
+				return idCreated;
+			}
+		}
+		
+		return null;
+	}
 }
