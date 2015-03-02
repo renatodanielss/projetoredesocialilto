@@ -447,6 +447,10 @@ public class UCmaintainDataILiketo {
 				//Seta o nome da coleção recuperado pelo parametro
 				mysession.set(myconfig.get(db, "getset") + Str.S_COLLECTION, nameOfCollection);//seta na session
 				System.out.println("Set session s_collection=" + nameOfCollection);
+			}else{
+				//não existe parametro name_collection
+				//redirect para register collection.
+				myresponse.sendRedirect("/page.jsp?id=410");				
 			}
 		}
 
@@ -716,7 +720,7 @@ public class UCmaintainDataILiketo {
 						}
 					}
 					
-				}else{//senão for post_add_item, faz o fluxo normal abaixo
+				}else{//senão for post_add_item, faz o fluxo normal abaixo para coleção
 					data.getFormData(database.columns, filepost);
 					data.getFormData(database.columns, myrequest);
 					data.getFormData(database.columns, postedfiles);
@@ -724,6 +728,23 @@ public class UCmaintainDataILiketo {
 					data.setCreated(database.columns, timestamp, username);
 					data.setUpdated(database.columns, timestamp, username);
 					data.create(db, "data" + database.getId(), database.columns);
+					
+					//se for action post_collection, faz update do novo id gerado da coleção
+					String idUpdate = data.getId();	//recupera id gerado pelo sistema
+					Fileupload filepostUpateID = new Fileupload(null, null, null);
+					filepostUpateID.setParameter("id_collection", idUpdate);	//set parametro do coleção
+					
+					if ((! data.getId().equals("")) && data.getEditor()) {							
+						String created = data.getCreated(database.columns);
+						String createdby = data.getCreatedBy(database.columns);
+						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro da coleção
+						data.getFormData(database.columns, myrequest);
+						data.getFormData(database.columns, postedfiles);
+						data.adjustContent(database.columns);
+						data.setCreated(database.columns, created, createdby);
+						data.setUpdated(database.columns, timestamp, username);
+						data.update(db, "data" + database.getId(), database.columns);
+					}
 				}
 			}
 			data_id = "" + data.getId();

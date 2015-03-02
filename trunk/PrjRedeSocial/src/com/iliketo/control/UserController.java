@@ -52,13 +52,19 @@ public class UserController {
 	 */
 	public boolean validateUsername(DB db, HttpServletRequest request){
 		String msg = "";
-		if(IliketoDAO.readRecordExistsDatabase(db, tableUsers, "username", request.getParameter("username"))){
+		if(IliketoDAO.readRecordExistsTable(db, tableUsers, "username", request.getParameter("username"))){
 			msg = "<br>" + "Please verify, username already exists!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
 			System.out.println("Log - Username = " + request.getParameter("username") + " already exists");
 			request.setAttribute("msgError", msg);
 			return false;
 		}
 		return true;
+		
+	}
+	
+	public String getIdCreatedUser(DB db, String nameColumn, String value){
+		
+		return IliketoDAO.readIdCreatedTable(db, tableUsers, nameColumn, value);
 		
 	}
 	
