@@ -51,16 +51,18 @@ public class IliketoDAO {
 	
 	/**
 	 * Método static responsável por retornar o valor do id do usuario registrado na tabela users
-	 * Se existir retorna int
+	 * Se existir retorna String id
+	 * obs método utilizado somente para cadastro de um novo usuario, recuperar id para gravar na dbmmbers.
 	 * @param db
-	 * @param id
-	 * return exists
+	 * @param nameColumn coluna comparar
+	 * @param value valor comparado
+	 * return String Id
 	 */
-	public static String readIdCreatedTable(DB db, String table, String nameColumn, String value) {
+	public static String readIdUserCreatedTable(DB db, String table, String columnUsername, String value) {
 		
 		if (db == null) return null;
 		if (! value.equals("")) {
-			String SQL = "select id from " + table + " where " + nameColumn + "=" + db.quote(value);
+			String SQL = "select id from " + table + " where " + columnUsername + "=" + db.quote(value);
 			HashMap<String,String> row = db.query_record(SQL);
 			if (row != null) {
 				String idCreated = row.get("id");

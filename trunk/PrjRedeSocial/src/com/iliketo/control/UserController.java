@@ -62,9 +62,17 @@ public class UserController {
 		
 	}
 	
-	public String getIdCreatedUser(DB db, String nameColumn, String value){
+	/**
+	 * Método realiza a pesquisa do usuário na tabela users, passando o username e o valor para comparar
+	 * Então retorna o id encontrado
+	 * @param db
+	 * @param columnUsername
+	 * @param value
+	 * @return Id do usuario
+	 */
+	public String getIdCreatedUser(DB db, String columnUsername, String value){
 		
-		return IliketoDAO.readIdCreatedTable(db, tableUsers, nameColumn, value);
+		return IliketoDAO.readIdUserCreatedTable(db, tableUsers, columnUsername, value);
 		
 	}
 	
