@@ -1948,10 +1948,11 @@ public class UCmaintainContent {
 						if (! scheduled_publish_email.equals("")) user.setScheduledPublishEmail(scheduled_publish_email);
 						if (! scheduled_notify_email.equals("")) user.setScheduledNotifyEmail(scheduled_notify_email);
 						if (! scheduled_unpublish_email.equals("")) user.setScheduledUnpublishEmail(scheduled_unpublish_email);
-						user.create(db);
+						user.create(db);	//método cria o usuário no Banco de Dados.
 
 						error += "<br>" + text.display("register.created");
 
+						/*Obs: Desativado - Abaixo o Sistema Asbru realiza a criação da Personal Page do usuário.
 						if (! content_id.equals("")) {
 							mypage = getPublishedPageById(content_id, server, mysession, myrequest, myresponse, myconfig, db);
 							mypage.setServerFilename("");
@@ -2058,8 +2059,8 @@ public class UCmaintainContent {
 								body = mypage.parse_output_replace_inputs(myrequest, filepost, body);
 								handleNotification(subject, body, server, mypage, null, filepost, myrequest, myresponse, mysession, myconfig, db);
 							}
-						}
-
+						}*/
+						//Abaixo sistema Asbru realiza o processo de confirmação de registro do usuário
 						if ((! myconfig.get(db, "default_register_confirmation_page").equals("")) || ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_register_confirmation_page").equals("")))) {
 							Page confirmation = new Page(text);
 							if ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_login").equals(""))) {
