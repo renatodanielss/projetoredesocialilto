@@ -28,10 +28,10 @@ if (! myrequest.getParameter("database").equals("")) {
 		myresponse.sendRedirect("/page.jsp?id=48");
 	}
 	
-} else {
-	UCmaintainContent maintainContent = new UCmaintainContent(mytext);
-	Page mypage = maintainContent.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
-}
+} //else {
+	//UCmaintainContent maintainContent = new UCmaintainContent(mytext);
+	//Page mypage = maintainContent.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
+//}
 
 System.out.println("");
 
