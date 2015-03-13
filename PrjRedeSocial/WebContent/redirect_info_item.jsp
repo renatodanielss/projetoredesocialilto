@@ -29,7 +29,7 @@ if(myIdUser.equals(IDMember)){
 	System.out.println("Set session s_id_item = " + idItem);
 	mysession.set(myconfig.get(db, "getset") + Str.S_ID_MEMBER_COLLECTOR, IDMember);//seta na session o id_member do colecionador visitado
 	System.out.println("Set session s_id_member_collector=" + IDMember);
-	myresponse.sendRedirect("/page.jsp?id=495");
+	myresponse.sendRedirect("/page.jsp?id=595");
 	
 }
 
