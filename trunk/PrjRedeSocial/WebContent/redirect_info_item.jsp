@@ -8,6 +8,7 @@
 //verificar se é a minha coleção que está na lista de pesquisa
 String idItem = myrequest.getParameter("idItem"); //recupera o id do item
 String IDMember = myrequest.getParameter("idMember"); // recupera do parametro o id do usuario membro colecionador
+String IDCollection = myrequest.getParameter("idCollection"); //recupera o id da coleção deste item
 String myIdUser = mysession.get("userid"); //meu id de usuario na sessão
 
 
@@ -18,6 +19,8 @@ if(myIdUser.equals(IDMember)){
 			
 	mysession.set(myconfig.get(db, "getset") + Str.S_ID_ITEM, idItem);//seta na session o id do item do colecionador
 	System.out.println("Set session s_id_item = " + idItem);
+	mysession.set(myconfig.get(db, "getset") + Str.S_ID_COLLECTION, IDCollection);//seta na session o id da minha coleção
+	System.out.println("Set session s_id_collection=" + IDCollection);
 	myresponse.sendRedirect("/page.jsp?id=594");
 		
 }else{
@@ -29,6 +32,8 @@ if(myIdUser.equals(IDMember)){
 	System.out.println("Set session s_id_item = " + idItem);
 	mysession.set(myconfig.get(db, "getset") + Str.S_ID_MEMBER_COLLECTOR, IDMember);//seta na session o id_member do colecionador visitado
 	System.out.println("Set session s_id_member_collector=" + IDMember);
+	mysession.set(myconfig.get(db, "getset") + Str.S_ID_COLLECTOR, IDCollection);//seta na session o id da coleção do colecionador
+	System.out.println("Set session s_id_collector=" + IDCollection);
 	myresponse.sendRedirect("/page.jsp?id=595");
 	
 }
