@@ -37,6 +37,9 @@ public class Str {
 	/**String s_id_collector é a variável usada na sessão para guardar o id do usuario colecionador*/
 	public static final String S_ID_MEMBER_COLLECTOR = "s_id_member_collector";
 	
+	/**String s_id_item é a variável usada na sessão para guardar o id do item para visualizar*/
+	public static final String S_ID_ITEM = "s_id_item";
+	
 	//construtor privado
 	private Str(){
 		
