@@ -851,9 +851,44 @@ public class Data {
 			db.update(database, "id", id, mydata);
 		}
 	}
-
-
-
+	
+	/**
+	 * Método responsável por retornar a col+id correspondente ao nome da coluna no banco de dados
+	 * Example: nameCol = col+id
+	 * Example: title_item = col1
+	 * Example: description_item = col2
+	 * @param columns
+	 * @param nameCol
+	 * @return
+	 */
+	public String getColAdjustContent(HashMap columns, String nameCol) {
+		Iterator mycolumns = columns.keySet().iterator();
+		while (mycolumns.hasNext()) {
+			HashMap column = (HashMap)columns.get("" + mycolumns.next());
+			String id = "" + column.get("id");
+			String name = "" + column.get("name");
+			if (name.equals(nameCol)) {
+				return "col" + id;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Método responsavel por deletar qualquer conteudo de uma database/table
+	 * Passar o nome da coluna e o id
+	 * @param db
+	 * @param database
+	 * @param Column
+	 * @param id
+	 */
+	public void deleteIliketo(DB db, String database, String column, String id) {
+		if (db == null) return;
+		if ((id != null) && (! id.equals(""))) {
+			db.delete(database, column, id);
+		}
+	}
+	
 	public void delete(DB db, String database) {
 		if (db == null) return;
 		if ((id != null) && (! id.equals(""))) {
