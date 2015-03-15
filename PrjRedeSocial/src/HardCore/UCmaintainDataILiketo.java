@@ -660,6 +660,14 @@ public class UCmaintainDataILiketo {
 			data_id = myrequest.getParameter("id");
 			if (data_id.equals("")) data_id = filepost.getParameter("id");
 			data.read(db, "data" + database.getId(), data_id);
+			
+			//se for action post_photo_member, então é um update da foto na database dbmembers
+			if(action.equals("post_photo_member")){
+				//ler a tabela usando o id do usuario >> 'id_member'
+				String col = data.getColAdjustContent(database.columns, "id_member"); //recupera o nome original no banco de dados, ex: col1, col2
+				data.readILiketo(db, "data" + database.getId(), col, data_id);
+			}
+			
 			data.getAccessRestrictions(database, mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig);
 			if ((! data.getId().equals("")) && data.getEditor()) {
 				String created = data.getCreated(database.columns);

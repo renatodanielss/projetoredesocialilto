@@ -51,6 +51,30 @@ public class Data {
 	}
 
 
+	/**
+	 * Método responsável por ler e carregar os nomes das colunas da database utilizando a col e valor pra comparar
+	 * Ex: database = data9
+	 * Ex: col = col1 ou col2...(col+id)
+	 * Ex: id = 39(id do usuario na sessão)
+	 * @param db
+	 * @param database
+	 * @param col
+	 * @param id
+	 */
+	public void readILiketo(DB db, String database, String col, String id) {
+		if (db == null) return;
+		if ((id != null) && (! id.equals(""))) {
+			String SQL = "select * from " + Common.SQL_clean(database) + " where " + col + " = " + Common.integer(id);
+			HashMap<String,String> row = db.query_record(SQL);
+			if (row != null) {
+				getRecord(db, row);
+			} else {
+				init();
+			}
+		}
+	}
+
+
 
 	public void read(DB db, String database, String id) {
 		if (db == null) return;

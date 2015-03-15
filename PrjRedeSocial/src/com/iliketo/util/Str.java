@@ -13,6 +13,12 @@ public class Str {
 	/**Nome do campo da database dbcollection para armazenar o nome da imagem da coleção*/
 	public static final String PATH_PHOTO_COLLECTION = "path_photo_collection";
 	
+	/**Nome do campo type=file do form para upload da imagem do membro*/
+	public static final String PHOTO_MEMBER = "photo_member";
+	
+	/**Nome do campo da database dbmember para armazenar o nome da imagem de perfil do member*/
+	public static final String PATH_PHOTO_MEMBER = "path_photo_member";
+	
 	/**Nome do campo para upload da imagem do item*/
 	public static final String PHOTO_ITEM = "photo_item";
 	
