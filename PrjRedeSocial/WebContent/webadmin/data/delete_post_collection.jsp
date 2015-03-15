@@ -20,9 +20,9 @@ UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
 Data data = maintainData.doDeleteCollectionAndItens(mysession, myrequest, myresponse, myconfig, db, nameDatabase, "id", idDeleteColecao);
 
 
-//Detela todos os itens da dbcollection item usando a chave estrangeira fk_collection_id
+//Detela todos os itens da dbcollectionitem usando a chave estrangeira fk_collection_id
 String nameCol = "fk_collection_id";
-data = maintainData.doDeleteCollectionAndItens(mysession, myrequest, myresponse, myconfig, db, nameDatabase, nameCol, idDeleteColecao);
+data = maintainData.doDeleteCollectionAndItens(mysession, myrequest, myresponse, myconfig, db, "dbcollectionitem", nameCol, idDeleteColecao);
 
 
 System.out.println("Log - " + "execute delete_post_collection - id da coleção deletada = " + idDeleteColecao);
