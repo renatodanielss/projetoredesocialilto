@@ -876,6 +876,38 @@ public class UCmaintainDataILiketo {
 
 
 
+	/**
+	 * Método responsavel por deletar um item, uma coleção e seus itens
+	 * Passar por parametro nome da database, nome da coluna, valor do id para deletar
+	 * @param mysession
+	 * @param myrequest
+	 * @param myresponse
+	 * @param myconfig
+	 * @param db
+	 * @param nameDatabase
+	 * @param nameCol
+	 * @param idDelete
+	 * @return
+	 */
+	public Data doDeleteCollectionAndItens(Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, String nameDatabase, String nameCol, String idDelete) {
+		
+		database = new Databases(text);
+		database.read(db, myconfig, nameDatabase, mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
+		Data data = new Data();
+		
+		if (! database.getId().equals("")){
+			if(nameCol.equals("id")){
+				data.deleteIliketo(db, "data" + database.getId(), "id", idDelete);
+			}else{
+				String col = data.getColAdjustContent(database.columns, nameCol);
+				data.deleteIliketo(db, "data" + database.getId(), col, idDelete);
+			}
+		}
+		return data;
+	}
+
+
+
 	public Data doDelete(Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db) {
 		boolean accesspermission = RequireUser.Administrator(text, mysession.get("username"), myconfig.get(db, "superadmin"), mysession.get("administrator"), myrequest, myresponse, db.getDatabase(), mysession.get("database"));
 		if (! accesspermission) return new Data();
