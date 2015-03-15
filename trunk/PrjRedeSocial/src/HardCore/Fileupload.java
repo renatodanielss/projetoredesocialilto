@@ -434,6 +434,12 @@ public class Fileupload {
 						addParameter(Str.PATH_PHOTO_ITEM, filename);
 						System.out.println("UPLOAD - photo item = " + filename);
 						System.out.println("path = " + pathname);
+					}					
+					if(myforminputname.equals(Str.PHOTO_MEMBER)){						
+						//add o parametro com o nome 'path_photo_member', para armazenar o valor do nome da foto no banco de dados q terá o mesmo nome na coluna
+						addParameter(Str.PATH_PHOTO_MEMBER, filename);
+						System.out.println("UPLOAD - photo member add = " + filename);
+						System.out.println("path = " + pathname);
 					}
 					
 				} catch (Exception e) {
