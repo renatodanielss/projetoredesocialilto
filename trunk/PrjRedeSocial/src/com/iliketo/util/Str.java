@@ -7,6 +7,9 @@ package com.iliketo.util;
  */
 public class Str {
 	
+	/**Nome padrão da variavel usada na session para guardar o valor do diretorio raiz para upload de armazenamento imagens*/
+	public static final String STORAGE = "storage";
+	
 	/**Nome do campo para upload da imagem da coleção*/
 	public static final String PHOTO_COLLECTION = "photo_collection";
 	
