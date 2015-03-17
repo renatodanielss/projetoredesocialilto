@@ -1,5 +1,8 @@
 <%@ page import="java.net.URLEncoder" %><%@ page import="java.sql.*" %><%@ page import="java.text.*" %><%@ page import="java.util.*" %><%@ page import="java.util.regex.*" %><%@ page import="HardCore.html" %><%@ page import="HardCore.inidb" %><%@ page import="HardCore.Cms" %><%@ page import="HardCore.Cache" %><%@ page import="HardCore.Common" %><%@ page import="HardCore.Configuration" %><%@ page import="HardCore.Currency" %><%@ page import="HardCore.DB" %><%@ page import="HardCore.Device" %><%@ page import="HardCore.Hosting" %><%@ page import="HardCore.License" %><%@ page import="HardCore.Login" %><%@ page import="HardCore.Request" %><%@ page import="HardCore.Response" %><%@ page import="HardCore.Session" %><%@ page import="HardCore.Text" %><%@ page import="HardCore.UCpublishScheduled" %><%@ page import="HardCore.User" %><%@ page import="HardCore.Website" %><%
+%>
+<%@ page import="com.iliketo.util.*"%>
 
+<%
 String configAdminPath = "webadmin";
 
 %><%
@@ -85,7 +88,7 @@ myconfig.setTemp("URLrootpath", URLrootpath);
 myconfig.setTemp("URLfilepath", "file/");
 myconfig.setTemp("URLimagepath", "image/");
 myconfig.setTemp("URLstylesheetpath", "stylesheet/");
-myconfig.setTemp("URLuploadpath", "upload/");
+myconfig.setTemp("URLuploadpath", "upload/");	//configuração pasta 'upload' dentro do diretório raiz
 
 //java.sql.DriverManager.setLogWriter(new java.io.PrintWriter(System.out));
 String db_error = "";
@@ -103,6 +106,23 @@ if (db.isError()) {
 if (db.isError()) {
 	db = null;
 }
+
+
+//***Diretorio de armazenamento de midias***
+if (db != null) {
+	
+	//'csrootpath' nome do campo 'Folder(/Bucket) Path/Name' na configuração Media Library
+	if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){ //se tiver configuração
+		
+		//Exemplo: DOCUMENT_ROOT = "D:\\Todos Arquivos\\Documentos\\Asbru";	//'Diretorio Raiz'	
+		DOCUMENT_ROOT = myconfig.get("csrootpath");
+		
+		String diretorioArmazenamento = DOCUMENT_ROOT + "/" + myconfig.get("URLuploadpath"); //diretorio armazenamento + pasta upload padrão
+		mysession.set("var_" + Str.STORAGE, diretorioArmazenamento); //seta na session o diretorio raiz + pasta upload de arquivos recuperar no html @@@get:storage@@@
+	}
+}
+//***
+
 
 if (License.valid(db, myconfig, "hosting")) {
 	Hosting hosting = new Hosting(mytext);
