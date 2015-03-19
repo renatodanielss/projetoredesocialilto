@@ -21,7 +21,7 @@ String username = mysession.get("username");
 String userId = mysession.get("userid");
 
 //valida id do membro na session
-if(idDeleteMember.equals(userId)){
+if(idDeleteMember != null && idDeleteMember.equals(userId)){
 	
 	//valida autenticidade de usuario e senha
 	if(IliketoDAO.authenticUsernamePassword(db, nameDatabase, username, password)){
