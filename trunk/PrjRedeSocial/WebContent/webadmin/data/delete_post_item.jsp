@@ -12,13 +12,13 @@
  
 <%
 
-String nameDatabase = myrequest.getParameter("database"); //recupera do parametro o nome da database do conteudo para deletar
-String idDeleteItem = myrequest.getParameter("id"); //recupera do parametro o id do registro do conteudo para deletar
+String nameDatabase = myrequest.getParameter("database"); //recupera do parametro a database do conteudo para deletar
+String idDeleteItem = myrequest.getParameter("id"); //recupera do parametro o id do conteudo para deletar
 
 
 //Deleta o item da dbcollectionitem usando a coluna id da tabela
 UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext); 
-Data data = maintainData.doDeleteCollectionAndItens(mysession, myrequest, myresponse, myconfig, db, nameDatabase, "id", idDeleteItem);
+Data data = maintainData.doDeleteItem(mysession, myrequest, myresponse, myconfig, db, nameDatabase, idDeleteItem);
 
 
 System.out.println("Log - " + "execute delete_post_item - id do item deletado = " + idDeleteItem);
