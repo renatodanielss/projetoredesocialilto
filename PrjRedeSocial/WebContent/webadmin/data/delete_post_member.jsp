@@ -15,7 +15,7 @@
 
 String nameDatabase = myrequest.getParameter("database"); //recupera do parametro a database do conteudo para deletar
 String idDeleteMember = myrequest.getParameter("id"); //recupera do parametro o id do conteudo para deletar
-String password = myrequest.getParameter("password"); //recupera do parametro o password digitado para confirmar delete
+String password = myrequest.getParameter("passwordConfirm"); //recupera do parametro o password digitado para confirmar delete
 
 String username = mysession.get("username");
 String userId = mysession.get("userid");
