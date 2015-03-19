@@ -119,7 +119,14 @@ if (db != null) {
 		myconfig.setTemp("URLimagepath", DOCUMENT_ROOT + "/image/");
 		
 		String diretorioArmazenamento = DOCUMENT_ROOT + "/" + myconfig.get("URLuploadpath"); //diretorio armazenamento + pasta upload padrão
-		mysession.set("var_" + Str.STORAGE, diretorioArmazenamento); //seta na session o diretorio raiz + pasta upload de arquivos recuperar no html @@@get:storage@@@
+		mysession.set(Str.STORAGE, diretorioArmazenamento); //seta na session o diretorio raiz + pasta upload de arquivos recuperar no html @@@get:storage@@@
+	
+	}else{
+		
+		//aramazena o endereço do local padrão de upload na session
+		String diretorioArmazenamento = DOCUMENT_ROOT + "/" + myconfig.get("URLuploadpath");
+		mysession.set(Str.STORAGE, diretorioArmazenamento);
+		
 	}
 }
 //***

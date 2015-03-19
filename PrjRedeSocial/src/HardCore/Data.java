@@ -55,14 +55,14 @@ public class Data {
 	 * Método responsável por ler e carregar os nomes das colunas da database utilizando a col e valor pra comparar
 	 * Ex: database = data9
 	 * Ex: col = col1 ou col2...(col+id)
-	 * Ex: id = 39(id do usuario na sessão)
+	 * Ex: id = 1
 	 * @param db
 	 * @param database
 	 * @param col
 	 * @param id
 	 */
-	public void readILiketo(DB db, String database, String col, String id) {
-		if (db == null) return;
+	public HashMap<String,String> readWhereILiketo(DB db, String database, String col, String id) {
+		if (db == null) return null;
 		if ((id != null) && (! id.equals(""))) {
 			String SQL = "select * from " + Common.SQL_clean(database) + " where " + col + " = " + Common.integer(id);
 			HashMap<String,String> row = db.query_record(SQL);
@@ -71,7 +71,9 @@ public class Data {
 			} else {
 				init();
 			}
+			return row;
 		}
+		return null;
 	}
 
 
@@ -881,11 +883,15 @@ public class Data {
 	 * Example: nameCol = col+id
 	 * Example: title_item = col1
 	 * Example: description_item = col2
+	 * Example: id = id
 	 * @param columns
 	 * @param nameCol
 	 * @return
 	 */
 	public String getColAdjustContent(HashMap columns, String nameCol) {
+		if(nameCol.equals("id")){
+			return "id"; //se for o proprio id, return o id, não tem o col+id
+		}
 		Iterator mycolumns = columns.keySet().iterator();
 		while (mycolumns.hasNext()) {
 			HashMap column = (HashMap)columns.get("" + mycolumns.next());
@@ -906,7 +912,7 @@ public class Data {
 	 * @param Column
 	 * @param id
 	 */
-	public void deleteIliketo(DB db, String database, String column, String id) {
+	public void deleteDadosIliketo(DB db, String database, String column, String id) {
 		if (db == null) return;
 		if ((id != null) && (! id.equals(""))) {
 			db.delete(database, column, id);

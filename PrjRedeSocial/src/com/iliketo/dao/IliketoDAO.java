@@ -72,4 +72,29 @@ public class IliketoDAO {
 		
 		return null;
 	}
+	
+	/**
+	 * Método valida e confirma username e password do membro
+	 * @param db
+	 * @param nameDatabase
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public static boolean authenticUsernamePassword(DB db, String nameDatabase, String username, String password) {
+		
+		if (db == null) return false;
+		
+		if (username != null && !username.equals("") && password != null && !password.equals("")) {
+			
+			String SQL = "select * from users where username = " + db.quote(username)
+					+ " and password = " + db.quote(password);
+			HashMap<String,String> row = db.query_record(SQL);
+			if (row != null) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

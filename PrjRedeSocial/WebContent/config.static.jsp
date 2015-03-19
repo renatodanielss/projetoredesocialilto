@@ -131,8 +131,8 @@ myconfig.setTemp("adjust_links", "yes");
 //myconfig.setTemp("adjust_links", "no");
 myconfig.setTemp("import_website_exclude", ""); // excludes the listed folders/files from the import existing website functionality
 //myconfig.setTemp("import_website_exclude", "|webeditor|webmanager"); // excludes the listed folders/files from the import existing website functionality
-myconfig.setTemp("getset", "var_"); // prefix for session variable names for @@@get:...@@@ and @@@set:...@@@ special codes - use prefix to prevent access to arbitrary session variables used by the web content management system and other systems
-//myconfig.setTemp("getset", ""); // prefix for session variable names for @@@get:...@@@ and @@@set:...@@@ special codes - set to blank to permit access to arbitrary session variables used by the web content management system and other systems
+//myconfig.setTemp("getset", "var_"); // prefix for session variable names for @@@get:...@@@ and @@@set:...@@@ special codes - use prefix to prevent access to arbitrary session variables used by the web content management system and other systems
+myconfig.setTemp("getset", ""); // prefix for session variable names for @@@get:...@@@ and @@@set:...@@@ special codes - set to blank to permit access to arbitrary session variables used by the web content management system and other systems
 myconfig.setTemp("website_structure_tops", "'',id"); // content items where page_up in ...
 myconfig.setTemp("website_structure_orphans", "'0'"); // content items where page_up in ...
 //myconfig.setTemp("website_structure_orphans", ""); // content items where page_up in ... - set to blank to hide/ignore orphans
