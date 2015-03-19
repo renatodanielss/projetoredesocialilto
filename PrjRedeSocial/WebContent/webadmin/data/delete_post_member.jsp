@@ -34,10 +34,18 @@ if(idDeleteMember != null && idDeleteMember.equals(userId)){
 		System.out.println("Log - " + "id: " + idDeleteMember + " / username: " + username);
 		
 		//forçar logout do usuario excluido
-		System.out.println("Log - " + "Mostrar tela Login!");		
+		System.out.println("Log - " + "Mostrar tela Login!");	
 		myresponse.sendRedirect("/logout.jsp");
 		
+	}else{
+		System.out.println("Log - " + "execute delete_post_member - Error invalid password!");
+		System.out.println("Log - " + "Mostrar tela Personal");
+		myresponse.sendRedirect("/personal/admin.jsp?id=328&invalid=password");
 	}
+}else{
+	System.out.println("Log - " + "execute delete_post_member - Error invalid id member!");
+	System.out.println("Log - " + "Mostrar tela Personal");
+	myresponse.sendRedirect("/personal/admin.jsp?id=328&invalid=account");
 }
 
 

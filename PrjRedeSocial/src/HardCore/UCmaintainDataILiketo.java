@@ -1073,7 +1073,8 @@ public class UCmaintainDataILiketo {
 			
 			if(nameDatabase.equals("dbmembers")){
 				
-				HashMap<String, String> rows = data.readWhereILiketo(db, "data" + database.getId(), "id", idDeleteMember);
+				String colid_member = data.getColAdjustContent(database.columns, "id_member"); //col+id
+				HashMap<String, String> rows = data.readWhereILiketo(db, "data" + database.getId(), colid_member, idDeleteMember);
 				
 				String colid_photo = data.getColAdjustContent(database.columns, "path_photo_member");
 				if(rows.get(colid_photo) != null){					
@@ -1086,10 +1087,6 @@ public class UCmaintainDataILiketo {
 					}
 				}
 				
-				//Deleta todos dados do membro na database dbmembers e na tabela users
-				data.deleteDadosIliketo(db, "data" + database.getId(), "id", idDeleteMember); 	//dbmembers 'data9'
-				data.deleteDadosIliketo(db, "users", "id", idDeleteMember);						//tabela users
-			
 				//Deleta todas as coleções e todos intens pertecentes ao membro - Ler dados configuração da database
 				database = new Databases(text);
 				database.read(db, myconfig, "dbcollection", mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
@@ -1105,6 +1102,10 @@ public class UCmaintainDataILiketo {
 					rowCollection = data.readWhereILiketo(db, "data" + database.getId(), colid_fk_user, idDeleteMember);//procura registro de coleção deste membro
 					
 				}
+				
+				//Deleta todos dados do membro na database dbmembers e na tabela users
+				data.deleteDadosIliketo(db, "data" + database.getId(), colid_member, idDeleteMember); 	//dbmembers 'data9'
+				data.deleteDadosIliketo(db, "users", "id", idDeleteMember);						//tabela users
 			}			
 		}
 		return data;
