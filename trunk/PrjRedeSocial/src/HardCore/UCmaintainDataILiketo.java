@@ -674,7 +674,7 @@ public class UCmaintainDataILiketo {
 				
 				//verifica imagens default
 				if (rows.get(colid_photo) != null){
-					if(!rows.get(colid_photo).equals("teste.jpg") && !rows.get(colid_photo).equals("teste.jpg")){
+					if(!rows.get(colid_photo).equals("avatar_male.png") && !rows.get(colid_photo).equals("avatar_female.png")){
 						
 						String namePhotoDelete = "" + rows.get(colid_photo); //recupera nome da foto no banco de dados
 						String localImagePath = mysession.get(Str.STORAGE);	
@@ -685,7 +685,8 @@ public class UCmaintainDataILiketo {
 					
 			}
 			
-			//Abaixo faz o update na database dbmembers da nova photo do membro
+			//Fluxo abaixo realiza updates geral, exemplo na tabela dbmembers, dbcollection
+			
 			data.getAccessRestrictions(database, mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig);
 			if ((! data.getId().equals("")) && data.getEditor()) {
 				String created = data.getCreated(database.columns);
@@ -697,10 +698,11 @@ public class UCmaintainDataILiketo {
 				data.setCreated(database.columns, created, createdby);
 				data.setUpdated(database.columns, timestamp, username);
 				data.update(db, "data" + database.getId(), database.columns);
+				
 			} else {
 				
-				//se a action for post_add_item reaiza o fluxo abaixo e verifca quais os parametros com nomes iguais para gravar no banco cada item de registro
 				if(action.equals("post_add_item")){
+					//se a action for post_add_item reaiza o fluxo abaixo e verifca quais os parametros com nomes iguais para gravar no banco cada item de registro
 					String[] arrayCampos = {"title_item", "description_item", "path_photo_item", "fk_collection_id", "id_item"};//campos do form
 					String[] todosTitleItem = filepost.getParameters(arrayCampos[0]);		//retorna todos title item
 					String[] todosDescription = filepost.getParameters(arrayCampos[1]);	//retorns todos description item
@@ -746,7 +748,9 @@ public class UCmaintainDataILiketo {
 						}
 					}
 					
-				}else{//senão for post_add_item, faz o fluxo normal abaixo para coleção
+				}else if(action.equals("post_collection")){		
+					
+					//faz o fluxo abaixo para coleção
 					data.getFormData(database.columns, filepost);
 					data.getFormData(database.columns, myrequest);
 					data.getFormData(database.columns, postedfiles);
@@ -759,6 +763,34 @@ public class UCmaintainDataILiketo {
 					String idUpdate = data.getId();	//recupera id gerado pelo sistema
 					Fileupload filepostUpateID = new Fileupload(null, null, null);
 					filepostUpateID.setParameter("id_collection", idUpdate);	//set parametro do coleção
+					
+					if ((! data.getId().equals("")) && data.getEditor()) {							
+						String created = data.getCreated(database.columns);
+						String createdby = data.getCreatedBy(database.columns);
+						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro da coleção
+						data.getFormData(database.columns, myrequest);
+						data.getFormData(database.columns, postedfiles);
+						data.adjustContent(database.columns);
+						data.setCreated(database.columns, created, createdby);
+						data.setUpdated(database.columns, timestamp, username);
+						data.update(db, "data" + database.getId(), database.columns);
+					}
+					
+				}else if(action.equals("post_add_video")){
+					
+					//faz o fluxo abaixo para add video
+					data.getFormData(database.columns, filepost);
+					data.getFormData(database.columns, myrequest);
+					data.getFormData(database.columns, postedfiles);
+					data.adjustContent(database.columns);
+					data.setCreated(database.columns, timestamp, username);
+					data.setUpdated(database.columns, timestamp, username);
+					data.create(db, "data" + database.getId(), database.columns);
+					
+					//faz update do novo id gerado do video
+					String idUpdate = data.getId();	//recupera id gerado pelo sistema
+					Fileupload filepostUpateID = new Fileupload(null, null, null);
+					filepostUpateID.setParameter("id_video", idUpdate);	//set parametro do coleção
 					
 					if ((! data.getId().equals("")) && data.getEditor()) {							
 						String created = data.getCreated(database.columns);
@@ -953,162 +985,93 @@ public class UCmaintainDataILiketo {
 	/**
 	 * Método responsavel por deletar uma coleção e seus itens passando o valor do id da coleção para deletar
 	 * @param mysession
-	 * @param myrequest
-	 * @param myresponse
-	 * @param myconfig
 	 * @param db
-	 * @param nameDatabase
 	 * @param idDeleteCollection
-	 * @return
 	 */
-	public Data doDeleteCollection(Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, String nameDatabase, String idDeleteCollection) {
-		
-		database = new Databases(text);
-		database.read(db, myconfig, nameDatabase, mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
-		Data data = new Data();
-		
-		if (! database.getId().equals("")){
-			
+	public void doDeleteCollection(Session mysession, DB db, String idDeleteCollection) {
+
 			ArrayList<String> listNamesPhotoDelete = new ArrayList<String>(); //lista de imagens para deletar
 			
-			if(nameDatabase.equals("dbcollection")){
+			String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_collection", "dbcollection", "id", idDeleteCollection);		
+			listNamesPhotoDelete.add(namePhotoDelete); 	//adiciona imagem na lista
+			IliketoDAO.deleteDadosIliketo(db, "dbcollection", "id", idDeleteCollection); //método deleta dados na database
+			
+			//Enquanto existir itens na coleção
+			while(IliketoDAO.readRecordExistsDatabase(db, "dbcollectionitem", "fk_collection_id", idDeleteCollection)){
 				
-				HashMap<String, String> rows = data.readWhereILiketo(db, "data" + database.getId(), "id", idDeleteCollection);
+				String idRealItem = IliketoDAO.getValueOfDatabase(db, "id", "dbcollection", "fk_collection_id", idDeleteCollection);
+				String namePhotoItem = IliketoDAO.getValueOfDatabase(db, "path_photo_item", "dbcollection", "id", idRealItem);		
+				listNamesPhotoDelete.add(namePhotoItem); 
+				IliketoDAO.deleteDadosIliketo(db, "dbcollectionitem", "id", idRealItem);
+			}
 				
-				String colid_photo = data.getColAdjustContent(database.columns, "path_photo_collection");
-				if(rows.get(colid_photo) != null){
-					
-					String namePhotoDelete = "" + rows.get(colid_photo); //recupera nome da foto no banco de dados										
-					listNamesPhotoDelete.add(namePhotoDelete); //adiciona os nomes das imagens para deletar na lista
-					data.deleteDadosIliketo(db, "data" + database.getId(), "id", idDeleteCollection); //método deleta dados na database pelo id da coleção
-					
-				}
+			String localImagePath = mysession.get(Str.STORAGE);			//local da pasta das imagens armazenadas
+			deleteListFileImagePhysically(listNamesPhotoDelete, localImagePath); //método deleta uma lista de arquivos fisicamente
 				
-				//Deleta todos intes da coleção - Ler os dados de configuração da database 'dbcollectionitem'
-				database = new Databases(text);
-				database.read(db, myconfig, "dbcollectionitem", mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
-				
-				String colid_fk = data.getColAdjustContent(database.columns, "fk_collection_id");//recupera o col+id da coluna fk_collection_id				
-				HashMap<String, String> rowItem = data.readWhereILiketo(db, "data" + database.getId(), colid_fk, idDeleteCollection);
-				
-				//Enquanto existir linhas de registro dos itens para esta coleção
-				while(rowItem != null){				
-					
-					colid_photo = data.getColAdjustContent(database.columns, "path_photo_item"); //col+id
-					
-					if(rowItem.get(colid_photo) != null){
-						
-						String namePhotoDeleteItem = "" + rowItem.get(colid_photo); //recupera nome da foto no registro do banco de dados
-						listNamesPhotoDelete.add(namePhotoDeleteItem); //adiciona os nomes das imagens para deletar na lista
-						String idDeleteItem = rowItem.get("id");	//recupera id real do item para deletar
-						data.deleteDadosIliketo(db, "data" + database.getId(), "id", idDeleteItem); //deleta os dados do item na database pelo id
-						rowItem = data.readWhereILiketo(db, "data" + database.getId(), colid_fk, idDeleteCollection); //ler proximo item
-						
-					}
-				}
-				
-				String localImagePath = mysession.get(Str.STORAGE);		//local da pasta das imagens armazenadas
-				deleteListFileImagePhysically(listNamesPhotoDelete, localImagePath); //método deleta uma lista de arquivos fisicamente
-				
-			}			
-		}
-		return data;
 	}
 	
 	/**
 	 * Método responsavel por deletar um item por vez passando o valor do id do item para deletar
 	 * @param mysession
-	 * @param myrequest
-	 * @param myresponse
-	 * @param myconfig
 	 * @param db
-	 * @param nameDatabase
 	 * @param idDeleteItem
-	 * @return
 	 */
-	public Data doDeleteItem(Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, String nameDatabase, String idDeleteItem) {
+	public void doDeleteItem(Session mysession, DB db, String idDeleteItem) {
 		
-		database = new Databases(text);
-		database.read(db, myconfig, nameDatabase, mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
-		Data data = new Data();
+		//pega nome da foto para deletar
+		String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_item", "dbcollectionitem", "id", idDeleteItem);		
 		
-		if (! database.getId().equals("")){
-			
-			HashMap<String, String> rows = data.readWhereILiketo(db, "data" + database.getId(), "id", idDeleteItem); //rows contem dados do registro do tem
-			
-			if(nameDatabase.equals("dbcollectionitem")){
-				
-				String colid_photo = data.getColAdjustContent(database.columns, "path_photo_item"); //ex: col1, col2
-				if(rows.get(colid_photo) != null){
-					
-					String namePhotoDelete = "" + rows.get(colid_photo); //recupera nome da foto no banco de dados
-					String localImagePath = mysession.get(Str.STORAGE);	 //local da pasta das imagens armazenadas
-					deleteFileImagePhysically(namePhotoDelete, localImagePath); //método deleta arquivo fisicamente
-					data.deleteDadosIliketo(db, "data" + database.getId(), "id", idDeleteItem); //método deleta arquivo na database usando a coluna id do item no banco
-					
-				}
-			}
-		}
-		return data;
+		String localImagePath = mysession.get(Str.STORAGE);	 		//local da pasta das imagens armazenadas
+		deleteFileImagePhysically(namePhotoDelete, localImagePath); //método deleta fisicamente
+		
+		IliketoDAO.deleteDadosIliketo(db, "dbcollectionitem", "id", idDeleteItem); //método deleta dados na database
+
+	}
+	
+	/**
+	 * Método responsavel por deletar um video por vez passando o valor do id do video para deletar
+	 * @param mysession
+	 * @param db
+	 * @param idDeleteVideo
+	 */
+	public void doDeleteVideo(Session mysession, DB db, String idDeleteVideo) {
+		
+		//pega nome da foto para deletar
+		String nameVideoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_video", "dbcollectionvideo", "id", idDeleteVideo);		
+		
+		String localPath = mysession.get(Str.STORAGE);	 	   //local armazenamento
+		deleteFileImagePhysically(nameVideoDelete, localPath); //método deleta fisicamente
+		
+		IliketoDAO.deleteDadosIliketo(db, "dbcollectionvideo", "id", idDeleteVideo); //método deleta dados na database
+
 	}
 
 	/**
 	 * Método deleta membro da database dbmembers e tabela users, deleta todas coleções e itens. Passar o id do member no parametro
 	 * @param mysession
-	 * @param myrequest
-	 * @param myresponse
-	 * @param myconfig
 	 * @param db
-	 * @param nameDatabase
 	 * @param idDeleteMember
-	 * @return
 	 */
-	public Data doDeleteMember(Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, String nameDatabase, String idDeleteMember) { 
+	public void doDeleteMember(Session mysession, DB db, String idDeleteMember) { 
 		
-		database = new Databases(text);
-		database.read(db, myconfig, nameDatabase, mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
-		Data data = new Data();
+		//pega nome da foto para deletar
+		String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_member", "dbmembers", "id_member", idDeleteMember); //recupera nome da foto do membro no registro
 		
-		if (! database.getId().equals("")){
-			
-			if(nameDatabase.equals("dbmembers")){
-				
-				String colid_member = data.getColAdjustContent(database.columns, "id_member"); //col+id
-				HashMap<String, String> rows = data.readWhereILiketo(db, "data" + database.getId(), colid_member, idDeleteMember);
-				
-				String colid_photo = data.getColAdjustContent(database.columns, "path_photo_member");
-				if(rows.get(colid_photo) != null){					
-					if(!rows.get(colid_photo).equals("teste.jpg") && !rows.get(colid_photo).equals("teste.jpg")){//fotos deafult
-						
-						String namePhotoDelete = "" + rows.get(colid_photo); //recupera nome da foto do membro no registro
-						String localImagePath = mysession.get(Str.STORAGE);	//local da imagem
-						deleteFileImagePhysically(namePhotoDelete, localImagePath); //método deleta arquivo imagem fisicamente
-						
-					}
-				}
-				
-				//Deleta todas as coleções e todos intens pertecentes ao membro - Ler dados configuração da database
-				database = new Databases(text);
-				database.read(db, myconfig, "dbcollection", mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"));
-				
-				String colid_fk_user = data.getColAdjustContent(database.columns, "fk_user_id");//recupera o col+id da coluna fk_collection_id				
-				HashMap<String, String> rowCollection = data.readWhereILiketo(db, "data" + database.getId(), colid_fk_user, idDeleteMember);
-				
-				//Enquanto existir linhas de registro das coleções, chama método doDeleteCollection
-				while(rowCollection != null){
-					
-					String idDeleteCollection = rowCollection.get("id"); //recupera o id real da coleção no registro encontrado pelo fk_user_id
-					doDeleteCollection(mysession, myrequest, myresponse, myconfig, db, nameDatabase, idDeleteCollection);//método que deleta uma coleção
-					rowCollection = data.readWhereILiketo(db, "data" + database.getId(), colid_fk_user, idDeleteMember);//procura registro de coleção deste membro
-					
-				}
-				
-				//Deleta todos dados do membro na database dbmembers e na tabela users
-				data.deleteDadosIliketo(db, "data" + database.getId(), colid_member, idDeleteMember); 	//dbmembers 'data9'
-				data.deleteDadosIliketo(db, "users", "id", idDeleteMember);						//tabela users
-			}			
+		//fotos deafult
+		if(namePhotoDelete != null && namePhotoDelete.equals("avatar_male.png") && !namePhotoDelete.equals("avatar_female.png")){
+			String localImagePath = mysession.get(Str.STORAGE);			//local da imagem
+			deleteFileImagePhysically(namePhotoDelete, localImagePath); //método deleta fisicamente
 		}
-		return data;
+		
+		//Deleta todos dados do membro na database dbmembers e na tabela users
+		IliketoDAO.deleteDadosIliketo(db, "dbmembers", "id_member", idDeleteMember); 	//dbmembers 'data9'
+		IliketoDAO.deleteDadosIliketo(db, "users", "id", idDeleteMember);				//tabela users
+		
+		//Enquanto existir linhas de registro das coleções, chama método doDeleteCollection
+		while(IliketoDAO.readRecordExistsDatabase(db, "dbcollection", "fk_user_id", idDeleteMember)){
+			String idRealCollection = IliketoDAO.getValueOfDatabase(db, "id", "dbcollection", "fk_user_id", idDeleteMember);
+			doDeleteCollection(mysession, db, idRealCollection);
+		}
 	}
 
 

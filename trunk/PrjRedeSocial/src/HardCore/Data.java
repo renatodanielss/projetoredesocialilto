@@ -903,22 +903,9 @@ public class Data {
 		}
 		return null;
 	}
-	
-	/**
-	 * Método responsavel por deletar qualquer conteudo de uma database/table
-	 * Passar o nome da coluna e o id
-	 * @param db
-	 * @param database
-	 * @param Column
-	 * @param id
-	 */
-	public void deleteDadosIliketo(DB db, String database, String column, String id) {
-		if (db == null) return;
-		if ((id != null) && (! id.equals(""))) {
-			db.delete(database, column, id);
-		}
-	}
-	
+
+
+
 	public void delete(DB db, String database) {
 		if (db == null) return;
 		if ((id != null) && (! id.equals(""))) {

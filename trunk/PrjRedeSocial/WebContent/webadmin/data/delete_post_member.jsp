@@ -28,7 +28,7 @@ if(idDeleteMember != null && idDeleteMember.equals(userId)){
 		
 		//Exclui membro do sistema, exclui todas coleções e itens
 		UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext); 
-		Data data = maintainData.doDeleteMember(mysession, myrequest, myresponse, myconfig, db, nameDatabase, idDeleteMember);
+		maintainData.doDeleteMember(mysession, db, idDeleteMember);
 
 		System.out.println("Log - " + "execute delete_post_member - Membro excluido do sistema com sucesso!");
 		System.out.println("Log - " + "id: " + idDeleteMember + " / username: " + username);
@@ -43,7 +43,7 @@ if(idDeleteMember != null && idDeleteMember.equals(userId)){
 		myresponse.sendRedirect("/personal/admin.jsp?id=328&invalid=password");
 	}
 }else{
-	System.out.println("Log - " + "execute delete_post_member - Error invalid id member!");
+	System.out.println("Log - " + "execute delete_post_member - Error invalid id member or session expired!");
 	System.out.println("Log - " + "Mostrar tela Personal");
 	myresponse.sendRedirect("/personal/admin.jsp?id=328&invalid=account");
 }
