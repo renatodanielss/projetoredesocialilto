@@ -18,7 +18,7 @@ String idDeleteItem = myrequest.getParameter("id"); //recupera do parametro o id
 
 //Deleta o item da dbcollectionitem usando a coluna id da tabela
 UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext); 
-Data data = maintainData.doDeleteItem(mysession, myrequest, myresponse, myconfig, db, nameDatabase, idDeleteItem);
+maintainData.doDeleteItem(mysession, db, idDeleteItem);
 
 
 System.out.println("Log - " + "execute delete_post_item - id do item deletado = " + idDeleteItem);

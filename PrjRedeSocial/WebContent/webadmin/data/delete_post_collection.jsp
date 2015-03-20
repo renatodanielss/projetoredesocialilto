@@ -19,7 +19,7 @@ String idDeleteColecao = myrequest.getParameter("id"); //recupera do parametro o
 
 //Deleta uma coleção da dbcollection e todos itens desta coleção
 UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext); 
-Data data = maintainData.doDeleteCollection(mysession, myrequest, myresponse, myconfig, db, nameDatabase, idDeleteColecao);
+maintainData.doDeleteCollection(mysession, db, idDeleteColecao);
 
 
 System.out.println("Log - " + "execute delete_post_collection - id da coleção deletada = " + idDeleteColecao);

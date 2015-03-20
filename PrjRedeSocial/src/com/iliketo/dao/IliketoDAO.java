@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import HardCore.Configuration;
 import HardCore.DB;
+import HardCore.Data;
 import HardCore.Databases;
 import HardCore.Text;
 
@@ -39,13 +40,23 @@ public class IliketoDAO {
 	 */
 	public static boolean readRecordExistsDatabase(DB db, String nameDatabase, String nameColumn, String value) {
 		
-		Databases database = new Databases(new Text());
-		database.read(db, new Configuration(), nameDatabase);
-				
-		String dataTable = database.getTable();				//retorna o nome real no banco de dados, exemplo data7, data8
-		String dataCol = "col" + (String) database.namedcolumns.get(nameColumn).get("id");;	//retorna a coluna real no banco de dados, exemplo col1, col2
+		if (db == null) return false;
 		
-		return readRecordExistsTable(db, dataTable, dataCol, value);	//chama método para consultar no banco de dados	
+		if (! value.equals("")) {
+			Databases database = new Databases(new Text());
+			database.read(db, new Configuration(), nameDatabase);
+					
+			String dataid = database.getTable();				
+			String colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");	
+		
+			String SQL = "select * from " + dataid + " where " + colid + "=" + db.quote(value);
+			HashMap<String,String> row = db.query_record(SQL);
+			if (row != null) {
+				return true;
+			}
+		}
+		
+		return false;
 		
 	}
 	
@@ -96,5 +107,67 @@ public class IliketoDAO {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Método responsavel por deletar qualquer conteudo de uma database/table
+	 * nameDatabase - database
+	 * nameColumn - coluna para comparar
+	 * value - valor a ser comparado
+	 * @param db
+	 * @param database
+	 * @param Column
+	 * @param id
+	 */
+	public static void deleteDadosIliketo(DB db, String nameDatabase, String nameColumn, String value) {
+		
+		if (db == null) return;
+		
+		if ((value != null) && (! value.equals(""))) {
+			
+			Databases database = new Databases(new Text());
+			database.read(db, new Configuration(), nameDatabase);
+					
+			String dataid = database.getTable();
+			String colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");
+			
+			db.delete(dataid, colid, value);
+		}
+	}
+
+	/**
+	 * Método genérico retorna o valor de um campo especifico, informar o campo de retorno no valueOf
+	 * valueOf - valor do campo que deseja retorno
+	 * nameDatabase - database
+	 * nameColumn - coluna para comparar
+	 * value - valor a ser comparado
+	 * @param db
+	 * @param valueOf
+	 * @param nameDatabase
+	 * @param nameColumn
+	 * @param value
+	 * @return
+	 */
+	public static String getValueOfDatabase(DB db, String valueOf, String nameDatabase, String nameColumn, String value) {
+		
+		if (db == null) return null;
+		
+		Databases database = new Databases(new Text());
+		database.read(db, new Configuration(), nameDatabase);
+				
+		String dataid = database.getTable();
+		String colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");
+		
+		Data data = new Data();
+		HashMap<String, String> rows = data.readWhereILiketo(db, dataid, colid, value);
+		
+		String colid_valueOf = "col" + (String) database.namedcolumns.get(valueOf).get("id");
+		
+		if(rows.get(colid_valueOf) != null){			
+			String valueFind = "" + rows.get(colid_valueOf);			
+			return valueFind;
+		}		
+		
+		return null;
 	}
 }
