@@ -999,8 +999,8 @@ public class UCmaintainDataILiketo {
 			//Enquanto existir itens na coleção
 			while(IliketoDAO.readRecordExistsDatabase(db, "dbcollectionitem", "fk_collection_id", idDeleteCollection)){
 				
-				String idRealItem = IliketoDAO.getValueOfDatabase(db, "id", "dbcollection", "fk_collection_id", idDeleteCollection);
-				String namePhotoItem = IliketoDAO.getValueOfDatabase(db, "path_photo_item", "dbcollection", "id", idRealItem);		
+				String idRealItem = IliketoDAO.getValueOfDatabase(db, "id", "dbcollectionitem", "fk_collection_id", idDeleteCollection);
+				String namePhotoItem = IliketoDAO.getValueOfDatabase(db, "path_photo_item", "dbcollectionitem", "id", idRealItem);		
 				listNamesPhotoDelete.add(namePhotoItem); 
 				IliketoDAO.deleteDadosIliketo(db, "dbcollectionitem", "id", idRealItem);
 			}

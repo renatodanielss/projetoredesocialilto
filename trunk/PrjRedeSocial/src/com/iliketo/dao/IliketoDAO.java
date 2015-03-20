@@ -46,9 +46,14 @@ public class IliketoDAO {
 			Databases database = new Databases(new Text());
 			database.read(db, new Configuration(), nameDatabase);
 					
-			String dataid = database.getTable();				
-			String colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");	
-		
+			String dataid = database.getTable();
+			String colid = "";
+			if(!nameColumn.equals("id")){
+				colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");	
+			}else{
+				colid = "id";
+			}
+			
 			String SQL = "select * from " + dataid + " where " + colid + "=" + db.quote(value);
 			HashMap<String,String> row = db.query_record(SQL);
 			if (row != null) {
@@ -129,7 +134,12 @@ public class IliketoDAO {
 			database.read(db, new Configuration(), nameDatabase);
 					
 			String dataid = database.getTable();
-			String colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");
+			String colid = "";
+			if(!nameColumn.equals("id")){
+				colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");	
+			}else{
+				colid = "id";
+			}
 			
 			db.delete(dataid, colid, value);
 		}
@@ -156,15 +166,25 @@ public class IliketoDAO {
 		database.read(db, new Configuration(), nameDatabase);
 				
 		String dataid = database.getTable();
-		String colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");
+		String colid = "";
+		if(!nameColumn.equals("id")){
+			colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");	
+		}else{
+			colid = "id";
+		}
 		
 		Data data = new Data();
 		HashMap<String, String> rows = data.readWhereILiketo(db, dataid, colid, value);
 		
-		String colid_valueOf = "col" + (String) database.namedcolumns.get(valueOf).get("id");
+		String colid_val = "";
+		if(!valueOf.equals("id")){
+			colid_val = "col" + (String) database.namedcolumns.get(valueOf).get("id");	
+		}else{
+			colid_val = "id";
+		}
 		
-		if(rows.get(colid_valueOf) != null){			
-			String valueFind = "" + rows.get(colid_valueOf);			
+		if(rows.get(colid_val) != null){			
+			String valueFind = "" + rows.get(colid_val);			
 			return valueFind;
 		}		
 		
