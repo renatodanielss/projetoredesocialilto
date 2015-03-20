@@ -1065,7 +1065,7 @@ public class UCmaintainDataILiketo {
 		
 		//Deleta todos dados do membro na database dbmembers e na tabela users
 		IliketoDAO.deleteDadosIliketo(db, "dbmembers", "id_member", idDeleteMember); 	//dbmembers 'data9'
-		IliketoDAO.deleteDadosIliketo(db, "users", "id", idDeleteMember);				//tabela users
+		IliketoDAO.deleteDadosMembroIliketo(db, "users", "id", idDeleteMember);			//tabela users
 		
 		//Enquanto existir linhas de registro das coleções, chama método doDeleteCollection
 		while(IliketoDAO.readRecordExistsDatabase(db, "dbcollection", "fk_user_id", idDeleteMember)){
