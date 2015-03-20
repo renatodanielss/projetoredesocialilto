@@ -115,6 +115,25 @@ public class IliketoDAO {
 	}
 	
 	/**
+	 * Método responsavel por excluir os dados do membro na tabela users
+	 * nameDatabase - database
+	 * nameColumn - coluna para comparar
+	 * value - valor a ser comparado
+	 * @param db
+	 * @param database
+	 * @param Column
+	 * @param id
+	 */
+	public static void deleteDadosMembroIliketo(DB db, String nameDatabase, String nameColumn, String value) {
+		
+		if (db == null) return;
+		
+		if ((value != null) && (! value.equals("")) && nameDatabase.equals("users")) {			
+			db.delete(nameDatabase, nameColumn, value);
+		}
+	}
+	
+	/**
 	 * Método responsavel por deletar qualquer conteudo de uma database/table
 	 * nameDatabase - database
 	 * nameColumn - coluna para comparar
@@ -183,10 +202,12 @@ public class IliketoDAO {
 			colid_val = "id";
 		}
 		
-		if(rows.get(colid_val) != null){			
-			String valueFind = "" + rows.get(colid_val);			
-			return valueFind;
-		}		
+		if(rows != null){
+			if(rows.get(colid_val) != null){			
+				String valueFind = "" + rows.get(colid_val);			
+				return valueFind;
+			}
+		}
 		
 		return null;
 	}
