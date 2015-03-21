@@ -685,7 +685,7 @@ public class UCmaintainDataILiketo {
 					
 			}
 			
-			//Fluxo abaixo realiza updates geral, exemplo na tabela dbmembers, dbcollection
+			//Fluxo abaixo realiza updates geral, exemplo na tabela dbmembers, dbcollection e outras
 			
 			data.getAccessRestrictions(database, mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig);
 			if ((! data.getId().equals("")) && data.getEditor()) {
@@ -796,6 +796,75 @@ public class UCmaintainDataILiketo {
 						String created = data.getCreated(database.columns);
 						String createdby = data.getCreatedBy(database.columns);
 						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro da coleção
+						data.getFormData(database.columns, myrequest);
+						data.getFormData(database.columns, postedfiles);
+						data.adjustContent(database.columns);
+						data.setCreated(database.columns, created, createdby);
+						data.setUpdated(database.columns, timestamp, username);
+						data.update(db, "data" + database.getId(), database.columns);
+					}
+				}else if(action.equals("post_group")){
+					
+					//faz o fluxo abaixo para criar um Grupo
+					data.getFormData(database.columns, filepost);
+					data.getFormData(database.columns, myrequest);
+					data.getFormData(database.columns, postedfiles);
+					data.adjustContent(database.columns);
+					data.setCreated(database.columns, timestamp, username);
+					data.setUpdated(database.columns, timestamp, username);
+					data.create(db, "data" + database.getId(), database.columns);
+					
+					//faz update do novo id gerado do group
+					String idUpdate = data.getId();	//recupera id gerado pelo sistema
+					
+					//(usar este para grupo com foto) Fileupload filepostUpateID = new Fileupload(null, null, null);
+					//(usar este para grupo com foto) filepostUpateID.setParameter("id_group", idUpdate);	//set parametro do id criado para grupo com foto
+					
+					//(usar este para grupo sem foto) myrequest.setParameter("id_group", idUpdate);	//set parametro do id criado para grupo sem foto
+					
+					if ((! data.getId().equals("")) && data.getEditor()) {							
+						String created = data.getCreated(database.columns);
+						String createdby = data.getCreatedBy(database.columns);
+						data.getFormData(database.columns, filepost);	//filepostUpateID contem o parametro do id
+						data.getFormData(database.columns, myrequest);
+						data.getFormData(database.columns, postedfiles);
+						data.adjustContent(database.columns);
+						data.setCreated(database.columns, created, createdby);
+						data.setUpdated(database.columns, timestamp, username);
+						data.update(db, "data" + database.getId(), database.columns);
+					}
+					
+				}else if(action.equals("post_forum") || 
+						action.equals("post_topic") || action.equals("post_comment")){
+					
+					//faz o fluxo abaixo para criar forum, topic ou comment - obs: action generica
+					data.getFormData(database.columns, filepost);
+					data.getFormData(database.columns, myrequest);
+					data.getFormData(database.columns, postedfiles);
+					data.adjustContent(database.columns);
+					data.setCreated(database.columns, timestamp, username);
+					data.setUpdated(database.columns, timestamp, username);
+					data.create(db, "data" + database.getId(), database.columns);
+					
+					//faz update do novo id gerado do video forum, topic ou comment
+					String idUpdate = data.getId();	//recupera id gerado pelo sistema
+					
+					//verifica o parametro para realizar update do id do forum, id do topic ou id do comment					
+					if(action.equals("post_forum")){
+						myrequest.setParameter("id_forum", idUpdate);	//set parametro do id criado para forum
+					}else if(action.equals("post_topic")){
+						myrequest.setParameter("id_topic", idUpdate);	//set parametro do id criado para topic
+					}else if(action.equals("post_comment")){
+						myrequest.setParameter("id_comment", idUpdate);	//set parametro do id criado para comment
+					}else{
+						System.out.println("Log - Error não encontrado parametros de id do name do input hidden para atualizar o id do novo registro na database!");
+					}
+					
+					//abaixo faz update do novo id tanto para forum, topic e comment
+					if ((! data.getId().equals("")) && data.getEditor()) {							
+						String created = data.getCreated(database.columns);
+						String createdby = data.getCreatedBy(database.columns);
+						data.getFormData(database.columns, filepost);
 						data.getFormData(database.columns, myrequest);
 						data.getFormData(database.columns, postedfiles);
 						data.adjustContent(database.columns);
