@@ -5,16 +5,15 @@
 
 <%
 
-System.out.println("Log - " + "execute action post_add_video");
+System.out.println("Log - " + "execute action post_forum_topic");
 
 cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("database"));
 
 if (! myrequest.getParameter("database").equals("")) {
 		
-		//Adiciona um novo video na database dbcollectionvideo,
-		//passar como parametro '/post_add_video.jsp?database=dbcollectionvideo' na action do form que contem os input com os dados do video
+		//cria um novo topic ou faz update do mesmo
 		UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
-		Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_add_video");
+		Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_topic");
 		
 }
 
