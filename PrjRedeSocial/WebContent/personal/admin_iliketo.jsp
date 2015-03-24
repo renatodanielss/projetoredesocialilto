@@ -7,7 +7,7 @@
 	
 	if(!controller.validateFieldsForm(db, request)){
 		if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
-			errorILiketo = (String) request.getAttribute("msgError");
+			//errorILiketo = (String) request.getAttribute("msgError");
 		}
 	}
 	
