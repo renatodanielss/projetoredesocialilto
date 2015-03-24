@@ -9,6 +9,7 @@ public class UserController {
 	
 	private String tableUsers = "users";
 	private String dbmembers = "dbmembers";
+	private String msg = "";
 	
 	/**
 	 * Validate all field form
@@ -17,13 +18,15 @@ public class UserController {
 	 * @return
 	 */
 	public boolean validateFieldsForm(DB db, HttpServletRequest request){
+		boolean erro = true;
 		
 		if(!validateEmail(db, request)){
-			return false;
-		}else if(!validateUsername(db, request)){
-			return false;
+			erro = false;
 		}
-		return true;
+		if(!validateUsername(db, request)){
+			erro = false;
+		}
+		return erro;
 		
 	}
 
@@ -34,9 +37,8 @@ public class UserController {
 	 * @return
 	 */
 	public boolean validateEmail(DB db, HttpServletRequest request){
-		String msg = "";
 		if(IliketoDAO.readRecordExistsTable(db, tableUsers, "email", request.getParameter("email"))){
-			msg = "<br>" + "Please verify, user already exists for this email!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
+			msg += "<br>" + "User already exists for this email!"; //msg padrÃ£o do erro para outros idioma "<br>" + text.display("register.error.exists");
 			System.out.println("Log - Email = " + request.getParameter("email") + " already exists");
 			request.setAttribute("msgError", msg);
 			return false;
@@ -51,9 +53,8 @@ public class UserController {
 	 * @return
 	 */
 	public boolean validateUsername(DB db, HttpServletRequest request){
-		String msg = "";
 		if(IliketoDAO.readRecordExistsTable(db, tableUsers, "username", request.getParameter("username"))){
-			msg = "<br>" + "Please verify, username already exists!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
+			msg += "<br>" + "Username already exists!"; //msg padrÃ£o do erro para outros idioma "<br>" + text.display("register.error.exists");
 			System.out.println("Log - Username = " + request.getParameter("username") + " already exists");
 			request.setAttribute("msgError", msg);
 			return false;
@@ -63,8 +64,8 @@ public class UserController {
 	}
 	
 	/**
-	 * Método realiza a pesquisa do usuário na tabela users, passando o username e o valor para comparar
-	 * Então retorna o id encontrado
+	 * Mï¿½todo realiza a pesquisa do usuï¿½rio na tabela users, passando o username e o valor para comparar
+	 * Entï¿½o retorna o id encontrado
 	 * @param db
 	 * @param columnUsername
 	 * @param value
