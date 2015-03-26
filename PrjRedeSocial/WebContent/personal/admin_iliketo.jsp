@@ -14,14 +14,17 @@
 	Page mypage = null;
 	
 	if(!errorILiketo.equals("")){ //se conter error na validação do registro, adiciona o erro na page
-		
+				
+		//reponse mesma pagina passando error no parametro
+		myresponse.sendRedirect("/personal/admin.jsp?id=328&error=" + errorILiketo); //recuperar parametro no html >> ###error###	
+				
 		//Cria um UCbrowseWebsite
-		UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
-		mypage = browseWebsite.getPage(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+		//UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
+		//mypage = browseWebsite.getPage(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 		
 		//coloca os valores do campo do form novamente na page para não perder os dados que o usuário digitou
-		mypage.parse_output_register_iliketo(errorILiketo, request);
-		website.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_doctype");
+		//mypage.parse_output_register_iliketo(errorILiketo, request);
+		//website.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_doctype");
 		
 	}else{
 		
