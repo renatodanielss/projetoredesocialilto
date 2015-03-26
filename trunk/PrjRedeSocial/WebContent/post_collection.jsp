@@ -65,6 +65,8 @@ if (! myrequest.getParameter("database").equals("")) {
 		mysession.set(myconfig.get(db, "getset") + Str.S_ID_REGISTER_COLLECTION, ID);//seta na session
 		System.out.println("Set session s_id_register_collection=" + ID);
 		
+		mysession.set(Str.S_ID_COLLECTION, ID);//seta na session o id da coleção criada
+		
 		//redireciona para add new item
 		myresponse.sendRedirect("/page.jsp?id=90");
 		
