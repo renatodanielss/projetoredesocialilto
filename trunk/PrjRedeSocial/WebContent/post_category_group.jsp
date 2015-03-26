@@ -20,7 +20,7 @@ if (! myrequest.getParameter("database").equals("")) {
 		String nameCategory = myrequest.getParameter("name_category");
 		
 		//reponse mesma pagina com parametros para recuperar na pagina o erro e a lista de categoria existente
-		myresponse.sendRedirect("/page.jsp?id=601&error=" + msg + "&category=" + nameCategory);											
+		myresponse.sendRedirect("/page.jsp?id=622&error=" + msg + "&category=" + nameCategory);											
 		
 	}else{
 	
