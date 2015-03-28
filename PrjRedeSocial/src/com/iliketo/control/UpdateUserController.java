@@ -38,7 +38,7 @@ public class UpdateUserController {
 	 */
 	public boolean validateEmail(DB db, HttpServletRequest request){
 		if(IliketoDAO.readRecordExistsTable(db, tableUsers, "email", request.getParameter("email"))){
-			msg += "User already exists for this email!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
+			msg += "\nUser already exists for this email!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
 			System.out.println("Log - Email = " + request.getParameter("email") + " already exists");
 			request.setAttribute("msgError", msg);
 			return false;
@@ -54,7 +54,7 @@ public class UpdateUserController {
 	 */
 	public boolean validateUsername(DB db, HttpServletRequest request){
 		if(IliketoDAO.readRecordExistsTable(db, tableUsers, "username", request.getParameter("username"))){
-			msg += "Username already exists!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
+			msg += "\nUsername already exists!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
 			System.out.println("Log - Username = " + request.getParameter("username") + " already exists");
 			request.setAttribute("msgError", msg);
 			return false;
