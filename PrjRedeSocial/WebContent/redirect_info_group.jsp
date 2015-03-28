@@ -9,7 +9,11 @@ System.out.println("Log - " + "Mostrar tela Grupo da categoria");
 String idCollection = mysession.get("s_id_collection"); //recupera o id da coleção da sessão
 String idCategory = myrequest.getParameter("id_category"); //recupera o id da categoria do parametro
 
-if(idCollection != null && !idCollection.equals("") && idCategory != null & !idCategory.equals("")){
+if(idCollection == null || idCollection.equals("")){ //se o id da coleçao não está na sessão, verifica se vem no parametro 
+	idCollection = myrequest.getParameter("myIdCollection"); //tenta recuperar id da coleção no parametro
+}
+
+if(idCollection != null && !idCollection.equals("") && idCategory != null & !idCategory.equals("")){ //valida id da coleção e id categoria para montar grupo
 	
 	//recupera id do grupo e forum da categoria para setar os valores na sessão e reuperar na pagina html
 	String idGroup = IliketoDAO.getValueOfDatabase(db, "id_group", "dbgroup", "fk_category_id", idCategory);
@@ -19,7 +23,7 @@ if(idCollection != null && !idCollection.equals("") && idCategory != null & !idC
 	mysession.set("s_id_group", idGroup);
 	mysession.set("s_id_forum", idForum);
 	
-	myresponse.sendRedirect("/page.jsp?id=623&group=" + idGroup); //redireciona para o grupo da categoria
+	myresponse.sendRedirect("/page.jsp?id=602&group=" + idGroup); //redireciona para o grupo da categoria
 	
 }else{
 	
