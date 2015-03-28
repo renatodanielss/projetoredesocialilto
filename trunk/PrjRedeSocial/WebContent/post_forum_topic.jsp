@@ -15,6 +15,16 @@ if (! myrequest.getParameter("database").equals("")) {
 		UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
 		Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_topic");
 		
+		String idTopic = data.getId(); //recupera id criado do topico
+		
+		if(idTopic != null && idTopic.equals("")){
+			
+			myresponse.sendRedirect("/page.jsp?id=628&topic=" + idTopic); //redireciona para pagina comentario do topico
+			System.out.println("Log - " + "Topic id = " + idTopic +" criado com sucesso");
+		
+		}else{
+			System.out.println("Log - " + "Topic não foi criado");
+		}
 }
 
 
