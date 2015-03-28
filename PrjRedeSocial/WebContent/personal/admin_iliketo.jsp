@@ -2,30 +2,31 @@
 <%@ page import="com.iliketo.control.UpdateUserController" %><%@ page import="com.iliketo.dao.IliketoDAO"%><%
 	
 	//***Executa e valida Registro iliketo**** 
-	String errorILiketo = "";
+	String email = "";
+	String username = "";
 	UpdateUserController controller = new UpdateUserController();
 	
 	if(!myrequest.getParameter("username").equals(mysession.get("username"))){
 		if(!controller.validateUsername(db, request)){
 			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
-				errorILiketo = (String) request.getAttribute("msgError");
+				username = (String) request.getAttribute("msgError");
 			}
 		}
 	}
 	if(!myrequest.getParameter("email").equals(mysession.get("email"))){
 		if(!controller.validateEmail(db, request)){
 			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
-				errorILiketo = (String) request.getAttribute("msgError");
+				email = (String) request.getAttribute("msgError");
 			}
 		}
 	}
 	
 	Page mypage = null;
 	
-	if(!errorILiketo.equals("")){ //se conter error na validação do registro, adiciona o erro na page
+	if(!username.equals("") || !email.equals("")){ //se conter error na validação do registro, adiciona o erro na page
 				
 		//reponse mesma pagina passando error no parametro
-		myresponse.sendRedirect("/personal/admin.jsp?id=328&error=" + errorILiketo); //recuperar parametro no html >> ###error###	
+		myresponse.sendRedirect("/personal/admin.jsp?id=328&e=" + email + "&u=" + username); //recuperar parametro no html >> ###error###	
 				
 		//Cria um UCbrowseWebsite
 		//UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
