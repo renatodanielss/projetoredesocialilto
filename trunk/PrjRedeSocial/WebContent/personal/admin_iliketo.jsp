@@ -8,14 +8,14 @@
 	if(!myrequest.getParameter("username").equals(mysession.get("username"))){
 		if(!controller.validateUsername(db, request)){
 			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
-				errorILiketo += (String) request.getAttribute("msgError");
+				errorILiketo = (String) request.getAttribute("msgError");
 			}
 		}
 	}
 	if(!myrequest.getParameter("email").equals(mysession.get("email"))){
 		if(!controller.validateEmail(db, request)){
 			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
-				errorILiketo += (String) request.getAttribute("msgError");
+				errorILiketo = (String) request.getAttribute("msgError");
 			}
 		}
 	}
