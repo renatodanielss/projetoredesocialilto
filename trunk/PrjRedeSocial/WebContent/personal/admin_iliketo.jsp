@@ -1,13 +1,22 @@
 <%@ include file="../webadmin.jsp" %><%@ include file="../config.personal.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.UCmaintainUsers" %><%@ page import="HardCore.Page" %><%@ page import="HardCore.User" %><%@ page import="HardCore.RequireUser" %>
-<%@ page import="com.iliketo.control.UserController" %><%@ page import="com.iliketo.dao.IliketoDAO"%><%
+<%@ page import="com.iliketo.control.UpdateUserController" %><%@ page import="com.iliketo.dao.IliketoDAO"%><%
 	
 	//***Executa e valida Registro iliketo**** 
 	String errorILiketo = "";
-	UserController controller = new UserController();
+	UpdateUserController controller = new UpdateUserController();
 	
-	if(!controller.validateFieldsForm(db, request)){
-		if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
-			//errorILiketo = (String) request.getAttribute("msgError");
+	if(myrequest.getAttribute("username").equals(mysession.get("username"))){
+		if(!controller.validateUsername(db, request)){
+			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
+				errorILiketo += (String) request.getAttribute("msgError");
+			}
+		}
+	}
+	if(myrequest.getAttribute("email").equals(mysession.get("email"))){
+		if(!controller.validateEmail(db, request)){
+			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
+				errorILiketo += (String) request.getAttribute("msgError");
+			}
 		}
 	}
 	
