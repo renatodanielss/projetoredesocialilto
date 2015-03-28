@@ -21,7 +21,7 @@ public class IliketoDAO {
 		
 		if (db == null) return false;
 		if (! value.equals("")) {
-			String SQL = "select * from " + table + " where " + nameColumn + "=" + db.quote(value);
+			String SQL = "select * from " + table + " where " + nameColumn + " ilike " + db.quote(value);
 			HashMap<String,String> row = db.query_record(SQL);
 			if (row != null) {
 				return true;
@@ -54,7 +54,7 @@ public class IliketoDAO {
 				colid = "id";
 			}
 			
-			String SQL = "select * from " + dataid + " where " + colid + "=" + db.quote(value);
+			String SQL = "select * from " + dataid + " where " + colid + " ilike " + db.quote(value);
 			HashMap<String,String> row = db.query_record(SQL);
 			if (row != null) {
 				return true;

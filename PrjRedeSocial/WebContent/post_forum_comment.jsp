@@ -13,7 +13,7 @@ if (! myrequest.getParameter("database").equals("")) {
 		
 		//cria um novo comment ou faz update do mesmo
 		UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
-		Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_topic");
+		Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_comment");
 		
 }
 
