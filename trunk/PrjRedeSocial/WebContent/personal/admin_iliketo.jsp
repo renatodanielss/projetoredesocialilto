@@ -5,14 +5,14 @@
 	String errorILiketo = "";
 	UpdateUserController controller = new UpdateUserController();
 	
-	if(myrequest.getAttribute("username").equals(mysession.get("username"))){
+	if(myrequest.getParameter("username").equals(mysession.get("username"))){
 		if(!controller.validateUsername(db, request)){
 			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
 				errorILiketo += (String) request.getAttribute("msgError");
 			}
 		}
 	}
-	if(myrequest.getAttribute("email").equals(mysession.get("email"))){
+	if(myrequest.getParameter("email").equals(mysession.get("email"))){
 		if(!controller.validateEmail(db, request)){
 			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
 				errorILiketo += (String) request.getAttribute("msgError");
