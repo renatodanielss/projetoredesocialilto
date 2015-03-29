@@ -1100,7 +1100,7 @@ public class UCmaintainDataILiketo {
 		String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_member", "dbmembers", "id_member", idDeleteMember); //recupera nome da foto do membro no registro
 		
 		//fotos deafult
-		if(namePhotoDelete != null && namePhotoDelete.equals("avatar_male.png") && !namePhotoDelete.equals("avatar_female.png")){
+		if(namePhotoDelete != null && !namePhotoDelete.equals("avatar_male.png") && !namePhotoDelete.equals("avatar_female.png")){
 			String localImagePath = mysession.get(Str.STORAGE);			//local da imagem
 			deleteFileImagePhysically(namePhotoDelete, localImagePath); //método deleta fisicamente
 		}
