@@ -11,6 +11,7 @@ String idCategory = myrequest.getParameter("id_category"); //recupera o id da ca
 
 if(idCollection == null || idCollection.equals("")){ //se o id da coleçao não está na sessão, verifica se vem no parametro 
 	idCollection = myrequest.getParameter("myIdCollection"); //tenta recuperar id da coleção no parametro
+	mysession.set("s_id_collection", idCollection);
 }
 
 if(idCollection != null && !idCollection.equals("") && idCategory != null & !idCategory.equals("")){ //valida id da coleção e id categoria para montar grupo
