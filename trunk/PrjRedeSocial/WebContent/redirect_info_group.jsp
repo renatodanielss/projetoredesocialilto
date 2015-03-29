@@ -23,7 +23,7 @@ if(idCollection != null && !idCollection.equals("") && idCategory != null & !idC
 	mysession.set("s_id_group", idGroup);
 	mysession.set("s_id_forum", idForum);
 	
-	myresponse.sendRedirect("/page.jsp?id=602&group=" + idGroup); //redireciona para o grupo da categoria
+	myresponse.sendRedirect("/page.jsp?id=623&group=" + idGroup); //redireciona para o grupo da categoria
 	
 }else{
 	
