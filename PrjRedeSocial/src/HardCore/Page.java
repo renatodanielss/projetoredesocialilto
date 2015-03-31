@@ -4237,13 +4237,13 @@ try {
 							SQLwhere += "col" + column.get("id") + " like " + db.quote(database_columnvalue + "%");
 						}
 					} else {
-						if (! SQLwhere.equals("")) {
+						if (! SQLwhere.equals("")) { //else para comparar colunas do type plain text usando operador '=' na list e substituindo por ilike
 							SQLwhere += " and ";
 						}
 						if (database_columnvalue.equals("")) {
 							SQLwhere += db.is_blank("col" + column.get("id"));
 						} else {
-							SQLwhere += "col" + column.get("id") + " like " + db.quote(database_columnvalue);
+							SQLwhere += "col" + column.get("id") + " ilike " + db.quote(database_columnvalue); //operador ilike para case insensitive
 						}
 					}
 				}
