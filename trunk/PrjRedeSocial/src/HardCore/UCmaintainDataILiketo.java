@@ -803,6 +803,34 @@ public class UCmaintainDataILiketo {
 						data.setUpdated(database.columns, timestamp, username);
 						data.update(db, "data" + database.getId(), database.columns);
 					}
+				
+				}else if(action.equals("post_event")){
+					
+					//faz o fluxo abaixo para criar evento
+					data.getFormData(database.columns, filepost);
+					data.getFormData(database.columns, myrequest);
+					data.getFormData(database.columns, postedfiles);
+					data.adjustContent(database.columns);
+					data.setCreated(database.columns, timestamp, username);
+					data.setUpdated(database.columns, timestamp, username);
+					data.create(db, "data" + database.getId(), database.columns);
+					
+					//faz update do novo id gerado do evento
+					String idUpdate = data.getId();	//recupera id gerado pelo sistema
+					Fileupload filepostUpateID = new Fileupload(null, null, null);
+					filepostUpateID.setParameter("id_event", idUpdate);	//set parametro
+					
+					if ((! data.getId().equals("")) && data.getEditor()) {							
+						String created = data.getCreated(database.columns);
+						String createdby = data.getCreatedBy(database.columns);
+						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro do id
+						data.getFormData(database.columns, myrequest);
+						data.getFormData(database.columns, postedfiles);
+						data.adjustContent(database.columns);
+						data.setCreated(database.columns, created, createdby);
+						data.setUpdated(database.columns, timestamp, username);
+						data.update(db, "data" + database.getId(), database.columns);
+					}
 					
 				}else if(action.equals("post_category") || action.equals("post_group") || action.equals("post_forum") || 
 						action.equals("post_topic") || action.equals("post_comment")){
