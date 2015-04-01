@@ -28,6 +28,12 @@ public class Str {
 	/**Nome do campo da database dbcollectionitem para armazenar o nome da imagem do item*/
 	public static final String PATH_PHOTO_ITEM = "path_photo_item";
 	
+	/**Nome do campo no form para upload da imagem do evento*/
+	public static final String PHOTO_EVENT = "photo_event";
+	
+	/**Nome do campo da database dbevent para armazenar o nome da imagem do evento*/
+	public static final String PATH_PHOTO_EVENT = "path_photo_event";
+	
 	/**Nome do campo para upload do video da coleção*/
 	public static final String FILE_VIDEO = "file_video";
 	
