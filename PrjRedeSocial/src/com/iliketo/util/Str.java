@@ -61,6 +61,9 @@ public class Str {
 	/**String s_id_item é a variável usada na sessão para guardar o id do item para visualizar*/
 	public static final String S_ID_ITEM = "s_id_item";
 	
+	/**String s_id_video é a variável usada na sessão para guardar o id do video para visualizar*/
+	public static final String S_ID_VIDEO = "s_id_video";
+	
 	//construtor privado
 	private Str(){
 		
