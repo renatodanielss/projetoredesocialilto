@@ -442,15 +442,15 @@ public class UCmaintainDataILiketo {
 		
 		//se action for post_collection realiza o fluxo abaixo
 		if(action.equals("post_collection")){
-			//Recupera o nome da coleção para setar na session
-			String nameOfCollection = filepost.getParameter(Str.NAME_COLLECTION); //recupera nome da coleção
+			//Recupera o nome da coleï¿½ï¿½o para setar na session
+			String nameOfCollection = filepost.getParameter(Str.NAME_COLLECTION); //recupera nome da coleï¿½ï¿½o
 			
-			if(nameOfCollection != null && !nameOfCollection.equals("")){ //verifica nome da coleção
-				//Seta o nome da coleção recuperado pelo parametro
+			if(nameOfCollection != null && !nameOfCollection.equals("")){ //verifica nome da coleï¿½ï¿½o
+				//Seta o nome da coleï¿½ï¿½o recuperado pelo parametro
 				mysession.set(myconfig.get(db, "getset") + Str.S_COLLECTION, nameOfCollection);//seta na session
 				System.out.println("Set session s_collection=" + nameOfCollection);
 			}else{
-				//não existe parametro name_collection
+				//nï¿½o existe parametro name_collection
 				//redirect para register collection.
 				myresponse.sendRedirect("/page.jsp?id=410");				
 			}
@@ -663,7 +663,7 @@ public class UCmaintainDataILiketo {
 			if (data_id.equals("")) data_id = filepost.getParameter("id");
 			data.read(db, "data" + database.getId(), data_id);
 			
-			//se for action post_photo_member, então é um update da foto na database dbmembers
+			//se for action post_photo_member, entï¿½o ï¿½ um update da foto na database dbmembers
 			if(action.equals("post_photo_member")){
 				
 				//ler a tabela usando o id do usuario >> 'id_member'
@@ -678,7 +678,7 @@ public class UCmaintainDataILiketo {
 						
 						String namePhotoDelete = "" + rows.get(colid_photo); //recupera nome da foto no banco de dados
 						String localImagePath = mysession.get(Str.STORAGE);	
-						deleteFileImagePhysically(namePhotoDelete, localImagePath); //método deleta arquivo fisicamente
+						deleteFileImagePhysically(namePhotoDelete, localImagePath); //mï¿½todo deleta arquivo fisicamente
 						
 					}
 				}
@@ -730,7 +730,7 @@ public class UCmaintainDataILiketo {
 						data.setUpdated(database.columns, timestamp, username);
 						data.create(db, "data" + database.getId(), database.columns);
 						
-						//Após create e gerar o novo id de cada item pelo sistema, faz update para atualizar o id na database dbcollectionitem
+						//Apï¿½s create e gerar o novo id de cada item pelo sistema, faz update para atualizar o id na database dbcollectionitem
 						String idUpdate = data.getId();	//recupera id gerado pelo sistema
 						Fileupload filepostUpateID = new Fileupload(null, null, null);
 						filepostUpateID.setParameter(arrayCampos[4], idUpdate);	//set parametro do id_item
@@ -750,7 +750,7 @@ public class UCmaintainDataILiketo {
 					
 				}else if(action.equals("post_collection")){		
 					
-					//faz o fluxo abaixo para coleção
+					//faz o fluxo abaixo para coleï¿½ï¿½o
 					data.getFormData(database.columns, filepost);
 					data.getFormData(database.columns, myrequest);
 					data.getFormData(database.columns, postedfiles);
@@ -759,15 +759,15 @@ public class UCmaintainDataILiketo {
 					data.setUpdated(database.columns, timestamp, username);
 					data.create(db, "data" + database.getId(), database.columns);
 					
-					//se for action post_collection, faz update do novo id gerado da coleção
+					//se for action post_collection, faz update do novo id gerado da coleï¿½ï¿½o
 					String idUpdate = data.getId();	//recupera id gerado pelo sistema
 					Fileupload filepostUpateID = new Fileupload(null, null, null);
-					filepostUpateID.setParameter("id_collection", idUpdate);	//set parametro do coleção
+					filepostUpateID.setParameter("id_collection", idUpdate);	//set parametro do coleï¿½ï¿½o
 					
 					if ((! data.getId().equals("")) && data.getEditor()) {							
 						String created = data.getCreated(database.columns);
 						String createdby = data.getCreatedBy(database.columns);
-						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro da coleção
+						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro da coleï¿½ï¿½o
 						data.getFormData(database.columns, myrequest);
 						data.getFormData(database.columns, postedfiles);
 						data.adjustContent(database.columns);
@@ -790,12 +790,12 @@ public class UCmaintainDataILiketo {
 					//faz update do novo id gerado do video
 					String idUpdate = data.getId();	//recupera id gerado pelo sistema
 					Fileupload filepostUpateID = new Fileupload(null, null, null);
-					filepostUpateID.setParameter("id_video", idUpdate);	//set parametro do coleção
+					filepostUpateID.setParameter("id_video", idUpdate);	//set parametro do coleï¿½ï¿½o
 					
 					if ((! data.getId().equals("")) && data.getEditor()) {							
 						String created = data.getCreated(database.columns);
 						String createdby = data.getCreatedBy(database.columns);
-						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro da coleção
+						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro da coleï¿½ï¿½o
 						data.getFormData(database.columns, myrequest);
 						data.getFormData(database.columns, postedfiles);
 						data.adjustContent(database.columns);
@@ -858,7 +858,7 @@ public class UCmaintainDataILiketo {
 					}else if(action.equals("post_comment")){
 						myrequest.setParameter("id_comment", idUpdate);	//set parametro do id criado para comment
 					}else{
-						System.out.println("Log - Error não encontrado parametros de id do name do input hidden para atualizar o id do novo registro na database!");
+						System.out.println("Log - Error nï¿½o encontrado parametros de id do name do input hidden para atualizar o id do novo registro na database!");
 					}
 					
 					//abaixo faz update do novo id tanto para forum, topic e comment
@@ -954,7 +954,7 @@ public class UCmaintainDataILiketo {
 		} else if (! redirect.equals("")) {
 			myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + Common.crlf_clean(redirect + data_id));
 		} else {
-			//se redirect for vazio, não redireciona para nenhum lugar! obs:por padrão estava pagina home codigo abaixo
+			//se redirect for vazio, nï¿½o redireciona para nenhum lugar! obs:por padrï¿½o estava pagina home codigo abaixo
 			//myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/");
 		}
 
@@ -1005,7 +1005,7 @@ public class UCmaintainDataILiketo {
 
 
 	/**
-	 * Método deleta uma lista de arquivos imagens fisicamente, passar uma lista com nomes do arquivo e endereço de armazenamento
+	 * Mï¿½todo deleta uma lista de arquivos imagens fisicamente, passar uma lista com nomes do arquivo e endereï¿½o de armazenamento
 	 * @param namePhotoDelete
 	 * @param localImagePath
 	 */
@@ -1030,7 +1030,7 @@ public class UCmaintainDataILiketo {
 	}
 	
 	/**
-	 * Método deleta um arquivo imagem fisicamente, passar o nome do arquivo e endereço de armazenamento
+	 * Mï¿½todo deleta um arquivo imagem fisicamente, passar o nome do arquivo e endereï¿½o de armazenamento
 	 * @param namePhotoDelete
 	 * @param localImagePath
 	 */
@@ -1053,7 +1053,7 @@ public class UCmaintainDataILiketo {
 	}
 	
 	/**
-	 * Método responsavel por deletar uma coleção e seus itens passando o valor do id da coleção para deletar
+	 * Mï¿½todo responsavel por deletar uma coleï¿½ï¿½o e seus itens passando o valor do id da coleï¿½ï¿½o para deletar
 	 * @param mysession
 	 * @param db
 	 * @param idDeleteCollection
@@ -1064,9 +1064,9 @@ public class UCmaintainDataILiketo {
 			
 			String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_collection", "dbcollection", "id", idDeleteCollection);		
 			listNamesPhotoDelete.add(namePhotoDelete); 	//adiciona imagem na lista
-			IliketoDAO.deleteDadosIliketo(db, "dbcollection", "id", idDeleteCollection); //método deleta dados na database
+			IliketoDAO.deleteDadosIliketo(db, "dbcollection", "id", idDeleteCollection); //mï¿½todo deleta dados na database
 			
-			//Enquanto existir itens na coleção
+			//Enquanto existir itens na coleï¿½ï¿½o
 			while(IliketoDAO.readRecordExistsDatabase(db, "dbcollectionitem", "fk_collection_id", idDeleteCollection)){
 				
 				String idRealItem = IliketoDAO.getValueOfDatabase(db, "id", "dbcollectionitem", "fk_collection_id", idDeleteCollection);
@@ -1076,12 +1076,12 @@ public class UCmaintainDataILiketo {
 			}
 				
 			String localImagePath = mysession.get(Str.STORAGE);			//local da pasta das imagens armazenadas
-			deleteListFileImagePhysically(listNamesPhotoDelete, localImagePath); //método deleta uma lista de arquivos fisicamente
+			deleteListFileImagePhysically(listNamesPhotoDelete, localImagePath); //mï¿½todo deleta uma lista de arquivos fisicamente
 				
 	}
 	
 	/**
-	 * Método responsavel por deletar um item por vez passando o valor do id do item para deletar
+	 * Mï¿½todo responsavel por deletar um item por vez passando o valor do id do item para deletar
 	 * @param mysession
 	 * @param db
 	 * @param idDeleteItem
@@ -1092,14 +1092,14 @@ public class UCmaintainDataILiketo {
 		String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_item", "dbcollectionitem", "id", idDeleteItem);		
 		
 		String localImagePath = mysession.get(Str.STORAGE);	 		//local da pasta das imagens armazenadas
-		deleteFileImagePhysically(namePhotoDelete, localImagePath); //método deleta fisicamente
+		deleteFileImagePhysically(namePhotoDelete, localImagePath); //mï¿½todo deleta fisicamente
 		
-		IliketoDAO.deleteDadosIliketo(db, "dbcollectionitem", "id", idDeleteItem); //método deleta dados na database
+		IliketoDAO.deleteDadosIliketo(db, "dbcollectionitem", "id", idDeleteItem); //mï¿½todo deleta dados na database
 
 	}
 	
 	/**
-	 * Método responsavel por deletar um video por vez passando o valor do id do video para deletar
+	 * Mï¿½todo responsavel por deletar um video por vez passando o valor do id do video para deletar
 	 * @param mysession
 	 * @param db
 	 * @param idDeleteVideo
@@ -1107,17 +1107,17 @@ public class UCmaintainDataILiketo {
 	public void doDeleteVideo(Session mysession, DB db, String idDeleteVideo) {
 		
 		//pega nome da foto para deletar
-		String nameVideoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_video", "dbcollectionvideo", "id", idDeleteVideo);		
+		String nameVideoDelete = IliketoDAO.getValueOfDatabase(db, "path_file_video", "dbcollectionvideo", "id", idDeleteVideo);		
 		
 		String localPath = mysession.get(Str.STORAGE);	 	   //local armazenamento
-		deleteFileImagePhysically(nameVideoDelete, localPath); //método deleta fisicamente
+		deleteFileImagePhysically(nameVideoDelete, localPath); //mï¿½todo deleta fisicamente
 		
-		IliketoDAO.deleteDadosIliketo(db, "dbcollectionvideo", "id", idDeleteVideo); //método deleta dados na database
+		IliketoDAO.deleteDadosIliketo(db, "dbcollectionvideo", "id", idDeleteVideo); //mï¿½todo deleta dados na database
 
 	}
 
 	/**
-	 * Método deleta membro da database dbmembers e tabela users, deleta todas coleções e itens. Passar o id do member no parametro
+	 * Mï¿½todo deleta membro da database dbmembers e tabela users, deleta todas coleï¿½ï¿½es e itens. Passar o id do member no parametro
 	 * @param mysession
 	 * @param db
 	 * @param idDeleteMember
@@ -1130,14 +1130,14 @@ public class UCmaintainDataILiketo {
 		//fotos deafult
 		if(namePhotoDelete != null && !namePhotoDelete.equals("avatar_male.png") && !namePhotoDelete.equals("avatar_female.png")){
 			String localImagePath = mysession.get(Str.STORAGE);			//local da imagem
-			deleteFileImagePhysically(namePhotoDelete, localImagePath); //método deleta fisicamente
+			deleteFileImagePhysically(namePhotoDelete, localImagePath); //mï¿½todo deleta fisicamente
 		}
 		
 		//Deleta todos dados do membro na database dbmembers e na tabela users
 		IliketoDAO.deleteDadosIliketo(db, "dbmembers", "id_member", idDeleteMember); 	//dbmembers 'data9'
 		IliketoDAO.deleteDadosMembroIliketo(db, "users", "id", idDeleteMember);			//tabela users
 		
-		//Enquanto existir linhas de registro das coleções, chama método doDeleteCollection
+		//Enquanto existir linhas de registro das coleï¿½ï¿½es, chama mï¿½todo doDeleteCollection
 		while(IliketoDAO.readRecordExistsDatabase(db, "dbcollection", "fk_user_id", idDeleteMember)){
 			String idRealCollection = IliketoDAO.getValueOfDatabase(db, "id", "dbcollection", "fk_user_id", idDeleteMember);
 			doDeleteCollection(mysession, db, idRealCollection);
