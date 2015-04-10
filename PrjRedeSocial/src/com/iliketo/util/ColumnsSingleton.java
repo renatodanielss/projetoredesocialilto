@@ -18,24 +18,32 @@ import HardCore.Text;
  * @author osvaldimar.costa
  *
  */
-public class ColumsSingleton {
+public class ColumnsSingleton {
 	
-	private static ColumsSingleton instance = null;
+	private static ColumnsSingleton instance = null;
 	private HashMap<String,HashMap<String,String>> COL_DBMEMBERS;
 	private HashMap<String,HashMap<String,String>> COL_DBCOLLECTION;
 	private HashMap<String,HashMap<String,String>> COL_DBCOLLECTIONITEM;
 	private HashMap<String,HashMap<String,String>> COL_DBCOLLECTIONVIDEO;
+	private HashMap<String,HashMap<String,String>> COL_DBFORUM;
+	private HashMap<String,HashMap<String,String>> COL_DBFORUMTOPIC;
+	private HashMap<String,HashMap<String,String>> COL_DBFORUMCOMMENT;
+	private HashMap<String,HashMap<String,String>> COL_DBGROUP;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
 	private String DATA_DBCOLLECTIONVIDEO;
+	private String DATA_DBFORUM;
+	private String DATA_DBFORUMTOPIC;
+	private String DATA_DBFORUMCOMMENT;
+	private String DATA_DBGROUP;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
 	 * Propósito evitar vários selects para recupera o col+id do name da column real no banco de dados
 	 * @param db
 	 */
-	private ColumsSingleton(DB db) {		
+	private ColumnsSingleton(DB db) {		
 		initColumnsReal(db);			
 	}
 	
@@ -64,6 +72,22 @@ public class ColumsSingleton {
 		database.read(db, new Configuration(), "dbcollectionvideo");	
 		DATA_DBCOLLECTIONVIDEO = database.getTable();
 		COL_DBCOLLECTIONVIDEO = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbforum");	
+		DATA_DBFORUM = database.getTable();
+		COL_DBFORUM = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbforumtopic");	
+		DATA_DBFORUMTOPIC = database.getTable();
+		COL_DBFORUMTOPIC = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbforumcomment");	
+		DATA_DBFORUMCOMMENT = database.getTable();
+		COL_DBFORUMCOMMENT = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbgroup");	
+		DATA_DBGROUP = database.getTable();
+		COL_DBGROUP = database.namedcolumns;
 	}
 	
 	/**
@@ -73,9 +97,9 @@ public class ColumsSingleton {
 	 * @param db
 	 * @return
 	 */
-	public static ColumsSingleton getInstance(DB db) {
+	public static ColumnsSingleton getInstance(DB db) {
 		if(instance == null) {
-			instance = new ColumsSingleton(db);
+			instance = new ColumnsSingleton(db);
 		}
 		return instance;
 	}
@@ -84,6 +108,8 @@ public class ColumsSingleton {
 	/**
 	 * Método retorna a col+id real do banco de dados. Ex: col1, col2
 	 * Passar o nome fantasia da coluna da database no parametro nameColumn
+	 * Passar no parametro DB e nameDatabase
+	 * Ex: nameDatabase = "dbcollectionvideo"
 	 * Ex: nameColum = "title_video"
 	 * @param nameColum
 	 * @return
@@ -99,6 +125,14 @@ public class ColumsSingleton {
 			mapcolumns = COL_DBCOLLECTIONITEM;
 		}else if(nameDatabase.equals("dbcollectionvideo")){
 			mapcolumns = COL_DBCOLLECTIONVIDEO;
+		}else if(nameDatabase.equals("dbforum")){
+			mapcolumns = COL_DBFORUM;
+		}else if(nameDatabase.equals("dbforumtopic")){
+			mapcolumns = COL_DBFORUMTOPIC;
+		}else if(nameDatabase.equals("dbforumcomment")){
+			mapcolumns = COL_DBFORUMCOMMENT;
+		}else if(nameDatabase.equals("dbgroup")){
+			mapcolumns = COL_DBGROUP;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -133,6 +167,14 @@ public class ColumsSingleton {
 			return DATA_DBCOLLECTIONITEM;
 		}else if(nameDatabase.equals("dbcollectionvideo")){
 			return DATA_DBCOLLECTIONVIDEO;
+		}else if(nameDatabase.equals("dbforum")){
+			return DATA_DBFORUM;
+		}else if(nameDatabase.equals("dbforumtopic")){
+			return DATA_DBFORUMTOPIC;
+		}else if(nameDatabase.equals("dbforumcomment")){
+			return DATA_DBFORUMCOMMENT;
+		}else if(nameDatabase.equals("dbgroup")){
+			return DATA_DBGROUP;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -174,6 +216,21 @@ public class ColumsSingleton {
 			}else if(table.equals("dbcollectionitem")){
 				mapcolumns = COL_DBCOLLECTIONITEM;
 				tableReal = DATA_DBCOLLECTIONITEM;
+			}else if(table.equals("dbcollectionvideo")){
+				mapcolumns = COL_DBCOLLECTIONVIDEO;
+				tableReal = DATA_DBCOLLECTIONVIDEO;
+			}else if(table.equals("dbforum")){
+				mapcolumns = COL_DBFORUM;
+				tableReal = DATA_DBFORUM;
+			}else if(table.equals("dbforumtopic")){
+				mapcolumns = COL_DBFORUMTOPIC;
+				tableReal = DATA_DBFORUMTOPIC;
+			}else if(table.equals("dbforumcomment")){
+				mapcolumns = COL_DBFORUMCOMMENT;
+				tableReal = DATA_DBFORUMCOMMENT;
+			}else if(table.equals("dbgroup")){
+				mapcolumns = COL_DBGROUP;
+				tableReal = DATA_DBGROUP;
 			}			
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){

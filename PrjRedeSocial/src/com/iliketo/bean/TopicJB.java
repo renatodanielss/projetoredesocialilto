@@ -1,5 +1,7 @@
 package com.iliketo.bean;
 
+import java.util.ArrayList;
+
 /**
  * Classe javabean de modelo
  * Contém os dados de um Item
@@ -14,6 +16,7 @@ public class TopicJB extends ContentILiketoJB {
 	private String subject;
 	private ForumJB forum;
 	private MemberJB member;
+	private ArrayList<CommentJB> listCommentJB = new ArrayList<CommentJB>();
 	
 	public TopicJB(){
 		
@@ -49,6 +52,14 @@ public class TopicJB extends ContentILiketoJB {
 
 	public void setMember(MemberJB member) {
 		this.member = member;
+	}
+
+	public ArrayList<CommentJB> getListCommentJB() {
+		return listCommentJB;
+	}
+
+	public void setListCommentJB(ArrayList<CommentJB> listCommentJB) {
+		this.listCommentJB = listCommentJB;
 	}
 
 

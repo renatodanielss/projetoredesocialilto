@@ -25,9 +25,9 @@ TimelineController controller = new TimelineController();
 ArrayList<ContentILiketoJB> listTimeline = new ArrayList<ContentILiketoJB>();
 
 if(timeline != null && timeline.equals("news")){	//solicitação novas atualizações
-	listTimeline = controller.updateTimelineNews(db, myrequest, mysession);
+	listTimeline = controller.updateTimelineNewsOlds(db, myrequest, mysession, "news");
 }else if(timeline != null && timeline.equals("olds")){ //solicitação atualizações antigas
-	listTimeline = controller.updateTimelineOlds(db, myrequest, mysession);
+	listTimeline = controller.updateTimelineNewsOlds(db, myrequest, mysession, "olds");
 }
 
 
@@ -41,13 +41,13 @@ String listEntryCollection = pageEntry.getBody();
 pageEntry = browseWebsite.getPageById("666", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryItem = pageEntry.getBody();
 
-pageEntry = browseWebsite.getPageById("xxx", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+pageEntry = browseWebsite.getPageById("669", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryVideo = pageEntry.getBody();
 
-pageEntry = browseWebsite.getPageById("xxx", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+pageEntry = browseWebsite.getPageById("667", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryTopic = pageEntry.getBody();
 
-pageEntry = browseWebsite.getPageById("xxx", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+pageEntry = browseWebsite.getPageById("668", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryComment = pageEntry.getBody();
 
 
@@ -106,18 +106,23 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@date_updated@@@", topicJB.getDateUpdated());
 			s = s.replaceAll("@@@nickname@@@", topicJB.getMember().getNickname());
 			s = s.replaceAll("@@@path_photo_member@@@", topicJB.getMember().getPathPhoto());
-			div.append(s);
 			
-		}else if(jb instanceof CommentJB){
-			CommentJB commentJB = (CommentJB) jb;
-			//replace o @@@ das informações da list html entry utilizando a classe javabean de modelo 
-			String s = listEntryComment;
-			s = s.replaceAll("@@@id_comment@@@", commentJB.getIdComment());
-			s = s.replaceAll("@@@text_comment@@@", commentJB.getTextComment());
-			s = s.replaceAll("@@@date_created@@@", commentJB.getDateCreated());
-			s = s.replaceAll("@@@date_updated@@@", commentJB.getDateUpdated());
-			s = s.replaceAll("@@@nickname@@@", commentJB.getMember().getNickname());
-			s = s.replaceAll("@@@path_photo_member@@@", commentJB.getMember().getPathPhoto());
+			//monta lista do comentario do topico
+			StringBuilder strComment = new StringBuilder();
+			
+			for(CommentJB commentJB : topicJB.getListCommentJB()){
+				String l = listEntryComment;
+				l = l.replaceAll("@@@id_comment@@@", commentJB.getIdComment());
+				l = l.replaceAll("@@@text_comment@@@", commentJB.getTextComment());
+				l = l.replaceAll("@@@date_created@@@", commentJB.getDateCreated());
+				l = l.replaceAll("@@@date_updated@@@", commentJB.getDateUpdated());
+				l = l.replaceAll("@@@nickname@@@", commentJB.getMember().getNickname());
+				l = l.replaceAll("@@@path_photo_member@@@", commentJB.getMember().getPathPhoto());
+				//adiciona na String cada comentario deste topico que foi adicionado na lista
+				strComment.append(l);
+			}
+			//Obs Colocar no html da listEntryTopic a expressão @@@td_html_list_comment@@@ será o local que a lista de comentarios irá aparecer no 'modelo entry do topico'
+			s = s.replaceAll("@@@html_list_comment@@@", strComment.toString());			
 			div.append(s);
 			
 		}
