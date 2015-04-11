@@ -11,6 +11,7 @@ import java.util.TimeZone;
 import javax.servlet.*;
 
 import com.iliketo.dao.IliketoDAO;
+import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.Str;
 
 public class UCmaintainDataILiketo {
@@ -873,6 +874,20 @@ public class UCmaintainDataILiketo {
 						data.setUpdated(database.columns, timestamp, username);
 						data.update(db, "data" + database.getId(), database.columns);
 					}
+					
+					//se action for comentario criado, atualiza topico para mostrar na timeline
+					if(action.equals("post_comment")){
+						String value_fk_topic_id = myrequest.getParameter("fk_topic_id");	//recupera do parametro valor chave estrangeira	no comentario
+						
+						ColumnsSingleton CS = ColumnsSingleton.getInstance(db);				//recupera instancia da classe com columns real
+						String tableTopicReal = CS.getDATA(db, "dbforumtopic");				//table real topico
+						String col_id_topic = CS.getCOL(db, "dbforumtopic", "id_topic");			//col+id real da column id_topic
+						String col_date_updated = CS.getCOL(db, "dbforumtopic", "date_updated");	//col+id real da column date_updated						
+						
+						HashMap<String,String> map = new HashMap<String,String>();
+						map.put(col_date_updated, timestamp);
+						db.update(tableTopicReal, col_id_topic, value_fk_topic_id, map);	//executa updated where id_topic = value
+					}
 				}
 			}
 			data_id = "" + data.getId();
@@ -1073,6 +1088,15 @@ public class UCmaintainDataILiketo {
 				String namePhotoItem = IliketoDAO.getValueOfDatabase(db, "path_photo_item", "dbcollectionitem", "id", idRealItem);		
 				listNamesPhotoDelete.add(namePhotoItem); 
 				IliketoDAO.deleteDadosIliketo(db, "dbcollectionitem", "id", idRealItem);
+			}
+			
+			//Enquanto existir video na colecao
+			while(IliketoDAO.readRecordExistsDatabase(db, "dbcollectionvideo", "fk_collection_id", idDeleteCollection)){
+				
+				String idRealVideo = IliketoDAO.getValueOfDatabase(db, "id", "dbcollectionvideo", "fk_collection_id", idDeleteCollection);
+				String nameFileVideo = IliketoDAO.getValueOfDatabase(db, "path_file_video", "dbcollectionvideo", "id", idRealVideo);		
+				listNamesPhotoDelete.add(nameFileVideo); 
+				IliketoDAO.deleteDadosIliketo(db, "dbcollectionvideo", "id", idRealVideo);
 			}
 				
 			String localImagePath = mysession.get(Str.STORAGE);			//local da pasta das imagens armazenadas

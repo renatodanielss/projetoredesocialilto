@@ -2,6 +2,8 @@ package com.iliketo.dao;
 
 import java.util.HashMap;
 
+import com.iliketo.util.ColumnsSingleton;
+
 import HardCore.Configuration;
 import HardCore.DB;
 import HardCore.Data;
@@ -210,5 +212,29 @@ public class IliketoDAO {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Método static responsável por verificar se uma colecao pertence a uma categoria.
+	 * Se a colecao informada no parametro conter o id da categoria retorna true
+	 * @param db
+	 * @param idCollection
+	 * @param idCategory
+	 * return exists
+	 */
+	public static boolean validateCollectionCategory(DB db, String idCollection, String idCategory){
+
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+		String SQL = "select c.id_collection from dbcollection c where c.id_collection = "+idCollection+" and c.fk_category_id = " + idCategory;
+		
+		String[][] tableAlias = { {"dbcollection", "c"} };
+		SQL = CS.transformSQLReal(SQL, tableAlias);	
+		
+		HashMap<String,String> row = db.query_record(SQL);		
+		if (row != null) {
+			return true;	//find true
+		}
+		
+		return false;
 	}
 }
