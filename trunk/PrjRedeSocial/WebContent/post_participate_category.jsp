@@ -46,13 +46,15 @@ if (myrequest.getParameter("database").equals("dbcollection") && !mysession.get(
 				myrequest.setParameter("fk_category_id", "");	//seta parametro em branco
 				myrequest.setParameter("name_category", "");	//seta parametro em branco
 				System.out.println("Log - Coleção: '"+ mysession.get("s_collection") +"' saiu da categoria/grupo: " + nameCategory);
-			
+				resultButton = "Participate";		//remove categoria - nao participa
+				
 			}else{
 				//nao participa
 				//Atualizar dados da categoria na database dbcollection
 				myrequest.setParameter("fk_category_id", idCategory);
 				myrequest.setParameter("name_category", nameCategory);
 				System.out.println("Log - Coleção: '"+ mysession.get("s_collection") +"' entrou para a categoria/grupo: " + nameCategory);
+				resultButton = "Leave category";	//seta nova categoria - ja participa
 			}
 			
 			String idReal = IliketoDAO.getValueOfDatabase(db, "id", "dbcollection", "id_collection", myIdCollection);//recupera id real do Asbru
