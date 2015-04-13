@@ -26,6 +26,9 @@ public class UpdateUserController {
 		if(!validateUsername(db, request)){
 			erro = false;
 		}
+		if(!validatePassword(db, request)){
+			erro = false;
+		}
 		return erro;
 		
 	}
@@ -59,6 +62,25 @@ public class UpdateUserController {
 			if(IliketoDAO.readRecordExistsTable(db, tableUsers, "username", request.getParameter("username"))){
 				msg = "Username already exists!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
 				System.out.println("Log - Username = " + request.getParameter("username") + " already exists");
+				request.setAttribute("msgError", msg);
+				return false;
+			}
+		}
+		return true;
+		
+	}
+	
+	/**
+	 * Validate password exists
+	 * @param db
+	 * @param request
+	 * @return
+	 */
+	public boolean validatePassword(DB db, HttpServletRequest request){
+		if (request.getParameter("password") != null){
+			if(IliketoDAO.readRecordExistsTable(db, tableUsers, "password", request.getParameter("password"))){
+				msg = "Password already exists!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
+				System.out.println("Log - Password = " + request.getParameter("password") + " already exists");
 				request.setAttribute("msgError", msg);
 				return false;
 			}

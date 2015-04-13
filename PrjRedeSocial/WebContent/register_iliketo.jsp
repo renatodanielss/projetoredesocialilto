@@ -38,7 +38,6 @@ if(!errorILiketo.equals("")){ //se conter error na validação do registro, adicio
 	//código abaixo faz o redicionamento com solicitação para pagina post.jsp
 	System.out.println("email = " + request.getParameter("email"));
 	System.out.println("username = " + request.getParameter("username"));
-	System.out.println("password = " + request.getParameter("password"));
 	System.out.println("ID User = " + idRegisterUser);
 	
 	%>
