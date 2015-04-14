@@ -10,10 +10,12 @@ System.out.println("Log - " + "execute action post_participate_category");
 
 cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("database"));
 
-//passar database dbcollection no parametro, valida s_id_collection na sessao
-if (myrequest.getParameter("database").equals("dbcollection") && !mysession.get(Str.S_ID_COLLECTION).equals("")) {
+//passar database dbcollection no parametro, valida myIdCollection na sessao
+if (!myrequest.getParameter("nameCollection").equals("") && !myrequest.getParameter("myIdCollection").equals("")) {
 	
-	String myIdCollection = mysession.get(Str.S_ID_COLLECTION);		//id collection da sessao
+	myrequest.setParameter("database", "dbcollection");	//set database para atualizar
+	
+	String myIdCollection = myrequest.getParameter("myIdCollection");		//id collection da sessao
 	String idCategory = myrequest.getParameter("id_category");		//recupera do parametro o id da categoria
 	String nameCategory = myrequest.getParameter("name_category"); 	//recupera do parametro o nome da categoria
 	String resultButton = "";
@@ -45,7 +47,7 @@ if (myrequest.getParameter("database").equals("dbcollection") && !mysession.get(
 				//Limpa os dados da categoria/grupo
 				myrequest.setParameter("fk_category_id", "");	//seta parametro em branco
 				myrequest.setParameter("name_category", "");	//seta parametro em branco
-				System.out.println("Log - Coleção: '"+ mysession.get("s_collection") +"' saiu da categoria/grupo: " + nameCategory);
+				System.out.println("Log - Coleção: '"+ myrequest.getParameter("nameCollection") +"' saiu da categoria/grupo: " + nameCategory);
 				resultButton = "Participate";		//remove categoria - nao participa
 				
 			}else{
@@ -53,7 +55,7 @@ if (myrequest.getParameter("database").equals("dbcollection") && !mysession.get(
 				//Atualizar dados da categoria na database dbcollection
 				myrequest.setParameter("fk_category_id", idCategory);
 				myrequest.setParameter("name_category", nameCategory);
-				System.out.println("Log - Coleção: '"+ mysession.get("s_collection") +"' entrou para a categoria/grupo: " + nameCategory);
+				System.out.println("Log - Coleção: '"+ myrequest.getParameter("nameCollection") +"' entrou para a categoria/grupo: " + nameCategory);
 				resultButton = "Leave category";	//seta nova categoria - ja participa
 			}
 			
@@ -83,7 +85,7 @@ if (myrequest.getParameter("database").equals("dbcollection") && !mysession.get(
 		System.out.println("Log - Error não encontrado id_category ou name_category no parametro");
 	}
 }else{
-	System.out.println("Log - Error não encontrado database dbcollection ou S_ID_COLLECTION da colecao do usuario na sessao");
+	System.out.println("Log - Error não encontrado database dbcollection ou parametro myIdCollection da colecao do usuario");
 }
 
 
