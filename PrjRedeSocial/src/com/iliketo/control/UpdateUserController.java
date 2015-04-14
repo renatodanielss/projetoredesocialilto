@@ -68,6 +68,25 @@ public class UpdateUserController {
 	}
 	
 	/**
+	 * Validate password exists
+	 * @param db
+	 * @param request
+	 * @return
+	 */
+	public boolean validatePassword(DB db, HttpServletRequest request){
+		if (request.getParameter("password") != null){
+			if(!IliketoDAO.authenticUsernamePassword(db, tableUsers, "password", request.getParameter("password"))){
+				msg = "Password is not correct!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
+				System.out.println("Log - Password = " + request.getParameter("username") + " is not correct!");
+				request.setAttribute("msgError", msg);
+				return false;
+			}
+		}
+		return true;
+		
+	}
+	
+	/**
 	 * M�todo realiza a pesquisa do usu�rio na tabela users, passando o username e o valor para comparar
 	 * Ent�o retorna o id encontrado
 	 * @param db
