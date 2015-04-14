@@ -86,7 +86,7 @@ function focusForm() {
 }
 </script>
 </head>
-<body <%= HardCore.Page.OutputContent(mytext, servletcontext, request, response, session, null, cms.PageHeader(myrequest.getParameter("id"), "htmlbodyonload", "", cms.BODYmargins)) %>">
+<body<%= cms.PageHeader(adminpage.getId(), "htmlbodyonload", "", cms.BODYmargins) %> onload="focusForm();">
 <% if ((! mypage.getCreatedBy().equals("")) && (! mysession.get("username").equals(mypage.getCreatedBy()))) { %>
 <table width="100%" height="100%">
 <tr><td align="center">
