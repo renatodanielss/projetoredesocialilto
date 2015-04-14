@@ -44,11 +44,11 @@ String listEntryItem = pageEntry.getBody();
 pageEntry = browseWebsite.getPageById("669", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryVideo = pageEntry.getBody();
 
-pageEntry = browseWebsite.getPageById("667", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
-String listEntryTopic = pageEntry.getBody();
+//pageEntry = browseWebsite.getPageById("667", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+//String listEntryTopic = pageEntry.getBody();
 
-pageEntry = browseWebsite.getPageById("668", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
-String listEntryComment = pageEntry.getBody();
+//pageEntry = browseWebsite.getPageById("668", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+//String listEntryComment = pageEntry.getBody();
 
 
 StringBuilder div = new StringBuilder();	//armazena todos os conteudos na String div para retornar do server para o ajax
@@ -95,7 +95,9 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@nickname@@@", videoJB.getMember().getNickname());
 			s = s.replaceAll("@@@path_photo_member@@@", videoJB.getMember().getPathPhoto());
 			div.append(s);
-			
+		
+		%>
+		<!-- 
 		}else if(jb instanceof TopicJB){
 			TopicJB topicJB = (TopicJB) jb;
 			//replace o @@@ das informações da list html entry utilizando a classe javabean de modelo 
@@ -124,7 +126,8 @@ if(!listTimeline.isEmpty()){
 			//Obs Colocar no html da listEntryTopic a expressão @@@td_html_list_comment@@@ será o local que a lista de comentarios irá aparecer no 'modelo entry do topico'
 			s = s.replaceAll("@@@html_list_comment@@@", strComment.toString());			
 			div.append(s);
-			
+			 -->
+		<%
 		}
 		
 	}

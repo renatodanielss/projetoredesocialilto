@@ -55,8 +55,6 @@ public class TimelineController {
 	 */
 	public ArrayList<ContentILiketoJB> updateTimelineNewsOlds(DB db, Request request, Session mysession, String typeTimeline){
 
-		organizeFk_user_idVideo(db);//usar metodo uma vez para organizar fk_user_id do video, depois retirar
-		
 		ArrayList<ContentILiketoJB> listTimeline = new ArrayList<ContentILiketoJB>();
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		HashMap<String,String> mapOffset = null;
@@ -70,7 +68,7 @@ public class TimelineController {
 			mapOffset.put("offsetCol", "0");
 			mapOffset.put("offsetItem", "0");
 			mapOffset.put("offsetVideo", "0");
-			mapOffset.put("offsetTopic", "0");
+			//mapOffset.put("offsetTopic", "0");
 			mysession.getSession().setAttribute("mapOffset", mapOffset);
 		}
 		
@@ -123,7 +121,7 @@ public class TimelineController {
 		SQLVideo = CS.transformSQLReal(SQLVideo, aliasVideo);
 		System.out.println("SQLVideo Real: " + SQLVideo);
 		
-		//Comando sql para topic
+		/*Comando sql para topic
 		String SQLTopic = 
 				  "select t.id_topic as id_topic, t.subject as subject, t.date_created as date_created, t.date_updated as date_updated, "
 				 + "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
@@ -137,7 +135,7 @@ public class TimelineController {
 		System.out.println("\nSQLTopic Comum: " + SQLTopic);
 		String[][] aliasTopic = { {"dbforumtopic", "t"}, {"dbmembers", "m"}, {"dbforum", "f"}, {"dbgroup", "g"}, {"dbcollection", "c"} };
 		SQLTopic = CS.transformSQLReal(SQLTopic, aliasTopic);
-		System.out.println("SQLTopic Real: " + SQLTopic);
+		System.out.println("SQLTopic Real: " + SQLTopic);*/
 		
 		
 		//Comando sql para event
@@ -148,7 +146,7 @@ public class TimelineController {
 		LinkedHashMap<String,HashMap<String,String>> recordsCollections  = db.query_records(SQLCollection); //map de registros collections
 		LinkedHashMap<String,HashMap<String,String>> recordsItems  = db.query_records(SQLItem); //map de registros items
 		LinkedHashMap<String,HashMap<String,String>> recordsVideos  = db.query_records(SQLVideo); //map de registros videos
-		LinkedHashMap<String,HashMap<String,String>> recordsTopic  = db.query_records(SQLTopic); //map de registros topicos
+		//LinkedHashMap<String,HashMap<String,String>> recordsTopic  = db.query_records(SQLTopic); //map de registros topicos
 
 		
 		//Popula conteudo ILiketo nas classes javabean e adiciona na listTimeline
@@ -213,6 +211,7 @@ public class TimelineController {
 			System.out.println("row:" + rec+ " - column/values: " + recordsVideos.get(rec));
 		}
 		
+		/*
 		System.out.println("\nRegistros Topicos:");
 		for(String rec : recordsTopic.keySet()){			
 			TopicJB topicJB = new TopicJB();		//topico
@@ -274,7 +273,7 @@ public class TimelineController {
 			topicJB.setListCommentJB(listComment); 	//add list de comment no topico
 			listTimeline.add(topicJB);				//add topico na listTimeline
 			
-		}
+		}*/
 		
 		
 		//offset para controle de paginação da timeline de registros antigos
@@ -288,8 +287,8 @@ public class TimelineController {
 		totalOffset = Integer.parseInt(mapOffset.get("offsetVideo")) + recordsVideos.size();
 		mapOffset.put("offsetVideo", Integer.toString(totalOffset));
 		
-		totalOffset = Integer.parseInt(mapOffset.get("offsetTopic")) + recordsTopic.size();
-		mapOffset.put("offsetTopic", Integer.toString(totalOffset));
+		//totalOffset = Integer.parseInt(mapOffset.get("offsetTopic")) + recordsTopic.size();
+		//mapOffset.put("offsetTopic", Integer.toString(totalOffset));
 		
 		mysession.getSession().setAttribute("mapOffset", mapOffset); //seta o mapa de offset para cada conteudo paginado
 		
