@@ -25,16 +25,9 @@
 	
 	if(!username.equals("") || !email.equals("")){ //se conter error na validação do registro, adiciona o erro na page
 				
-		//response mesma pagina passando error no parametro
-		
-		//myresponse.sendRedirect("/personal/admin.jsp?id=328&e=" + email + "&u=" + username); //recuperar parametro no html >> ###error###	
-		%>
-		<script>
-		alert("Teste");
-		</script>
-
-		<%
-		
+		//reponse mesma pagina passando error no parametro
+		myresponse.sendRedirect("/personal/admin.jsp?id=328&e=" + email + "&u=" + username); //recuperar parametro no html >> ###error###	
+				
 		//Cria um UCbrowseWebsite
 		//UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
 		//mypage = browseWebsite.getPage(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
@@ -61,8 +54,6 @@
 	
 		Page adminpage = maintainContent.getPersonalAdmin(myuser, mypage, servletcontext, mysession, myrequest, myresponse, myconfig, db);
 		mysession.set("id", adminpage.getId());
-		
-		myresponse.sendRedirect("/personal/admin_iliketo.jsp");
 		
 		%>
 		<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
