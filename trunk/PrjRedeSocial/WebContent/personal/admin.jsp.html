@@ -5,7 +5,7 @@ cms.HttpHeaders(adminpage.getId());
 if (! myconfig.get(db, "charset").equals("")) myresponse.setContentType("text/html; charset=" + myconfig.get(db, "charset"));
 
 %><%= myconfig.get(db, "doctype") %>
-<html>
+<html<%= cms.PageHTML(myrequest.getParameter("id")) %>>
 <head><% if (! cms.Page(adminpage.getId()).getServerFilename().equals("")) { %><base href="<%= myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + myconfig.getTemp("URLrootpath") + cms.Page(adminpage.getId()).getServerFilename() %>"><% } %>
 <meta http-equiv="Content-Type" content="text/html; charset=<%= myconfig.get(db, "charset") %>"<%= cms.XHTMLclosed %>>
 <meta name="author" content="<%= cms.PageHeader(adminpage.getId(), "author", "") %>"<%= cms.XHTMLclosed %>>
