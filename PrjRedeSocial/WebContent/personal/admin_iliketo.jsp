@@ -26,17 +26,8 @@
 	if(!username.equals("") || !email.equals("")){ //se conter error na validação do registro, adiciona o erro na page
 				
 		//reponse mesma pagina passando error no parametro
-		
-		//myresponse.sendRedirect("/personal/admin.jsp?id=328&e=" + email + "&u=" + username); //recuperar parametro no html >> ###error###	
-		<script type="text/javascript">
-
-		function teste()
-		{
-        	alert("teste");
-		}
-
-		</script>
-		
+		myresponse.sendRedirect("/personal/admin.jsp?id=328&e=" + email + "&u=" + username); //recuperar parametro no html >> ###error###	
+				
 		//Cria um UCbrowseWebsite
 		//UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
 		//mypage = browseWebsite.getPage(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
