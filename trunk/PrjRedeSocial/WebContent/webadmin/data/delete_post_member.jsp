@@ -45,7 +45,7 @@ if(idDeleteMember != null && idDeleteMember.equals(userId)){
 }else{
 	System.out.println("Log - " + "execute delete_post_member - Error invalid id member or session expired!");
 	System.out.println("Log - " + "Mostrar tela Personal");
-	myresponse.sendRedirect("/personal/admin.jsp?id=328&invalid=account");
+	myresponse.sendRedirect("page.jsp?id=671");
 }
 
 
