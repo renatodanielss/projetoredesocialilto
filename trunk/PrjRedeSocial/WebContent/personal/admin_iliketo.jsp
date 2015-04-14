@@ -30,7 +30,7 @@
 		//myresponse.sendRedirect("/personal/admin.jsp?id=328&e=" + email + "&u=" + username); //recuperar parametro no html >> ###error###	
 		%>
 		<script>
-		form.onsubmit=function(){
+		form.onload=function(){
 			alert("Teste");
 		}
 		</script>
