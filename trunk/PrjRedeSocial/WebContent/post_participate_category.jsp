@@ -10,8 +10,8 @@ System.out.println("Log - " + "execute action post_participate_category");
 
 cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("database"));
 
-//passar database dbcollection no parametro, valida myIdCollection na sessao
-if (!myrequest.getParameter("nameCollection").equals("") && !myrequest.getParameter("myIdCollection").equals("")) {
+//valida myIdCollection
+if (!myrequest.getParameter("myIdCollection").equals("")) {
 	
 	myrequest.setParameter("database", "dbcollection");	//set database para atualizar
 	
@@ -47,7 +47,7 @@ if (!myrequest.getParameter("nameCollection").equals("") && !myrequest.getParame
 				//Limpa os dados da categoria/grupo
 				myrequest.setParameter("fk_category_id", "");	//seta parametro em branco
 				myrequest.setParameter("name_category", "");	//seta parametro em branco
-				System.out.println("Log - Coleção: '"+ myrequest.getParameter("nameCollection") +"' saiu da categoria/grupo: " + nameCategory);
+				System.out.println("Log - Coleção: '"+ myIdCollection +"' saiu da categoria/grupo: " + nameCategory);
 				resultButton = "Participate";		//remove categoria - nao participa
 				
 			}else{
@@ -55,7 +55,7 @@ if (!myrequest.getParameter("nameCollection").equals("") && !myrequest.getParame
 				//Atualizar dados da categoria na database dbcollection
 				myrequest.setParameter("fk_category_id", idCategory);
 				myrequest.setParameter("name_category", nameCategory);
-				System.out.println("Log - Coleção: '"+ myrequest.getParameter("nameCollection") +"' entrou para a categoria/grupo: " + nameCategory);
+				System.out.println("Log - Coleção: '"+ myIdCollection +"' entrou para a categoria/grupo: " + nameCategory);
 				resultButton = "Leave category";	//seta nova categoria - ja participa
 			}
 			
