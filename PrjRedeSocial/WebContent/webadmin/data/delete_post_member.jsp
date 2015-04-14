@@ -40,12 +40,12 @@ if(idDeleteMember != null && idDeleteMember.equals(userId)){
 	}else{
 		System.out.println("Log - " + "execute delete_post_member - Error invalid password!");
 		System.out.println("Log - " + "Mostrar tela Personal");
-		myresponse.sendRedirect("/personal/admin.jsp?id=328&invalid=password");
+		myresponse.sendRedirect("/page.jsp?id=671&invalid=password");
 	}
 }else{
 	System.out.println("Log - " + "execute delete_post_member - Error invalid id member or session expired!");
 	System.out.println("Log - " + "Mostrar tela Personal");
-	myresponse.sendRedirect("page.jsp?id=671");
+	myresponse.sendRedirect("/page.jsp?id=671&invalid=account");
 }
 
 
