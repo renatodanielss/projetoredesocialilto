@@ -12,11 +12,11 @@ if (! myconfig.get(db, "charset").equals("")) myresponse.setContentType("text/ht
 <meta name="description" content="<%= cms.PageHeader(adminpage.getId(), "description", "") %>"<%= cms.XHTMLclosed %>>
 <meta name="keywords" content="<%= cms.PageHeader(adminpage.getId(), "keywords", "") %>"<%= cms.XHTMLclosed %>>
 <title><%= cms.PageHeader(adminpage.getId(), "title", "") %></title>
-<%= HardCore.Page.OutputContent(mytext, servletcontext, request, response, session, null, cms.PageHeader(myrequest.getParameter("id"), "metainfo", "")) %>
-<%= HardCore.Page.OutputContent(mytext, servletcontext, request, response, session, null, cms.CMSHeader(myrequest.getParameter("id"))) %>
-<%= HardCore.Page.OutputContent(mytext, servletcontext, request, response, session, null, cms.PageStyleSheet(myrequest.getParameter("id"))) %>
-<%= HardCore.Page.OutputContent(mytext, servletcontext, request, response, session, null, cms.PageScripts(myrequest.getParameter("id"))) %>
-<%= HardCore.Page.OutputContent(mytext, servletcontext, request, response, session, null, cms.PageHeader(myrequest.getParameter("id"), "htmlheader", "")) %>
+<%= cms.PageHeader(adminpage.getId(), "metainfo", "") %>
+<%= cms.CMSHeader(adminpage.getId()) %>
+<%= cms.PageStyleSheet(adminpage.getId()) %>
+<%= cms.PageScripts(adminpage.getId()) %>
+<%= cms.PageHeader(adminpage.getId(), "htmlheader", "") %>
 <script type="text/javascript">
 
 function doPreview(myform) {
@@ -86,7 +86,7 @@ function focusForm() {
 }
 </script>
 </head>
-<body onload="focusForm();">
+<body <%= HardCore.Page.OutputContent(mytext, servletcontext, request, response, session, null, cms.PageHeader(myrequest.getParameter("id"), "htmlbodyonload", "", cms.BODYmargins)) %>">
 <% if ((! mypage.getCreatedBy().equals("")) && (! mysession.get("username").equals(mypage.getCreatedBy()))) { %>
 <table width="100%" height="100%">
 <tr><td align="center">
