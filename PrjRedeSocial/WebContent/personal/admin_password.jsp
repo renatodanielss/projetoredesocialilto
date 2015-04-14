@@ -48,6 +48,13 @@
 		Page adminpage = maintainContent.getPersonalAdmin(myuser, mypage, servletcontext, mysession, myrequest, myresponse, myconfig, db);
 		mysession.set("id", adminpage.getId());
 		
+		%>
+		<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
+		<jsp:forward page="/post.jsp?database=dbmembers">
+			<jsp:param value="<%=idRegisterUser%>" name="id"/>
+			<jsp:param value="/page.jsp?id=620" name="redirect"/>
+		</jsp:forward>
+		<%
 }
 %>
 <% if (db != null) db.close(); %><% if (logdb != null) logdb.close(); %>
