@@ -79,6 +79,7 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@path_photo_item@@@", itemJB.getPathPhoto());
 			s = s.replaceAll("@@@date_created@@@", itemJB.getDateCreated());
 			s = s.replaceAll("@@@date_updated@@@", itemJB.getDateUpdated());
+			s = s.replaceAll("@@@id_member@@@", itemJB.getMember().getIdMember());
 			s = s.replaceAll("@@@nickname@@@", itemJB.getMember().getNickname());
 			s = s.replaceAll("@@@path_photo_member@@@", itemJB.getMember().getPathPhoto());
 			div.append(s);
@@ -92,6 +93,7 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@path_file_video@@@", videoJB.getPathVideo());
 			s = s.replaceAll("@@@date_created@@@", videoJB.getDateCreated());
 			s = s.replaceAll("@@@date_updated@@@", videoJB.getDateUpdated());
+			s = s.replaceAll("@@@id_member@@@", videoJB.getMember().getIdMember());
 			s = s.replaceAll("@@@nickname@@@", videoJB.getMember().getNickname());
 			s = s.replaceAll("@@@path_photo_member@@@", videoJB.getMember().getPathPhoto());
 			div.append(s);
