@@ -17,9 +17,9 @@ String nameDatabase = myrequest.getParameter("database"); //recupera do parametr
 String idDeleteInterest = myrequest.getParameter("id"); //recupera do parametro o id do conteudo para deletar
 
 
-//Deleta uma coleção da dbcollection e todos itens desta coleção
+//Deleta uma coleção da dbinterest e todos itens desta coleção
 UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext); 
-maintainData.doDeleteCollection(mysession, db, idDeleteInterest);
+maintainData.doDeleteInterest(mysession, db, idDeleteInterest);
 
 
 System.out.println("Log - " + "execute delete_post_interest - id do interesse deletado = " + idDeleteInterest);

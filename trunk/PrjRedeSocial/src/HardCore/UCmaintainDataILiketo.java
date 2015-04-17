@@ -777,6 +777,35 @@ public class UCmaintainDataILiketo {
 						data.update(db, "data" + database.getId(), database.columns);
 					}
 					
+				}else if(action.equals("post_interest")){		
+					
+					//faz o fluxo abaixo para interesse
+					data.getFormData(database.columns, filepost);
+					data.getFormData(database.columns, myrequest);
+					data.getFormData(database.columns, postedfiles);
+					data.adjustContent(database.columns);
+					data.setCreated(database.columns, timestamp, username);
+					data.setUpdated(database.columns, timestamp, username);
+					data.create(db, "data" + database.getId(), database.columns);
+					
+					//se for action post_interest, faz update do novo id gerado do interesse
+					String idUpdate = data.getId();	//recupera id gerado pelo sistema
+					
+					Fileupload filepostUpateID = new Fileupload(null, null, null);
+					filepostUpateID.setParameter("id_interest", idUpdate);	//set parametro do interesse
+					
+					if ((! data.getId().equals("")) && data.getEditor()) {							
+						String created = data.getCreated(database.columns);
+						String createdby = data.getCreatedBy(database.columns);
+						data.getFormData(database.columns, filepostUpateID);	//filepostUpateID contem o parametro do interesse
+						data.getFormData(database.columns, myrequest);
+						data.getFormData(database.columns, postedfiles);
+						data.adjustContent(database.columns);
+						data.setCreated(database.columns, created, createdby);
+						data.setUpdated(database.columns, timestamp, username);
+						data.update(db, "data" + database.getId(), database.columns);
+					}
+					
 				}else if(action.equals("post_add_video")){
 					
 					//faz o fluxo abaixo para add video
@@ -1102,6 +1131,17 @@ public class UCmaintainDataILiketo {
 			String localImagePath = mysession.get(Str.STORAGE);			//local da pasta das imagens armazenadas
 			deleteListFileImagePhysically(listNamesPhotoDelete, localImagePath); //mï¿½todo deleta uma lista de arquivos fisicamente
 				
+	}
+	
+	/**
+	 * Mï¿½todo responsavel por deletar uma coleï¿½ï¿½o e seus itens passando o valor do id da coleï¿½ï¿½o para deletar
+	 * @param mysession
+	 * @param db
+	 * @param idDeleteCollection
+	 */
+	public void doDeleteInterest(Session mysession, DB db, String idDeleteInterest) {
+		if (!idDeleteInterest.equals(null) && !idDeleteInterest.equals(""))
+			IliketoDAO.deleteDadosIliketo(db, "dbinterest", "id", idDeleteInterest); //método deleta dados na database				
 	}
 	
 	/**
