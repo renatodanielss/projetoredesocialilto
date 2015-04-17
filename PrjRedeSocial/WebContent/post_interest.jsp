@@ -4,7 +4,7 @@
 
 <%
 
-//menu new register collection
+//menu new register interest
 if(myrequest.getParameter("newRegisterInterest") != null &&
 		myrequest.getParameter("newRegisterInterest").equals("yes")){
 	mysession.remove(myconfig.get(db, "getset") + Str.S_ID_REGISTER_INTEREST); //remove o s_id_register_interest da sessão para adicionar um novo interesse
@@ -19,15 +19,15 @@ cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("databas
 
 if (! myrequest.getParameter("database").equals("")) {
 	
-	//Se tiver o s_id_register_collection na sessão, então é um update
+	//Se tiver o s_id_register_interest na sessão, então é um update
 	if(mysession.get(myconfig.get(db, "getset") + Str.S_ID_REGISTER_INTEREST) != null && 
 			!mysession.get(myconfig.get(db, "getset") + Str.S_ID_REGISTER_INTEREST).equals("")){
 		System.out.println(mysession.get(myconfig.get(db, "getset") + Str.S_ID_REGISTER_INTEREST));
 		System.out.println();
-		//se conter um id no parametro é um update do usuario da nova coleção na database dbcollection
+		//se conter um id no parametro é um update do usuario da nova interesse na database dbinterest
 		if(myrequest.getParameter("id") != null && !myrequest.getParameter("id").equals("")){
 			
-			//faz update da coleção
+			//faz update da interesse
 			UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
 			Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_interest");
 			System.out.println("Log - Update do novo interesse pelo usuário OK = " + 
@@ -44,28 +44,28 @@ if (! myrequest.getParameter("database").equals("")) {
 			String idRegisterUpdate = mysession.get(myconfig.get(db, "getset") + Str.S_ID_REGISTER_INTEREST);
 			String post = "/post_interest.jsp?database=dbinterest&id=" + idRegisterUpdate;
 			%>
-				<!-- redireciona para adicionar os novos campos alterados na pagina pelo usuario na dbcollection -->
+				<!-- redireciona para adicionar os novos campos alterados na pagina pelo usuario na dbinterest -->
 				<jsp:forward page="<%=post%>">
 					<jsp:param value="<%=idRegisterUpdate%>" name="id_interest"/>
 				</jsp:forward>
 			<%
 		}
 		
-	}else{//Se não tiver o s_id_register_collection na sessão, então cria uma nova coleção
+	}else{//Se não tiver o s_id_register_interest na sessão, então cria uma nova interesse
 		
 		//UCmaintainData maintainData = new UCmaintainData(mytext);
 		UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
 		Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_interest");
 		
 		String ID = data.getId(); //reupera o ID gerado	
-		System.out.println("Log - Create nova coleção OK = " + 
+		System.out.println("Log - Create nova interesse OK = " + 
 					mysession.get(myconfig.get(db, "getset") + Str.S_INTEREST) + 
-					" / novo ID da coleção OK = " + ID);
-		//Seta o nome da coleção recuperado pelo parametro
+					" / novo ID da interesse OK = " + ID);
+		//Seta o nome da interesse recuperado pelo parametro
 		mysession.set(myconfig.get(db, "getset") + Str.S_ID_REGISTER_INTEREST, ID);//seta na session
 		System.out.println("Set session s_id_register_interest=" + ID);
 		
-		mysession.set(Str.S_ID_INTEREST, ID);//seta na session o id da coleção criada
+		mysession.set(Str.S_ID_INTEREST, ID);//seta na session o id da interesse criada
 		
 		//redireciona para add new item
 		myresponse.sendRedirect("/page.jsp?id=696");
