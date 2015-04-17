@@ -1,3 +1,4 @@
+<%@page import="com.iliketo.dao.IliketoDAO"%>
 <%@page import="com.iliketo.control.TimelineController"%>
 <%@page import="com.iliketo.bean.ContentILiketoJB"%>
 <%@page import="com.iliketo.bean.CollectionJB"%>
@@ -59,9 +60,12 @@ if(!listTimeline.isEmpty()){
 		if(jb instanceof CollectionJB){
 			CollectionJB collectionJB = (CollectionJB) jb;
 			//replace o @@@ das informações da list html entry utilizando a classe javabean de modelo 
+			String total_items = IliketoDAO.getValueCountDatabase(db, "id_item", "dbcollectionitem", "fk_collection_id", collectionJB.getIdCollection());	
 			String s = listEntryCollection;
+			s = s.replaceAll("@@@total_items@@@", total_items);
 			s = s.replaceAll("@@@id_collection@@@", collectionJB.getIdCollection());
 			s = s.replaceAll("@@@name_collection@@@", collectionJB.getNameCollection());
+			s = s.replaceAll("@@@description_collection@@@", collectionJB.getDescription());
 			s = s.replaceAll("@@@name_category@@@", collectionJB.getCategory());
 			s = s.replaceAll("@@@path_photo_collection@@@", collectionJB.getPathPhoto());
 			s = s.replaceAll("@@@date_created@@@", collectionJB.getDateCreated());
@@ -135,7 +139,7 @@ if(!listTimeline.isEmpty()){
 	}
 }else{
 	//if listTimeline empty
-	div.append("No updates!");
+	div.append("No more updates!");
 }
 
 response.setContentType("text/html"); 			//set type conteudo resposta

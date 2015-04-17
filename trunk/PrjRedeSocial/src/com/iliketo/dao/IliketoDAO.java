@@ -183,23 +183,17 @@ public class IliketoDAO {
 		
 		if (db == null) return null;
 		
-		Databases database = new Databases(new Text());
-		database.read(db, new Configuration(), nameDatabase);
-				
-		String dataid = database.getTable();
-		String colid = "";
-		if(!nameColumn.equals("id")){
-			colid = "col" + (String) database.namedcolumns.get(nameColumn).get("id");	
-		}else{
-			colid = "id";
-		}
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		
+		String dataid = CS.getDATA(db, nameDatabase);		
+		String colid = CS.getCOL(db, nameDatabase, nameColumn);
+
 		Data data = new Data();
 		HashMap<String, String> rows = data.readWhereILiketo(db, dataid, colid, value);
 		
 		String colid_val = "";
 		if(!valueOf.equals("id")){
-			colid_val = "col" + (String) database.namedcolumns.get(valueOf).get("id");	
+			colid_val = CS.getCOL(db, nameDatabase, valueOf);	
 		}else{
 			colid_val = "id";
 		}
@@ -236,5 +230,41 @@ public class IliketoDAO {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Método genérico retorna a quantidade registros encontrados
+	 * valueCount - nome do campo que deseja contar
+	 * nameDatabase - database
+	 * nameColumn - coluna para comparar
+	 * value - valor a ser comparado
+	 * @param db
+	 * @param valueOf
+	 * @param nameDatabase
+	 * @param nameColumn
+	 * @param value
+	 * @return
+	 */
+	public static String getValueCountDatabase(DB db, String valueCount, String nameDatabase, String nameColumn, String value){
+		String count = "0";
+		
+		if (db == null) return null;
+		
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+		
+		String SQL = "SELECT COUNT(t1." +valueCount+ ") as total FROM " + nameDatabase + " as t1 WHERE t1." + nameColumn +"="+ value;
+		String[][] tableAlias = { {nameDatabase, "t1" } };
+		SQL = CS.transformSQLReal(SQL, tableAlias);
+		
+		HashMap<String, String> rows = db.query_record(SQL);
+		
+		if(rows != null){
+			if(rows.get("total") != null){			
+				count = "" + rows.get("total");			
+			}
+		}
+		
+		return count;
+		
 	}
 }
