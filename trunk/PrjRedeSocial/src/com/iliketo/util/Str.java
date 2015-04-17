@@ -46,11 +46,17 @@ public class Str {
 	/**String s_collection é a variável usada na sessão para guardar o nome da coleção selecionada*/
 	public static final String S_COLLECTION = "s_collection";
 	
+	/**String s_interest é a variável usada na sessão para guardar o nome do interesse selecionado*/
+	public static final String S_INTEREST = "S_INTEREST";
+	
 	/**String s_id_collection é a variável usada na sessão para guardar o id da coleção selecionada*/
 	public static final String S_ID_COLLECTION = "s_id_collection";
 	
 	/**String s_id_register_collection é a variável usada na sessão para guardar o id da coleção nova criada*/
 	public static final String S_ID_REGISTER_COLLECTION = "s_id_register_collection";
+	
+	/**String s_id_register_interest é a variável usada na sessão para guardar o id do novo interesse criado*/
+	public static final String S_ID_REGISTER_INTEREST = "s_id_register_interest";
 	
 	/**String s_id_collector é a variável usada na sessão para guardar o id da coleção do colecionador*/
 	public static final String S_ID_COLLECTOR = "s_id_collector";
@@ -63,6 +69,9 @@ public class Str {
 	
 	/**String s_id_video é a variável usada na sessão para guardar o id do video para visualizar*/
 	public static final String S_ID_VIDEO = "s_id_video";
+	
+	/**String s_id_interest é a variável usada na sessão para guardar o id do interesse para visualizar*/
+	public static final String S_ID_INTEREST = "s_id_interest";
 	
 	//construtor privado
 	private Str(){
