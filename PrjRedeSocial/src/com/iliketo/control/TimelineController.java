@@ -79,7 +79,7 @@ public class TimelineController {
 		
 		//Comando sql para item
 		String SQLCollection = 
-				  "select c1.id_collection as id_collection, c1.name_collection as name_collection, c1.name_category as name_category, c1.path_photo_collection as path_photo_collection, "
+				  "select c1.id_collection as id_collection, c1.name_collection as name_collection, c1.description as description, c1.name_category as name_category, c1.path_photo_collection as path_photo_collection, "
 				 + "c1.date_created as date_created, c1.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 				 + "from dbcollection c1 join dbmembers m on c1.fk_user_id = m.id_member "
 				 + "where exists (select c2.fk_category_id from dbcollection c2 "
@@ -157,6 +157,7 @@ public class TimelineController {
 			
 			collectionJB.setIdCollection(recordsCollections.get(rec).get("id_collection"));
 			collectionJB.setNameCollection(recordsCollections.get(rec).get("name_collection"));
+			collectionJB.setDescription(recordsCollections.get(rec).get("description"));
 			collectionJB.setCategory(recordsCollections.get(rec).get("name_category"));
 			collectionJB.setDateCreated(recordsCollections.get(rec).get("date_created"));
 			collectionJB.setDateUpdated(recordsCollections.get(rec).get("date_updated"));

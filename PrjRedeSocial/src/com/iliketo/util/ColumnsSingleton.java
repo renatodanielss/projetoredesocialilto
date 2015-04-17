@@ -29,6 +29,8 @@ public class ColumnsSingleton {
 	private HashMap<String,HashMap<String,String>> COL_DBFORUMTOPIC;
 	private HashMap<String,HashMap<String,String>> COL_DBFORUMCOMMENT;
 	private HashMap<String,HashMap<String,String>> COL_DBGROUP;
+	private HashMap<String,HashMap<String,String>> COL_DBCATEGORY;
+	private HashMap<String,HashMap<String,String>> COL_DBEVENT;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
@@ -37,6 +39,8 @@ public class ColumnsSingleton {
 	private String DATA_DBFORUMTOPIC;
 	private String DATA_DBFORUMCOMMENT;
 	private String DATA_DBGROUP;
+	private String DATA_DBCATEGORY;
+	private String DATA_DBEVENT;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
@@ -88,6 +92,14 @@ public class ColumnsSingleton {
 		database.read(db, new Configuration(), "dbgroup");	
 		DATA_DBGROUP = database.getTable();
 		COL_DBGROUP = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbcategory");	
+		DATA_DBCATEGORY = database.getTable();
+		COL_DBCATEGORY = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbevent");	
+		DATA_DBEVENT = database.getTable();
+		COL_DBEVENT = database.namedcolumns;
 	}
 	
 	/**
@@ -133,6 +145,10 @@ public class ColumnsSingleton {
 			mapcolumns = COL_DBFORUMCOMMENT;
 		}else if(nameDatabase.equals("dbgroup")){
 			mapcolumns = COL_DBGROUP;
+		}else if(nameDatabase.equals("dbcategory")){
+			mapcolumns = COL_DBCATEGORY;
+		}else if(nameDatabase.equals("dbevent")){
+			mapcolumns = COL_DBEVENT;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -142,10 +158,10 @@ public class ColumnsSingleton {
 			}
 		}
 		if(mapcolumns != null){
-			if(mapcolumns.get(nameColum).get("id") != null && !mapcolumns.get(nameColum).get("id").equals("")){					
-				return "col" + mapcolumns.get(nameColum).get("id"); //retorna col+id
-			}else if(nameColum.equals("id")){
+			if(nameColum.equals("id")){
 				return "id";
+			}else if(mapcolumns.get(nameColum).get("id") != null && !mapcolumns.get(nameColum).get("id").equals("")){					
+				return "col" + mapcolumns.get(nameColum).get("id"); //retorna col+id
 			}
 		}
 		
@@ -175,6 +191,10 @@ public class ColumnsSingleton {
 			return DATA_DBFORUMCOMMENT;
 		}else if(nameDatabase.equals("dbgroup")){
 			return DATA_DBGROUP;
+		}else if(nameDatabase.equals("dbcategory")){
+			return DATA_DBCATEGORY;
+		}else if(nameDatabase.equals("dbevent")){
+			return DATA_DBEVENT;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -231,6 +251,12 @@ public class ColumnsSingleton {
 			}else if(table.equals("dbgroup")){
 				mapcolumns = COL_DBGROUP;
 				tableReal = DATA_DBGROUP;
+			}else if(table.equals("dbcategory")){
+				mapcolumns = COL_DBCATEGORY;
+				tableReal = DATA_DBCATEGORY;
+			}else if(table.equals("dbevent")){
+				mapcolumns = COL_DBEVENT;
+				tableReal = DATA_DBEVENT;
 			}			
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){
