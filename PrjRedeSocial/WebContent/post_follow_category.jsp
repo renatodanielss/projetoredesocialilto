@@ -20,7 +20,7 @@ if (!myIdInterest.equals("") && !idCategory.equals("")) {
 	myrequest.setParameter("fk_category_id", idCategory);
 	System.out.println("Log - ID Interesse: '"+ myIdInterest +"' seguiu a categoria/grupo: " + idCategory);
 		
-	String idReal = IliketoDAO.getValueOfDatabase(db, "id", "dbinterest", "id_collection", myIdInterest);//recupera id real do Asbru
+	String idReal = IliketoDAO.getValueOfDatabase(db, "id", "dbinterest", "id_interest", myIdInterest);//recupera id real do Asbru
 	myrequest.setParameter("id", idReal);	//Asbru usa referencia id real para update
 		
 	//chama método update
