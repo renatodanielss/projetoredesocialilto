@@ -6,6 +6,7 @@
 <%@page import="com.iliketo.bean.VideoJB"%>
 <%@page import="com.iliketo.bean.TopicJB"%>
 <%@page import="com.iliketo.bean.CommentJB"%>
+<%@page import="com.iliketo.bean.EventJB"%>
 <%@ include file="webadmin.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.UCmaintainData" %><%@ page import="HardCore.Data" %><%@ page import="HardCore.Page" %><%@ page import="HardCore.html" %>
 <%@ page import="HardCore.UCmaintainDataILiketo" %>
 
@@ -36,14 +37,17 @@ if(timeline != null && timeline.equals("news")){	//solicitação novas atualizaçõe
 Page pageEntry = null; 
 UCbrowseWebsite browseWebsite = new UCbrowseWebsite(mytext);
 
-pageEntry = browseWebsite.getPageById("665", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+pageEntry = browseWebsite.getPageById("666", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryCollection = pageEntry.getBody();
 
-pageEntry = browseWebsite.getPageById("666", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+pageEntry = browseWebsite.getPageById("665", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryItem = pageEntry.getBody();
 
 pageEntry = browseWebsite.getPageById("669", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryVideo = pageEntry.getBody();
+
+pageEntry = browseWebsite.getPageById("701", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+String listEntryEvent = pageEntry.getBody();
 
 //pageEntry = browseWebsite.getPageById("667", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 //String listEntryTopic = pageEntry.getBody();
@@ -100,6 +104,25 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@id_member@@@", videoJB.getMember().getIdMember());
 			s = s.replaceAll("@@@nickname@@@", videoJB.getMember().getNickname());
 			s = s.replaceAll("@@@path_photo_member@@@", videoJB.getMember().getPathPhoto());
+			div.append(s);
+		
+		}else if(jb instanceof EventJB){
+			EventJB eventJB = (EventJB) jb;
+			//replace o @@@ das informações da list html entry utilizando a classe javabean de modelo 
+			String s = listEntryEvent;
+			s = s.replaceAll("@@@id_event@@@", eventJB.getIdEvent());
+			s = s.replaceAll("@@@name_event@@@", eventJB.getNameEvent());
+			s = s.replaceAll("@@@date_event@@@", eventJB.getDateEvent());
+			s = s.replaceAll("@@@hour_event@@@", eventJB.getHourEvent());
+			s = s.replaceAll("@@@details@@@", eventJB.getDetails());
+			s = s.replaceAll("@@@local_event@@@", eventJB.getLocal());
+			s = s.replaceAll("@@@type_event@@@", eventJB.getTypeEvent());
+			s = s.replaceAll("@@@path_photo_event@@@", eventJB.getPathPhoto());
+			s = s.replaceAll("@@@date_created@@@", eventJB.getDateCreated());
+			s = s.replaceAll("@@@date_updated@@@", eventJB.getDateUpdated());
+			s = s.replaceAll("@@@id_member@@@", eventJB.getMember().getIdMember());
+			s = s.replaceAll("@@@nickname@@@", eventJB.getMember().getNickname());
+			s = s.replaceAll("@@@path_photo_member@@@", eventJB.getMember().getPathPhoto());
 			div.append(s);
 		
 		%>
