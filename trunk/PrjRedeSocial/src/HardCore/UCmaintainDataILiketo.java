@@ -704,11 +704,12 @@ public class UCmaintainDataILiketo {
 				
 				if(action.equals("post_add_item")){
 					//se a action for post_add_item reaiza o fluxo abaixo e verifca quais os parametros com nomes iguais para gravar no banco cada item de registro
-					String[] arrayCampos = {"title_item", "description_item", "path_photo_item", "fk_collection_id", "id_item"};//campos do form
+					String[] arrayCampos = {"title_item", "description_item", "path_photo_item", "fk_collection_id", "id_item", "fk_user_id"};//campos do form
 					String[] todosTitleItem = filepost.getParameters(arrayCampos[0]);		//retorna todos title item
 					String[] todosDescription = filepost.getParameters(arrayCampos[1]);	//retorns todos description item
 					String[] todosPathPhotoItem = filepost.getParameters(arrayCampos[2]);		//retorna todas photo item
 					String fk_collection_id = filepost.getParameter(arrayCampos[3]); //retorna um id_collection igual para todos
+					String fk_user_id = filepost.getParameter(arrayCampos[4]);
 					//caso adicionar mais campos na database, necessario colocar aqui tambem
 					
 					int quantItens = todosPathPhotoItem.length;	//quantidade de itens para adicionar no banco
@@ -719,6 +720,7 @@ public class UCmaintainDataILiketo {
 						filepostCadaItem.setParameter(arrayCampos[1], todosDescription[i]);
 						filepostCadaItem.setParameter(arrayCampos[2], todosPathPhotoItem[i]);
 						filepostCadaItem.setParameter(arrayCampos[3], fk_collection_id);
+						filepostCadaItem.setParameter(arrayCampos[4], fk_user_id);
 						//caso adicionar mais campos na database, necessario colocar aqui tambem
 						
 						//Chama a classe data para criar cada item e salvar na tabela
@@ -863,9 +865,9 @@ public class UCmaintainDataILiketo {
 					}
 					
 				}else if(action.equals("post_category") || action.equals("post_group") || action.equals("post_forum") || 
-						action.equals("post_topic") || action.equals("post_comment")){
+						action.equals("post_topic") || action.equals("post_comment") || action.equals("post_announce")){
 					
-					//faz o fluxo abaixo para criar categoria, grupo, forum, topic ou comment - obs: action generica
+					//faz o fluxo abaixo para criar categoria, grupo, forum, topic, comment e announce - obs: action generica
 					data.getFormData(database.columns, filepost);
 					data.getFormData(database.columns, myrequest);
 					data.getFormData(database.columns, postedfiles);
@@ -887,11 +889,13 @@ public class UCmaintainDataILiketo {
 						myrequest.setParameter("id_topic", idUpdate);	//set parametro do id criado para topic
 					}else if(action.equals("post_comment")){
 						myrequest.setParameter("id_comment", idUpdate);	//set parametro do id criado para comment
+					}else if(action.equals("post_announce")){
+						myrequest.setParameter("id_announce", idUpdate);	//set parametro do id criado para anuncio
 					}else{
-						System.out.println("Log - Error nï¿½o encontrado parametros de id do name do input hidden para atualizar o id do novo registro na database!");
+						System.out.println("Log - Error nao encontrado parametros de id do name do input hidden para atualizar o id do novo registro na database!");
 					}
 					
-					//abaixo faz update do novo id tanto para forum, topic e comment
+					//abaixo faz update do novo id tanto para forum, topic, comment e anuncio
 					if ((! data.getId().equals("")) && data.getEditor()) {							
 						String created = data.getCreated(database.columns);
 						String createdby = data.getCreatedBy(database.columns);
@@ -1106,7 +1110,7 @@ public class UCmaintainDataILiketo {
 
 			ArrayList<String> listNamesPhotoDelete = new ArrayList<String>(); //lista de imagens para deletar
 			
-			String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_collection", "dbcollection", "id", idDeleteCollection);		
+			String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_collection", "dbcollection", "id_collection", idDeleteCollection);		
 			listNamesPhotoDelete.add(namePhotoDelete); 	//adiciona imagem na lista
 			IliketoDAO.deleteDadosIliketo(db, "dbcollection", "id", idDeleteCollection); //mï¿½todo deleta dados na database
 			
@@ -1134,14 +1138,14 @@ public class UCmaintainDataILiketo {
 	}
 	
 	/**
-	 * Mï¿½todo responsavel por deletar uma coleï¿½ï¿½o e seus itens passando o valor do id da coleï¿½ï¿½o para deletar
+	 * * Mï¿½todo responsavel por deletar uma coleï¿½ï¿½o e seus itens passando o valor do id da coleï¿½ï¿½o para deletar
 	 * @param mysession
 	 * @param db
 	 * @param idDeleteCollection
 	 */
 	public void doDeleteInterest(Session mysession, DB db, String idDeleteInterest) {
 		if (!idDeleteInterest.equals(null) && !idDeleteInterest.equals(""))
-			IliketoDAO.deleteDadosIliketo(db, "dbinterest", "id", idDeleteInterest); //método deleta dados na database				
+			IliketoDAO.deleteDadosIliketo(db, "dbinterest", "id", idDeleteInterest); //mï¿½todo deleta dados na database				
 	}
 	
 	/**
@@ -1153,7 +1157,7 @@ public class UCmaintainDataILiketo {
 	public void doDeleteItem(Session mysession, DB db, String idDeleteItem) {
 		
 		//pega nome da foto para deletar
-		String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_item", "dbcollectionitem", "id", idDeleteItem);		
+		String namePhotoDelete = IliketoDAO.getValueOfDatabase(db, "path_photo_item", "dbcollectionitem", "id_item", idDeleteItem);		
 		
 		String localImagePath = mysession.get(Str.STORAGE);	 		//local da pasta das imagens armazenadas
 		deleteFileImagePhysically(namePhotoDelete, localImagePath); //mï¿½todo deleta fisicamente
@@ -1171,7 +1175,7 @@ public class UCmaintainDataILiketo {
 	public void doDeleteVideo(Session mysession, DB db, String idDeleteVideo) {
 		
 		//pega nome da foto para deletar
-		String nameVideoDelete = IliketoDAO.getValueOfDatabase(db, "path_file_video", "dbcollectionvideo", "id", idDeleteVideo);		
+		String nameVideoDelete = IliketoDAO.getValueOfDatabase(db, "path_file_video", "dbcollectionvideo", "id_video", idDeleteVideo);		
 		
 		String localPath = mysession.get(Str.STORAGE);	 	   //local armazenamento
 		deleteFileImagePhysically(nameVideoDelete, localPath); //mï¿½todo deleta fisicamente
