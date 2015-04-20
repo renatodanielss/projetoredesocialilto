@@ -37,10 +37,10 @@ if(timeline != null && timeline.equals("news")){	//solicitação novas atualizaçõe
 Page pageEntry = null; 
 UCbrowseWebsite browseWebsite = new UCbrowseWebsite(mytext);
 
-pageEntry = browseWebsite.getPageById("666", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+pageEntry = browseWebsite.getPageById("665", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryCollection = pageEntry.getBody();
 
-pageEntry = browseWebsite.getPageById("665", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+pageEntry = browseWebsite.getPageById("666", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryItem = pageEntry.getBody();
 
 pageEntry = browseWebsite.getPageById("669", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
