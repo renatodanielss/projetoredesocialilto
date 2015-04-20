@@ -18,12 +18,12 @@ if(!idAnnounce.equals("")){
 		mysession.set("s_id_announce", idAnnounce);
 		String myUserId = mysession.get("userid");
 		String pageMyAdAuctionItem = "page.jsp?id=705";			//pagina meu anuncio leilao item
-		String pageMyAdFixedItem = "";							//pagina meu anuncio preco fixo item
+		String pageMyAdFixedItem = "page.jsp?id=729";			//pagina meu anuncio preco fixo item
 		String pageMyAdAuctionCollection = "";					//pagina meu anuncio leilao colecao
 		String pageMyAdFixedCollection = "";					//pagina meu anuncio preco fixo colecao
 		
 		String pageYourAdAuctionItem = "page.jsp?id=706";		//pagina terceiro anuncio leilao item
-		String pageYourAdFixedItem = "";						//pagina terceiro anuncio preco fixo item
+		String pageYourAdFixedItem = "page.jsp?id=728";			//pagina terceiro anuncio preco fixo item
 		String pageYourAdAuctionCollection = "";				//pagina terceiro anuncio leilao colecao
 		String pageYourAdFixedCollection = "";					//pagina terceiro anuncio preco fixo colecao
 		
