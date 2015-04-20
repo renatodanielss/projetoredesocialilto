@@ -76,6 +76,7 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@date_updated@@@", collectionJB.getDateUpdated());
 			s = s.replaceAll("@@@nickname@@@", collectionJB.getMember().getNickname());
 			s = s.replaceAll("@@@path_photo_member@@@", collectionJB.getMember().getPathPhoto());
+			s = s.replaceAll("@@@id_member@@@", collectionJB.getMember().getIdMember());
 			div.append(s);	
 			
 		}else if(jb instanceof ItemJB){
