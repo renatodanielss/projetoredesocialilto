@@ -9,6 +9,7 @@ import HardCore.DB;
 import HardCore.Request;
 import HardCore.Session;
 
+import com.iliketo.bean.AnnounceJB;
 import com.iliketo.bean.CollectionJB;
 import com.iliketo.bean.ContentILiketoJB;
 import com.iliketo.bean.EventJB;
@@ -51,8 +52,6 @@ public class TimelineController {
 	 */
 	public ArrayList<ContentILiketoJB> updateTimelineNewsOlds(DB db, Request request, Session mysession, String typeTimeline){
 
-		organizeFk_user_idItem(db); //organizar coluna items
-		
 		ArrayList<ContentILiketoJB> listTimeline = new ArrayList<ContentILiketoJB>();
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		HashMap<String,String> mapOffset = null;
@@ -67,6 +66,7 @@ public class TimelineController {
 			mapOffset.put("offsetItem", "0");
 			mapOffset.put("offsetVideo", "0");
 			mapOffset.put("offsetEvent", "0");
+			mapOffset.put("offsetAd", "0");
 			//mapOffset.put("offsetTopic", "0");
 			mysession.getSession().setAttribute("mapOffset", mapOffset);
 		}
@@ -144,19 +144,37 @@ public class TimelineController {
 			  + "e.date_created as date_created, e.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 			  + "from dbevent e join dbmembers m on e.fk_user_id = m.id_member "
 			  + "where exists (select c1.id_collection from dbcollection c1 "
-			  + "where c1.fk_user_id = '" +myUserid+ "' and e.fk_category_id = c1.fk_category_id)"
+			  + "where c1.fk_user_id = '" +myUserid+ "' and e.fk_category_id = c1.fk_category_id) "
 			  + "order by e.date_updated desc limit 2 offset '" +mapOffset.get("offsetEvent")+ "';";
 		
 		System.out.println("\nSQLEvent Comum: " + SQLEvent);
-		String[][] aliasEvent = { {"dbevent", "e"}, {"dbmembers", "m"}, {"dbcollection", "c1"}, {"dbcollection", "c2"}, {"dbcategory", "cat"} };
+		String[][] aliasEvent = { {"dbevent", "e"}, {"dbmembers", "m"}, {"dbcollection", "c1"} };
 		SQLEvent = CS.transformSQLReal(SQLEvent, aliasEvent);
 		System.out.println("SQLEvent Real: " + SQLEvent);
+		
+		//Comando sql para anuncio
+		String SQLAnnounce = 
+				"select ad.id_announce as id_announce, ad.fk_item_id as fk_item_id, ad.fk_collection_id as fk_collection_id, ad.fk_category_id as fk_category_id, "
+			  + "ad.name_category as name_category, ad.title as title, ad.description as description, ad.type_announce as type_announce, ad.price_fixed as price_fixed, "
+			  + "ad.price_initial as price_initial, ad.bid_actual as bid_actual, ad.lasting as lasting, ad.total_bids as total_bids, "
+			  + "ad.date_created as date_created, ad.date_updated as date_updated, ad.path_photo_ad as path_photo_ad, "
+			  + "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
+			  + "from dbannounce ad join dbmembers as m on ad.fk_user_id = m.id_member "
+			  + "where exists (select c1.id_collection from dbcollection c1 "
+			  + "where c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id) "
+			  + "order by ad.date_updated desc limit 2 offset '" +mapOffset.get("offsetAd")+ "';";
+		
+		System.out.println("\nSQLAnnounce Comum: " + SQLAnnounce);
+		String[][] aliasAnnounce = { {"dbannounce", "ad"}, {"dbmembers", "m"}, {"dbcollection", "c1"} };
+		SQLAnnounce = CS.transformSQLReal(SQLAnnounce, aliasAnnounce);
+		System.out.println("SQLAnnounce Real: " + SQLAnnounce);
 		
 		//Chama classe DB.java para executar a query no banco de dados e retorna um HashMap com todos registros encontrados
 		LinkedHashMap<String,HashMap<String,String>> recordsCollections  = db.query_records(SQLCollection); //map de registros collections
 		LinkedHashMap<String,HashMap<String,String>> recordsItems  = db.query_records(SQLItem); //map de registros items
 		LinkedHashMap<String,HashMap<String,String>> recordsVideos  = db.query_records(SQLVideo); //map de registros videos
 		LinkedHashMap<String,HashMap<String,String>> recordsEvent  = db.query_records(SQLEvent); //map de registros videos
+		LinkedHashMap<String,HashMap<String,String>> recordsAnnounce  = db.query_records(SQLAnnounce); //map de registros anuncio
 		//LinkedHashMap<String,HashMap<String,String>> recordsTopic  = db.query_records(SQLTopic); //map de registros topicos
 
 		
@@ -248,6 +266,38 @@ public class TimelineController {
 			System.out.println("row:" + rec+ " - column/values: " + recordsEvent.get(rec));
 		}
 		
+		System.out.println("\nRegistros Anuncios:");
+		for(String rec : recordsAnnounce.keySet()){			
+			AnnounceJB announceJB = new AnnounceJB();		//anuncio
+			MemberJB memberJB = new MemberJB();				//membro dono do anuncio
+			
+			announceJB.setIdAnnounce(recordsAnnounce.get(rec).get("id_announce"));
+			announceJB.setIdItem(recordsAnnounce.get(rec).get("fk_item_id"));
+			announceJB.setIdCollection(recordsAnnounce.get(rec).get("fk_collection_id"));
+			announceJB.setIdCategory(recordsAnnounce.get(rec).get("fk_category_id"));
+			//announceJB.setIdMember(recordsAnnounce.get(rec).get("fk_user_id"));
+			announceJB.setNameCategory(recordsAnnounce.get(rec).get("name_category"));
+			announceJB.setTitle(recordsAnnounce.get(rec).get("title"));
+			announceJB.setDescription(recordsAnnounce.get(rec).get("description"));
+			announceJB.setTypeAnnounce(recordsAnnounce.get(rec).get("type_announce"));
+			announceJB.setPriceFixed(recordsAnnounce.get(rec).get("price_fixed"));
+			announceJB.setPriceInitial(recordsAnnounce.get(rec).get("price_initial"));
+			announceJB.setBidActual(recordsAnnounce.get(rec).get("bid_actual"));
+			announceJB.setLasting(recordsAnnounce.get(rec).get("lasting"));
+			announceJB.setTotalBids(recordsAnnounce.get(rec).get("total_bids"));
+			announceJB.setDateCreated(recordsAnnounce.get(rec).get("date_created"));
+			announceJB.setDateUpdated(recordsAnnounce.get(rec).get("date_updated"));
+			announceJB.setPath_photo_ad(recordsAnnounce.get(rec).get("path_photo_ad"));
+			
+			memberJB.setIdMember(recordsAnnounce.get(rec).get("id_member"));
+			memberJB.setNickname(recordsAnnounce.get(rec).get("nickname"));
+			memberJB.setPathPhoto(recordsAnnounce.get(rec).get("path_photo_member"));
+			announceJB.setMember(memberJB);	//seta informações do membro no evento
+			
+			listTimeline.add(announceJB);
+			System.out.println("row:" + rec+ " - column/values: " + recordsAnnounce.get(rec));
+		}
+		
 		/*
 		System.out.println("\nRegistros Topicos:");
 		for(String rec : recordsTopic.keySet()){			
@@ -326,6 +376,9 @@ public class TimelineController {
 		
 		totalOffset = Integer.parseInt(mapOffset.get("offsetEvent")) + recordsEvent.size();
 		mapOffset.put("offsetEvent", Integer.toString(totalOffset));
+		
+		totalOffset = Integer.parseInt(mapOffset.get("offsetAd")) + recordsAnnounce.size();
+		mapOffset.put("offsetAd", Integer.toString(totalOffset));
 		
 		//totalOffset = Integer.parseInt(mapOffset.get("offsetTopic")) + recordsTopic.size();
 		//mapOffset.put("offsetTopic", Integer.toString(totalOffset));
