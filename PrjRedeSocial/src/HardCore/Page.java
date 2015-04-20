@@ -1,17 +1,24 @@
 package HardCore;
 
-import java.io.*;
-import java.io.File;
-import java.sql.*;
-import java.text.*;
-import java.util.*;
+import java.sql.Statement;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspWriter;
+
+import com.iliketo.bean.AnnounceJB;
 
 public class Page extends Content {
 	private Page template_content = null;
@@ -1001,6 +1008,15 @@ try {
 				if (regexDisplayText == null) regexDisplayText = Pattern.compile("^@@@(content|summary)\\.text@@@$");
 				if (regexUrl == null) regexUrl = Pattern.compile("^@@@(url|urlpathquery|urlpath|urlquery)@@@$");
 
+				//MEUS CODIGOS ESPECIAIS ILIKETO
+				//DADOS PARA REPLACE NA PAGINA: CARTAO, ANUNCIO ... ...
+				if(mycode != null && !mycode.equals("")){
+					if (mycode.contains("@@@user_card") || mycode.contains("@@@ads")) { //user_car, ads ...
+						HttpServletRequest httpReq = request.getRequest();
+						output_cache.put(mycode, parse_output_special_code_iliketo(httpReq, mycode));
+					}
+				}
+				
 				if (output_cache.get(mycode) != null) {
 					// duplicate special code - output same content as previously
 
@@ -2668,6 +2684,7 @@ try {
 			shopcart_page.parse_output_shopcart(shopcart, "", "", server, request, response, session, session_mode, session_administrator, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_version, default_version, session_device, session_usersegments, session_usertests, db, config, shopcart_item, true);
 			mycontent = mycontent.replaceAll("@@@shopcart@@@", shopcart_page.getBody().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 		}
+
 		return mycontent;
 	}
 
@@ -2749,7 +2766,7 @@ try {
 
 
 	public String parse_output_replace_user(Session session, String mycontent) throws Exception {
-		if (mycontent.contains("@@@user_")) {
+		if (mycontent.contains("@@@user_")) {			
 			if (mycontent.contains("@@@user_id@@@")) mycontent = mycontent.replaceAll("@@@user_id@@@", session.get("userid").replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 			if (mycontent.contains("@@@user_username@@@")) mycontent = mycontent.replaceAll("@@@user_username@@@", session.get("username").replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 			if (mycontent.contains("@@@user_password@@@")) mycontent = mycontent.replaceAll("@@@user_password@@@", session.get("password").replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
@@ -2804,7 +2821,7 @@ try {
 
 //			if (mycontent.contains("@@@user_segments@@@")) mycontent = mycontent.replaceAll("@@@user_segments@@@", session.get("usersegments").replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 //			if (mycontent.contains("@@@user_tests@@@")) mycontent = mycontent.replaceAll("@@@user_tests@@@", session.get("usertests").replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-
+			
 			String[] myinfos = session.get("user_userinfo").split("[\r\n]+");
 			for (int j=0; j<myinfos.length; j++) {
 				String myinfo = myinfos[j];
@@ -7292,7 +7309,61 @@ if (mycontent.contains("@@@invoice_")) {
 			}
 		}
 	}
-
+	
+	/**
+	 * Metodo realiza o replace nos codigos especiais Iliketo que estiverem na pagina html pela informacao setada em sessao ou request
+	 * setar valores no HttpServletRequest(escopo request) e recuperar pelo metodo getAttribute("name")
+	 * setar valores no HttpSession(escopo sessao) e recuperar pelo metodo getAttribute("name")
+	 * Pode-se colocar mais codigos especiais aqui
+	 * Codigo @@@user_card_xxx 	- informacoes do cartao
+	 * Codigo @@@ads_xxx 		- informacoes do anuncio
+	 * 
+	 * @param httpReq
+	 * @param mycontent
+	 * @return
+	 */
+	public String parse_output_special_code_iliketo(HttpServletRequest httpReq, String mycontent){
+		//verifica se contem o comeco @@@user_card senao pula
+		if(mycontent.contains("@@@user_card")){
+			if (mycontent.contains("@@@user_card_type@@@")) mycontent = mycontent.replaceAll("@@@user_card_type@@@", (String) httpReq.getAttribute("user_card_type"));
+			if (mycontent.contains("@@@user_card_number@@@")) mycontent = mycontent.replaceAll("@@@user_card_number@@@", (String) httpReq.getAttribute("user_card_number"));
+			if (mycontent.contains("@@@user_card_issuedmonth@@@")) mycontent = mycontent.replaceAll("@@@user_card_issuedmonth@@@", (String) httpReq.getAttribute("user_card_issuedmonth"));
+			if (mycontent.contains("@@@user_card_issuedyear@@@")) mycontent = mycontent.replaceAll("@@@user_card_issuedyear@@@", (String) httpReq.getAttribute("user_card_issuedyear"));
+			if (mycontent.contains("@@@user_card_expirymonth@@@")) mycontent = mycontent.replaceAll("@@@user_card_expirymonth@@@", (String) httpReq.getAttribute("user_card_expirymonth"));
+			if (mycontent.contains("@@@user_card_expiryyear@@@")) mycontent = mycontent.replaceAll("@@@user_card_expiryyear@@@", (String) httpReq.getAttribute("user_card_expiryyear"));
+			if (mycontent.contains("@@@user_card_name@@@")) mycontent = mycontent.replaceAll("@@@user_card_name@@@", (String) httpReq.getAttribute("user_card_name"));
+			if (mycontent.contains("@@@user_card_cvc@@@")) mycontent = mycontent.replaceAll("@@@user_card_cvc@@@", (String) httpReq.getAttribute("user_card_cvc"));
+			if (mycontent.contains("@@@user_card_issue@@@")) mycontent = mycontent.replaceAll("@@@user_card_issue@@@", (String) httpReq.getAttribute("user_card_issue"));
+			if (mycontent.contains("@@@user_card_postalcode@@@")) mycontent = mycontent.replaceAll("@@@user_card_postalcode@@@", (String) httpReq.getAttribute("user_card_postalcode"));
+		}
+		//verifica se contem o comeco @@@ads
+		if(mycontent.contains("@@@ads")){
+			AnnounceJB announceJB = (AnnounceJB) httpReq.getAttribute("announceJB"); //tenta recuperar do request
+			if(announceJB == null){
+				HttpSession httpSession = httpReq.getSession();
+				announceJB = (AnnounceJB) httpSession.getAttribute("announceJB"); 	//tenta recuperar da sessao
+			}
+			if(announceJB != null){
+				if(mycontent.contains("@@@ads_type_announce@@@")) mycontent = mycontent.replaceAll("@@@ads_type_announce@@@", announceJB.getTypeAnnounce());
+				if(mycontent.contains("@@@ads_price_fixed@@@"))  mycontent = mycontent.replaceAll("@@@ads_price_fixed@@@", announceJB.getPriceFixed());
+				if(mycontent.contains("@@@ads_price_initial@@@"))  mycontent = mycontent.replaceAll("@@@ads_price_initial@@@", announceJB.getPriceInitial());
+				if(mycontent.contains("@@@ads_bid_actual@@@"))  mycontent = mycontent.replaceAll("@@@ads_bid_actual@@@", announceJB.getBidActual());
+				if(mycontent.contains("@@@ads_lasting@@@"))  mycontent = mycontent.replaceAll("@@@ads_lasting@@@", announceJB.getLasting());
+				if(mycontent.contains("@@@ads_total_bids@@@"))  mycontent = mycontent.replaceAll("@@@ads_total_bids@@@", announceJB.getTotalBids());
+				if(mycontent.contains("@@@ads_title@@@")) mycontent = mycontent.replaceAll("@@@ads_title@@@", announceJB.getTitle());
+				if(mycontent.contains("@@@ads_description@@@"))  mycontent = mycontent.replaceAll("@@@ads_description@@@", announceJB.getDescription());
+				if(mycontent.contains("@@@ads_name_category@@@"))  mycontent = mycontent.replaceAll("@@@ads_name_category@@@", announceJB.getNameCategory());
+				if(mycontent.contains("@@@ads_fk_collection_id@@@"))  mycontent = mycontent.replaceAll("@@@ads_fk_collection_id@@@", announceJB.getIdCollection());
+				if(mycontent.contains("@@@ads_fk_item_id@@@"))  mycontent = mycontent.replaceAll("@@@ads_fk_item_id@@@", announceJB.getIdItem());
+				if(mycontent.contains("@@@ads_fk_user_id@@@"))  mycontent = mycontent.replaceAll("@@@ads_fk_user_id@@@", announceJB.getIdMember());
+				if(mycontent.contains("@@@ads_fk_category_id@@@"))  mycontent = mycontent.replaceAll("@@@ads_fk_category_id@@@", announceJB.getIdCategory());
+				if(mycontent.contains("@@@ads_path_photo_ad@@@"))  mycontent = mycontent.replaceAll("@@@ads_path_photo_ad@@@", announceJB.getPath_photo_ad());
+			}
+		}
+		
+		return mycontent;
+	}
+	
 	public void parse_output_register(String error, String email, String username, String password, String name, User user) {
 		if (body.contains("@@@error@@@")) body = body.replaceAll("@@@error@@@", ("" + error).replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 		if (body.contains("@@@email@@@")) body = body.replaceAll("@@@email@@@", ("" + email).replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));

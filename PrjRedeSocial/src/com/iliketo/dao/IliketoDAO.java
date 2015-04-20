@@ -2,13 +2,14 @@ package com.iliketo.dao;
 
 import java.util.HashMap;
 
-import com.iliketo.util.ColumnsSingleton;
-
 import HardCore.Configuration;
 import HardCore.DB;
 import HardCore.Data;
 import HardCore.Databases;
 import HardCore.Text;
+
+import com.iliketo.bean.AnnounceJB;
+import com.iliketo.util.ColumnsSingleton;
 
 public class IliketoDAO {
 	
@@ -267,4 +268,47 @@ public class IliketoDAO {
 		return count;
 		
 	}
+	
+	/**
+	 * Metodo consulta e retorna o objeto AnnounceJB do banco de dados
+	 * Passar o id para comparar com o campo id_announce da dbannounce
+	 * Se não existir anuncio retorna null
+	 * @param db
+	 * @param idAnnounce
+	 * @return AnnounceJB
+	 */
+	public static AnnounceJB readAnnounceJB(DB db, String idAnnounce){
+		AnnounceJB announceJB = null;		
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+		
+		String SQL = "SELECT * FROM dbannounce as t1 WHERE t1.id_announce = '" + idAnnounce +"';";
+		String[][] tableAlias = { {"dbannounce", "t1" } };
+		SQL = CS.transformSQLReal(SQL, tableAlias);
+		
+		HashMap<String, String> rows = db.query_record(SQL);
+		
+		if(rows != null){
+			announceJB = new AnnounceJB();
+			announceJB.setIdAnnounce(idAnnounce);
+			announceJB.setIdItem(rows.get(CS.getCOL(db, "dbannounce","fk_item_id")));
+			announceJB.setIdCollection(rows.get(CS.getCOL(db, "dbannounce","fk_collection_id")));
+			announceJB.setIdCategory(rows.get(CS.getCOL(db, "dbannounce","fk_category_id")));
+			announceJB.setIdMember(rows.get(CS.getCOL(db, "dbannounce","fk_user_id")));
+			announceJB.setNameCategory(rows.get(CS.getCOL(db, "dbannounce","name_category")));
+			announceJB.setTitle(rows.get(CS.getCOL(db, "dbannounce","title")));
+			announceJB.setDescription(rows.get(CS.getCOL(db, "dbannounce", "description")));
+			announceJB.setTypeAnnounce(rows.get(CS.getCOL(db, "dbannounce", "type_announce")));
+			announceJB.setPriceFixed(rows.get(CS.getCOL(db, "dbannounce", "price_fixed")));
+			announceJB.setPriceInitial(rows.get(CS.getCOL(db, "dbannounce", "price_initial")));
+			announceJB.setBidActual(rows.get(CS.getCOL(db, "dbannounce", "bid_actual")));
+			announceJB.setLasting(rows.get(CS.getCOL(db, "dbannounce", "lasting")));
+			announceJB.setTotalBids(rows.get(CS.getCOL(db, "dbannounce", "total_bids")));
+			announceJB.setDateCreated(rows.get(CS.getCOL(db, "dbannounce", "date_created")));
+			announceJB.setDateUpdated(rows.get(CS.getCOL(db, "dbannounce", "date_updated")));
+			announceJB.setPath_photo_ad(rows.get(CS.getCOL(db, "dbannounce", "path_photo_ad")));
+		}
+		
+		return announceJB;
+	}
+	
 }

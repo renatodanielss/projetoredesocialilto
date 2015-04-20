@@ -5,19 +5,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import HardCore.DB;
 import HardCore.Request;
 import HardCore.Session;
 
 import com.iliketo.bean.CollectionJB;
-import com.iliketo.bean.CommentJB;
 import com.iliketo.bean.ContentILiketoJB;
+import com.iliketo.bean.EventJB;
 import com.iliketo.bean.ItemJB;
 import com.iliketo.bean.MemberJB;
-import com.iliketo.bean.TopicJB;
 import com.iliketo.bean.VideoJB;
 import com.iliketo.util.ColumnsSingleton;
 
@@ -55,6 +51,8 @@ public class TimelineController {
 	 */
 	public ArrayList<ContentILiketoJB> updateTimelineNewsOlds(DB db, Request request, Session mysession, String typeTimeline){
 
+		organizeFk_user_idItem(db); //organizar coluna items
+		
 		ArrayList<ContentILiketoJB> listTimeline = new ArrayList<ContentILiketoJB>();
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		HashMap<String,String> mapOffset = null;
@@ -68,6 +66,7 @@ public class TimelineController {
 			mapOffset.put("offsetCol", "0");
 			mapOffset.put("offsetItem", "0");
 			mapOffset.put("offsetVideo", "0");
+			mapOffset.put("offsetEvent", "0");
 			//mapOffset.put("offsetTopic", "0");
 			mysession.getSession().setAttribute("mapOffset", mapOffset);
 		}
@@ -139,13 +138,25 @@ public class TimelineController {
 		
 		
 		//Comando sql para event
-		String SQLEvent = "";
+		String SQLEvent = 
+				"select e.id_event as id_event, e.name_event as name_event, e.details_event as details_event, e.path_photo_event as path_photo_event, "
+			  + "e.date_event as date_event, e.hour_event as hour_event, e.type_event as type_event, e.local_event as local_event, "
+			  + "e.date_created as date_created, e.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
+			  + "from dbevent e join dbmembers m on e.fk_user_id = m.id_member "
+			  + "where exists (select c1.id_collection from dbcollection c1 "
+			  + "where c1.fk_user_id = '" +myUserid+ "' and e.fk_category_id = c1.fk_category_id)"
+			  + "order by e.date_updated desc limit 2 offset '" +mapOffset.get("offsetEvent")+ "';";
 		
+		System.out.println("\nSQLEvent Comum: " + SQLEvent);
+		String[][] aliasEvent = { {"dbevent", "e"}, {"dbmembers", "m"}, {"dbcollection", "c1"}, {"dbcollection", "c2"}, {"dbcategory", "cat"} };
+		SQLEvent = CS.transformSQLReal(SQLEvent, aliasEvent);
+		System.out.println("SQLEvent Real: " + SQLEvent);
 		
 		//Chama classe DB.java para executar a query no banco de dados e retorna um HashMap com todos registros encontrados
 		LinkedHashMap<String,HashMap<String,String>> recordsCollections  = db.query_records(SQLCollection); //map de registros collections
 		LinkedHashMap<String,HashMap<String,String>> recordsItems  = db.query_records(SQLItem); //map de registros items
 		LinkedHashMap<String,HashMap<String,String>> recordsVideos  = db.query_records(SQLVideo); //map de registros videos
+		LinkedHashMap<String,HashMap<String,String>> recordsEvent  = db.query_records(SQLEvent); //map de registros videos
 		//LinkedHashMap<String,HashMap<String,String>> recordsTopic  = db.query_records(SQLTopic); //map de registros topicos
 
 		
@@ -210,6 +221,31 @@ public class TimelineController {
 			
 			listTimeline.add(videoJB);
 			System.out.println("row:" + rec+ " - column/values: " + recordsVideos.get(rec));
+		}
+		
+		System.out.println("\nRegistros Eventos:");
+		for(String rec : recordsEvent.keySet()){			
+			EventJB eventJB = new EventJB();		//video
+			MemberJB memberJB = new MemberJB();		//membro dono do video
+			
+			eventJB.setIdEvent(recordsEvent.get(rec).get("id_event"));
+			eventJB.setNameEvent(recordsEvent.get(rec).get("name_event"));
+			eventJB.setDateEvent(recordsEvent.get(rec).get("date_event"));
+			eventJB.setHourEvent(recordsEvent.get(rec).get("hour_event"));
+			eventJB.setDetails(recordsEvent.get(rec).get("details_event"));			
+			eventJB.setLocal(recordsEvent.get(rec).get("local_event"));
+			eventJB.setTypeEvent(recordsEvent.get(rec).get("type_event"));
+			eventJB.setDateCreated(recordsEvent.get(rec).get("date_created"));
+			eventJB.setDateUpdated(recordsEvent.get(rec).get("date_updated"));
+			eventJB.setPathPhoto(recordsEvent.get(rec).get("path_photo_event"));
+			
+			memberJB.setIdMember(recordsEvent.get(rec).get(("id_member")));
+			memberJB.setNickname(recordsEvent.get(rec).get(("nickname")));
+			memberJB.setPathPhoto(recordsEvent.get(rec).get(("path_photo_member")));
+			eventJB.setMember(memberJB);	//seta informações do membro no evento
+			
+			listTimeline.add(eventJB);
+			System.out.println("row:" + rec+ " - column/values: " + recordsEvent.get(rec));
 		}
 		
 		/*
@@ -288,6 +324,9 @@ public class TimelineController {
 		totalOffset = Integer.parseInt(mapOffset.get("offsetVideo")) + recordsVideos.size();
 		mapOffset.put("offsetVideo", Integer.toString(totalOffset));
 		
+		totalOffset = Integer.parseInt(mapOffset.get("offsetEvent")) + recordsEvent.size();
+		mapOffset.put("offsetEvent", Integer.toString(totalOffset));
+		
 		//totalOffset = Integer.parseInt(mapOffset.get("offsetTopic")) + recordsTopic.size();
 		//mapOffset.put("offsetTopic", Integer.toString(totalOffset));
 		
@@ -302,6 +341,45 @@ public class TimelineController {
 		
 	}
 	
+	
+	//método só para testes e organização da nova coluna fk_user_id da dbcollectionitem
+		private void organizeFk_user_idItem(DB db){
+			
+			//recupera todos itens
+			String[][] tableAlias = { {"dbcollectionitem", "i"}, {"dbcollection", "c"}  };
+			
+			String SQLItem= "select i.id_item, c.fk_user_id, c.id_collection from dbcollectionitem i "
+					+ "join dbcollection c on i.fk_collection_id = c.id_collection";
+			
+			ColumnsSingleton cs = ColumnsSingleton.getInstance(db);
+			SQLItem = cs.transformSQLReal(SQLItem, tableAlias);
+			System.out.println("\n\nOrganize fk_user_id do item sql: " + SQLItem +"\n");
+			
+			LinkedHashMap<String,HashMap<String,String>> records = db.query_records(SQLItem);
+
+			//seta fk_user_id no item
+			for(String rec : records.keySet()){			
+				
+				HashMap<String,String> mydata = new HashMap<String,String>();
+				
+				String idItem = records.get(rec).get(cs.getCOL(db, "dbcollectionitem", "id_item"));//value da coluna do item
+				String idCollection = records.get(rec).get(cs.getCOL(db, "dbcollection", "id_collection"));//value da coluna da coleçao
+				String value = records.get(rec).get(cs.getCOL(db, "dbcollection", "fk_user_id"));//value da coluna da coleção
+				
+				String tableItem = cs.getDATA(db, "dbcollectionitem");
+				String colId_item  = cs.getCOL(db, "dbcollectionitem", "id_item");
+				String colFk_user_id = cs.getCOL(db, "dbcollectionitem", "fk_user_id");		
+				mydata.put(colFk_user_id, value);
+				
+				System.out.println("Update " + tableItem + " id_item: " + idItem + " fk_user_id: " 
+										+ value + " pertence id_collection: " + idCollection);
+				
+				db.update(tableItem, colId_item, idItem, mydata);//update na data+id usando o id da tabela
+				
+			}
+			System.out.println("\n\n");		
+			
+		}
 	
 	//método só para testes e organização da nova coluna fk_user_id da dbcollectionvideo
 	private void organizeFk_user_idVideo(DB db){
