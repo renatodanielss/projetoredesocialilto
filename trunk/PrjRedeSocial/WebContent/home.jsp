@@ -7,6 +7,7 @@
 <%@page import="com.iliketo.bean.TopicJB"%>
 <%@page import="com.iliketo.bean.CommentJB"%>
 <%@page import="com.iliketo.bean.EventJB"%>
+<%@page import="com.iliketo.bean.AnnounceJB"%>
 <%@ include file="webadmin.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.UCmaintainData" %><%@ page import="HardCore.Data" %><%@ page import="HardCore.Page" %><%@ page import="HardCore.html" %>
 <%@ page import="HardCore.UCmaintainDataILiketo" %>
 
@@ -48,6 +49,12 @@ String listEntryVideo = pageEntry.getBody();
 
 pageEntry = browseWebsite.getPageById("701", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryEvent = pageEntry.getBody();
+
+pageEntry = browseWebsite.getPageById("734", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+String listEntryAnnounceAuction = pageEntry.getBody();
+
+pageEntry = browseWebsite.getPageById("735", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+String listEntryAnnounceFixed = pageEntry.getBody();
 
 //pageEntry = browseWebsite.getPageById("667", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 //String listEntryTopic = pageEntry.getBody();
@@ -126,6 +133,38 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@path_photo_member@@@", eventJB.getMember().getPathPhoto());
 			div.append(s);
 		
+		}else if(jb instanceof AnnounceJB){
+			AnnounceJB announceJB = (AnnounceJB) jb;
+			//replace o @@@ das informações da list html entry utilizando a classe javabean de modelo 
+			String s = "";
+			if(announceJB.getTypeAnnounce().equalsIgnoreCase("Auction")){
+				s = listEntryAnnounceAuction;
+			}else{
+				s = listEntryAnnounceFixed;
+			}
+			if(announceJB.getTypeAnnounce().equalsIgnoreCase("Auction")){
+				s = s.replaceAll("@@@price_initial@@@", announceJB.getPriceInitial());
+				s = s.replaceAll("@@@bid_actual@@@", announceJB.getBidActual());
+				s = s.replaceAll("@@@lasting@@@", announceJB.getLasting());
+				s = s.replaceAll("@@@total_bids@@@", announceJB.getTotalBids());				
+			}else{
+				s = s.replaceAll("@@@price_fixed@@@", announceJB.getPriceFixed());				
+			}
+			s = s.replaceAll("@@@type_announce@@@", announceJB.getTypeAnnounce());
+			s = s.replaceAll("@@@ads_title@@@", announceJB.getTitle());
+			s = s.replaceAll("@@@description@@@", announceJB.getDescription());
+			s = s.replaceAll("@@@name_category@@@", announceJB.getNameCategory());
+			s = s.replaceAll("@@@fk_collection_id@@@", announceJB.getIdCollection());
+			s = s.replaceAll("@@@fk_item_id@@@", announceJB.getIdItem());
+			s = s.replaceAll("@@@fk_user_id@@@", announceJB.getIdMember());
+			s = s.replaceAll("@@@fk_category_id@@@", announceJB.getIdCategory());
+			s = s.replaceAll("@@@path_photo_ad@@@", announceJB.getPath_photo_ad());
+			s = s.replaceAll("@@@id_member@@@", announceJB.getMember().getIdMember());
+			s = s.replaceAll("@@@nickname@@@", announceJB.getMember().getNickname());
+			s = s.replaceAll("@@@path_photo_member@@@", announceJB.getMember().getPathPhoto());
+			s = s.replaceAll("@@@date_created@@@", announceJB.getDateCreated());
+			s = s.replaceAll("@@@date_updated@@@", announceJB.getDateUpdated());
+			div.append(s);
 		%>
 		<!-- 
 		}else if(jb instanceof TopicJB){

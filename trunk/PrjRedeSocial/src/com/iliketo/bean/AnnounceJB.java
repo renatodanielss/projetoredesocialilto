@@ -25,6 +25,7 @@ public class AnnounceJB extends ContentILiketoJB {
 	private String idMember;
 	private String idCategory;
 	private String path_photo_ad;
+	private MemberJB member;
 
 	public AnnounceJB(){
 		
@@ -148,6 +149,14 @@ public class AnnounceJB extends ContentILiketoJB {
 
 	public void setPath_photo_ad(String path_photo_ad) {
 		this.path_photo_ad = path_photo_ad;
+	}
+
+	public MemberJB getMember() {
+		return member;
+	}
+
+	public void setMember(MemberJB member) {
+		this.member = member;
 	}
 
 	
