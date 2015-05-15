@@ -44,7 +44,7 @@ if(!errorILiketo.equals("")){ //se conter error na validação do registro, adicio
 	<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
 	<jsp:forward page="/post.jsp?database=dbmembersstore">
 		<jsp:param value="<%=idRegisterUser%>" name="id_member"/>
-		<jsp:param value="/page.jsp?id=286" name="redirect"/>
+		<jsp:param value="/page.jsp?id=779" name="redirect"/>
 	</jsp:forward>
 	<%
 	//Solicitação post.jsp - END
