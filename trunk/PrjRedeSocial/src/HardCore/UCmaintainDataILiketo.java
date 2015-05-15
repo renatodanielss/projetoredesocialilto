@@ -665,9 +665,9 @@ public class UCmaintainDataILiketo {
 			data.read(db, "data" + database.getId(), data_id);
 			
 			//se for action post_photo_member, ent�o � um update da foto na database dbmembers
-			if(action.equals("post_photo_member")){
+			if(action.equals("post_photo_member") || action.equals("post_photo_store")){
 				
-				//ler a tabela usando o id do usuario >> 'id_member'
+				//id_member 
 				String col = data.getColAdjustContent(database.columns, "id_member"); //recupera o nome original no banco de dados, ex: col1, col2
 				HashMap<String, String> rows = data.readWhereILiketo(db, "data" + database.getId(), col, data_id);
 				
@@ -675,7 +675,7 @@ public class UCmaintainDataILiketo {
 				
 				//verifica imagens default
 				if (rows.get(colid_photo) != null){
-					if(!rows.get(colid_photo).equals("avatar_male.png") && !rows.get(colid_photo).equals("avatar_female.png")){
+					if(!rows.get(colid_photo).equals("avatar_male.png") && !rows.get(colid_photo).equals("avatar_female.png") || !rows.get(colid_photo).equals("avatar_store.png")){
 						
 						String namePhotoDelete = "" + rows.get(colid_photo); //recupera nome da foto no banco de dados
 						String localImagePath = mysession.get(Str.STORAGE);	
