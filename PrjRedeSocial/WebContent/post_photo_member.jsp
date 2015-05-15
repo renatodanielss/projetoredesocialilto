@@ -12,15 +12,16 @@ cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("databas
 
 if (! myrequest.getParameter("database").equals("")) {
 		
-		//UCmaintainData maintainData = new UCmaintainData(mytext);
-		UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
-		Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_photo_member");
-		
-} //else {
-	//UCmaintainContent maintainContent = new UCmaintainContent(mytext);
-	//Page mypage = maintainContent.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
-//}
-
+	String action = "";	
+	if(myrequest.getParameter("database").equals("dbmembers")){
+		action = "post_photo_member";
+	}else{
+		action = "post_photo_store";
+	}
+	
+	UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
+	Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, action);
+} 
 
 %>
 
