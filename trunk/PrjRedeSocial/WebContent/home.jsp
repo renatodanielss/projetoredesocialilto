@@ -202,7 +202,21 @@ if(!listTimeline.isEmpty()){
 	}
 }else{
 	//if listTimeline empty
-	div.append("No more updates!");
+	HashMap<String,String> mapOffset = (HashMap<String,String>) request.getSession().getAttribute("mapOffset");
+	if(mapOffset != null){
+		if(mapOffset.get("offsetCol").equals("0") &&
+				mapOffset.get("offsetItem").equals("0") &&
+				mapOffset.get("offsetVideo").equals("0") &&
+				mapOffset.get("offsetEvent").equals("0") &&
+				mapOffset.get("offsetAd").equals("0")){
+			
+			div.append("Nothing update!");				
+		}else{
+			div.append("No more updates!");
+		}				
+	}else{
+		div.append("Nothing update!");
+	}
 }
 
 response.setContentType("text/html"); 			//set type conteudo resposta
