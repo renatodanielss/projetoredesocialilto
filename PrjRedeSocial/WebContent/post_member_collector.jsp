@@ -10,6 +10,11 @@ if (! myrequest.getParameter("database").equals("")) {
 	Page mypage = maintainContent.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
 }
 
+%>
+<% if (db != null) db.close(); %><% if (logdb != null) logdb.close(); %>
+
+<%
+
 cms.CMSLog(myrequest.getParameter("id"), "post", myrequest.getParameter("database2"));
 
 if (! myrequest.getParameter("database2").equals("")) {
