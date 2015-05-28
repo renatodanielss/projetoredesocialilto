@@ -105,6 +105,10 @@ if (db.isError()) {
 }
 if (db.isError()) {
 	db = null;
+}else{
+	//pendura conexão do banco de dados no request
+	request.setAttribute(Str.CONNECTION_DB, db);
+	request.setAttribute("database", database);
 }
 
 

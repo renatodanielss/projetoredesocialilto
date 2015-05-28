@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 
 import com.iliketo.bean.AnnounceJB;
+import com.iliketo.util.CmsConfigILiketo;
 
 public class Page extends Content {
 	private Page template_content = null;
@@ -905,6 +906,16 @@ public class Page extends Content {
 	public String parse_output_replace_sequential(ServletContext server, Request request, Response response, Session session, String script_name, String query_string, String session_mode, String session_userid, String session_username, String session_usertype, String session_usergroup, String session_usertypes, String session_usergroups, String session_administrator, DB db, Configuration config, String id, String table, String column, String session_version, String default_version, String session_device, String session_usersegments, String session_usertests, String session_currency, String default_currency, String default_shopcartsummary_page, String default_shopcartsummary_entry, String mycontent, HashMap<String,String> output_cache, HashMap<String,Content> content_cache, HashMap<String,Page> page_cache, HashMap<String,Databases> databases_cache, HashMap<String,Data> data_cache, HashMap<String,Object> order_cache, int loopdetection) throws Exception {
 try {
 		if ((mycontent == null) || (mycontent.length() == 0)) return "";
+		
+		//CODIGOS PARA BINDING DOS BEANS DE MODELO NA VIEW
+		if(mycontent.contains("${")){
+			CmsConfigILiketo cmsIliketo = new CmsConfigILiketo(request.getRequest(), response.getResponse());
+			String binding = cmsIliketo.parseBindingModelBean(mycontent);
+			if(binding != null){	//verifica parse ok
+				mycontent = binding;
+			}
+		}
+		
 		if ((! mycontent.contains("###")) && (! mycontent.contains("@@@"))) return mycontent;
 		if (loopdetection>10) {
 			System.out.println("HardCore/Page.parse_output_replace_sequential:ERROR:LOOP:"+table+":"+column+":"+id+":::"+loopdetection+":"+mycontent.length()+":"+mycontent);

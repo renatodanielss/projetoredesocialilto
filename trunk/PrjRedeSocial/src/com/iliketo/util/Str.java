@@ -7,8 +7,14 @@ package com.iliketo.util;
  */
 public class Str {
 	
+	/**Nome da variavel guardada no request para pendurar a conexão aberta do banco de dados pelo filtro*/
+	public static final String CONNECTION_DB = "connectionDB";
+	
 	/**Nome padrão da variavel usada na session para guardar o valor do diretorio raiz para upload de armazenamento imagens*/
 	public static final String STORAGE = "storage";
+	
+	/**Array de nome de arquivos, imagens, videos padrões do sistema que nao podem ser deletados os arquivos com este nome*/
+	public static final String[] FILES_NAMES_DEFAULT = { "avatar_male.png", "avatar_female.png", "avatar_store.png" };
 	
 	/**Nome do campo para upload da imagem da coleção*/
 	public static final String PHOTO_COLLECTION = "photo_collection";
@@ -72,7 +78,13 @@ public class Str {
 	
 	/**String s_id_interest é a variável usada na sessão para guardar o id do interesse para visualizar*/
 	public static final String S_ID_INTEREST = "s_id_interest";
-	
+
+	/**Nome padrao para armazenar um arquivo utilizado na clase FileuploadILiketo*/
+	public static final String PATH_FILE_DEFAULT = "path_file_default";
+
+	/**Nome do campo no form para upload de qualquer tipo de arquivos, utilizar <input name="file" type="file">*/
+	public static final Object FILE = "file";
+
 	//construtor privado
 	private Str(){
 		
