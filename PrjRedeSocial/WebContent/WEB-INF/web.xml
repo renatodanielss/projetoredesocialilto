@@ -785,6 +785,27 @@ standard deployment descriptor.
     <error-code>404</error-code>
     <location>/error.jsp</location>
   </error-page>
+	
+	<servlet>
+      <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+      <servlet-class>
+          org.springframework.web.servlet.DispatcherServlet
+      </servlet-class>
+      <init-param>
+          <param-name>contextConfigLocation</param-name>
+          <param-value>
+              /WEB-INF/spring/application-context.xml
+          </param-value>
+      </init-param>
+      <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+      <url-pattern>/ilt/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- -->
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>Forbidden</web-resource-name>
@@ -994,4 +1015,5 @@ standard deployment descriptor.
       <transport-guarantee>NONE</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
+   
 </web-app>
