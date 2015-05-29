@@ -150,6 +150,7 @@ if(!listTimeline.isEmpty()){
 			}else{
 				s = s.replaceAll("@@@price_fixed@@@", announceJB.getPriceFixed());				
 			}
+			s = s.replaceAll("@@@id_announce@@@", announceJB.getIdAnnounce());
 			s = s.replaceAll("@@@type_announce@@@", announceJB.getTypeAnnounce());
 			s = s.replaceAll("@@@ads_title@@@", announceJB.getTitle());
 			s = s.replaceAll("@@@description@@@", announceJB.getDescription());
