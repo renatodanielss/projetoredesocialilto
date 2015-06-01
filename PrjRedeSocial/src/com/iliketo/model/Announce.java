@@ -64,7 +64,14 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "path_photo_ad")	//somente nome da foto do item do colecionador
 	private String pathPhotoAd;
 	
-	private MemberJB member;
+	@ColumnILiketo(name = "offered_price")
+	private String offeredPrice;
+	
+	@ColumnILiketo(name = "combine")
+	private String combine;
+	
+	@ColumnILiketo(name = "account_type")
+	private String accountType;
 	
 	
 	public Announce(){
@@ -232,15 +239,34 @@ public class Announce extends ContentILiketo {
 	}
 
 
-	public MemberJB getMember() {
-		return member;
+	public String getOfferedPrice() {
+		return offeredPrice;
 	}
 
 
-	public void setMember(MemberJB member) {
-		this.member = member;
+	public void setOfferedPrice(String offeredPrice) {
+		this.offeredPrice = offeredPrice;
 	}
 
-	
+
+	public String getCombine() {
+		return combine;
+	}
+
+
+	public void setCombine(String combine) {
+		this.combine = combine;
+	}
+
+
+	public String getAccountType() {
+		return accountType;
+	}
+
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
 	
 }

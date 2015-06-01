@@ -709,7 +709,7 @@ public class UCmaintainDataILiketo {
 					String[] todosDescription = filepost.getParameters(arrayCampos[1]);	//retorns todos description item
 					String[] todosPathPhotoItem = filepost.getParameters(arrayCampos[2]);		//retorna todas photo item
 					String fk_collection_id = filepost.getParameter(arrayCampos[3]); //retorna um id_collection igual para todos
-					String fk_user_id = filepost.getParameter(arrayCampos[4]);
+					String fk_user_id = filepost.getParameter(arrayCampos[5]);
 					//caso adicionar mais campos na database, necessario colocar aqui tambem
 					
 					int quantItens = todosPathPhotoItem.length;	//quantidade de itens para adicionar no banco
@@ -720,7 +720,7 @@ public class UCmaintainDataILiketo {
 						filepostCadaItem.setParameter(arrayCampos[1], todosDescription[i]);
 						filepostCadaItem.setParameter(arrayCampos[2], todosPathPhotoItem[i]);
 						filepostCadaItem.setParameter(arrayCampos[3], fk_collection_id);
-						filepostCadaItem.setParameter(arrayCampos[4], fk_user_id);
+						filepostCadaItem.setParameter(arrayCampos[5], fk_user_id);
 						//caso adicionar mais campos na database, necessario colocar aqui tambem
 						
 						//Chama a classe data para criar cada item e salvar na tabela

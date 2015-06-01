@@ -1,5 +1,7 @@
 package com.iliketo.model;
 
+import com.iliketo.model.annotation.ColumnILiketo;
+
 /**
  * Super Classe de modelo
  * Classe genérica de um conteúdo de dados/modelos ILiketo
@@ -11,7 +13,9 @@ package com.iliketo.model;
  */
 public class ContentILiketo implements Comparable<ContentILiketo>{
 	
+	@ColumnILiketo(name = "id")
 	private String id;				//idReal asbru
+	
 	private String dateCreated;		//data asbru
 	private String dateUpdated;		//data asbru
 

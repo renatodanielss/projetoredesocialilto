@@ -33,6 +33,7 @@ public class ColumnsSingleton {
 	private HashMap<String,HashMap<String,String>> COL_DBEVENT;
 	private HashMap<String,HashMap<String,String>> COL_DBINTEREST;
 	private HashMap<String,HashMap<String,String>> COL_DBANNOUNCE;
+	private HashMap<String,HashMap<String,String>> COL_DBSTOREITEM;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
@@ -45,6 +46,7 @@ public class ColumnsSingleton {
 	private String DATA_DBEVENT;
 	private String DATA_DBINTEREST;
 	private String DATA_DBANNOUNCE;
+	private String DATA_DBSTOREITEM;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
@@ -112,6 +114,10 @@ public class ColumnsSingleton {
 		database.read(db, new Configuration(), "dbannounce");	
 		DATA_DBANNOUNCE = database.getTable();
 		COL_DBANNOUNCE = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbstoreitem");	
+		DATA_DBSTOREITEM = database.getTable();
+		COL_DBSTOREITEM = database.namedcolumns;
 	}
 	
 	/**
@@ -165,6 +171,8 @@ public class ColumnsSingleton {
 			mapcolumns = COL_DBINTEREST;
 		}else if(nameDatabase.equals("dbannounce")){
 			mapcolumns = COL_DBANNOUNCE;
+		}else if(nameDatabase.equals("dbstoreitem")){
+			mapcolumns = COL_DBSTOREITEM;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -215,6 +223,8 @@ public class ColumnsSingleton {
 			return DATA_DBINTEREST;
 		}else if(nameDatabase.equals("dbannounce")){
 			return DATA_DBANNOUNCE;
+		}else if(nameDatabase.equals("dbstoreitem")){
+			return DATA_DBSTOREITEM;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -283,7 +293,10 @@ public class ColumnsSingleton {
 			}else if(table.equals("dbannounce")){
 				mapcolumns = COL_DBANNOUNCE;
 				tableReal = DATA_DBANNOUNCE;
-			}			
+			}else if(table.equals("dbstoreitem")){
+				mapcolumns = COL_DBSTOREITEM;
+				tableReal = DATA_DBSTOREITEM;
+			}		
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){
 				SQL = SQL.replaceAll(table, tableReal);

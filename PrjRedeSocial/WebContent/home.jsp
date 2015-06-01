@@ -223,6 +223,11 @@ if(!listTimeline.isEmpty()){
 response.setContentType("text/html"); 			//set type conteudo resposta
 response.getWriter().write(div.toString());		//write conteudo div, finaliza jsp e retorna resposta para o ajax
 
+//tamanho de todos arquivos usuario
+CmsConfigILiketo c = new CmsConfigILiketo(request, response);
+long total = c.getTotalTodosArquivosUserInBytes(request);
+System.out.println("\nTotal size arquivos:\n" + total + " bytes\n" + (total > 0 ? total/1024 : 0) + " KB\n" 
+					+ (total > 0 ? (total/1024)/1024 : 0) + " MB\nUsername: " + mysession.get("username") + " - id: " + mysession.get("userid") + "\n");
 
 %>
 

@@ -1,11 +1,15 @@
 package com.iliketo.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -35,6 +39,8 @@ import HardCore.Text;
 import HardCore.UCbrowseWebsite;
 import HardCore.Website;
 
+import com.iliketo.bean.CollectionJB;
+import com.iliketo.bean.MemberJB;
 import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.model.annotation.FileILiketo;
 
@@ -221,11 +227,11 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
-	 * Metodo retorna o tamanho total em KB dos arquivos que esta no request
+	 * Metodo retorna o tamanho total em bytes dos arquivos que esta no request
 	 * @param request
 	 * @return
 	 */
-	public long getSizeFilesInKB(HttpServletRequest request){
+	public long getSizeFilesInBytes(HttpServletRequest request){
 		
 		long sizeFiles = 0;
 		try{
@@ -255,10 +261,96 @@ public class CmsConfigILiketo {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(sizeFiles > 0){
-			sizeFiles = sizeFiles/1024; // = sizeInBytesFiles/1024 = 'xxx KB'
-		}
+
 		return sizeFiles;
+	}
+	
+	/**
+	 * Método retorna o tamanho total de arquivos em bytes que o usuario da sessao possui.
+	 * @param request
+	 * @return
+	 */
+	public long getTotalTodosArquivosUserInBytes(HttpServletRequest request){
+		//obs 512 MB > 524288 KB > 536870912 bytes
+		long sizeTotal = 0;
+		DB db = (DB)request.getAttribute(Str.CONNECTION_DB);
+		String rootpath = DOCUMENT_ROOT + myconfig.get(db, "URLrootpath");
+		String filepathname = myconfig.get(db, "URLuploadpath");
+		String pathname = rootpath + filepathname;
+		String myfilename = "";
+		String myUserid = mysession.get("userid");
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+
+		String SQLCollection = "select c1.path_photo_collection as path_photo_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "';";
+		String[][] aliasCollection = { {"dbcollection", "c1"} };		
+		SQLCollection = CS.transformSQLReal(SQLCollection, aliasCollection);
+		
+		String SQLItem = "select i.path_photo_item as path_photo_item from dbcollectionitem i where i.fk_user_id = '" +myUserid+ "';";		
+		String[][] aliasItem = { {"dbcollectionitem", "i"} };
+		SQLItem = CS.transformSQLReal(SQLItem, aliasItem);
+		
+		String SQLVideo = "select v.path_file_video as path_file_video from dbcollectionvideo v where v.fk_user_id = '" +myUserid+ "';";
+		String[][] aliasVideo = { {"dbcollectionvideo", "v"} };
+		SQLVideo = CS.transformSQLReal(SQLVideo, aliasVideo);
+		
+		String SQLEvent = "select e.path_photo_event as path_photo_event from dbevent e where e.fk_user_id = '" +myUserid+ "';";
+		String[][] aliasEvent = { {"dbevent", "e"} };
+		SQLEvent = CS.transformSQLReal(SQLEvent, aliasEvent);
+		
+		String SQLStore = "select t1.photo_store_item as photo_store_item from dbstoreitem t1"
+				+ " join dbannounce t2 on t2.id_announce = t1.fk_announce_id where t2.fk_user_id = '" +myUserid+ "';";
+		String[][] aliasStore = { {"dbstoreitem", "t1"}, {"dbannounce", "t2"} };
+		SQLStore = CS.transformSQLReal(SQLStore, aliasStore);
+		
+		LinkedHashMap<String,HashMap<String,String>> recordsCollections  = db.query_records(SQLCollection); //map de registros collections
+		LinkedHashMap<String,HashMap<String,String>> recordsItems  = db.query_records(SQLItem); 			//map de registros items
+		LinkedHashMap<String,HashMap<String,String>> recordsVideos  = db.query_records(SQLVideo); 			//map de registros videos
+		LinkedHashMap<String,HashMap<String,String>> recordsEvent  = db.query_records(SQLEvent); 			//map de registros eventos
+		LinkedHashMap<String,HashMap<String,String>> recordsStore  = db.query_records(SQLStore); 			//map de registros fotos item de loja
+		
+		System.out.println("\nArquivos do usuario na sessao:");
+		for(String rec : recordsCollections.keySet()){			
+			myfilename = recordsCollections.get(rec).get("path_photo_collection");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("Photo collection: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		for(String rec : recordsItems.keySet()){			
+			myfilename = recordsItems.get(rec).get("path_photo_item");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("Photo item: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		for(String rec : recordsVideos.keySet()){			
+			myfilename = recordsVideos.get(rec).get("path_file_video");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("File video: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		for(String rec : recordsEvent.keySet()){			
+			myfilename = recordsEvent.get(rec).get("path_photo_event");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("Photo event: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		for(String rec : recordsStore.keySet()){			
+			myfilename = recordsStore.get(rec).get("photo_store_item");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("Photo store item: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		
+		return sizeTotal;
 	}
 	
 	/**
@@ -408,7 +500,10 @@ public class CmsConfigILiketo {
 		if(mapModel != null && !mapModel.isEmpty()){
 			Iterator it = mapModel.keySet().iterator();
 			while(it.hasNext()){
-				String nameBean = "" + it.next();
+				String nameBean = "" + it.next();				
+				if(content.contains("${" + nameBean  + "}")){ //${objeto}
+					content = content.replaceAll("\\$\\{" + nameBean + "}", nameBean);
+				}				
 				if(content.contains("${" + nameBean + ".")){
 					//Object
 					Object obj = mapModel.get(nameBean);
@@ -427,9 +522,27 @@ public class CmsConfigILiketo {
 								e.printStackTrace();
 							} catch (IllegalAccessException e) {
 								e.printStackTrace();
-							}							
-						}else{
-							//${objeto.objeto.atributo}
+							}
+							
+						}else if(content.contains("${" + nameBean + "." + atributo.getName() + ".")){ //${objeto.objeto.atributo}							
+							try {
+								atributo.setAccessible(true);
+								for (Field at : atributo.get(obj).getClass().getDeclaredFields()) {
+									if(content.contains("${" + nameBean + "." + atributo.getName() + "." + at.getName() + "}")){	//${objeto.objeto.atributo}
+										at.setAccessible(true);
+										Object value = at.get(atributo.get(obj));
+										if(value != null){
+											content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "." + at.getName() + "}", value.toString());
+										}else{
+											content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "." + at.getName() + "}", "null");
+										}
+									}									
+								}								
+							} catch (IllegalArgumentException e) {
+								e.printStackTrace();
+							} catch (IllegalAccessException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}else{
