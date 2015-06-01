@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import HardCore.DB;
 
 import com.iliketo.dao.AnnounceDAO;
+import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.StoreItemDAO;
 import com.iliketo.model.Announce;
 import com.iliketo.model.StoreItem;
@@ -74,19 +75,23 @@ public class AnnounceStoreController {
 		AnnounceDAO announceDAO = new AnnounceDAO(db, request, response);
 		StoreItemDAO storeItemDAO = new StoreItemDAO(db, request, response);
 		
-		long sizeFiles = cms.getSizeFilesInKB(request); //tamanho todos arquivos
-		System.out.println("sizeFiles = " + sizeFiles + " KB");
+		long sizeFiles = cms.getSizeFilesInBytes(request); //tamanho todos arquivos
+		System.out.println("sizeFiles = " + (sizeFiles>0?sizeFiles/1024:0) + " KB - " + sizeFiles + " bytes");
+		
 		
 		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class, request); 	//popula um objeto com dados do form
-		String idCreated = announceDAO.create(announce);
-		
-		//vetor uma ou mais fotos do anuncio
 		Object[] itemsPhotos = cms.getObjectsFileOfParameter(StoreItem.class, request); 	//popula vetor de objetos quando há um ou varios input "file"
+		
+		
+		cms.processFileupload(itemsPhotos, request); 								//salva arquivos
+		announce.setPathPhotoAd(((StoreItem)itemsPhotos[0]).getPhotoStoreItem());	//seta foto principal
+		
+		String idCreated = announceDAO.create(announce);							//salva anuncio
 		for(Object item : itemsPhotos){
-			((StoreItem)item).setIdAnnounce(idCreated); //fk_announce_id
-		}
-		cms.processFileupload(itemsPhotos, request); 	//salva arquivos
-		storeItemDAO.creates(itemsPhotos);				//salva items
+			((StoreItem)item).setIdAnnounce(idCreated); 							//seta fk_announce_id
+		}		
+		storeItemDAO.creates(itemsPhotos);											//salva fotos item loja
+		
 		
 		return "page.jsp?id=659"; //page form payment
 	}

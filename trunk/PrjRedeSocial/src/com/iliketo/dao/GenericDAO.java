@@ -202,6 +202,9 @@ public abstract class GenericDAO {
 					String value = (String) atributo.get(object);
 					ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
 					old = readByColumn(coluna.name(), value, object.getClass());
+				}
+				ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
+				if(old != null && coluna != null && !coluna.name().equals("id")){
 					idReal = (String) atributo.get(old);
 				}
 			}
