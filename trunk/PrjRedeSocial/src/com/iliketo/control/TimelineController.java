@@ -52,10 +52,6 @@ public class TimelineController {
 	 */
 	public ArrayList<ContentILiketoJB> updateTimelineNewsOlds(DB db, Request request, Session mysession, String typeTimeline){
 
-		//organizar alguns itens e video sem fk_user_id
-		organizeFk_user_idItem(db);
-		organizeFk_user_idVideo(db);
-		
 		ArrayList<ContentILiketoJB> listTimeline = new ArrayList<ContentILiketoJB>();
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		HashMap<String,String> mapOffset = null;
