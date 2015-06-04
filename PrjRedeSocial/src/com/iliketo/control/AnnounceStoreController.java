@@ -83,15 +83,18 @@ public class AnnounceStoreController {
 		Object[] itemsPhotos = cms.getObjectsFileOfParameter(StoreItem.class, request); 	//popula vetor de objetos quando há um ou varios input "file"
 		
 		
-		cms.processFileupload(itemsPhotos, request); 								//salva arquivos
-		announce.setPathPhotoAd(((StoreItem)itemsPhotos[0]).getPhotoStoreItem());	//seta foto principal
-		
-		String idCreated = announceDAO.create(announce);							//salva anuncio
-		for(Object item : itemsPhotos){
-			((StoreItem)item).setIdAnnounce(idCreated); 							//seta fk_announce_id
+		if(announce.getTypeAnnounce().equals("Purchase")){
+			announceDAO.create(announce);												//salva anuncio
+		}else{
+			//Sell, Auction, Exchange
+			cms.processFileupload(itemsPhotos, request); 								//salva arquivos
+			announce.setPathPhotoAd(((StoreItem)itemsPhotos[0]).getPhotoStoreItem());	//seta foto principal			
+			String idCreated = announceDAO.create(announce);							//salva anuncio
+			for(Object item : itemsPhotos){
+				((StoreItem)item).setIdAnnounce(idCreated); 							//seta fk_announce_id
+			}		
+			storeItemDAO.creates(itemsPhotos);											//salva fotos item loja
 		}		
-		storeItemDAO.creates(itemsPhotos);											//salva fotos item loja
-		
 		
 		return "page.jsp?id=659"; //page form payment
 	}
