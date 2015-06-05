@@ -13,6 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import HardCore.DB;
+import HardCore.Request;
+import HardCore.RequireUser;
+import HardCore.Response;
+import HardCore.Session;
+import HardCore.Text;
 
 import com.iliketo.util.Str;
 
@@ -51,8 +56,16 @@ public class FilterPageILiketo implements Filter {
 			req.getRequestDispatcher("/config.jsp").include(req, res);	//Abre conexao
 		}
 		
+		//Valida usuario na session
+		Request myrequest = new Request(req);
+		Response myresponse = new Response(res);
+		Session mysession = new Session(req.getSession());
+		boolean accesspermission = RequireUser.User(new Text(), mysession.get("username"), myrequest, myresponse, mysession, db);
 		
-		chain.doFilter(request, response);
+		if(accesspermission){
+			//valida acesso login - permissao ok
+			chain.doFilter(request, response);
+		}
 		
 		
 		//fecha conexao
