@@ -203,10 +203,11 @@ public abstract class GenericDAO {
 					ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
 					old = readByColumn(coluna.name(), value, object.getClass());
 				}
-				ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
-				if(old != null && coluna != null && !coluna.name().equals("id")){
-					idReal = (String) atributo.get(old);
-				}
+			}
+			if(old != null){
+				Field f = old.getClass().getSuperclass().getDeclaredField("id");
+				f.setAccessible(true);
+				idReal = (String) f.get(old);		//idReal asbru
 			}
 			for(Field atributo : object.getClass().getDeclaredFields()) {
 				atributo.setAccessible(true);
@@ -236,6 +237,10 @@ public abstract class GenericDAO {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
 
@@ -356,15 +361,29 @@ public abstract class GenericDAO {
 					atributo.setAccessible(true);
 					ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
 					if(coluna != null && !coluna.name().equals("")){
-						atributo.set(object, row.get(coluna.name()));	//seta no objeto o valor do registro, recuperado pelo nome da coluna na anotacao do objeto
+						atributo.set(object, row.get(CS.getCOL(db, nameDatabase, coluna.name())));	//seta no objeto o valor do registro, recuperado pelo nome da coluna na anotacao do objeto
 					}
 				}
+				//atributos da superclasse ContentILiketo
+				Field f1 = object.getClass().getSuperclass().getDeclaredField("id");
+				Field f2 = object.getClass().getSuperclass().getDeclaredField("dateCreated");
+				Field f3 = object.getClass().getSuperclass().getDeclaredField("dateUpdated");
+				f1.setAccessible(true);
+				f2.setAccessible(true);
+				f3.setAccessible(true);
+				f1.set(object, row.get(CS.getCOL(db, nameDatabase, "id")));
+				f2.set(object, row.get(CS.getCOL(db, nameDatabase, "date_created")));
+				f3.set(object, row.get(CS.getCOL(db, nameDatabase, "date_updated")));
 			}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
 		
@@ -383,7 +402,7 @@ public abstract class GenericDAO {
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		String dataid = CS.getDATA(db, nameDatabase);
 		
-		String SQL = "SELECT * FROM " + dataid + " WHERE " + column + " = '" + value +"';";
+		String SQL = "SELECT * FROM " + dataid + " WHERE " + CS.getCOL(db, nameDatabase, column) + " = '" + value +"';";
 		HashMap<String, String> row = db.query_record(SQL);
 		
 		Object object = null;
@@ -395,15 +414,29 @@ public abstract class GenericDAO {
 					atributo.setAccessible(true);
 					ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
 					if(coluna != null && !coluna.name().equals("")){
-						atributo.set(object, row.get(coluna.name()));	//seta no objeto o valor do registro, recuperado pelo nome da coluna na anotacao do objeto
+						atributo.set(object, row.get(CS.getCOL(db, nameDatabase, coluna.name())));	//seta no objeto o valor do registro, recuperado pelo nome da coluna na anotacao do objeto
 					}
 				}
+				//atributos da superclasse ContentILiketo
+				Field f1 = object.getClass().getSuperclass().getDeclaredField("id");
+				Field f2 = object.getClass().getSuperclass().getDeclaredField("dateCreated");
+				Field f3 = object.getClass().getSuperclass().getDeclaredField("dateUpdated");
+				f1.setAccessible(true);
+				f2.setAccessible(true);
+				f3.setAccessible(true);
+				f1.set(object, row.get(CS.getCOL(db, nameDatabase, "id")));
+				f2.set(object, row.get(CS.getCOL(db, nameDatabase, "date_created")));
+				f3.set(object, row.get(CS.getCOL(db, nameDatabase, "date_updated")));
 			}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
 		
