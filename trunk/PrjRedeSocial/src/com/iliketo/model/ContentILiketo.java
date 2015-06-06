@@ -16,7 +16,10 @@ public class ContentILiketo implements Comparable<ContentILiketo>{
 	@ColumnILiketo(name = "id")
 	private String id;				//idReal asbru
 	
+	@ColumnILiketo(name = "date_created")
 	private String dateCreated;		//data asbru
+	
+	@ColumnILiketo(name = "date_updated")
 	private String dateUpdated;		//data asbru
 
 	

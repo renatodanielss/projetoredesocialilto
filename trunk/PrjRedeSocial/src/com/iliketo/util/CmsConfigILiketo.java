@@ -503,29 +503,26 @@ public class CmsConfigILiketo {
 				String nameBean = "" + it.next();				
 				if(content.contains("${" + nameBean  + "}")){ //${objeto}
 					content = content.replaceAll("\\$\\{" + nameBean + "}", nameBean);
-				}				
-				if(content.contains("${" + nameBean + ".")){
-					//Object
-					Object obj = mapModel.get(nameBean);
-					//Field
-					for (Field atributo : obj.getClass().getDeclaredFields()) {
-						if(content.contains("${" + nameBean + "." + atributo.getName() + "}")){	//${objeto.atributo}						
-							try {
+				}
+				if(content.contains("@@@" + nameBean  + "@@@")){ //@@@objeto@@@
+					content = content.replaceAll("@@@" + nameBean + "@@@", nameBean);
+				}
+				if(content.contains("${" + nameBean + ".") || content.contains("@@@")){
+					try {
+						//Object
+						Object obj = mapModel.get(nameBean);
+						//Field					
+						for (Field atributo : obj.getClass().getDeclaredFields()) {
+							//Expression Language jsp '${ }'
+							if(content.contains("${" + nameBean + "." + atributo.getName() + "}")){	//${objeto.atributo}						
 								atributo.setAccessible(true);
 								Object value = atributo.get(obj);
 								if(value != null){
 									content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "}", value.toString());
 								}else{
 									content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "}", "null");
-								}
-							} catch (IllegalArgumentException e) {
-								e.printStackTrace();
-							} catch (IllegalAccessException e) {
-								e.printStackTrace();
-							}
-							
-						}else if(content.contains("${" + nameBean + "." + atributo.getName() + ".")){ //${objeto.objeto.atributo}							
-							try {
+								}								
+							}else if(content.contains("${" + nameBean + "." + atributo.getName() + ".")){ //${objeto.objeto.atributo}							
 								atributo.setAccessible(true);
 								for (Field at : atributo.get(obj).getClass().getDeclaredFields()) {
 									if(content.contains("${" + nameBean + "." + atributo.getName() + "." + at.getName() + "}")){	//${objeto.objeto.atributo}
@@ -538,15 +535,50 @@ public class CmsConfigILiketo {
 										}
 									}									
 								}								
-							} catch (IllegalArgumentException e) {
-								e.printStackTrace();
-							} catch (IllegalAccessException e) {
-								e.printStackTrace();
+							}else{
+								//codigo especial do asbru '@@@'
+								atributo.setAccessible(true);
+								ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
+								if(coluna != null && !coluna.name().equals("")){
+									if(content.contains("@@@" + coluna.name() + "@@@")){	//@@@colunadatabase@@@
+										Object value =  atributo.get(obj);
+										if(value != null){
+											content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString());
+										}else{
+											content = content.replaceAll("@@@" + coluna.name() + "@@@", "null");
+										}
+									}
+								}
 							}
 						}
+						//atributos da superclasse ContentILiketo
+						Field f1 = obj.getClass().getSuperclass().getDeclaredField("dateCreated");
+						Field f2 = obj.getClass().getSuperclass().getDeclaredField("dateUpdated");
+						f1.setAccessible(true);
+						f2.setAccessible(true);
+						Object value1 =  f1.get(obj);
+						Object value2 =  f2.get(obj);
+						if(content.contains("@@@" + "data_created" + "@@@")){
+							content = content.replaceAll("@@@" + "data_created" + "@@@", (value1 == null ? "null":value1.toString()));
+						}
+						if(content.contains("${" + nameBean + "." + f1.getName() + "}")){
+							content = content.replaceAll("\\$\\{" + nameBean + "." + f1.getName() + "}", (value1 == null ? "null":value1.toString()));
+						}
+						if(content.contains("@@@" + "date_updated" + "@@@")){
+							content = content.replaceAll("@@@" + "date_updated" + "@@@", (value2 == null ? "null":value2.toString()));
+						}
+						if(content.contains("${" + nameBean + "." + f2.getName() + "}")){
+							content = content.replaceAll("\\$\\{" + nameBean + "." + f2.getName() + "}", (value2 == null ? "null":value2.toString()));
+						}
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (NoSuchFieldException e) {
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						e.printStackTrace();
 					}
-				}else{
-					System.out.println("Bean: '" + nameBean + "' foi declarado no ModelILiketo, mas nao e utilizado na pagina!");
 				}
 			}
 			if(content.contains("${")){
@@ -580,10 +612,10 @@ public class CmsConfigILiketo {
 			
 			Object obj = bean;
 			if(!content.isEmpty()){
-				for (Field atributo : obj.getClass().getDeclaredFields()) {
-					if(content.contains("${" + atributo.getName() + "}")){
-						
-						try {
+				try{
+					for(Field atributo : obj.getClass().getDeclaredFields()){
+						//Expression Language jsp '${ }'
+						if(content.contains("${" + atributo.getName() + "}")){ //${atributo}
 							atributo.setAccessible(true);
 							Object value = atributo.get(obj);
 							if(value != null){
@@ -591,17 +623,60 @@ public class CmsConfigILiketo {
 							}else{
 								content = content.replaceAll("\\$\\{" + atributo.getName() + "}", "null");
 							}
-						} catch (IllegalArgumentException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
+						}else if(content.contains("${" + atributo.getName() + ".")){ //${objeto.atributo}							
+							atributo.setAccessible(true);
+							for (Field at : atributo.get(obj).getClass().getDeclaredFields()) {
+								if(content.contains("${" + atributo.getName() + "." + at.getName() + "}")){	//${objeto.atributo}
+									at.setAccessible(true);
+									Object value = at.get(atributo.get(obj));
+									if(value != null){
+										content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", value.toString());
+									}else{
+										content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", "null");
+									}
+								}									
+							}
 						}
-						
+						//codigo especial do asbru '@@@'
+						if(content.contains("@@@" + atributo.getName() + "@@@")){ //@@@atributo@@@
+							atributo.setAccessible(true);
+							Object value = atributo.get(obj);
+							if(value != null){
+								content = content.replaceAll("@@@" + atributo.getName() + "@@@", value.toString());
+							}else{
+								content = content.replaceAll("@@@" + atributo.getName() + "@@@", "null");
+							}
+						}
 					}
+					//atributos da superclasse ContentILiketo
+					Field f1 = obj.getClass().getSuperclass().getDeclaredField("dateCreated");
+					Field f2 = obj.getClass().getSuperclass().getDeclaredField("dateUpdated");
+					f1.setAccessible(true);
+					f2.setAccessible(true);
+					Object value1 =  f1.get(obj);
+					Object value2 =  f2.get(obj);
+					if(content.contains("@@@" + "data_created" + "@@@")){
+						content = content.replaceAll("@@@" + "data_created" + "@@@", (value1 == null ? "null":value1.toString()));
+					}
+					if(content.contains("${" + f1.getName() + "}")){
+						content = content.replaceAll("\\$\\{" + f1.getName() + "}", (value1 == null ? "null":value1.toString()));
+					}
+					if(content.contains("@@@" + "date_updated" + "@@@")){
+						content = content.replaceAll("@@@" + "date_updated" + "@@@", (value2 == null ? "null":value2.toString()));
+					}
+					if(content.contains("${" + f2.getName() + "}")){
+						content = content.replaceAll("\\$\\{" + f2.getName() + "}", (value2 == null ? "null":value2.toString()));
+					}					
+					builder.append(content);	//incrementa string com conteudo
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (NoSuchFieldException e) {
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					e.printStackTrace();
 				}
-				builder.append(content);	//incrementa string com conteudo
-			}else{
-				System.out.println("Bean: '" + bean.getClass() + "' foi declarado na listModel, mas nao e utilizado nas paginas de listEntry!");
 			}
 			if(content.contains("${")){
 				System.out.println("Conteudo da pagina listEntry: '" + mapModelListEntry.get(bean.getClass()) + "' contem expression: '${', mas nao achou o atributo no bean!");

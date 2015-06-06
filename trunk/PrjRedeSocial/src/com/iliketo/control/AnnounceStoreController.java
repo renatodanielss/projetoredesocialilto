@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import HardCore.DB;
 
 import com.iliketo.dao.AnnounceDAO;
-import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.StoreItemDAO;
 import com.iliketo.model.Announce;
 import com.iliketo.model.StoreItem;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
 
@@ -42,7 +42,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/auction"})
 	public String announceStoreAuction(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceSpringController url='/registerAnnounce/store/auction'");
+		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/auction'");
 		
 		return "page.jsp?id=762"; //page form Register Auction 
 	}
@@ -50,7 +50,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/exchange"})
 	public String announceStoreExchange(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceSpringController url='/registerAnnounce/store/exchange'");
+		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/exchange'");
 		
 		return "page.jsp?id=763"; //page form Register Exchange 
 	}
@@ -58,7 +58,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/purchase"})
 	public String announceStorePurchase(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceSpringController url='/registerAnnounce/store/purchase'");
+		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/purchase'");
 		
 		return "page.jsp?id=774"; //page form Register Purchase 
 	}
@@ -66,7 +66,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/payment"})
 	public String announceStorePayment(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceSpringController url='/registerAnnounce/store/payment'");
+		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/payment'");
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -102,7 +102,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/confirm"})
 	public String announceStoreConfirm(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceSpringController url='/registerAnnounce/store/confirm'");
+		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/confirm'");
 		
 		return "page.jsp?id=660"; //page confirm
 	}
@@ -110,9 +110,33 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/addAnnounce"})
 	public String announceStoreaddAnnounce(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceSpringController url='/registerAnnounce/store/addAnnounce'");
+		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/addAnnounce'");
 		
 		return "redirect:page.jsp?id=160"; //page success
+	}
+	
+	
+	@RequestMapping(value={"/ajax/negotiateBuy"})
+	public void announceStoreaNegotiateBuy(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		
+		System.out.println("Log - " + "ajax @AnnounceStoreController url='/ajax/negotiateBuy'");
+		
+		//dao e cms
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		AnnounceDAO dao = new AnnounceDAO(db, request, response);
+		
+		String id = request.getParameter("id");								//id do anuncio
+		Announce announce = (Announce) dao.readById(id, Announce.class);	//ler anuncio
+		
+		ModelILiketo model = new ModelILiketo(request);
+		model.addAttribute("announce", announce);							//add objeto escopo request
+		
+		
+		//retorna lista de entrada, faz binding do objeto setado no ModelILiketo
+		String div = cms.getPageBinding("765");								//id List Group - Store Negotiate Buy Entry
+
+		response.getWriter().write(div);
 	}
 		
 }

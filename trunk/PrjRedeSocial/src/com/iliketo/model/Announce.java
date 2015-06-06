@@ -55,9 +55,6 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "fk_user_id")
 	private String idMember;
 	
-	@ColumnILiketo(name = "type_account")	//tipo de conta do anuncio(Store ou Collector)
-	private String typeAccount;
-	
 	@ColumnILiketo(name = "fk_category_id")
 	private String idCategory;
 	
@@ -70,7 +67,7 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "combine")
 	private String combine;
 	
-	@ColumnILiketo(name = "account_type")
+	@ColumnILiketo(name = "account_type")	//tipo de conta do anuncio(Store ou Collector)
 	private String accountType;
 	
 	
@@ -206,16 +203,6 @@ public class Announce extends ContentILiketo {
 
 	public void setIdMember(String idMember) {
 		this.idMember = idMember;
-	}
-
-
-	public String getTypeAccount() {
-		return typeAccount;
-	}
-
-
-	public void setTypeAccount(String typeAccount) {
-		this.typeAccount = typeAccount;
 	}
 
 
