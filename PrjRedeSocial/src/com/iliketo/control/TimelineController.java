@@ -82,7 +82,7 @@ public class TimelineController {
 				 + "c1.date_created as date_created, c1.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 				 + "from dbcollection c1 join dbmembers m on c1.fk_user_id = m.id_member join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
 				 + "where exists (select c2.fk_category_id from dbcollection c2 "
-				+ "where (c1.fk_category_id = c2.fk_category_id and c2.fk_user_id ='" +myUserid+ "') or (c1.fk_category_id = it.fk_category_id) "
+				+ "where (c1.fk_category_id = c2.fk_category_id and c2.fk_user_id ='" +myUserid+ "') or (c1.fk_category_id = it.fk_category_id)) "
 				+ "order by c1.date_updated desc limit 2 offset '" +mapOffset.get("offsetCol")+ "';";
 		
 		System.out.println("SQLCollection Comum: " + SQLCollection);		
