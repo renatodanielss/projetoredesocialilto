@@ -1,10 +1,8 @@
 package com.iliketo.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -20,17 +18,13 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
 
 import HardCore.Cms;
 import HardCore.Common;
 import HardCore.Configuration;
 import HardCore.DB;
-import HardCore.Fileupload;
 import HardCore.Page;
 import HardCore.Request;
 import HardCore.Response;
@@ -39,8 +33,6 @@ import HardCore.Text;
 import HardCore.UCbrowseWebsite;
 import HardCore.Website;
 
-import com.iliketo.bean.CollectionJB;
-import com.iliketo.bean.MemberJB;
 import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.model.annotation.FileILiketo;
 
@@ -581,14 +573,7 @@ public class CmsConfigILiketo {
 					}
 				}
 			}
-			if(content.contains("${")){
-				System.out.println("Conteudo da pagina contem expression: '${', mas nao foi declarado o bean no ModelILiketo!");
-			}
-			
 		}else{
-			if(content.contains("${")){
-				System.out.println("Conteudo da pagina contem expression: '${', mas nao foi declarado o bean no ModelILiketo!");
-			}
 			return null;
 		}
 		return content;
@@ -638,13 +623,16 @@ public class CmsConfigILiketo {
 							}
 						}
 						//codigo especial do asbru '@@@'
-						if(content.contains("@@@" + atributo.getName() + "@@@")){ //@@@atributo@@@
-							atributo.setAccessible(true);
-							Object value = atributo.get(obj);
-							if(value != null){
-								content = content.replaceAll("@@@" + atributo.getName() + "@@@", value.toString());
-							}else{
-								content = content.replaceAll("@@@" + atributo.getName() + "@@@", "null");
+						ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
+						if(coluna != null && !coluna.name().equals("")){
+							if(content.contains("@@@" + coluna.name() + "@@@")){	//@@@colunadatabase@@@
+								atributo.setAccessible(true);
+								Object value = atributo.get(obj);
+								if(value != null){
+									content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString());
+								}else{
+									content = content.replaceAll("@@@" + coluna.name() + "@@@", "null");
+								}
 							}
 						}
 					}
@@ -677,9 +665,6 @@ public class CmsConfigILiketo {
 				} catch (SecurityException e) {
 					e.printStackTrace();
 				}
-			}
-			if(content.contains("${")){
-				System.out.println("Conteudo da pagina listEntry: '" + mapModelListEntry.get(bean.getClass()) + "' contem expression: '${', mas nao achou o atributo no bean!");
 			}
 		}
 		
