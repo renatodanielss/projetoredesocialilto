@@ -96,7 +96,7 @@ public class AnnounceStoreController {
 			storeItemDAO.creates(itemsPhotos);											//salva fotos item loja
 		}		
 		
-		return "page.jsp?id=659"; //page form payment
+		return "page.jsp?id=800"; //page form payment
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/store/confirm"})
@@ -104,7 +104,7 @@ public class AnnounceStoreController {
 		
 		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/confirm'");
 		
-		return "page.jsp?id=660"; //page confirm
+		return "page.jsp?id=801"; //page confirm
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/store/addAnnounce"})
