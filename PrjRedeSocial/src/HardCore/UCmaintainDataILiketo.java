@@ -675,7 +675,7 @@ public class UCmaintainDataILiketo {
 				
 				//verifica imagens default
 				if (rows.get(colid_photo) != null){
-					if(!rows.get(colid_photo).equals("avatar_male.png") && !rows.get(colid_photo).equals("avatar_female.png") || !rows.get(colid_photo).equals("avatar_store.png")){
+					if(!rows.get(colid_photo).equals("avatar_male.png") && !rows.get(colid_photo).equals("avatar_female.png") && !rows.get(colid_photo).equals("avatar_store.png")){
 						
 						String namePhotoDelete = "" + rows.get(colid_photo); //recupera nome da foto no banco de dados
 						String localImagePath = mysession.get(Str.STORAGE);	
