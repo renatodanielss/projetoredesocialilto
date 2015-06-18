@@ -80,8 +80,8 @@ public class TimelineController {
 		String SQLCollection = 
 				  "select c1.id_collection as id_collection, c1.name_collection as name_collection, c1.description as description, c1.name_category as name_category, c1.path_photo_collection as path_photo_collection, "
 				 + "c1.date_created as date_created, c1.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
-				 + "from dbcollection c1 join dbmembers m on c1.fk_user_id = m.id_member join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
-				 + "where exists (select c2.fk_category_id from dbcollection c2 "
+				 + "from dbcollection c1 join dbmembers m on c1.fk_user_id = m.id_member "
+				 + "where exists (select c2.fk_category_id from dbcollection c2 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
 				+ "where (c1.fk_category_id = c2.fk_category_id and c2.fk_user_id ='" +myUserid+ "') or (c1.fk_category_id = it.fk_category_id)) "
 				+ "order by c1.date_updated desc limit 2 offset '" +mapOffset.get("offsetCol")+ "';";
 		
@@ -94,9 +94,9 @@ public class TimelineController {
 		String SQLItem = 
 				  "select i.id_item as id_item, i.title_item as title_item, i.path_photo_item as path_photo_item, "
 				  + "i.date_created as date_created, i.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
-				  + "from dbcollectionitem i join dbmembers m on i.fk_user_id = m.id_member join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
+				  + "from dbcollectionitem i join dbmembers m on i.fk_user_id = m.id_member "
 				  + "where exists (select c1.id_collection from dbcollection c1 "
-				+ "where exists (select c2.fk_category_id from dbcollection c2 "
+				+ "where exists (select c2.fk_category_id from dbcollection c2 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
 				+ "where ((c1.fk_category_id = c2.fk_category_id and c2.fk_user_id = '" +myUserid+ "') or (c1.fk_category_id = it.fk_category_id)) and i.fk_collection_id = c1.id_collection)) "
 				+ "order by i.date_updated desc limit 2 offset '" +mapOffset.get("offsetItem")+ "';";
 		
@@ -109,9 +109,9 @@ public class TimelineController {
 		String SQLVideo =
 				  "select v.id_video as id_video, v.title_video as title_video, v.path_file_video as path_file_video, "
 				  + "v.date_created as date_created, v.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
-				  + "from dbcollectionvideo v join dbmembers m on v.fk_user_id = m.id_member join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
+				  + "from dbcollectionvideo v join dbmembers m on v.fk_user_id = m.id_member "
 				  + "where exists (select c1.id_collection from dbcollection c1 "
-				+ "where exists (select c2.fk_category_id from dbcollection c2 "
+				+ "where exists (select c2.fk_category_id from dbcollection c2 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
 				+ "where ((c1.fk_category_id = c2.fk_category_id and c2.fk_user_id = '" +myUserid+ "') or (c1.fk_category_id = it.fk_category_id)) and v.fk_collection_id = c1.id_collection)) "
 				+ "order by v.date_updated desc limit 2 offset '" +mapOffset.get("offsetVideo")+ "';";
 		
@@ -142,8 +142,8 @@ public class TimelineController {
 				"select e.id_event as id_event, e.name_event as name_event, e.details_event as details_event, e.path_photo_event as path_photo_event, "
 			  + "e.date_event as date_event, e.hour_event as hour_event, e.type_event as type_event, e.local_event as local_event, "
 			  + "e.date_created as date_created, e.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
-			  + "from dbevent e join dbmembers m on e.fk_user_id = m.id_member join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
-			  + "where exists (select c1.id_collection from dbcollection c1 "
+			  + "from dbevent e join dbmembers m on e.fk_user_id = m.id_member "
+			  + "where exists (select c1.id_collection from dbcollection c1 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
 			  + "where (c1.fk_user_id = '" +myUserid+ "' and e.fk_category_id = c1.fk_category_id) or (e.fk_category_id = it.fk_category_id)) "
 			  + "order by e.date_updated desc limit 2 offset '" +mapOffset.get("offsetEvent")+ "';";
 		
@@ -159,8 +159,8 @@ public class TimelineController {
 			  + "ad.price_initial as price_initial, ad.bid_actual as bid_actual, ad.lasting as lasting, ad.total_bids as total_bids, "
 			  + "ad.date_created as date_created, ad.date_updated as date_updated, ad.path_photo_ad as path_photo_ad, "
 			  + "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
-			  + "from dbannounce ad join dbmembers as m on ad.fk_user_id = m.id_member join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
-			  + "where exists (select c1.id_collection from dbcollection c1 "
+			  + "from dbannounce ad join dbmembers as m on ad.fk_user_id = m.id_member "
+			  + "where exists (select c1.id_collection from dbcollection c1 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
 			  + "where (c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id) or (ad.fk_category_id = it.fk_category_id)) "
 			  + "order by ad.date_updated desc limit 2 offset '" +mapOffset.get("offsetAd")+ "';";
 		
