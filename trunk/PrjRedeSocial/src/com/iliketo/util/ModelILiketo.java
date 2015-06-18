@@ -60,7 +60,7 @@ public class ModelILiketo{
 	}
 	
 	/**
-	 * Método adiciona uma String de mensagem de erro que será recuperado na pagina jsp utilizando expressao: ${error.nomeDoErro}
+	 * Método adiciona uma String de mensagem de erro que será recuperado na pagina jsp utilizando expressao: ${error:nomeDoErro}
 	 * @param nameError - nome do erro
 	 * @param msgError - mensagem de erro
 	 */

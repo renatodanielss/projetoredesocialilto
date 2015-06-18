@@ -699,27 +699,27 @@ public class CmsConfigILiketo {
 			}
 		}	
 		if(mapModelError != null && !mapModelError.isEmpty()){
-			//se contem expressao ${error.}
-			if(content.contains("${error.")){
+			//se contem expressao ${error:}
+			if(content.contains("${error:")){
 				Iterator it = mapModelError.keySet().iterator();
 				while(it.hasNext()){
 					String nameError = "" + it.next();
-					if(content.contains("${error." + nameError + "}")){				//${error.nomeErro}
+					if(content.contains("${error:" + nameError + "}")){				//${error:nomeErro}
 						String value = (String) mapModelError.get(nameError);		//valor erro
-						content = content.replaceAll("\\$\\{error." + nameError + "}", value);
+						content = content.replaceAll("\\$\\{error:" + nameError + "}", value);
 					}
 				}
 			}
 		}
-		//se contem expressao ${error.}
-		while(content.contains("${error.")){
-			int begin = content.indexOf("${error.");
+		//se contem expressao ${error:}
+		while(content.contains("${error:")){
+			int begin = content.indexOf("${error:");
 			int end = content.indexOf("}", begin);
 			if(begin >= 1 && end >= 1){
 				//System.out.println("substring teste msg error: " + content.substring(begin, end+1));
-				content = content.replaceAll("\\$\\{error." + content.substring(begin+8, end+1), "");
+				content = content.replaceAll("\\$\\{error:" + content.substring(begin+8, end+1), "");
 			}else if(begin >= 1){
-				content = content.replaceAll("\\$\\{error.", "");
+				content = content.replaceAll("\\$\\{error:", "");
 			}
 		}
 		//se contem expressao '${'
