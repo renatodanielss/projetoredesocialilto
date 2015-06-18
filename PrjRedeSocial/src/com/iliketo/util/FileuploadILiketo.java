@@ -6,18 +6,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import HardCore.Base64;
 import HardCore.Common;
 import HardCore.Request;
-import HardCore.URLDecoder;
+
+import com.coremedia.iso.IsoFile;
+import com.coremedia.iso.boxes.MovieBox;
+import com.coremedia.iso.boxes.MovieHeaderBox;
+import com.iliketo.exception.ImageILiketoException;
+import com.iliketo.exception.VideoILiketoException;
 
 public class FileuploadILiketo {
 	private HttpServletRequest httpservletrequest = null;
@@ -296,7 +298,7 @@ public class FileuploadILiketo {
 		                outpuStream.write(bytes, 0, read);
 		            }
 		            outpuStream.close();
-					
+		            
 					if(myforminputname.equals(Str.FILE)){						
 						//add o parametro com o nome 'path_file_default', para armazenar o valor do nome da foto evento no banco de dados q terá o mesmo nome na coluna
 						addParameter(Str.PATH_FILE_DEFAULT, filename);
@@ -311,6 +313,78 @@ public class FileuploadILiketo {
 			}
 		}
 		return file;
+	}
+	
+	/**
+	 * Metodo valida extensao para o tipo de arquivo imagem
+	 * @param filename
+	 * @return
+	 * @throws VideoILiketoException
+	 */
+	public static boolean validateExtensionImage(String filename) throws ImageILiketoException{		
+		String[] extensions = { "jpg", "jpeg" };
+		String ext = filename.substring(filename.lastIndexOf('.') + 1);		
+		for(String e : extensions){
+			if(ext.equals(e)){
+				return true;
+			}
+		}		
+		throw new ImageILiketoException("Image format error");
+	}
+	
+	/**
+	 * Metodo valida extensao para o tipo de arquivo video
+	 * @param filename
+	 * @return
+	 * @throws VideoILiketoException
+	 */
+	public static boolean validateExtensionVideo(String filename) throws VideoILiketoException{		
+		String[] extensions = { "mp4" };
+		String ext = filename.substring(filename.lastIndexOf('.') + 1);		
+		for(String e : extensions){
+			if(ext.equals(e)){
+				return true;
+			}
+		}		
+		throw new VideoILiketoException("Video format error");
+	}
+	
+	/**
+	 * Metodo valida duracao de video, se duracao video maior que 2 min, deleta e lança excessao de erro.
+	 * @param filename
+	 * @return
+	 * @throws VideoILiketoException
+	 */
+	public static boolean validateDurationVideo(String pathname, String filename) throws VideoILiketoException{
+		
+		double result = 0;
+		try {
+			IsoFile isoFile = new IsoFile(pathname + filename);
+			MovieBox moov = isoFile.getMovieBox();	
+			MovieHeaderBox m = moov.getMovieHeaderBox();
+			long min = (m.getDuration() / m.getTimescale() / 60);
+			long sec = (m.getDuration() / m.getTimescale() % 60);
+			result = (min + (sec * 0.01));
+			System.out.println("Duration video: " + result);
+			isoFile.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		//valida duracao 2:00 dois minutos
+		if(result <= 2.00){
+			return true;
+		}else{
+			//deleta arquivo fisicamente
+			try {
+				System.out.println("Delete file - video: " + filename);
+				Common.deleteFile(pathname + filename);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//lanca exception de erro duracao video
+			throw new VideoILiketoException("Video error duration");
+		}		
 	}
 	
 

@@ -2,14 +2,9 @@ package com.iliketo.dao;
 
 import java.util.HashMap;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import HardCore.DB;
 
 import com.iliketo.model.UserCard;
-import com.iliketo.util.CmsConfigILiketo;
-
-import HardCore.DB;
-import HardCore.Request;
 
 public class UserCardDAO{
 	

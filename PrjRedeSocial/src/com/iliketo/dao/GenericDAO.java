@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import HardCore.Common;
 import HardCore.Configuration;
@@ -14,13 +13,11 @@ import HardCore.DB;
 import HardCore.Data;
 import HardCore.Databases;
 import HardCore.Fileupload;
-import HardCore.Session;
 import HardCore.Text;
 
 import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.model.annotation.FileILiketo;
 import com.iliketo.model.annotation.IdILiketo;
-import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.Str;
 
@@ -28,13 +25,11 @@ public abstract class GenericDAO {
 	
 	private DB db;
 	private String nameDatabase;
-	private CmsConfigILiketo cms;
+	private HttpServletRequest request;
 	
-	public GenericDAO(DB db, String nameDatabase, HttpServletRequest request, HttpServletResponse response){
+	public GenericDAO(DB db, String nameDatabase, HttpServletRequest request){
 		this.db = db;
 		this.nameDatabase = nameDatabase;
-		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		this.cms = cms;
 	}
 	
 		
@@ -47,7 +42,6 @@ public abstract class GenericDAO {
 	 * @return String id do novo registro
 	 */
 	public String create(Object object) {
-		Session mysession = cms.getMysession();
 		String nameIdPrimaryKey = "";
 		Fileupload fileupload = new Fileupload(null, null, null);
 		
@@ -81,8 +75,8 @@ public abstract class GenericDAO {
 		Data data = new Data();
 		data.getFormData(database.columns, fileupload);
 		data.adjustContent(database.columns);
-		data.setCreated(database.columns, timestamp, mysession.get("username"));
-		data.setUpdated(database.columns, timestamp, mysession.get("username"));
+		data.setCreated(database.columns, timestamp,"username");
+		data.setUpdated(database.columns, timestamp, "username");
 		data.create(db, "data" + database.getId(), database.columns);
 		
 		
@@ -95,7 +89,7 @@ public abstract class GenericDAO {
 		data.getFormData(database.columns, filepostUpateID);
 		data.adjustContent(database.columns);
 		data.setCreated(database.columns, created, createdby);
-		data.setUpdated(database.columns, timestamp, mysession.get("username"));
+		data.setUpdated(database.columns, timestamp, "username");
 		data.update(db, "data" + database.getId(), database.columns);
 		
 		System.out.println("***data.create***");
@@ -119,7 +113,6 @@ public abstract class GenericDAO {
 	 * @return String id do novo registro
 	 */
 	public void creates(Object[] arrayObjects) {
-		Session mysession = cms.getMysession();
 		String nameIdPrimaryKey = "";
 		
 		for(int i= 0; i < arrayObjects.length; i++){
@@ -157,8 +150,8 @@ public abstract class GenericDAO {
 			Data data = new Data();
 			data.getFormData(database.columns, fileupload);
 			data.adjustContent(database.columns);
-			data.setCreated(database.columns, timestamp, mysession.get("username"));
-			data.setUpdated(database.columns, timestamp, mysession.get("username"));
+			data.setCreated(database.columns, timestamp, "username");
+			data.setUpdated(database.columns, timestamp, "username");
 			data.create(db, "data" + database.getId(), database.columns);
 			
 			String idRegister = data.getId();	//recupera id do registro gerado pelo sistema
@@ -170,7 +163,7 @@ public abstract class GenericDAO {
 			data.getFormData(database.columns, filepostUpateID);
 			data.adjustContent(database.columns);
 			data.setCreated(database.columns, created, createdby);
-			data.setUpdated(database.columns, timestamp, mysession.get("username"));
+			data.setUpdated(database.columns, timestamp, "username");
 			data.update(db, "data" + database.getId(), database.columns);
 			
 			System.out.println("***data.create***");
@@ -189,8 +182,7 @@ public abstract class GenericDAO {
 	 * Se conter files, imagens ou video, deleta o antigo e atualiza o novo
 	 * @param object
 	 */
-	public void update(Object object) {
-		Session mysession = cms.getMysession();
+	public void update(Object object){
 		
 		Fileupload filepost = new Fileupload(null, null, null);
 		String idReal = "";	//id real para update
@@ -221,7 +213,7 @@ public abstract class GenericDAO {
 							//deleta arquivo antigo fisicamente para atualizar o novo
 							String nameFileDelete = (String) atributo.get(old);			//nome do arquivo no objecto do registro antigo antes do update
 							if(nameFileDelete != null && !nameFileDelete.equals("")){
-								String localFilePath = mysession.get(Str.STORAGE); 		//local arquivado
+								String localFilePath = (String) request.getSession().getAttribute(Str.STORAGE); 		//local arquivado
 								//verifica arquivos defaults
 								if(!nameFileDelete.equals("avatar_male.png") && !nameFileDelete.equals("avatar_female.png") && !nameFileDelete.equals("avatar_store.png")){
 									deleteFilePhysically(nameFileDelete, localFilePath);
@@ -255,7 +247,7 @@ public abstract class GenericDAO {
 		data.getFormData(database.columns, filepost);
 		data.adjustContent(database.columns);
 		data.setCreated(database.columns, created, createdby);
-		data.setUpdated(database.columns, timestamp, mysession.get("username"));
+		data.setUpdated(database.columns, timestamp, "username");
 		data.update(db, "data" + database.getId(), database.columns);
 		System.out.println("***data.update***");
 		Iterator it = filepost.getParameterNames();
@@ -441,6 +433,14 @@ public abstract class GenericDAO {
 		}
 		
 		return object;
+	}
+
+	public DB getDb() {
+		return db;
+	}
+
+	public String getNameDatabase() {
+		return nameDatabase;
 	}
 	
 }

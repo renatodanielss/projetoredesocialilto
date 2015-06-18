@@ -10,6 +10,12 @@ public class Str {
 	/**Nome da variavel guardada no request para pendurar a conexão aberta do banco de dados pelo filtro*/
 	public static final String CONNECTION_DB = "connectionDB";
 	
+	/**Nome do tipo de conta padrao de 512MB de espaço livre para armazenamento*/
+	public static final String STANDARD_ACCOUNT = "Standard Account - 512MB";
+	
+	/**Nome do tipo de conta premium de espaço ilimitado para armazenamento*/
+	public static final String PREMIUM_ACCOUNT = "Premium Account - ilimited";
+	
 	/**Nome padrão da variavel usada na session para guardar o valor do diretorio raiz para upload de armazenamento imagens*/
 	public static final String STORAGE = "storage";
 	
