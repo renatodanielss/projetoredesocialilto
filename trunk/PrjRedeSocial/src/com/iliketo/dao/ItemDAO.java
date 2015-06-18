@@ -1,14 +1,13 @@
 package com.iliketo.dao;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import HardCore.DB;
 
 public class ItemDAO extends GenericDAO{
 	
-	public ItemDAO(DB db, HttpServletRequest request, HttpServletResponse response){
-		super(db, "dbcollectionitem", request, response);
+	public ItemDAO(DB db, HttpServletRequest request){
+		super(db, "dbcollectionitem", request);
 	}
 	
 	//metodos CRUD declarados na classe pai GenericDAO

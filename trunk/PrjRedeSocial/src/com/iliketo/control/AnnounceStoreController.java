@@ -12,6 +12,8 @@ import HardCore.DB;
 
 import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.StoreItemDAO;
+import com.iliketo.exception.ImageILiketoException;
+import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Announce;
 import com.iliketo.model.StoreItem;
 import com.iliketo.util.CmsConfigILiketo;
@@ -72,22 +74,25 @@ public class AnnounceStoreController {
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		
-		AnnounceDAO announceDAO = new AnnounceDAO(db, request, response);
-		StoreItemDAO storeItemDAO = new StoreItemDAO(db, request, response);
-		
-		long sizeFiles = cms.getSizeFilesInBytes(request); //tamanho todos arquivos
-		System.out.println("sizeFiles = " + (sizeFiles>0?sizeFiles/1024:0) + " KB - " + sizeFiles + " bytes");
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		StoreItemDAO storeItemDAO = new StoreItemDAO(db, request);
 		
 		
-		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class, request); 	//popula um objeto com dados do form
-		Object[] itemsPhotos = cms.getObjectsFileOfParameter(StoreItem.class, request); 	//popula vetor de objetos quando há um ou varios input "file"
+		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
+		Object[] itemsPhotos = cms.getObjectsFileOfParameter(StoreItem.class); 		//popula vetor de objetos quando há um ou varios input "file"
 		
 		
 		if(announce.getTypeAnnounce().equals("Purchase")){
 			announceDAO.create(announce);												//salva anuncio
 		}else{
 			//Sell, Auction, Exchange
-			cms.processFileupload(itemsPhotos, request); 								//salva arquivos
+			try {
+				cms.processFileuploadImages(itemsPhotos);								//salva arquivos
+			} catch (StorageILiketoException e) {
+				//return msg erro nao possui espaco de armazenamento suficiente
+			} catch (ImageILiketoException e) {
+				//return msg erro formato de imagem invalido
+			}
 			announce.setPathPhotoAd(((StoreItem)itemsPhotos[0]).getPhotoStoreItem());	//seta foto principal			
 			String idCreated = announceDAO.create(announce);							//salva anuncio
 			for(Object item : itemsPhotos){
@@ -124,12 +129,12 @@ public class AnnounceStoreController {
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		AnnounceDAO dao = new AnnounceDAO(db, request, response);
+		AnnounceDAO dao = new AnnounceDAO(db, request);
 		
 		String id = request.getParameter("id");								//id do anuncio
 		Announce announce = (Announce) dao.readById(id, Announce.class);	//ler anuncio
 		
-		ModelILiketo model = new ModelILiketo(request);
+		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("announce", announce);							//add objeto escopo request
 		
 		

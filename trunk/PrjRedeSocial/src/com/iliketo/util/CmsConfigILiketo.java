@@ -33,6 +33,11 @@ import HardCore.Text;
 import HardCore.UCbrowseWebsite;
 import HardCore.Website;
 
+import com.iliketo.dao.MemberDAO;
+import com.iliketo.exception.ImageILiketoException;
+import com.iliketo.exception.StorageILiketoException;
+import com.iliketo.exception.VideoILiketoException;
+import com.iliketo.model.Member;
 import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.model.annotation.FileILiketo;
 
@@ -54,6 +59,7 @@ public class CmsConfigILiketo {
 	private String database;
 	private Cms cms;
 	private List<FileItem> fileItems = null;
+	private MemberDAO memberDAO;
 
 	public CmsConfigILiketo(HttpServletRequest request, HttpServletResponse response){
 
@@ -71,113 +77,226 @@ public class CmsConfigILiketo {
 		myconfig.setTemp("URLfilepath", "file/");
 		myconfig.setTemp("URLimagepath", "image/");
 		myconfig.setTemp("URLstylesheetpath", "stylesheet/");
-		myconfig.setTemp("URLuploadpath", "upload/");	//configuração pasta 'upload' dentro do diretório raiz
+		myconfig.setTemp("URLuploadpath", "upload/");			//configuração pasta 'upload' dentro do diretório raiz
+		memberDAO = new MemberDAO((DB) request.getAttribute(Str.CONNECTION_DB), request);	//dao membro
 		setCmsAsbru(request);
 		
 	}
 	
 	/**
-	 * Metodo faz upload de um arquivo que contenha no form <input type="file" name="file"> 
-	 * e seta o nome do arquivo gerado no atributo do objeto passado no parametro que tenha anotacao @FileILiketo
-	 * @param object
-	 * @param request
+	 * Metodo valida se existe espaco disponivel de armazenamento do membro
+	 * @param member
+	 * @param uploadBytes
 	 * @return
 	 */
-	public Object processFileupload(Object object, HttpServletRequest request){
-		try{
-			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-			if(isMultipart){
-				FileItemFactory factory = new DiskFileItemFactory();
-		        ServletFileUpload upload = new ServletFileUpload(factory);
-		        List<FileItem> list;
-		        Iterator items;
-		        if(fileItems == null){
-		        	list = upload.parseRequest(request);
-		        	items = list.iterator();
-		        	fileItems = list;
-		        }else{
-		        	items = fileItems.iterator();
-		        } 
-				while (items.hasNext()){
-			        FileItem item = (FileItem) items.next();
-			        if (!item.isFormField()) {
-				        InputStream stream = item.getInputStream();
-				        HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
-		            	mapMyFormInput.put("name", item.getFieldName());
-		            	mapMyFormInput.put("filename", item.getName());
-				        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
-				        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
-				        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);   
-				        for(Field atributo : object.getClass().getDeclaredFields()){
-							atributo.setAccessible(true);
-							FileILiketo file = atributo.getAnnotation(FileILiketo.class);
-							if(file != null){
-								ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
-								if(coluna != null && !coluna.name().equals("")){
-									atributo.set(object, path_file_name);	//seta no objeto o valor do nome do arquivo gerado pelo sistema
-								}
-							}
-						}
-			        }
-				}
+	public boolean validateFreeSpaceStorage(Member member, long uploadBytes){
+		
+		String type = member.getStorageType();
+		long usedSpace = Long.parseLong(member.getUsedSpace());
+		if(type.equals(Str.STANDARD_ACCOUNT)){		//account 512MB
+			if(usedSpace + uploadBytes < 536870912){ 	//524288 KB > 536870912 bytes
+				System.out.println("Size files upload = " + (uploadBytes>0?uploadBytes/1024:0) + " KB - " + uploadBytes + " bytes");
+				return true;
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		}else if(type.equals(Str.PREMIUM_ACCOUNT)){	//account ilimited
+			System.out.println("Size files upload = " + (uploadBytes>0?uploadBytes/1024:0) + " KB - " + uploadBytes + " bytes");
+			return true;
+		}else{
+			memberDAO.saveStorageType(member, Str.STANDARD_ACCOUNT); //salva tipo armazenamento padrao
+			return true;
 		}
-		return object;
+		
+		return false;		
+	}
+	/**
+	 * Metodo faz upload de uma imagem que contenha no form <input type="file" name="file"> 
+	 * e seta o nome do arquivo gerado no atributo do objeto passado no parametro que tenha anotacao @FileILiketo
+	 * @param object
+	 * @return object
+	 * @throws StorageILiketoException
+	 * @throws ImageILiketoException 
+	 */
+	public Object processFileuploadImage(Object object) throws StorageILiketoException, ImageILiketoException{	
+		try {
+			return processFileupload(object, "image");				//upload de imagem
+		} catch (ImageILiketoException | VideoILiketoException e) {
+			throw new ImageILiketoException(e.getMessage());
+		}	
 	}
 	
 	/**
-	 * Metodo faz upload de varios arquivos que contenha no form varios <input type="file" name="file"> 
-	 * e seta o nome do arquivo gerado no atributo de cada objeto correspondente no vetor passado no parametro que tenha anotacao @FileILiketo
+	 * Metodo faz upload de um video que contenha no form <input type="file" name="file"> 
+	 * e seta o nome do arquivo gerado no atributo do objeto passado no parametro que tenha anotacao @FileILiketo
 	 * @param object
-	 * @param request
-	 * @return
+	 * @return object
+	 * @throws StorageILiketoException
+	 * @throws VideoILiketoException 
 	 */
-	public Object[] processFileupload(Object[] objects, HttpServletRequest request){
-		try{
-			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-			if(isMultipart){
-				FileItemFactory factory = new DiskFileItemFactory();
-		        ServletFileUpload upload = new ServletFileUpload(factory);
-		        List<FileItem> list;
-		        Iterator items;
-		        if(fileItems == null){
-		        	list = upload.parseRequest(request);
-		        	items = list.iterator();
-		        	fileItems = list;
-		        }else{
-		        	items = fileItems.iterator();
-		        }
-		        int i = 0;
-				while (items.hasNext() && i < objects.length){
-			        FileItem item = (FileItem) items.next();
-		            if (!item.isFormField()) {
-		            	InputStream stream = item.getInputStream();
-		            	HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
-		            	mapMyFormInput.put("name", item.getFieldName());
-		            	mapMyFormInput.put("filename", item.getName());
-				        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
-				        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
-				        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	        
-				        for(Field atributo : objects[i].getClass().getDeclaredFields()) {
-							atributo.setAccessible(true);
-							FileILiketo file = atributo.getAnnotation(FileILiketo.class);
-							if(file != null){
-								ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
-								if(coluna != null && !coluna.name().equals("")){
-									atributo.set(objects[i], path_file_name);	//seta no objeto o valor do nome do arquivo gerado pelo sistema
+	public Object processFileuploadVideo(Object object) throws StorageILiketoException, VideoILiketoException{	
+		try {
+			return processFileupload(object, "video");				//upload de video
+		} catch (ImageILiketoException | VideoILiketoException e) {
+			throw new VideoILiketoException(e.getMessage());
+		}				
+	}
+	
+	/**Metodo privado faz upload, valida extensao, valida duracao video, valida e atualiza armazenamento.
+	 */
+	private Object processFileupload(Object object, String typeFile) throws StorageILiketoException, ImageILiketoException, VideoILiketoException{
+		
+		HttpServletRequest request = myrequest.getRequest();
+		String myUserId = mysession.get("userid");
+		Member member = ((Member) memberDAO.readByColumn("id_member", myUserId, Member.class));
+		long uploadBytes = getSizeFilesInBytes();
+		
+		//valida armazenamento disponivel
+		if(validateFreeSpaceStorage(member, uploadBytes)){
+			try{
+				boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+				if(isMultipart){
+					FileItemFactory factory = new DiskFileItemFactory();
+			        ServletFileUpload upload = new ServletFileUpload(factory);
+			        List<FileItem> list;
+			        Iterator items;
+			        if(fileItems == null){
+			        	list = upload.parseRequest(request);
+			        	items = list.iterator();
+			        	fileItems = list;
+			        }else{
+			        	items = fileItems.iterator();
+			        } 
+					while (items.hasNext()){
+				        FileItem item = (FileItem) items.next();
+				        if (!item.isFormField()) {
+				        	if(typeFile.equals("image")){	
+				        		FileuploadILiketo.validateExtensionImage(item.getName());	//valida extensao image
+				        	}else{
+				        		FileuploadILiketo.validateExtensionVideo(item.getName());	//valida extensao video
+				        	}
+			        		InputStream stream = item.getInputStream();
+					        HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
+			            	mapMyFormInput.put("name", item.getFieldName());
+			            	mapMyFormInput.put("filename", item.getName());
+					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
+					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);					        
+					        
+					        //verifica e valida duracao de video
+					        if(typeFile.equals("video")){
+					        	FileuploadILiketo.validateDurationVideo(mysession.get(Str.STORAGE), path_file_name);
+					        }
+					        for(Field atributo : object.getClass().getDeclaredFields()){
+								atributo.setAccessible(true);
+								FileILiketo file = atributo.getAnnotation(FileILiketo.class);
+								if(file != null){
+									ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
+									if(coluna != null && !coluna.name().equals("")){
+										atributo.set(object, path_file_name);	//seta no objeto o valor do nome do arquivo gerado pelo sistema
+									}
 								}
 							}
-						}
-				        i++;
-		            }
-		        }
+				        }
+					}
+				}
+			} catch (ImageILiketoException im) {
+				throw im;
+			} catch (VideoILiketoException vi) {
+				throw vi;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			
+			memberDAO.saveUsedSpace(member, Long.parseLong(member.getUsedSpace()) + uploadBytes);	//salva espaço utilizado + upload
+			return object;
+		
+		}else{
+			throw new StorageILiketoException();
 		}
-		return objects;
+	}
+	
+	/**
+	 * Metodo faz upload de varias imagens que contenha no form varios <input type="file" name="file"> 
+	 * e seta o nome do arquivo gerado no atributo de cada objeto correspondente no vetor passado no parametro que tenha anotacao @FileILiketo
+	 * @param object
+	 * @return Object[] 
+	 * @throws StorageILiketoException
+	 * @throws ImageILiketoException 
+	 */
+	public Object[] processFileuploadImages(Object[] objects) throws StorageILiketoException, ImageILiketoException{	
+		try {
+			return processFileuploads(objects, "image");				//upload de imagems
+		} catch (ImageILiketoException | VideoILiketoException e) {
+			throw new ImageILiketoException(e.getMessage());
+		}	
+	}
+	
+	/**Metodo privado faz upload, valida extensao, valida duracao video, valida e atualiza armazenamento.
+	 */
+	private Object[] processFileuploads(Object[] objects, String typeFile) throws ImageILiketoException, VideoILiketoException, StorageILiketoException{
+		
+		HttpServletRequest request = myrequest.getRequest();		
+		String myUserId = mysession.get("userid");
+		Member member = ((Member) memberDAO.readByColumn("id_member", myUserId, Member.class));
+		long uploadBytes = getSizeFilesInBytes();
+		
+		//valida armazenamento disponivel
+		if(validateFreeSpaceStorage(member, uploadBytes)){
+			try{
+				boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+				if(isMultipart){
+					FileItemFactory factory = new DiskFileItemFactory();
+			        ServletFileUpload upload = new ServletFileUpload(factory);
+			        List<FileItem> list;
+			        Iterator items;
+			        if(fileItems == null){
+			        	list = upload.parseRequest(request);
+			        	items = list.iterator();
+			        	fileItems = list;
+			        }else{
+			        	items = fileItems.iterator();
+			        }
+			        int i = 0;
+					while (items.hasNext() && i < objects.length){
+				        FileItem item = (FileItem) items.next();
+			            if (!item.isFormField()) {
+			            	//valida extensao para cada input file do form
+			            	if(typeFile.equals("image")){
+				        		FileuploadILiketo.validateExtensionImage(item.getName());	//valida extensao image
+				        	}
+			            	InputStream stream = item.getInputStream();
+			            	HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
+			            	mapMyFormInput.put("name", item.getFieldName());
+			            	mapMyFormInput.put("filename", item.getName());
+					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
+					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	        
+
+					        for(Field atributo : objects[i].getClass().getDeclaredFields()) {
+								atributo.setAccessible(true);
+								FileILiketo file = atributo.getAnnotation(FileILiketo.class);
+								if(file != null){
+									ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
+									if(coluna != null && !coluna.name().equals("")){
+										atributo.set(objects[i], path_file_name);	//seta no objeto o valor do nome do arquivo gerado pelo sistema
+									}
+								}
+							}
+					        i++;
+			            }
+			        }
+				}
+			} catch (ImageILiketoException im) {
+				throw im;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			memberDAO.saveUsedSpace(member, Long.parseLong(member.getUsedSpace()) + uploadBytes);	//salva espaço utilizado + upload
+			return objects;
+			
+		}else{
+			throw new StorageILiketoException();
+		}
 	}
 	
 	/**
@@ -185,7 +304,8 @@ public class CmsConfigILiketo {
 	 * @param request
 	 * @return
 	 */
-	public int getTotalFiles(HttpServletRequest request){
+	public int getTotalFiles(){
+		HttpServletRequest request = myrequest.getRequest();
 		int totalFiles = 0;
 		try{
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -223,8 +343,8 @@ public class CmsConfigILiketo {
 	 * @param request
 	 * @return
 	 */
-	public long getSizeFilesInBytes(HttpServletRequest request){
-		
+	public long getSizeFilesInBytes(){
+		HttpServletRequest request = myrequest.getRequest();
 		long sizeFiles = 0;
 		try{
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -342,6 +462,11 @@ public class CmsConfigILiketo {
 			}
 		}
 		
+		//salva total de espaço usado do membro
+		String myUserId = mysession.get("userid");
+		Member member = ((Member) memberDAO.readByColumn("id_member", myUserId, Member.class));
+		memberDAO.saveUsedSpace(member, sizeTotal);
+		
 		return sizeTotal;
 	}
 	
@@ -349,11 +474,10 @@ public class CmsConfigILiketo {
 	 * Método retorna um objeto do tipo referenciado no parametro clazz 
 	 * Retorna objeto com os dados populados nos atributos. O "name" dos inputs do form tem que ser igual a "coluna" na database ou "nome do atributo" do objeto
 	 * @param clazz
-	 * @param request
 	 * @return
 	 */
-	public Object getObjectOfParameter(Class clazz, HttpServletRequest request){
-		
+	public Object getObjectOfParameter(Class clazz){
+		HttpServletRequest request = myrequest.getRequest();
 		Object object = null;
 		try{
 			object = clazz.newInstance();
@@ -413,11 +537,10 @@ public class CmsConfigILiketo {
 	 * Método retorna um vetor de vários objetos do tipo referenciado no parametro clazz, usado quando há upload de mais arquivos 
 	 * Retorna objeto com os dados populados nos atributos. O "name" dos inputs do form tem que ser igual a "coluna" na database ou "nome do atributo" do objeto
 	 * @param clazz
-	 * @param request
 	 * @return
 	 */
-	public Object[] getObjectsFileOfParameter(Class clazz, HttpServletRequest request){
-		
+	public Object[] getObjectsFileOfParameter(Class clazz){
+		HttpServletRequest request = myrequest.getRequest();
 		Object[] arrayObjects = null;		
 		try{
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -433,7 +556,7 @@ public class CmsConfigILiketo {
 		        }else{
 		        	items = fileItems.iterator();
 		        }
-				int totalInputFiles = getTotalFiles(request);
+				int totalInputFiles = getTotalFiles();
 		        arrayObjects = new Object[totalInputFiles];
 		        HashMap<String, String[]> map = new HashMap<String, String[]>();
 		        int i = 0;
@@ -487,17 +610,18 @@ public class CmsConfigILiketo {
 	public String parseBindingModelBean(String content){
 		
 		//map ModelILiketo
-		HashMap mapModel = (HashMap) myrequest.getRequest().getAttribute("modelILiketo");		
+		HashMap mapModel = (HashMap) myrequest.getRequest().getAttribute("modelILiketo");
+		HashMap mapModelError = (HashMap) myrequest.getRequest().getAttribute("modelILiketoError");
 		
 		if(mapModel != null && !mapModel.isEmpty()){
 			Iterator it = mapModel.keySet().iterator();
 			while(it.hasNext()){
 				String nameBean = "" + it.next();				
 				if(content.contains("${" + nameBean  + "}")){ //${objeto}
-					content = content.replaceAll("\\$\\{" + nameBean + "}", nameBean);
+					content = content.replaceAll("\\$\\{" + nameBean + "}", mapModel.get(nameBean).toString());
 				}
 				if(content.contains("@@@" + nameBean  + "@@@")){ //@@@objeto@@@
-					content = content.replaceAll("@@@" + nameBean + "@@@", nameBean);
+					content = content.replaceAll("@@@" + nameBean + "@@@", mapModel.get(nameBean).toString());
 				}
 				if(content.contains("${" + nameBean + ".") || content.contains("@@@")){
 					try {
@@ -512,7 +636,7 @@ public class CmsConfigILiketo {
 								if(value != null){
 									content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "}", value.toString());
 								}else{
-									content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "}", "null");
+									content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "}", "");
 								}								
 							}else if(content.contains("${" + nameBean + "." + atributo.getName() + ".")){ //${objeto.objeto.atributo}							
 								atributo.setAccessible(true);
@@ -523,7 +647,7 @@ public class CmsConfigILiketo {
 										if(value != null){
 											content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "." + at.getName() + "}", value.toString());
 										}else{
-											content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "." + at.getName() + "}", "null");
+											content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "." + at.getName() + "}", "");
 										}
 									}									
 								}								
@@ -537,7 +661,7 @@ public class CmsConfigILiketo {
 										if(value != null){
 											content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString());
 										}else{
-											content = content.replaceAll("@@@" + coluna.name() + "@@@", "null");
+											content = content.replaceAll("@@@" + coluna.name() + "@@@", "");
 										}
 									}
 								}
@@ -551,16 +675,16 @@ public class CmsConfigILiketo {
 						Object value1 =  f1.get(obj);
 						Object value2 =  f2.get(obj);
 						if(content.contains("@@@" + "data_created" + "@@@")){
-							content = content.replaceAll("@@@" + "data_created" + "@@@", (value1 == null ? "null":value1.toString()));
+							content = content.replaceAll("@@@" + "data_created" + "@@@", (value1 == null ? "":value1.toString()));
 						}
 						if(content.contains("${" + nameBean + "." + f1.getName() + "}")){
-							content = content.replaceAll("\\$\\{" + nameBean + "." + f1.getName() + "}", (value1 == null ? "null":value1.toString()));
+							content = content.replaceAll("\\$\\{" + nameBean + "." + f1.getName() + "}", (value1 == null ? "":value1.toString()));
 						}
 						if(content.contains("@@@" + "date_updated" + "@@@")){
-							content = content.replaceAll("@@@" + "date_updated" + "@@@", (value2 == null ? "null":value2.toString()));
+							content = content.replaceAll("@@@" + "date_updated" + "@@@", (value2 == null ? "":value2.toString()));
 						}
 						if(content.contains("${" + nameBean + "." + f2.getName() + "}")){
-							content = content.replaceAll("\\$\\{" + nameBean + "." + f2.getName() + "}", (value2 == null ? "null":value2.toString()));
+							content = content.replaceAll("\\$\\{" + nameBean + "." + f2.getName() + "}", (value2 == null ? "":value2.toString()));
 						}
 					} catch (IllegalArgumentException e) {
 						e.printStackTrace();
@@ -573,8 +697,41 @@ public class CmsConfigILiketo {
 					}
 				}
 			}
-		}else{
-			return null;
+		}	
+		if(mapModelError != null && !mapModelError.isEmpty()){
+			//se contem expressao ${error.}
+			if(content.contains("${error.")){
+				Iterator it = mapModelError.keySet().iterator();
+				while(it.hasNext()){
+					String nameError = "" + it.next();
+					if(content.contains("${error." + nameError + "}")){				//${error.nomeErro}
+						String value = (String) mapModelError.get(nameError);		//valor erro
+						content = content.replaceAll("\\$\\{error." + nameError + "}", value);
+					}
+				}
+			}
+		}
+		//se contem expressao ${error.}
+		while(content.contains("${error.")){
+			int begin = content.indexOf("${error.");
+			int end = content.indexOf("}", begin);
+			if(begin >= 1 && end >= 1){
+				//System.out.println("substring teste msg error: " + content.substring(begin, end+1));
+				content = content.replaceAll("\\$\\{error." + content.substring(begin+8, end+1), "");
+			}else if(begin >= 1){
+				content = content.replaceAll("\\$\\{error.", "");
+			}
+		}
+		//se contem expressao '${'
+		while(content.contains("${")){
+			int begin = content.indexOf("${");
+			int end = content.indexOf("}", begin);
+			if(begin >= 1 && end >= 1){
+				//System.out.println("substring expressao geral: " + content.substring(begin, end+1));
+				content = content.replaceAll("\\$\\{" + content.substring(begin+2, end+1), "");
+			}else if(begin >= 1){
+				break;
+			}
 		}
 		return content;
 		
@@ -606,7 +763,7 @@ public class CmsConfigILiketo {
 							if(value != null){
 								content = content.replaceAll("\\$\\{" + atributo.getName() + "}", value.toString());
 							}else{
-								content = content.replaceAll("\\$\\{" + atributo.getName() + "}", "null");
+								content = content.replaceAll("\\$\\{" + atributo.getName() + "}", "");
 							}
 						}else if(content.contains("${" + atributo.getName() + ".")){ //${objeto.atributo}							
 							atributo.setAccessible(true);
@@ -617,7 +774,7 @@ public class CmsConfigILiketo {
 									if(value != null){
 										content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", value.toString());
 									}else{
-										content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", "null");
+										content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", "");
 									}
 								}									
 							}
@@ -631,7 +788,7 @@ public class CmsConfigILiketo {
 								if(value != null){
 									content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString());
 								}else{
-									content = content.replaceAll("@@@" + coluna.name() + "@@@", "null");
+									content = content.replaceAll("@@@" + coluna.name() + "@@@", "");
 								}
 							}
 						}
@@ -644,16 +801,16 @@ public class CmsConfigILiketo {
 					Object value1 =  f1.get(obj);
 					Object value2 =  f2.get(obj);
 					if(content.contains("@@@" + "data_created" + "@@@")){
-						content = content.replaceAll("@@@" + "data_created" + "@@@", (value1 == null ? "null":value1.toString()));
+						content = content.replaceAll("@@@" + "data_created" + "@@@", (value1 == null ? "":value1.toString()));
 					}
 					if(content.contains("${" + f1.getName() + "}")){
-						content = content.replaceAll("\\$\\{" + f1.getName() + "}", (value1 == null ? "null":value1.toString()));
+						content = content.replaceAll("\\$\\{" + f1.getName() + "}", (value1 == null ? "":value1.toString()));
 					}
 					if(content.contains("@@@" + "date_updated" + "@@@")){
-						content = content.replaceAll("@@@" + "date_updated" + "@@@", (value2 == null ? "null":value2.toString()));
+						content = content.replaceAll("@@@" + "date_updated" + "@@@", (value2 == null ? "":value2.toString()));
 					}
 					if(content.contains("${" + f2.getName() + "}")){
-						content = content.replaceAll("\\$\\{" + f2.getName() + "}", (value2 == null ? "null":value2.toString()));
+						content = content.replaceAll("\\$\\{" + f2.getName() + "}", (value2 == null ? "":value2.toString()));
 					}					
 					builder.append(content);	//incrementa string com conteudo
 				} catch (IllegalArgumentException e) {

@@ -43,7 +43,7 @@ public class AnnounceCollectorController {
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		ItemDAO itemDAO = new ItemDAO(db, request, response);
+		ItemDAO itemDAO = new ItemDAO(db, request);
 		
 		String id = request.getParameter("idItem");					//id item
 		Item item = (Item) itemDAO.readById(id, Item.class);		//ler item
@@ -53,7 +53,7 @@ public class AnnounceCollectorController {
 		
 		
 		//model view jsp para binding do bean
-		ModelILiketo model = new ModelILiketo(request);
+		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("item", item);
 				
 		return "page.jsp?id=658"; //page form edit your announce
@@ -66,7 +66,7 @@ public class AnnounceCollectorController {
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		CollectionDAO collectionDAO = new CollectionDAO(db, request, response);
+		CollectionDAO collectionDAO = new CollectionDAO(db, request);
 		
 		String id = request.getParameter("idCollection");									//id colecao
 		Collection collection = (Collection) collectionDAO.readById(id, Collection.class);	//ler colecao
@@ -76,7 +76,7 @@ public class AnnounceCollectorController {
 		
 		
 		//model view jsp para binding do bean
-		ModelILiketo model = new ModelILiketo(request);
+		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("collection", collection);
 				
 		return "page.jsp?id=664"; //page form edit your announce
@@ -91,10 +91,10 @@ public class AnnounceCollectorController {
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		CollectionDAO collectionDAO = new CollectionDAO(db, request, response);
+		CollectionDAO collectionDAO = new CollectionDAO(db, request);
 		HttpSession session = request.getSession();
 				
-		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class, request); 	//popula um objeto com dados do form
+		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
 		
 		//Purchase
 		if(announce.getTypeAnnounce().equals("Purchase")){
@@ -137,7 +137,7 @@ public class AnnounceCollectorController {
 		
 		
 		//model view jsp para binding do bean
-		ModelILiketo model = new ModelILiketo(request);
+		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("userCard", userCard);
 		
 		return "page.jsp?id=659"; //page form payment
@@ -154,14 +154,14 @@ public class AnnounceCollectorController {
 		UserCardDAO userCardDAO = new UserCardDAO(db);
 		HttpSession session = request.getSession();	
 		
-		UserCard userCard = (UserCard) cms.getObjectOfParameter(UserCard.class, request);	//recupera objeto com dados do form
+		UserCard userCard = (UserCard) cms.getObjectOfParameter(UserCard.class);	//recupera objeto com dados do form
 		
 		userCardDAO.saveInfoCard(userCard);									//salva dados atualizados do cartao
 		session.setAttribute("userCard", userCard);							//set dados cartao na session
 		
 		
 		//model view jsp para binding do bean
-		ModelILiketo model = new ModelILiketo(request);
+		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("userCard", userCard);
 		model.addAttribute("announce", (Announce) session.getAttribute("announce"));
 		
@@ -175,7 +175,7 @@ public class AnnounceCollectorController {
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		AnnounceDAO announceDAO = new AnnounceDAO(db, request, response);		
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);		
 		HttpSession session = request.getSession();		
 		
 		Announce announce = (Announce) session.getAttribute("announce");	 	//recupera anuncio da sessao
