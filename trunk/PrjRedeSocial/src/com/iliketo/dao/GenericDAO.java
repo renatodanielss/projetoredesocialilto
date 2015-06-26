@@ -34,6 +34,7 @@ public abstract class GenericDAO {
 	public GenericDAO(DB db, String nameDatabase, HttpServletRequest request){
 		this.db = db;
 		this.nameDatabase = nameDatabase;
+		this.request = request;
 	}
 	
 		
@@ -106,9 +107,12 @@ public abstract class GenericDAO {
 		
 		if(idRegister != null && !idRegister.equals("") && !idRegister.equals("null")){
 			//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
-			FileILiketo f = object.getClass().getAnnotation(FileILiketo.class);	//valida annotation @FileILiketo
-			if(f != null){
-				this.calculateTotalFilesMemberInBytes();
+			for(Field atributo : object.getClass().getDeclaredFields()) {
+				atributo.setAccessible(true);
+				FileILiketo f = atributo.getAnnotation(FileILiketo.class);	//valida annotation @FileILiketo
+				if(f != null){
+					this.calculateTotalFilesMemberInBytes();
+				}
 			}
 			return idRegister;
 		}
@@ -184,13 +188,7 @@ public abstract class GenericDAO {
 			}
 			System.out.println();
 			
-			FileILiketo f = object.getClass().getAnnotation(FileILiketo.class);	//valida annotation @FileILiketo
-			if(f != null){
-				containsFiles = true;
-			}
-		}
-		//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
-		if(containsFiles){
+			//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
 			this.calculateTotalFilesMemberInBytes();
 		}
 		

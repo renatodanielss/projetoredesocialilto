@@ -55,7 +55,7 @@ public class VideoController {
 		
 		videoDAO.create(video);					//cria video
 		
-		return "page.jsp?id=48";		//success
+		return "redirect:/page.jsp?id=48";		//success
 	}
 	
 	
@@ -91,11 +91,11 @@ public class VideoController {
 		
 		videoDAO.update(video);					//atualiza video
 		
-		return "page.jsp?id=48";		//success
+		return "redirect:/page.jsp?id=48";		//success
 	}
 	
 	@RequestMapping(value={"/video/delete"})
-	public String deleteVideo(HttpServletRequest request, HttpServletResponse response) throws Exception{
+	public String deleteVideo(HttpServletRequest request, HttpServletResponse response){
 		
 		System.out.println("Log - " + "request @VideoController url='/video/delete'");
 		
@@ -106,7 +106,7 @@ public class VideoController {
 		String id = request.getParameter("id");
 		videoDAO.deleteVideo(id);				//delete video
 		
-		return "page.jsp?id=48";		//success
+		return "redirect:/page.jsp?id=48";		//success
 	}
 
 }

@@ -160,7 +160,7 @@ public class CmsConfigILiketo {
 			        } 
 					while (items.hasNext()){
 				        FileItem item = (FileItem) items.next();
-				        if (!item.isFormField()) {
+				        if (!item.isFormField() && !item.getName().equals("")) {
 				        	if(typeFile.equals("image")){	
 				        		FileuploadILiketo.validateExtensionImage(item.getName());	//valida extensao image
 				        	}else{
@@ -251,7 +251,7 @@ public class CmsConfigILiketo {
 			        Iterator itemsExtension = fileItems.iterator();
 			        while (itemsExtension.hasNext()){
 				        FileItem item = (FileItem) itemsExtension.next();
-			            if (!item.isFormField()) {
+			            if (!item.isFormField() && !item.getName().equals("")) {
 			            	//valida extensao para cada input file do form
 			            	if(typeFile.equals("image")){
 				        		FileuploadILiketo.validateExtensionImage(item.getName());	//valida extensao image
@@ -262,7 +262,7 @@ public class CmsConfigILiketo {
 			        int i = 0;
 					while (items.hasNext() && i < objects.length){
 				        FileItem item = (FileItem) items.next();
-			            if (!item.isFormField()) {
+			            if (!item.isFormField() && !item.getName().equals("")) {
 			            	InputStream stream = item.getInputStream();
 			            	HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
 			            	mapMyFormInput.put("name", item.getFieldName());
