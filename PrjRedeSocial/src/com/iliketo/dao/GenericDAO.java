@@ -209,6 +209,7 @@ public abstract class GenericDAO {
 		Object old = null;
 		try {
 			for(Field atributo : object.getClass().getDeclaredFields()) {
+				atributo.setAccessible(true);
 				IdILiketo id = atributo.getAnnotation(IdILiketo.class);
 				if(id != null){
 					String value = (String) atributo.get(object);
