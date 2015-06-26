@@ -88,18 +88,7 @@ public class ItemController {
 		
 		Item item  = (Item) cms.getObjectOfParameter(Item.class);	//objeto com dados do form
 		
-		ModelILiketo model = new ModelILiketo(request, response);
-		try {
-			cms.processFileuploadImage(item);						//salva arquivos			
-		} catch (StorageILiketoException e) {
-			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
-			return model.redirectError("/ilt/item/edit");			//page form edit item
-		} catch (ImageILiketoException e) {
-			model.addMessageError("imageFormat", "Upload only Image in jpg format."); 													//msg erro
-			return model.redirectError("/ilt/item/edit");			//page form edit item
-		}
-		
-		itemDAO.update(item);					//atualiza item
+		itemDAO.update(item);			//atualiza item
 		
 		return "page.jsp?id=48";		//success
 		
