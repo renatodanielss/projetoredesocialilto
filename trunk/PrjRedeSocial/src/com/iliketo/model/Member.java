@@ -82,6 +82,9 @@ public class Member extends ContentILiketo{
 	@ColumnILiketo(name = "storage_type")
 	private String storageType;
 	
+	@ColumnILiketo(name = "total_space")
+	private String totalSpace;
+	
 	@FileILiketo
 	@ColumnILiketo(name = "path_photo_member")
 	private String pathPhoto;
@@ -256,6 +259,14 @@ public class Member extends ContentILiketo{
 
 	public void setUsedSpace(String usedSpace) {
 		this.usedSpace = usedSpace;
+	}
+	
+	public String getTotalSpace() {
+		return totalSpace;
+	}
+
+	public void setTotalSpace(String totalSpace) {
+		this.totalSpace = totalSpace;
 	}
 
 	public String getStorageType() {

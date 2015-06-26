@@ -91,23 +91,16 @@ public class CmsConfigILiketo {
 	 */
 	public boolean validateFreeSpaceStorage(Member member, long uploadBytes){
 		
-		String type = member.getStorageType();
 		long usedSpace = Long.parseLong(member.getUsedSpace());
-		if(type.equals(Str.STANDARD_ACCOUNT)){		//account 512MB
-			if(usedSpace + uploadBytes < 536870912){ 	//524288 KB > 536870912 bytes
-				System.out.println("Size files upload = " + (uploadBytes>0?uploadBytes/1024:0) + " KB - " + uploadBytes + " bytes");
-				return true;
-			}
-		}else if(type.equals(Str.PREMIUM_ACCOUNT)){	//account ilimited
+		long totalSpace = Long.parseLong(member.getTotalSpace());
+		//valida armazenamento
+		if(usedSpace + uploadBytes <= totalSpace){ 	//524288 KB > 536870912 bytes
 			System.out.println("Size files upload = " + (uploadBytes>0?uploadBytes/1024:0) + " KB - " + uploadBytes + " bytes");
 			return true;
-		}else{
-			memberDAO.saveStorageType(member, Str.STANDARD_ACCOUNT); //salva tipo armazenamento padrao
-			return true;
-		}
-		
-		return false;		
+		}		
+		return false;
 	}
+	
 	/**
 	 * Metodo faz upload de uma imagem que contenha no form <input type="file" name="file"> 
 	 * e seta o nome do arquivo gerado no atributo do objeto passado no parametro que tenha anotacao @FileILiketo
@@ -206,7 +199,6 @@ public class CmsConfigILiketo {
 				e.printStackTrace();
 			}
 			
-			memberDAO.saveUsedSpace(member, Long.parseLong(member.getUsedSpace()) + uploadBytes);	//salva espaço utilizado + upload
 			return object;
 		
 		}else{
@@ -255,14 +247,22 @@ public class CmsConfigILiketo {
 			        }else{
 			        	items = fileItems.iterator();
 			        }
-			        int i = 0;
-					while (items.hasNext() && i < objects.length){
-				        FileItem item = (FileItem) items.next();
+			        //valida extensao
+			        Iterator itemsExtension = fileItems.iterator();
+			        while (itemsExtension.hasNext()){
+				        FileItem item = (FileItem) itemsExtension.next();
 			            if (!item.isFormField()) {
 			            	//valida extensao para cada input file do form
 			            	if(typeFile.equals("image")){
 				        		FileuploadILiketo.validateExtensionImage(item.getName());	//valida extensao image
 				        	}
+			            }
+			        }
+			        
+			        int i = 0;
+					while (items.hasNext() && i < objects.length){
+				        FileItem item = (FileItem) items.next();
+			            if (!item.isFormField()) {
 			            	InputStream stream = item.getInputStream();
 			            	HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
 			            	mapMyFormInput.put("name", item.getFieldName());
@@ -291,14 +291,13 @@ public class CmsConfigILiketo {
 				e.printStackTrace();
 			}
 			
-			memberDAO.saveUsedSpace(member, Long.parseLong(member.getUsedSpace()) + uploadBytes);	//salva espaço utilizado + upload
 			return objects;
 			
 		}else{
 			throw new StorageILiketoException();
 		}
 	}
-	
+		
 	/**
 	 * Metodo retorna o total de arquivos type=file que esta no request
 	 * @param request
@@ -461,11 +460,6 @@ public class CmsConfigILiketo {
 				sizeTotal += file.length();
 			}
 		}
-		
-		//salva total de espaço usado do membro
-		String myUserId = mysession.get("userid");
-		Member member = ((Member) memberDAO.readByColumn("id_member", myUserId, Member.class));
-		memberDAO.saveUsedSpace(member, sizeTotal);
 		
 		return sizeTotal;
 	}
