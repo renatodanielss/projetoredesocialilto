@@ -54,7 +54,7 @@ public class ItemController {
 		
 		itemDAO.creates(items);				//cria items
 		
-		return "page.jsp?id=48";			//success
+		return "redirect:/page.jsp?id=48";			//success
 	}
 	
 	
@@ -90,7 +90,7 @@ public class ItemController {
 		
 		itemDAO.update(item);			//atualiza item
 		
-		return "page.jsp?id=48";		//success
+		return "redirect:/page.jsp?id=48";		//success
 		
 	}
 	
@@ -107,7 +107,7 @@ public class ItemController {
 		String id = request.getParameter("id");
 		itemDAO.deleteItem(id);					//delete item
 		
-		return "page.jsp?id=48";		//success
+		return "redirect:/page.jsp?id=48";		//success
 	}
 
 }

@@ -58,11 +58,11 @@ public class CollectionController {
 		} catch (StorageILiketoException e) {
 			model.addAttribute("collection", collection);
 			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");
-			return model.redirectError("/ilt/collection/edit");			//page form edit collection
+			return model.redirectError("/ilt/collection/edit?id" + collection.getIdCollection());	//page form edit collection
 		} catch (ImageILiketoException e) {
 			model.addAttribute("collection", collection);
 			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
-			return model.redirectError("/ilt/collection/edit");			//page form edit collection
+			return model.redirectError("/ilt/collection/edit?id" + collection.getIdCollection()); 	//page form edit collection
 		}
 		
 		collectionDAO.update(collection);			//atualiza colecao
@@ -82,7 +82,7 @@ public class CollectionController {
 		String id = request.getParameter("id");
 		collectionDAO.deleteCollection(id);		//delete colecao
 		
-		return "page.jsp?id=48";				//success
+		return "redirect:/page.jsp?id=48";				//success
 	}
 
 }
