@@ -55,4 +55,24 @@ public class MemberDAO extends GenericDAO{
 		
 	}
 	
+	/**
+	 * Salva e atualiza o novo total de espaco da conta de armazenamento do membro em bytes.
+	 * @param member
+	 * @param bytes - total espaco da conta de armazenamento
+	 */
+	public void saveTotalSpace(Member member, long bytes) {
+		
+		DB db = super.getDb();
+		String nameDatabase = super.getNameDatabase();
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+		
+		String dataid = CS.getDATA(db, nameDatabase);
+		String colid = CS.getCOL(db, nameDatabase, "total_space");
+		String SQLupdate = colid + "='" + bytes + "'";
+		
+		super.getDb().updateSet(dataid, "id", member.getId(), SQLupdate);
+		
+	}
+	
+	
 }

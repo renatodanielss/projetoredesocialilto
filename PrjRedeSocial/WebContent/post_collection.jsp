@@ -1,6 +1,8 @@
 <%@ include file="webadmin.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.UCmaintainData" %><%@ page import="HardCore.Data" %><%@ page import="HardCore.Page" %><%@ page import="HardCore.html" %>
 <%@ page import="HardCore.UCmaintainDataILiketo" %>
 <%@ page import="com.iliketo.util.*" %>
+<%@ page import="com.iliketo.model.*" %>
+<%@ page import="com.iliketo.dao.*" %>
 
 <%
 
@@ -34,6 +36,7 @@ if (! myrequest.getParameter("database").equals("")) {
 					mysession.get(myconfig.get(db, "getset") + Str.S_COLLECTION) + 
 					" / ID update = " + mysession.get(myconfig.get(db, "getset") + Str.S_ID_REGISTER_COLLECTION));
 			
+			
 			//redireciona para add new item
 			myresponse.sendRedirect("/page.jsp?id=90");
 			
@@ -53,32 +56,46 @@ if (! myrequest.getParameter("database").equals("")) {
 		
 	}else{//Se não tiver o s_id_register_collection na sessão, então cria uma nova coleção
 		
-		//UCmaintainData maintainData = new UCmaintainData(mytext);
-		UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
-		Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_collection");
 		
-		String ID = data.getId(); //reupera o ID gerado	
-		System.out.println("Log - Create nova coleção OK = " + 
-					mysession.get(myconfig.get(db, "getset") + Str.S_COLLECTION) + 
-					" / novo ID da coleção OK = " + ID);
-		//Seta o nome da coleção recuperado pelo parametro
-		mysession.set(myconfig.get(db, "getset") + Str.S_ID_REGISTER_COLLECTION, ID);//seta na session
-		System.out.println("Set session s_id_register_collection=" + ID);
+		//validacoes
+		CmsConfigILiketo cmsILiketo = new CmsConfigILiketo(request, response);
+		String myUserId = mysession.get("userid");
+		MemberDAO memberDAO = new MemberDAO(db, request);
+		Member member = ((Member) memberDAO.readByColumn("id_member", myUserId, Member.class));
+		long uploadBytes = cmsILiketo.getSizeFilesInBytes();
+		com.iliketo.model.Collection col = (com.iliketo.model.Collection) cmsILiketo.getObjectOfParameter(com.iliketo.model.Collection.class);	//objeto com dados do form
 		
-		mysession.set(Str.S_ID_COLLECTION, ID);//seta na session o id da coleção criada
-		
-		//redireciona para add new item
-		myresponse.sendRedirect("/page.jsp?id=90");
-		
+		if(cmsILiketo.validateFreeSpaceStorage(member, uploadBytes)){			
+			UCmaintainDataILiketo maintainData = new UCmaintainDataILiketo(mytext);
+			Data data = maintainData.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, "post_collection");
+			
+			String ID = data.getId(); //reupera o ID gerado	
+			System.out.println("Log - Create nova coleção OK = " + 
+						mysession.get(myconfig.get(db, "getset") + Str.S_COLLECTION) + 
+						" / novo ID da coleção OK = " + ID);
+			//Seta o nome da coleção recuperado pelo parametro
+			mysession.set(myconfig.get(db, "getset") + Str.S_ID_REGISTER_COLLECTION, ID);//seta na session
+			System.out.println("Set session s_id_register_collection=" + ID);
+			
+			mysession.set(Str.S_ID_COLLECTION, ID);//seta na session o id da coleção criada			
+			
+			memberDAO.calculateTotalFilesMemberInBytes(); //calcula espaco utilizado do membro
+			
+			//redireciona para add new item
+			myresponse.sendRedirect("/page.jsp?id=90");
+			
+		}else{
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("collection", col);
+			model.addMessageError("freeSpace", "You do not have enough free space, needed " + uploadBytes/1024 + " KB.");
+			myresponse.sendRedirect("/page.jsp?id=410");			//reload page form register collection
+		}		
+				
 	}
 	
-}//else {
-	//UCmaintainContent maintainContent = new UCmaintainContent(mytext);
-	//Page mypage = maintainContent.doPost(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
-//}
+}
 
 %>
-
 
 
 <% if (db != null) db.close(); %><% if (logdb !=

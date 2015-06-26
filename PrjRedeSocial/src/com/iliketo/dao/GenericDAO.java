@@ -1,9 +1,12 @@
 package com.iliketo.dao;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +18,7 @@ import HardCore.Databases;
 import HardCore.Fileupload;
 import HardCore.Text;
 
+import com.iliketo.model.Member;
 import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.model.annotation.FileILiketo;
 import com.iliketo.model.annotation.IdILiketo;
@@ -101,6 +105,11 @@ public abstract class GenericDAO {
 		System.out.println();
 		
 		if(idRegister != null && !idRegister.equals("") && !idRegister.equals("null")){
+			//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
+			FileILiketo f = object.getClass().getAnnotation(FileILiketo.class);	//valida annotation @FileILiketo
+			if(f != null){
+				this.calculateTotalFilesMemberInBytes();
+			}
 			return idRegister;
 		}
 		return null;
@@ -114,6 +123,7 @@ public abstract class GenericDAO {
 	 */
 	public void creates(Object[] arrayObjects) {
 		String nameIdPrimaryKey = "";
+		boolean containsFiles = false;
 		
 		for(int i= 0; i < arrayObjects.length; i++){
 			
@@ -173,7 +183,17 @@ public abstract class GenericDAO {
 				System.out.println("name input/column: " + s + " - value: " + fileupload.getParameter(s));
 			}
 			System.out.println();
+			
+			FileILiketo f = object.getClass().getAnnotation(FileILiketo.class);	//valida annotation @FileILiketo
+			if(f != null){
+				containsFiles = true;
+			}
 		}
+		//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
+		if(containsFiles){
+			this.calculateTotalFilesMemberInBytes();
+		}
+		
 	}
 	
 	/**
@@ -212,11 +232,11 @@ public abstract class GenericDAO {
 						if(file != null){
 							//deleta arquivo antigo fisicamente para atualizar o novo
 							String nameFileDelete = (String) atributo.get(old);			//nome do arquivo no objecto do registro antigo antes do update
-							if(nameFileDelete != null && !nameFileDelete.equals("")){
+							if(nameFileDelete != null && !nameFileDelete.equals("")){			
 								String localFilePath = (String) request.getSession().getAttribute(Str.STORAGE); 		//local arquivado
 								//verifica arquivos defaults
 								if(!nameFileDelete.equals("avatar_male.png") && !nameFileDelete.equals("avatar_female.png") && !nameFileDelete.equals("avatar_store.png")){
-									deleteFilePhysically(nameFileDelete, localFilePath);
+									deleteFilePhysically(nameFileDelete, localFilePath);	//exclui arquivo e calcula espaco utilizado
 								}
 							}
 							filepost.setParameter(coluna.name(), ""+value);	//set no filepost "coluna", "valor" para atualizar no BD
@@ -256,14 +276,15 @@ public abstract class GenericDAO {
 			System.out.println("name input/column: " + s + " - value: " + filepost.getParameter(s));
 		}
 		System.out.println();
+
 	}
 	
 	/**
-	 * Metodo utilizado somente pela classe GenericDAO para deletar um arquivo fisicamente
+	 * Metodo generico deleta fisicamente um arquivo  e realiza o calculo do espaco utilizado do armazenamento
 	 * @param nameFileDelete
 	 * @param localFilePath
 	 */
-	private void deleteFilePhysically(String nameFileDelete, String localFilePath){
+	protected void deleteFilePhysically(String nameFileDelete, String localFilePath){
 		
 		if(nameFileDelete != null && !nameFileDelete.equals("")){
 			String pathFileName = localFilePath + nameFileDelete;
@@ -279,44 +300,35 @@ public abstract class GenericDAO {
 		} else {
 			System.out.println("Log - Delete File name: " +nameFileDelete+ " no exists!");
 		}
+		
+		//calcula e salva espaco usado de armazenamento
+		this.calculateTotalFilesMemberInBytes();
 	}
 	
 	/**
-	 * Metodo deleta registro do objeto no banco de dados
-	 * Objeto deve conter o valor do id chave para deletar
-	 * Não pode conter um atributo do tipo file, este metodo generico nao deleta arquivo fisicamente em cascata
-	 * @param object
+	 * Metodo generico deleta fisicamente uma lista com os nomes dos arquivos
+	 * @param nameFileDelete
+	 * @param localFilePath
 	 */
-	public void delete(Object object){
+	protected void deleteListFilesPhysically(ArrayList<String> listNamesFileDelete, String localImagePath){
 		
-		String nameIdPrimaryKey = "";
-		String value = "";
-		
-		for(Field atributo : object.getClass().getDeclaredFields()) {			
-			try {
-				atributo.setAccessible(true);
-				IdILiketo id = atributo.getAnnotation(IdILiketo.class);//@IdILiketo
-				if(id != null){
-					value = (String) atributo.get(object);
-					ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);	//@ColumnILiketo
-					nameIdPrimaryKey = coluna.name(); //exemplo id_member, id_collection
+		for(String namePhoto : listNamesFileDelete){
+			if(namePhoto != null && !namePhoto.equals("")){
+				String pathFileName = localImagePath + namePhoto;
+				try {
+					
+					Common.deleteFile(pathFileName);
+					System.out.println("Log - Delete File Image OK local: " + pathFileName);
+					
+				} catch (Exception e) {
+					System.out.println("Log - Error Delete File Image local: " + pathFileName);
+					e.printStackTrace();
 				}
-				FileILiketo file = atributo.getAnnotation(FileILiketo.class);
-				if(file != null){
-					new Exception("Não pode conter um atributo do tipo file, este metodo generico nao deleta arquivo fisicamente em cascata");
-				}
-				
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+			} else {
+				System.out.println("Log - Delete File Image - name photo " +namePhoto+ " no exists BD!");
 			}
 		}
-		if ((nameIdPrimaryKey != null) && (!nameIdPrimaryKey.equals("")) && (value != null) && (!value.equals(""))) {
-			ColumnsSingleton cs = ColumnsSingleton.getInstance(db);
-			String dataid = cs.getDATA(db, nameDatabase);
-			//db.delete(dataid, nameIdPrimaryKey, value);
-		}
+		
 	}
 	
 	/**
@@ -441,6 +453,103 @@ public abstract class GenericDAO {
 
 	public String getNameDatabase() {
 		return nameDatabase;
+	}
+	
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+
+	/**
+	 * Metodo calcula e salva o espaco de armazenamento usado de todos arquivos do membro na database dbmembers. 
+	 * @return
+	 */
+	public long calculateTotalFilesMemberInBytes(){
+		//obs 512 MB > 524288 KB > 536870912 bytes
+		long sizeTotal = 0;
+		String pathname = (String) request.getSession().getAttribute(Str.STORAGE);
+		String myfilename = "";
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+
+		String SQLCollection = "select c1.path_photo_collection as path_photo_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "';";
+		String[][] aliasCollection = { {"dbcollection", "c1"} };		
+		SQLCollection = CS.transformSQLReal(SQLCollection, aliasCollection);
+		
+		String SQLItem = "select i.path_photo_item as path_photo_item from dbcollectionitem i where i.fk_user_id = '" +myUserid+ "';";		
+		String[][] aliasItem = { {"dbcollectionitem", "i"} };
+		SQLItem = CS.transformSQLReal(SQLItem, aliasItem);
+		
+		String SQLVideo = "select v.path_file_video as path_file_video from dbcollectionvideo v where v.fk_user_id = '" +myUserid+ "';";
+		String[][] aliasVideo = { {"dbcollectionvideo", "v"} };
+		SQLVideo = CS.transformSQLReal(SQLVideo, aliasVideo);
+		
+		String SQLEvent = "select e.path_photo_event as path_photo_event from dbevent e where e.fk_user_id = '" +myUserid+ "';";
+		String[][] aliasEvent = { {"dbevent", "e"} };
+		SQLEvent = CS.transformSQLReal(SQLEvent, aliasEvent);
+		
+		String SQLStore = "select t1.photo_store_item as photo_store_item from dbstoreitem t1"
+				+ " join dbannounce t2 on t2.id_announce = t1.fk_announce_id where t2.fk_user_id = '" +myUserid+ "';";
+		String[][] aliasStore = { {"dbstoreitem", "t1"}, {"dbannounce", "t2"} };
+		SQLStore = CS.transformSQLReal(SQLStore, aliasStore);
+		
+		LinkedHashMap<String,HashMap<String,String>> recordsCollections  = db.query_records(SQLCollection); //map de registros collections
+		LinkedHashMap<String,HashMap<String,String>> recordsItems  = db.query_records(SQLItem); 			//map de registros items
+		LinkedHashMap<String,HashMap<String,String>> recordsVideos  = db.query_records(SQLVideo); 			//map de registros videos
+		LinkedHashMap<String,HashMap<String,String>> recordsEvent  = db.query_records(SQLEvent); 			//map de registros eventos
+		LinkedHashMap<String,HashMap<String,String>> recordsStore  = db.query_records(SQLStore); 			//map de registros fotos item de loja
+		
+		System.out.println("\nArquivos do usuario na sessao:");
+		for(String rec : recordsCollections.keySet()){			
+			myfilename = recordsCollections.get(rec).get("path_photo_collection");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("Photo collection: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		for(String rec : recordsItems.keySet()){			
+			myfilename = recordsItems.get(rec).get("path_photo_item");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("Photo item: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		for(String rec : recordsVideos.keySet()){			
+			myfilename = recordsVideos.get(rec).get("path_file_video");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("File video: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		for(String rec : recordsEvent.keySet()){			
+			myfilename = recordsEvent.get(rec).get("path_photo_event");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("Photo event: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		for(String rec : recordsStore.keySet()){			
+			myfilename = recordsStore.get(rec).get("photo_store_item");
+			File file = new File (pathname + myfilename);
+			if(file.exists()){
+				System.out.println("Photo store item: " + myfilename + " - " + file.length() + " bytes");
+				sizeTotal += file.length();
+			}
+		}
+		
+		System.out.println("\nTotal size files:\n" + sizeTotal + " bytes\n" + (sizeTotal > 0 ? sizeTotal/1024 : 0) + " KB\n" 
+				+ (sizeTotal > 0 ? (sizeTotal/1024)/1024 : 0) + " MB\nUsername: " + (String) request.getSession().getAttribute("username") + " - id: " + myUserid + "\n");
+		
+		//salva total de espaço usado do membro
+		MemberDAO memberDAO = new MemberDAO(db, request);
+		Member member = ((Member) memberDAO.readByColumn("id_member", myUserid, Member.class));
+		memberDAO.saveUsedSpace(member, sizeTotal);
+		
+		return sizeTotal;
 	}
 	
 }

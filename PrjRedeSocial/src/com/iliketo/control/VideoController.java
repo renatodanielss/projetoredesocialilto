@@ -20,18 +20,18 @@ import com.iliketo.util.Str;
 @Controller
 public class VideoController {
 	
-	@RequestMapping(value={"/registerVideo"})
-	public String registerVideo(HttpServletRequest request, HttpServletResponse response){
+	@RequestMapping(value={"/video/addVideo"})
+	public String addVideo(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @VideoController url='/registerVideo'");
+		System.out.println("Log - " + "request @VideoController url='/video/addVideo'");
 		
-		return "page.jsp?id=654";	//page form register video
+		return "page.jsp?id=654";	//page form add video
 	}
 	
-	@RequestMapping(value={"/addVideo"})
-	public String addVideo(HttpServletRequest request, HttpServletResponse response) throws Exception{
+	@RequestMapping(value={"/video/createVideo"})
+	public String createVideo(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @VideoController url='/addVideo'");
+		System.out.println("Log - " + "request @VideoController url='/video/createVideo'");
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -46,18 +46,67 @@ public class VideoController {
 		} catch (StorageILiketoException e) {			
 			model.addAttribute("video", video);
 			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
-			return model.redirectError("/ilt/registerVideo");			//page form register video
+			return model.redirectError("/ilt/video/addVideo");			//page form add video
 		} catch (VideoILiketoException e) {
 			model.addAttribute("video", video);
 			model.addMessageError("videoFormat", "Video in MP4 format with duration until 2 minutes."); 	//msg erro
-			return model.redirectError("/ilt/registerVideo");			//page form register video
+			return model.redirectError("/ilt/video/addVideo");			//page form add video
 		}
 		
-		videoDAO.create(video);							//salva video
+		videoDAO.create(video);					//cria video
 		
-		return "page.jsp?id=48";						//success
+		return "page.jsp?id=48";		//success
 	}
 	
 	
+	@RequestMapping(value={"/video/edit"})
+	public String editVideo(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @VideoController url='/video/edit'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		VideoDAO videoDAO = new VideoDAO(db, request);
+		
+		String id = request.getParameter("id");								//id video
+		Video video = (Video) videoDAO.readById(id, Video.class);			//ler video
+		
+		ModelILiketo model = new ModelILiketo(request, response);
+		model.addAttribute("video", video);		//dados atual do video
+				
+		return "page.jsp?id=804";				//page form edit video
+	}
+	
+	@RequestMapping(value={"/video/save"})
+	public String saveVideo(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @VideoController url='/video/save'");
+		
+		//dao e cms
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		VideoDAO videoDAO = new VideoDAO(db, request);
+		
+		Video video = (Video) cms.getObjectOfParameter(Video.class);	//objeto com dados do form
+		
+		videoDAO.update(video);					//atualiza video
+		
+		return "page.jsp?id=48";		//success
+	}
+	
+	@RequestMapping(value={"/video/delete"})
+	public String deleteVideo(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @VideoController url='/video/delete'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		VideoDAO videoDAO = new VideoDAO(db, request);
+		
+		String id = request.getParameter("id");
+		videoDAO.deleteVideo(id);				//delete video
+		
+		return "page.jsp?id=48";		//success
+	}
 
 }
