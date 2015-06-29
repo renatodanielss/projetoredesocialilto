@@ -2,6 +2,7 @@ package com.iliketo.control;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,36 @@ import com.iliketo.util.Str;
 
 @Controller
 public class VideoController {
+	
+	
+	/**
+	 * Redireciona pagina para visualizar meu video ou video de outro colecionador
+	 */
+	@RequestMapping(value={"/video/view"})
+	public String videoView(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @VideoController url='/video/view'");
+		
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
+		HttpSession session = request.getSession();									//session
+		VideoDAO dao = new VideoDAO(db, request);									//dao
+		
+		String idVideo = request.getParameter("id"); 								//id do video
+		String myIdUser = (String) request.getSession().getAttribute("userid"); 	//my userid
+		Video video = (Video) dao.readById(idVideo, Video.class);					//ler video
+		
+		//valida membro dono do video
+		if(myIdUser.equals(video.getIdMember())){
+			session.setAttribute(Str.S_ID_VIDEO, idVideo);							//seta na session id video
+			session.setAttribute(Str.S_ID_COLLECTION, video.getIdCollection());		//seta na session id coleção
+			return "/page.jsp?id=655";												//page visualizar my video
+		}else{
+			session.setAttribute(Str.S_ID_VIDEO, idVideo);							//seta na session id video
+			session.setAttribute(Str.S_ID_MEMBER_COLLECTOR, video.getIdMember());	//seta na session id membro
+			session.setAttribute(Str.S_ID_COLLECTOR, video.getIdCollection());		//seta na session id coleção
+			return "/page.jsp?id=657";												//page visualizar video terceiro
+		}
+	}
 	
 	@RequestMapping(value={"/video/addVideo"})
 	public String addVideo(HttpServletRequest request, HttpServletResponse response){
@@ -53,9 +84,10 @@ public class VideoController {
 			return model.redirectError("/ilt/video/addVideo");			//page form add video
 		}
 		
-		videoDAO.create(video);					//cria video
+		videoDAO.create(video);											//cria video
+		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
 		
-		return "redirect:/page.jsp?id=48";		//success
+		return "redirect:/ilt/collection/profile?id=" + idCollection;	//success
 	}
 	
 	
@@ -89,9 +121,10 @@ public class VideoController {
 		
 		Video video = (Video) cms.getObjectOfParameter(Video.class);	//objeto com dados do form
 		
-		videoDAO.update(video);					//atualiza video
+		videoDAO.update(video);											//atualiza video
+		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
 		
-		return "redirect:/page.jsp?id=48";		//success
+		return "redirect:/ilt/collection/profile?id=" + idCollection;	//success
 	}
 	
 	@RequestMapping(value={"/video/delete"})
