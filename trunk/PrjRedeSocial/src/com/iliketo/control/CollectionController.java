@@ -11,9 +11,11 @@ import HardCore.DB;
 
 import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.IliketoDAO;
+import com.iliketo.dao.ItemDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Collection;
+import com.iliketo.model.Item;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -50,6 +52,119 @@ public class CollectionController {
 	}
 	
 	
+	@RequestMapping(value={"/collection/registerCollection"})
+	public String registerCollection(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CollectionController url='/collection/registerCollection'");
+		
+		if(ModelILiketo.validateAndProcessError(request)){
+			//valida e mostra error na pagina
+			System.out.println("Log - " + "Erro ao adicionar colecao. Tela formulario registrar nova colecao");
+		}else{			
+			request.getSession().removeAttribute("newCollection");		//limpa colecao da session
+			System.out.println("Log - " + "Tela formulario registrar nova colecao");		
+		}		
+		return "page.jsp?id=410";		//page form register collection
+		
+	}
+	
+	@RequestMapping(value={"/collection/createCollection"})
+	public String createCollection(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CollectionController url='/collection/createCollection'");
+		//dao e cms
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);				//db
+		HttpSession session = request.getSession();							//session
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);		//cms
+		CollectionDAO collectionDAO = new CollectionDAO(db, request);		//dao
+		
+		Collection collection = (Collection) cms.getObjectOfParameter(Collection.class); 	//objeto com dados do form
+		ModelILiketo model = new ModelILiketo(request, response);
+		
+		try {			
+			cms.processFileuploadImage(collection);					//salva arquivos
+			String idCreated = "";
+			if(session.getAttribute("newCollection") == null){
+				idCreated = collectionDAO.create(collection);		//create
+				collection.setIdCollection(idCreated);
+				System.out.println("Log - " + "Create colecao - name: " + collection.getNameCollection());
+			}else{
+				idCreated = ((Collection) session.getAttribute("newCollection")).getIdCollection();
+				collection.setIdCollection(idCreated);
+				collectionDAO.update(collection);					//update, exemplo: back da pagina ou refresh
+				System.out.println("Log - " + "Update colecao - name: " + collection.getNameCollection());
+			}
+			session.setAttribute("newCollection", collection);							//add nova colecao na session, evitar duplicidade
+			session.setAttribute(Str.S_COLLECTION, collection.getNameCollection());		//add nome coleção na session	
+			session.setAttribute(Str.S_ID_COLLECTION, collection.getIdCollection());	//add id coleção na session	
+			
+			return "redirect:/ilt/collection/registerCollection/addItems";				//page form add new items
+			
+		} catch (StorageILiketoException e) {
+			model.addAttribute("collection", collection);
+			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");
+			return model.redirectError("/ilt/collection/registerCollection"); 			//page form register collection
+		} catch (ImageILiketoException e) {
+			model.addAttribute("collection", collection);
+			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
+			return model.redirectError("/ilt/collection/registerCollection"); 			//page form register collection
+		}
+		
+	}
+
+	@RequestMapping(value={"/collection/registerCollection/addItems"})
+	public String addNewItems(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CollectionController url='/collection/registerCollection/addItems'");
+		
+		if(ModelILiketo.validateAndProcessError(request)){
+			//valida e mostra error na pagina
+			System.out.println("Log - " + "Erro ao adicionar novos itens. Tela formulario registrar novos itens da colecao");
+		}else{
+			System.out.println("Log - " + "Tela formulario registrar novos itens da colecao");
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("collection", request.getSession().getAttribute("newCollection"));	//model na view jsp
+		}
+		return "page.jsp?id=90";		//page form add new itens
+		
+	}
+	
+	@RequestMapping(value={"/collection/registerCollection/createItems"})
+	public String createItems(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @ItemController url='/collection/registerCollection/createItems'");
+		
+		//dao e cms
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		HttpSession session = request.getSession();							//session
+		ItemDAO itemDAO = new ItemDAO(db, request);
+		Collection collection = (Collection) session.getAttribute("newCollection");
+		
+		Object[] items  = cms.getObjectsFileOfParameter(Item.class);				//array objetos com os items
+		for(Object item : items){
+			((Item)item).setIdCollection(collection.getIdCollection());				//seta fk_collection_id no item
+			((Item)item).setIdMember(collection.getIdMember());						//seta fk_user_id no item
+		}
+		
+		ModelILiketo model = new ModelILiketo(request, response);
+		try {
+			cms.processFileuploadImages(items);								//salva arquivos			
+		} catch (StorageILiketoException e) {
+			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
+			return model.redirectError("/ilt/collection/registerCollection/addItems");	//page form add new item
+		} catch (ImageILiketoException e) {
+			model.addMessageError("imageFormat", "Upload only Image in jpg format."); 	//msg erro
+			return model.redirectError("/ilt/collection/registerCollection/addItems");	//page form add new item
+		}
+		
+		itemDAO.creates(items);							//cria items
+		session.removeAttribute("newCollection");		//limpa colecao da session
+		
+		return "redirect:/page.jsp?id=474&category=" + collection.getIdCollection();	//page choose category
+	}
+	
+	
 	@RequestMapping(value={"/collection/edit"})
 	public String editCollection(HttpServletRequest request, HttpServletResponse response){
 		
@@ -59,13 +174,18 @@ public class CollectionController {
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CollectionDAO collectionDAO = new CollectionDAO(db, request);
 		
-		String id = request.getParameter("id");													//id colecao
-		Collection collection = (Collection) collectionDAO.readById(id, Collection.class);		//ler colecao
-		
-		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("collection", collection);	//dados atual da colecao
+		if(ModelILiketo.validateAndProcessError(request)){	
+			//valida e mostra error na pagina
+			System.out.println("Log - " + "Erro ao salvar atualizacao da colecao. Tela formulario editar colecao");
+		}else{
+			String id = request.getParameter("id");													//id colecao
+			Collection collection = (Collection) collectionDAO.readById(id, Collection.class);		//ler colecao
+			
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("collection", collection);	//dados atual da colecao
+		}
 
-		return "page.jsp?id=45";						//page form edit collection
+		return "page.jsp?id=45";							//page form edit collection
 	}
 	
 	
@@ -87,11 +207,11 @@ public class CollectionController {
 		} catch (StorageILiketoException e) {
 			model.addAttribute("collection", collection);
 			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");
-			return "redirect:/ilt/collection/edit?id=" + collection.getIdCollection(); 	//page form edit collection
+			return model.redirectError("/ilt/collection/edit?id=" + collection.getIdCollection()); 	//page form edit collection
 		} catch (ImageILiketoException e) {
 			model.addAttribute("collection", collection);
 			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
-			return "redirect:/ilt/collection/edit?id=" + collection.getIdCollection(); 	//page form edit collection
+			return model.redirectError("/ilt/collection/edit?id=" + collection.getIdCollection()); 	//page form edit collection
 		}
 		
 		collectionDAO.update(collection);												//atualiza colecao

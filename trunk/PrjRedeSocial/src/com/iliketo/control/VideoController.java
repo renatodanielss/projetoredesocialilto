@@ -55,6 +55,10 @@ public class VideoController {
 	public String addVideo(HttpServletRequest request, HttpServletResponse response){
 		
 		System.out.println("Log - " + "request @VideoController url='/video/addVideo'");
+		if(ModelILiketo.validateAndProcessError(request)){
+			//valida e mostra error na pagina
+			System.out.println("Log - " + "Erro ao adicionar video. Tela formulario add video");
+		}
 		
 		return "page.jsp?id=654";	//page form add video
 	}

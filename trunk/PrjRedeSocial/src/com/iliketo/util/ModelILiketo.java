@@ -33,20 +33,39 @@ public class ModelILiketo{
 	}
 	
 	/**
-	 * Metodo faz o reload da pagina atual com a mensagem de erro ou redireciona para uma outra pagina de erro.
+	 * Metodo redireciona para pagina correspondente ao erro, seta erro na session para recuperar em outra pagina e removo o erro.
 	 * @param url
 	 * @return
 	 */
 	public String redirectError(String url){
 		try {
-			RequestDispatcher rq = request.getRequestDispatcher(url);
-			rq.forward(request, response);
-		} catch (ServletException e) {
-			e.printStackTrace();
+			request.getSession().setAttribute("modelILiketoError", mapError);
+			request.getSession().setAttribute("modelILiketo", map);
+			response.sendRedirect(url);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	
+	/**
+	 * Metodo verifica se existe erro na session, se sim remove e atribui o erro ao request para recuperar na jsp.
+	 * @param url
+	 * @return
+	 */
+	public static boolean validateAndProcessError(HttpServletRequest request){
+		HashMap mapError = (HashMap) request.getSession().getAttribute("modelILiketoError");	
+		HashMap map = (HashMap) request.getSession().getAttribute("modelILiketo");
+		//valida se existe error na pagina anterior
+		if(mapError != null){
+			request.setAttribute("modelILiketoError", mapError);		//atribui o erro ao request, recuperar na jsp ${error:nomeDoErro}
+			request.setAttribute("modelILiketo", map);
+			request.getSession().removeAttribute("modelILiketoError");	//remove erro da session
+			request.getSession().removeAttribute("modelILiketo");
+			return true;
+		}else{
+			return false;
+		}			
 	}
 
 	/**
