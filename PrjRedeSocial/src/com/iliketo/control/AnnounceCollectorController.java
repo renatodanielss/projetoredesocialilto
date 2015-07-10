@@ -19,6 +19,7 @@ import com.iliketo.model.Announce;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Item;
 import com.iliketo.model.UserCard;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -193,6 +194,13 @@ public class AnnounceCollectorController {
 			session.removeAttribute("announce");
 			session.removeAttribute("userCard");
 			System.out.println("Log - " + "Anuncio cadastrado com sucesso!");
+			
+			//cria notificacao para o grupo da categoria
+			String idCategory = announce.getIdCategory();
+			if(idCategory != null && !idCategory.equals("")){
+				String myUserid = (String) request.getSession().getAttribute("userid");
+				NotificationService.createNotification(db, idCategory, "announce", idCreated, Str.INCLUDED, myUserid);
+			}
 			
 		}else{
 			System.out.println("Log - " + "Error acesso invalido, anuncio nao cadastrado!");

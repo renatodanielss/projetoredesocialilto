@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import HardCore.DB;
 
+import com.iliketo.model.Collection;
+import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.Str;
 
 public class CollectionDAO extends GenericDAO{
@@ -17,6 +19,36 @@ public class CollectionDAO extends GenericDAO{
 	//metodos CRUD declarados na classe pai GenericDAO
 	//outros metodos especificos da CollectionDAO abaixo
 	
+	
+	/**
+	 * Metodo atualiza somente os campos de configuracao de notificacao da colecao
+	 * @param collection
+	 */
+	public void updateNotificationSettings(Collection collection){
+			
+			DB db = super.getDb();
+			String nameDatabase = super.getNameDatabase();
+			ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+			
+			String dataid = CS.getDATA(db, nameDatabase);
+			String col1 = CS.getCOL(db, nameDatabase, "notific_collection");
+			String col2 = CS.getCOL(db, nameDatabase, "notific_item");
+			String col3 = CS.getCOL(db, nameDatabase, "notific_video");
+			String col4 = CS.getCOL(db, nameDatabase, "notific_event");
+			String col5 = CS.getCOL(db, nameDatabase, "notific_announce");
+			String col6 = CS.getCOL(db, nameDatabase, "notific_topic");
+			String col7 = CS.getCOL(db, nameDatabase, "notific_comment");
+			String SQLupdate = col1 + "='" + collection.getNotificCollection() + "', "
+					+ col2 + "='" + collection.getNotificItem() + "', "
+					+ col3 + "='" + collection.getNotificVideo() + "', "
+					+ col4 + "='" + collection.getNotificEvent() + "', "
+					+ col5 + "='" + collection.getNotificAnnounce() + "', "
+					+ col6 + "='" + collection.getNotificTopic() + "', "
+					+ col7 + "='" + collection.getNotificComment() + "'";
+			
+			super.getDb().updateSet(dataid, "id", collection.getIdCollection(), SQLupdate);
+			
+	}
 	
 	public void deleteCollection(String idDeleteCollection) {
 

@@ -1,7 +1,6 @@
 package com.iliketo.model;
 
 import com.iliketo.model.annotation.ColumnILiketo;
-import com.iliketo.model.annotation.FileILiketo;
 import com.iliketo.model.annotation.IdILiketo;
 
 /**
@@ -26,6 +25,8 @@ public class Topic extends ContentILiketo {
 	
 	@ColumnILiketo(name = "fk_user_id")
 	private String idMember;
+	
+	private Member member;
 	
 	public Topic(){ }
 
@@ -61,5 +62,12 @@ public class Topic extends ContentILiketo {
 		this.idMember = idMember;
 	}
 	
-	
+	public Member getMember() {
+		return member;
+	}
+
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
 }

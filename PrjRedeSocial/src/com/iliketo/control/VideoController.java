@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
+import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.VideoDAO;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.exception.VideoILiketoException;
 import com.iliketo.model.Video;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -88,8 +90,15 @@ public class VideoController {
 			return model.redirectError("/ilt/video/addVideo");			//page form add video
 		}
 		
-		videoDAO.create(video);											//cria video
+		String idCreate = videoDAO.create(video);											//cria video
 		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		
+		//cria notificacao para o grupo da categoria
+		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbcollection", "id_collection", idCollection);
+		if(idCategory != null && !idCategory.equals("")){
+			String myUserid = (String) request.getSession().getAttribute("userid");
+			NotificationService.createNotification(db, idCategory, "video", idCreate, Str.INCLUDED, myUserid);
+		}
 		
 		return "redirect:/ilt/collection/profile?id=" + idCollection;	//success
 	}
@@ -127,6 +136,12 @@ public class VideoController {
 		
 		videoDAO.update(video);											//atualiza video
 		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		
+		//cria notificacao para o grupo da categoria
+		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbcollection", "id_collection", idCollection);
+		if(idCategory != null && !idCategory.equals("")){
+			NotificationService.createNotification(db, idCategory, "video", video.getIdVideo(), Str.UPDATED, video.getIdMember());
+		}
 		
 		return "redirect:/ilt/collection/profile?id=" + idCollection;	//success
 	}

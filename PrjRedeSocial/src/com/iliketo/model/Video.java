@@ -34,6 +34,7 @@ public class Video extends ContentILiketo {
 	@ColumnILiketo(name = "fk_user_id")
 	private String idMember;
 	
+	private Member member;
 	
 	public Video(){
 		
@@ -99,5 +100,15 @@ public class Video extends ContentILiketo {
 		this.idMember = idMember;
 	}
 
+
+	public Member getMember() {
+		return member;
+	}
+
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
+	
 	
 }

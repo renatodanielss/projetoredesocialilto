@@ -12,6 +12,7 @@ import com.iliketo.dao.CommentDAO;
 import com.iliketo.dao.TopicDAO;
 import com.iliketo.model.Comment;
 import com.iliketo.model.Topic;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.Str;
 
@@ -47,6 +48,13 @@ public class ForumController {
 		Topic topic = (Topic) cms.getObjectOfParameter(Topic.class);	//objeto com dados do form
 		String idCreate = topicDAO.create(topic);						//cria topico
 		
+		//cria notificacao para o grupo da categoria
+		String idCategory = (String) request.getSession().getAttribute("s_id_category");
+		if(idCategory != null && !idCategory.equals("")){
+			String myUserid = (String) request.getSession().getAttribute("userid");
+			NotificationService.createNotification(db, idCategory, "topic", idCreate, Str.INCLUDED, myUserid);
+		}
+		
 		return "redirect:/ilt/group/forum/topic?id=" + idCreate; 		//redirect para page comment topic
 		
 	}
@@ -64,8 +72,12 @@ public class ForumController {
 		Comment comment = (Comment) cms.getObjectOfParameter(Comment.class);	//objeto com dados do form
 		String idCreate = commentDAO.create(comment);							//cria comentario
 		
-		//seta dados da mensagem na notificaoGrupo
-		//dao.create(notificaoGrupo);	//cria notificacao
+		//cria notificacao para o grupo da categoria
+		String idCategory = (String) request.getSession().getAttribute("s_id_category");
+		if(idCategory != null && !idCategory.equals("")){
+			String myUserid = (String) request.getSession().getAttribute("userid");
+			NotificationService.createNotification(db, idCategory, "comment", idCreate, Str.INCLUDED, myUserid);
+		}
 		
 		return "redirect:/ilt/group/forum/topic?id=" + comment.getIdTopic(); 	//redirect para page comment topic
 		

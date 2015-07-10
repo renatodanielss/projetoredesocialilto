@@ -89,6 +89,9 @@ public class Member extends ContentILiketo{
 	@ColumnILiketo(name = "path_photo_member")
 	private String pathPhoto;
 	
+	@ColumnILiketo(name = "last_seen_date")
+	private String lastSeenDate;
+	
 	public Member(){
 		
 	}
@@ -284,6 +287,13 @@ public class Member extends ContentILiketo{
 	public void setPathPhoto(String pathPhoto) {
 		this.pathPhoto = pathPhoto;
 	}
-	
+
+	public String getLastSeenDate() {
+		return lastSeenDate;
+	}
+
+	public void setLastSeenDate(String lastSeenDate) {
+		this.lastSeenDate = lastSeenDate;
+	}
 	
 }

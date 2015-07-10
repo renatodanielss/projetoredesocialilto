@@ -125,9 +125,10 @@ public abstract class GenericDAO {
 	 * @param object
 	 * @return String id do novo registro
 	 */
-	public void creates(Object[] arrayObjects) {
+	public String[] creates(Object[] arrayObjects) {
 		String nameIdPrimaryKey = "";
 		boolean containsFiles = false;
+		String[] idCreates = new String[arrayObjects.length];
 		
 		for(int i= 0; i < arrayObjects.length; i++){
 			
@@ -186,12 +187,14 @@ public abstract class GenericDAO {
 				String s = (String) it.next();
 				System.out.println("name input/column: " + s + " - value: " + fileupload.getParameter(s));
 			}
-			System.out.println();
+			System.out.println();	
 			
-			//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
-			this.calculateTotalFilesMemberInBytes();
+			idCreates[i] = idRegister;
 		}
 		
+		//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
+		this.calculateTotalFilesMemberInBytes();
+		return idCreates;		//retorna array de id criado dos objetos
 	}
 	
 	/**
