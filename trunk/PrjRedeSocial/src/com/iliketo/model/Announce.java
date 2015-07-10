@@ -1,8 +1,6 @@
 package com.iliketo.model;
 
-import com.iliketo.bean.MemberJB;
 import com.iliketo.model.annotation.ColumnILiketo;
-import com.iliketo.model.annotation.FileILiketo;
 import com.iliketo.model.annotation.IdILiketo;
 
 /**
@@ -70,6 +68,7 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "account_type")	//tipo de conta do anuncio(Store ou Collector)
 	private String accountType;
 	
+	private Member member;
 	
 	public Announce(){
 		
@@ -255,5 +254,12 @@ public class Announce extends ContentILiketo {
 		this.accountType = accountType;
 	}
 
-	
+	public Member getMember() {
+		return member;
+	}
+
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
 }

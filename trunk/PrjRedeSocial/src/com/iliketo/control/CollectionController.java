@@ -16,6 +16,7 @@ import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Item;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -185,7 +186,7 @@ public class CollectionController {
 			model.addAttribute("collection", collection);	//dados atual da colecao
 		}
 
-		return "page.jsp?id=45";							//page form edit collection
+		return "page.jsp?id=806";							//page form edit collection
 	}
 	
 	
@@ -216,6 +217,13 @@ public class CollectionController {
 		
 		collectionDAO.update(collection);												//atualiza colecao
 		
+		//cria notificacao para o grupo da categoria
+		String idCategory = collection.getIdCategory();
+		if(idCategory != null && !idCategory.equals("")){
+			String myUserid = (String) request.getSession().getAttribute("userid");
+			NotificationService.createNotification(db, idCategory, "collection", collection.getIdCollection(), Str.UPDATED, myUserid);
+		}
+		
 		return "redirect:/ilt/collection/profile?id=" + collection.getIdCollection();	//success
 	}
 	
@@ -232,6 +240,75 @@ public class CollectionController {
 		collectionDAO.deleteCollection(id);		//delete colecao
 		
 		return "redirect:/page.jsp?id=48";		//success
+	}
+	
+	@RequestMapping(value={"/collection/participateCategory"})
+	public String participateCategory(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @CollectionController url='/collection/participateCategory'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CollectionDAO dao = new CollectionDAO(db, request);
+		
+		String idCollection = request.getParameter("idCollection");
+		String idCategory = request.getParameter("idCat");
+		String nameCategory = request.getParameter("nameCat");
+		Collection collection = (Collection) dao.readById(idCollection, Collection.class);	//ler colecao	
+		
+		if(!collection.getIdCategory().equals(idCategory)){		//valida se colecao pertence a categoria
+			//entra para categoria
+			collection.setIdCategory(idCategory);
+			collection.setNameCategory(nameCategory);
+			dao.update(collection);						//update categoria da colecao
+			System.out.println("Log - Coleção: '"+ idCollection +"' entrou para a categoria/grupo: " + nameCategory);
+			
+			//cria notificacao para o grupo da categoria
+			String myUserid = (String) request.getSession().getAttribute("userid");
+			NotificationService.createNotification(db, idCategory, "collection", idCollection, Str.JOINED, myUserid);
+		}
+		
+		return "redirect:/redirect_info_group.jsp?myIdCollection="+idCollection+"&id_category="+idCategory;	//sucess page category of group
+	}
+	
+	@RequestMapping(value={"/collection/ajaxParticipateCategory"})
+	public void participateAndLeaveCategory(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @CollectionController url='/collection/ajaxParticipateCategory'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CollectionDAO dao = new CollectionDAO(db, request);
+		
+		String idCollection = request.getParameter("idCollection");
+		String idCategory = request.getParameter("idCat");
+		String nameCategory = request.getParameter("nameCat");
+		String resultButton = "";
+		
+		Collection collection = (Collection) dao.readById(idCollection, Collection.class);		
+		
+		if(!collection.getIdCategory().equals(idCategory)){		//valida se colecao pertence a categoria
+			//entra para categoria
+			collection.setIdCategory(idCategory);
+			collection.setNameCategory(nameCategory);
+			dao.update(collection);						//update categoria da colecao
+			System.out.println("Log - Coleção: '"+ idCollection +"' entrou para a categoria/grupo: " + nameCategory);
+			resultButton = "Leave category";
+			
+			//cria notificacao para o grupo da categoria
+			String myUserid = (String) request.getSession().getAttribute("userid");
+			NotificationService.createNotification(db, idCategory, "collection", idCollection, Str.JOINED, myUserid);
+			
+		}else{
+			//sai da categoria
+			collection.setIdCategory("");
+			collection.setNameCategory("");
+			dao.update(collection);						//update categoria da colecao
+			System.out.println("Log - Coleção: '"+ idCollection +"' saiu da categoria/grupo: " + nameCategory);
+			resultButton = "Participate";
+		}
+		
+		response.getWriter().write(resultButton);				//retorna ajax com valor do botao
 	}
 
 }

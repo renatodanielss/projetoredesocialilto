@@ -1,11 +1,15 @@
 package HardCore;
 
-import java.text.*;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.regex.*;
+import java.util.regex.Pattern;
+
 import javax.servlet.ServletContext;
+
+import com.iliketo.dao.MemberDAO;
+import com.iliketo.model.Member;
 
 public class Login {
 
@@ -486,7 +490,15 @@ public class Login {
 		mysession.set("email", myuser.getEmail());
 		mysession.set("usertype", myuser.getUsertype());
 		mysession.set("usergroup", myuser.getUsergroup());
+		
+		
+		//Login ok - seta dados do membro da tabela dbmembers na sessao
+		MemberDAO dao = new MemberDAO(db, null);
+		Member member = (Member) dao.readByColumn("id_member", myuser.getId(), Member.class);
+		mysession.getSession().setAttribute("member", member);
+		System.out.println("Set member in session id: " + member.getIdMember() + " - username: "+ myuser.getUsername());
 
+		
 		String myusertypes = myuser.getUsertype();
 		Iterator usertypes = myuser.usertypes(db).keySet().iterator();
 		while (usertypes.hasNext()) {

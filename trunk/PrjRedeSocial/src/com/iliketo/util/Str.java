@@ -89,7 +89,16 @@ public class Str {
 	public static final String PATH_FILE_DEFAULT = "path_file_default";
 
 	/**Nome do campo no form para upload de qualquer tipo de arquivos, utilizar <input name="file" type="file">*/
-	public static final Object FILE = "file";
+	public static final String FILE = "file";
+	
+	/**Constante JOINED é a variavel para identificar o tipo de post da notificacao no grupo/categoria*/
+	public static final String JOINED = "joined";
+	
+	/**Constante UPDATED é a variavel para identificar o tipo de post da notificacao no grupo/categoria*/
+	public static final String UPDATED = "updated";
+	
+	/**Constante INCLUDED é a variavel para identificar o tipo de post da notificacao no grupo/categoria*/
+	public static final String INCLUDED = "included";
 
 	//construtor privado
 	private Str(){

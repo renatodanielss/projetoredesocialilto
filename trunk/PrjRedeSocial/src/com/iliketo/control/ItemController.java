@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
+import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.ItemDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Item;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -56,7 +58,11 @@ public class ItemController {
 		
 		System.out.println("Log - " + "request @ItemController url='/item/addItems'");
 		
-		return "page.jsp?id=654";	//page form add more items
+		if(ModelILiketo.validateAndProcessError(request)){
+			//valida e mostra error na pagina
+			System.out.println("Log - " + "Erro ao adicionar itens. Tela formulario add mais itens");
+		}
+		return "page.jsp?id=596";	//page form add more items
  	}
 	
 	@RequestMapping(value={"/item/createItems"})
@@ -68,22 +74,35 @@ public class ItemController {
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		ItemDAO itemDAO = new ItemDAO(db, request);
+		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		String myUserid = (String) request.getSession().getAttribute("userid");
 		
-		Item[] items  = (Item[]) cms.getObjectOfParameter(Item.class);	//objeto com dados do form
+		Object[] items  = cms.getObjectsFileOfParameter(Item.class);				//array objetos com os items
+		for(Object item : items){
+			((Item)item).setIdCollection(idCollection);				//seta fk_collection_id no item
+			((Item)item).setIdMember(myUserid);						//seta fk_user_id no item
+		}
 		
 		ModelILiketo model = new ModelILiketo(request, response);
 		try {
 			cms.processFileuploadImages(items);							//salva arquivos			
 		} catch (StorageILiketoException e) {
 			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
-			return model.redirectError("/ilt/addItems");				//page form add more item
+			return model.redirectError("/ilt/item/addItems");				//page form add more item
 		} catch (ImageILiketoException e) {
 			model.addMessageError("imageFormat", "Upload only Image in jpg format."); 													//msg erro
-			return model.redirectError("/ilt/addItems");				//page form add more item
+			return model.redirectError("/ilt/item/addItems");				//page form add more item
 		}
 		
-		itemDAO.creates(items);											//cria items
-		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		String[] idCreates = itemDAO.creates(items);											//cria items
+		
+		//cria notificacao para o grupo da categoria
+		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbcollection", "id_collection", idCollection);
+		if(idCategory != null && !idCategory.equals("")){
+			for(String id : idCreates){
+				NotificationService.createNotification(db, idCategory, "item", id, Str.INCLUDED, myUserid);
+			}
+		}
 		
 		return "redirect:/ilt/collection/profile?id=" + idCollection;	//success
 	}
@@ -121,6 +140,12 @@ public class ItemController {
 		
 		itemDAO.update(item);											//atualiza item
 		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		
+		//cria notificacao para o grupo da categoria
+		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbcollection", "id_collection", idCollection);
+		if(idCategory != null && !idCategory.equals("")){
+			NotificationService.createNotification(db, idCategory, "item", item.getIdItem(), Str.UPDATED, item.getIdMember());
+		}
 		
 		return "redirect:/ilt/collection/profile?id=" + idCollection;	//success
 		

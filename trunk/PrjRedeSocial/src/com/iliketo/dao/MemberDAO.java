@@ -74,5 +74,23 @@ public class MemberDAO extends GenericDAO{
 		
 	}
 	
+	/**
+	 * Metodo atualiza a data de visto da ultima notificacao lida do membro
+	 * @param member
+	 */
+	public void updateLastDateNotification(Member member) {
+		
+		DB db = super.getDb();
+		String nameDatabase = super.getNameDatabase();
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+		
+		String dataid = CS.getDATA(db, nameDatabase);
+		String colid1 = CS.getCOL(db, nameDatabase, "last_seen_date");
+		
+		String SQLupdate = colid1 + "='" + member.getLastSeenDate() + "'";
+		
+		super.getDb().updateSet(dataid, "id", member.getId(), SQLupdate);
+		
+	}
 	
 }

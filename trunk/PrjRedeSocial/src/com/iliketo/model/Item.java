@@ -34,6 +34,7 @@ public class Item extends ContentILiketo {
 	@ColumnILiketo(name = "fk_user_id")
 	private String idMember;
 	
+	private Member member;
 	
 	public Item(){
 		
@@ -86,6 +87,14 @@ public class Item extends ContentILiketo {
 	public void setIdMember(String idMember) {
 		this.idMember = idMember;
 	}
+	
+	public Member getMember() {
+		return member;
+	}
 
+
+	public void setMember(Member member) {
+		this.member = member;
+	}
 	
 }
