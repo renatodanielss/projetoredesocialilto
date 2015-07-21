@@ -62,7 +62,7 @@ public class FilterPageILiketo implements Filter {
 		Session mysession = new Session(req.getSession());
 		boolean accesspermission = RequireUser.User(new Text(), mysession.get("username"), myrequest, myresponse, mysession, db);
 		
-		if(accesspermission){
+		if(accesspermission && req.getSession().getAttribute("member") != null){
 			//valida acesso login - permissao ok
 			chain.doFilter(request, response);
 		}
