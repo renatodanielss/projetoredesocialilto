@@ -77,7 +77,7 @@ public class CmsConfigILiketo {
 		myconfig.setTemp("URLfilepath", "file/");
 		myconfig.setTemp("URLimagepath", "image/");
 		myconfig.setTemp("URLstylesheetpath", "stylesheet/");
-		myconfig.setTemp("URLuploadpath", "upload/");			//configuração pasta 'upload' dentro do diretório raiz
+		myconfig.setTemp("URLuploadpath", "upload/");			//configuraï¿½ï¿½o pasta 'upload' dentro do diretï¿½rio raiz
 		memberDAO = new MemberDAO((DB) request.getAttribute(Str.CONNECTION_DB), request);	//dao membro
 		setCmsAsbru(request);
 		
@@ -377,7 +377,7 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
-	 * Método retorna o tamanho total de arquivos em bytes que o usuario da sessao possui.
+	 * Mï¿½todo retorna o tamanho total de arquivos em bytes que o usuario da sessao possui.
 	 * @param request
 	 * @return
 	 */
@@ -465,7 +465,7 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
-	 * Método retorna um objeto do tipo referenciado no parametro clazz 
+	 * Mï¿½todo retorna um objeto do tipo referenciado no parametro clazz 
 	 * Retorna objeto com os dados populados nos atributos. O "name" dos inputs do form tem que ser igual a "coluna" na database ou "nome do atributo" do objeto
 	 * @param clazz
 	 * @return
@@ -528,7 +528,7 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
-	 * Método retorna um vetor de vários objetos do tipo referenciado no parametro clazz, usado quando há upload de mais arquivos 
+	 * Mï¿½todo retorna um vetor de vï¿½rios objetos do tipo referenciado no parametro clazz, usado quando hï¿½ upload de mais arquivos 
 	 * Retorna objeto com os dados populados nos atributos. O "name" dos inputs do form tem que ser igual a "coluna" na database ou "nome do atributo" do objeto
 	 * @param clazz
 	 * @return
@@ -685,7 +685,7 @@ public class CmsConfigILiketo {
 					} catch (IllegalAccessException e) {
 						e.printStackTrace();
 					} catch (NoSuchFieldException e) {
-						e.printStackTrace();
+						//e.printStackTrace();
 					} catch (SecurityException e) {
 						e.printStackTrace();
 					}
