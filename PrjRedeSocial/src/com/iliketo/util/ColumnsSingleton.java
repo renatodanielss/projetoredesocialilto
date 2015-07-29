@@ -35,6 +35,7 @@ public class ColumnsSingleton {
 	private HashMap<String,HashMap<String,String>> COL_DBANNOUNCE;
 	private HashMap<String,HashMap<String,String>> COL_DBSTOREITEM;
 	private HashMap<String,HashMap<String,String>> COL_DBGROUPNOTIFICATION;
+	private HashMap<String,HashMap<String,String>> COL_DBMESSAGEINBOX;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
@@ -49,6 +50,7 @@ public class ColumnsSingleton {
 	private String DATA_DBANNOUNCE;
 	private String DATA_DBSTOREITEM;
 	private String DATA_DBGROUPNOTIFICATION;
+	private String DATA_DBMESSAGEINBOX;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
@@ -124,6 +126,11 @@ public class ColumnsSingleton {
 		database.read(db, new Configuration(), "dbgroupnotification");	
 		DATA_DBGROUPNOTIFICATION = database.getTable();
 		COL_DBGROUPNOTIFICATION = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbmessageinbox");	
+		DATA_DBMESSAGEINBOX = database.getTable();
+		COL_DBMESSAGEINBOX = database.namedcolumns;
+		
 	}
 	
 	/**
@@ -181,6 +188,8 @@ public class ColumnsSingleton {
 			mapcolumns = COL_DBSTOREITEM;
 		}else if(nameDatabase.equals("dbgroupnotification")){
 			mapcolumns = COL_DBGROUPNOTIFICATION;
+		}else if(nameDatabase.equals("dbmessageinbox")){
+			mapcolumns = COL_DBMESSAGEINBOX;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -235,6 +244,8 @@ public class ColumnsSingleton {
 			return DATA_DBSTOREITEM;
 		}else if(nameDatabase.equals("dbgroupnotification")){
 			return DATA_DBGROUPNOTIFICATION;
+		}else if(nameDatabase.equals("dbmessageinbox")){
+			return DATA_DBMESSAGEINBOX;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -309,6 +320,9 @@ public class ColumnsSingleton {
 			}else if(table.equals("dbgroupnotification")){
 				mapcolumns = COL_DBGROUPNOTIFICATION;
 				tableReal = DATA_DBGROUPNOTIFICATION;
+			}else if(table.equals("dbmessageinbox")){
+				mapcolumns = COL_DBMESSAGEINBOX;
+				tableReal = DATA_DBMESSAGEINBOX;
 			}	
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){

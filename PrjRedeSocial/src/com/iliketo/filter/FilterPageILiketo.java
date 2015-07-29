@@ -56,13 +56,16 @@ public class FilterPageILiketo implements Filter {
 			req.getRequestDispatcher("/config.jsp").include(req, res);	//Abre conexao
 		}
 		
-		//Valida usuario na session
+		//Valida nome de usuario e dados do membro na session
 		Request myrequest = new Request(req);
 		Response myresponse = new Response(res);
-		Session mysession = new Session(req.getSession());
+		Session mysession = new Session(req.getSession());		
+		if(req.getSession().getAttribute("member") == null){	//valida member
+			mysession.remove("username");
+		}
 		boolean accesspermission = RequireUser.User(new Text(), mysession.get("username"), myrequest, myresponse, mysession, db);
 		
-		if(accesspermission && req.getSession().getAttribute("member") != null){
+		if(accesspermission){
 			//valida acesso login - permissao ok
 			chain.doFilter(request, response);
 		}
