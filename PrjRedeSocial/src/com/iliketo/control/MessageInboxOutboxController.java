@@ -66,6 +66,7 @@ public class MessageInboxOutboxController {
 		if(messageInbox != null && messageInbox.getReceiverIdMember().equals(myUserid)){			
 			ModelILiketo model = new ModelILiketo(request, response);
 			messageInbox.setWasRead("y");						//set msg lida
+			messageDAO.update(messageInbox);					//atualiza mensagem lida
 			model.addAttribute("messageInbox", messageInbox);	//add objeto recuperar na jsp
 			return "/page.jsp?id=837"; 							//page visualizar mensagem			
 		}else{
