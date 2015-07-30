@@ -873,6 +873,24 @@ public class CmsConfigILiketo {
 		return content;
 	}
 	
+	/**
+	 * Metodo gera uma chave aleatoria e retorna a String com o valor gerado.
+	 * @param randomize - quantidade de caracteres
+	 * @return
+	 */
+	public static String generateRandomKey(int randomize){
+		
+		String randomfilename = "";
+		if (randomize > 0) {			
+			for (int j=0; j<randomize; j++) {
+				randomfilename = "" + randomfilename + (char)('a' + Integer.parseInt(Common.numberformat("" + Math.random()*25, 0)));
+			}
+		}else{
+			return null;
+		}
+		System.out.println("Gerar chave aleatoria: " + randomfilename);
+		return randomfilename;
+	}
 	
 	//getters and setters
 
