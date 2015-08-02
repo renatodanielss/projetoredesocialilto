@@ -47,13 +47,13 @@ if (! myrequest.getParameter("database").equals("")) {
 			
 			
 			String nameCategory = myrequest.getParameter("name_category");
-			String post = "/post_participate_category.jsp?database=dbcollection&id=" + mysession.get("s_id_collection"); //recupera o id da coleção na sessão
+			String post = "/ilt/collection/participateCategory?idCollection=" + mysession.get("s_id_collection"); //recupera o id da coleção na sessão
 			
 			%>
 			<!-- request para chamar jsp para atualizar o membro participante que criou a categoria/grupo -->
 			<jsp:forward page="<%=post%>">
-				<jsp:param value="<%=idCreateCategory%>" name="id_category"/>
-				<jsp:param value="<%=nameCategory%>" name="name_category"/>
+				<jsp:param value="<%=idCreateCategory%>" name="idCat"/>
+				<jsp:param value="<%=nameCategory%>" name="nameCat"/>
 			</jsp:forward>
 			<%
 		}

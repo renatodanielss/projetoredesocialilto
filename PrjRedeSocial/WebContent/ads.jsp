@@ -41,7 +41,7 @@ if(!idAnnounce.equals("")){
 				}
 			}else{
 				//preco fixo
-				if(!announceJB.getIdItem().equals("")){
+				if(!announceJB.getIdItem().equals("") || announceJB.getTypeAnnounce().equals("Purchase")){
 					pageViewAd = pageMyAdFixedItem;
 				}else{
 					pageViewAd = pageMyAdFixedCollection;
@@ -58,7 +58,7 @@ if(!idAnnounce.equals("")){
 				}
 			}else{
 				//preco fixo
-				if(!announceJB.getIdItem().equals("")){
+				if(!announceJB.getIdItem().equals("") || announceJB.getTypeAnnounce().equals("Purchase")){
 					pageViewAd = pageYourAdFixedItem;
 				}else{
 					pageViewAd = pageYourAdFixedCollection;
