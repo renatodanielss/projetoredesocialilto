@@ -1,16 +1,18 @@
 package HardCore;
 
-import java.io.*;
-import java.io.File;
-import java.nio.*;
-import java.nio.channels.*;
-import java.text.*;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.regex.*;
-import javax.servlet.*;
-import javax.servlet.jsp.*;
+import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.ServletContext;
+import javax.servlet.jsp.JspWriter;
+
+import com.iliketo.util.CmsConfigILiketo;
 
 public class UCmaintainContent {
 	private String error = "";
@@ -23,19 +25,24 @@ public class UCmaintainContent {
 	private Content workflow_records = new Content(null);
 	private int record_count = 0;
 	private Text text = new Text();
-
-
+	private String uuid;
+	private String username;
 
 	public UCmaintainContent() {
 	}
-
 
 
 	public UCmaintainContent(Text mytext) {
 		if (mytext != null) text = mytext;
 	}
 
-
+	public UCmaintainContent(Text mytext, String uuid, String username) {
+		if (mytext != null) text = mytext;
+		
+		this.uuid = uuid;
+		this.username = username;
+		
+	}
 
 	public void getAccess(Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db) {
 		if (db == null) return;
@@ -1828,7 +1835,7 @@ public class UCmaintainContent {
 	public Page doRegister(ServletContext server, String DOCUMENT_ROOT, Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, String database) throws Exception {
 		return doRegister(server, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, null, database);
 	}
-	public Page doRegister(ServletContext server, String DOCUMENT_ROOT, Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, Website mywebsite, String database) throws Exception {
+	public Page doRegister(ServletContext server, String DOCUMENT_ROOT, Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db, Website mywebsite, String database) throws Exception {		
 		if (mywebsite == null) mywebsite = new Website(text);
 		Fileupload filepost = new Fileupload(null, null, null);
 		error = "";
@@ -1948,11 +1955,11 @@ public class UCmaintainContent {
 						if (! scheduled_publish_email.equals("")) user.setScheduledPublishEmail(scheduled_publish_email);
 						if (! scheduled_notify_email.equals("")) user.setScheduledNotifyEmail(scheduled_notify_email);
 						if (! scheduled_unpublish_email.equals("")) user.setScheduledUnpublishEmail(scheduled_unpublish_email);
-						user.create(db);	//método cria o usuário no Banco de Dados.
+						user.create(db);	//mï¿½todo cria o usuï¿½rio no Banco de Dados.
 
 						error += "<br>" + text.display("register.created");
 
-						/*Obs: Desativado - Abaixo o Sistema Asbru realiza a criação da Personal Page do usuário.
+						/*Obs: Desativado - Abaixo o Sistema Asbru realiza a criaï¿½ï¿½o da Personal Page do usuï¿½rio.
 						if (! content_id.equals("")) {
 							mypage = getPublishedPageById(content_id, server, mysession, myrequest, myresponse, myconfig, db);
 							mypage.setServerFilename("");
@@ -2060,7 +2067,7 @@ public class UCmaintainContent {
 								handleNotification(subject, body, server, mypage, null, filepost, myrequest, myresponse, mysession, myconfig, db);
 							}
 						}*/
-						//Abaixo sistema Asbru realiza o processo de confirmação de registro do usuário
+						//Abaixo sistema Asbru realiza o processo de confirmaï¿½ï¿½o de registro do usuï¿½rio
 						if ((! myconfig.get(db, "default_register_confirmation_page").equals("")) || ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_register_confirmation_page").equals("")))) {
 							Page confirmation = new Page(text);
 							if ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_login").equals(""))) {
@@ -2077,6 +2084,9 @@ public class UCmaintainContent {
 							body = body.replaceAll("@@@user_notification@@@", user.getScheduledNotify().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 							body = body.replaceAll("@@@user_expiration@@@", user.getScheduledUnpublish().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 							body = body.replaceAll("@@@personalpage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/?" + user.getUsername().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+							
+							body = body.replaceAll("@@@validationlink@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/activation.jsp?user=" + username + "&activationkey=" + uuid);
+							
 							body = body.replaceAll("@@@personaladmin@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/admin.jsp");
 							confirmation.setBody(body);
 							confirmation.parse_output_register("", "", "", "", "", user);
@@ -2116,6 +2126,9 @@ public class UCmaintainContent {
 							body = body.replaceAll("@@@user_notification@@@", user.getScheduledNotify().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 							body = body.replaceAll("@@@user_expiration@@@", user.getScheduledUnpublish().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 							body = body.replaceAll("@@@personalpage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/?" + user.getUsername().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+							
+							body = body.replaceAll("@@@validationlink@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/activation.jsp?user=" + username + "&activationkey=" + uuid);
+							
 							body = body.replaceAll("@@@personaladmin@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/admin.jsp");
 							notification.setContent(body);
 							notification.parse_output_register("", "", "", "", "", user);
@@ -2129,7 +2142,7 @@ public class UCmaintainContent {
 				}
 
 				if ((! myrequest.getParameter("username").equals("")) && (! myrequest.getParameter("password").equals(""))) {
-					Login.login(text, null, "/login.jsp", "-", server, mysession, myrequest, myresponse, myconfig, db, myconfig.get(db, "require_ssl_user"), database);
+					//Login.login(text, null, "/login.jsp", "-", server, mysession, myrequest, myresponse, myconfig, db, myconfig.get(db, "require_ssl_user"), database);
 				}
 
 				if ((myrequest.getParameter("redirect").startsWith("http://")) || (myrequest.getParameter("redirect").startsWith("https://"))) {
@@ -2154,6 +2167,9 @@ public class UCmaintainContent {
 		mybody = mybody.replaceAll("@@@user_notification@@@", user.getScheduledNotify().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 		mybody = mybody.replaceAll("@@@user_expiration@@@", user.getScheduledUnpublish().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 		mybody = mybody.replaceAll("@@@personalpage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/?" + user.getUsername().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+		
+		mybody = mybody.replaceAll("@@@validationlink@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/activation.jsp?user=" + username + "&activationkey=" + uuid);
+		
 		mybody = mybody.replaceAll("@@@personaladmin@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/admin.jsp");
 		mypage.setBody(mybody);
 		mypage.parse_output_register(error, html.encodeHtmlEntities(myrequest.getParameter("email")), html.encodeHtmlEntities(myrequest.getParameter("username")), html.encodeHtmlEntities(myrequest.getParameter("password")), html.encodeHtmlEntities(myrequest.getParameter("name")), user);

@@ -3,6 +3,10 @@
 
 <%
 
+//gerando chave de ativação
+String uuid = CmsConfigILiketo.generateRandomKey(32);
+String uuid2 = CmsConfigILiketo.generateRandomKey(32);
+
 //***Executa e valida Registro iliketo**** 
 String errorILiketo = "";
 UserController controller = new UserController();
@@ -27,7 +31,7 @@ if(!errorILiketo.equals("")){ //se conter error na validação do registro, adicio
 	
 }else{
 	
-	UCmaintainContent maintainContent = new UCmaintainContent(mytext);
+	UCmaintainContent maintainContent = new UCmaintainContent(mytext, uuid+uuid2, request.getParameter("username"));
 	mypage = maintainContent.doRegister(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, website, database);
 	
 	//recupera o registro do usuario criado na tabela users
@@ -44,6 +48,7 @@ if(!errorILiketo.equals("")){ //se conter error na validação do registro, adicio
 	<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
 	<jsp:forward page="/post.jsp?database=dbmembers">
 		<jsp:param value="<%=idRegisterUser%>" name="id_member"/>
+		<jsp:param value="<%=uuid+uuid2%>" name="activated"/>
 		<jsp:param value="/page.jsp?id=286" name="redirect"/>
 	</jsp:forward>
 	<%

@@ -7,7 +7,7 @@ import com.iliketo.model.annotation.IdILiketo;
 
 /**
  * Classe de modelo
- * Contém os dados de um Membro
+ * ContÃ©m os dados de um Membro
  * Dados/modelos ILiketo
  * 
  * @author osvaldimar.costa
@@ -48,6 +48,9 @@ public class Member extends ContentILiketo{
 	
 	@ColumnILiketo(name = "email_i_like_to")
 	private String emailILiketo;
+	
+	@ColumnILiketo(name = "username")
+	private String username;
 	
 	@ColumnILiketo(name = "visibilityProfile")
 	private String visibilityProfile;
@@ -91,6 +94,9 @@ public class Member extends ContentILiketo{
 	
 	@ColumnILiketo(name = "last_seen_date")
 	private String lastSeenDate;
+	
+	@ColumnILiketo(name = "activated")
+	private String activated;
 	
 	public Member(){
 		
@@ -182,6 +188,14 @@ public class Member extends ContentILiketo{
 
 	public void setEmailILiketo(String emailILiketo) {
 		this.emailILiketo = emailILiketo;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getVisibilityProfile() {
@@ -295,5 +309,12 @@ public class Member extends ContentILiketo{
 	public void setLastSeenDate(String lastSeenDate) {
 		this.lastSeenDate = lastSeenDate;
 	}
-	
+
+	public String getActivated() {
+		return activated;
+	}
+
+	public void setActivated(String activated) {
+		this.activated = activated;
+	}
 }
