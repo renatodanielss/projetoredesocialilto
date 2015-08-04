@@ -211,12 +211,12 @@ if(!listTimeline.isEmpty()){
 				mapOffset.get("offsetEvent").equals("0") &&
 				mapOffset.get("offsetAd").equals("0")){
 			
-			div.append("Nothing update!");				
+			div.append("No newer updates available!");
 		}else{
 			div.append("No more updates!");
 		}				
 	}else{
-		div.append("Nothing update!");
+		div.append("No newer updates available!");
 	}
 }
 
