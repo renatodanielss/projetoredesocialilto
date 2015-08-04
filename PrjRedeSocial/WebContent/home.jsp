@@ -211,20 +211,17 @@ if(!listTimeline.isEmpty()){
 				mapOffset.get("offsetEvent").equals("0") &&
 				mapOffset.get("offsetAd").equals("0")){
 			
-			div.delete(0, div.length());
 			div.append("No updates available!");
 		}else{
 			div.append("No more updates!");
 		}				
 	}else{
-		div.delete(0, div.length());
 		div.append("No updates available!");
 	}
 }
 
 response.setContentType("text/html"); 			//set type conteudo resposta
 response.getWriter().write(div.toString());		//write conteudo div, finaliza jsp e retorna resposta para o ajax
-
 
 %>
 
