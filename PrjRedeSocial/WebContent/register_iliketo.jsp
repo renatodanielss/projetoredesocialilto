@@ -34,6 +34,8 @@ if(!errorILiketo.equals("")){ //se conter error na validação do registro, adicio
 	UCmaintainContent maintainContent = new UCmaintainContent(mytext, uuid+uuid2, request.getParameter("username"));
 	mypage = maintainContent.doRegister(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, website, database);
 	
+	System.out.println(mytext);
+	
 	//recupera o registro do usuario criado na tabela users
 	String idRegisterUser = controller.getIdCreatedUser(db, "username", request.getParameter("username"));
 	

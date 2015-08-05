@@ -73,6 +73,9 @@ public class Member extends ContentILiketo{
 	@ColumnILiketo(name = "phone_number")
 	private String phoneNumber;
 	
+	@ColumnILiketo(name = "cell_phone")
+	private String cellPhone;
+	
 	@ColumnILiketo(name = "email_notification")
 	private String emailNotification;
 	
@@ -252,6 +255,14 @@ public class Member extends ContentILiketo{
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public String getCellPhone() {
+		return cellPhone;
+	}
+
+	public void setCellPhone(String cellPhone) {
+		this.cellPhone = cellPhone;
 	}
 
 	public String getEmailNotification() {
