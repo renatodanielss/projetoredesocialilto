@@ -146,7 +146,8 @@ if(!listTimeline.isEmpty()){
 				s = s.replaceAll("@@@price_initial@@@", announceJB.getPriceInitial());
 				s = s.replaceAll("@@@bid_actual@@@", announceJB.getBidActual());
 				s = s.replaceAll("@@@lasting@@@", announceJB.getLasting());
-				s = s.replaceAll("@@@total_bids@@@", announceJB.getTotalBids());				
+				s = s.replaceAll("@@@total_bids@@@", announceJB.getTotalBids());
+				s = s.replaceAll("@@@date_initial@@@", announceJB.getDateInitial());
 			}else{
 				s = s.replaceAll("@@@price_fixed@@@", announceJB.getPriceFixed());				
 			}

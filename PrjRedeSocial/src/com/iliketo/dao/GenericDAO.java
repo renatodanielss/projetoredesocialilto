@@ -84,8 +84,19 @@ public abstract class GenericDAO {
 		data.setUpdated(database.columns, timestamp, "username");
 		data.create(db, "data" + database.getId(), database.columns);
 		
+		System.out.println("***data.create***");
+		Iterator it = fileupload.getParameterNames();
+		while(it.hasNext()){
+			String s = (String) it.next();
+			System.out.println("name input/column: " + s + " - value: " + fileupload.getParameter(s));
+		}
+		System.out.println();
 		
 		String idRegister = data.getId();	//recupera id do registro gerado pelo sistema
+		if(nameIdPrimaryKey.equals("")){	//valida se existe anotacao @ColumnILiketo
+			return idRegister;				//finaliza metodo
+		}
+		
 		Fileupload filepostUpateID = new Fileupload(null, null, null);
 		filepostUpateID.setParameter(nameIdPrimaryKey, idRegister);	//exemplo: filepostUpateID.setParameter("id_member", "123");
 		
@@ -96,14 +107,6 @@ public abstract class GenericDAO {
 		data.setCreated(database.columns, created, createdby);
 		data.setUpdated(database.columns, timestamp, "username");
 		data.update(db, "data" + database.getId(), database.columns);
-		
-		System.out.println("***data.create***");
-		Iterator it = fileupload.getParameterNames();
-		while(it.hasNext()){
-			String s = (String) it.next();
-			System.out.println("name input/column: " + s + " - value: " + fileupload.getParameter(s));
-		}
-		System.out.println();
 		
 		if(idRegister != null && !idRegister.equals("") && !idRegister.equals("null")){
 			//calcula e salva espaco usado de armazenamento para objeto q contem arquivos

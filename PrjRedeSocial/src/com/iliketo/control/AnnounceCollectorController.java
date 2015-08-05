@@ -1,21 +1,29 @@
 package com.iliketo.control;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
 import com.iliketo.dao.AnnounceDAO;
+import com.iliketo.dao.AuctionBidDAO;
 import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.ItemDAO;
 import com.iliketo.dao.UserCardDAO;
 import com.iliketo.model.Announce;
+import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Item;
 import com.iliketo.model.UserCard;
@@ -184,9 +192,15 @@ public class AnnounceCollectorController {
 		String idCreated = "";
 		
 		if(announce != null && userCard != null){
+			//seta data inicial para anuncio leilao
+			if(announce.getTypeAnnounce().equals("Auction")){
+				String dataInicialLeilao = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+				announce.setDateInitial(dataInicialLeilao);
+			}
 			
 			idCreated = announceDAO.create(announce);							//salva anuncio no bd
 			//***operacao para pagamento do anuncio aqui***
+			
 			
 			//remove atributos da sessao
 			session.removeAttribute("item");
@@ -210,5 +224,144 @@ public class AnnounceCollectorController {
 		
 		return "redirect:/ads.jsp?id=" + idCreated; 	//success - page anuncio criado
 	}
+	
+	
+	/**
+	 * Metodo redireciona para visualizar pagina do anuncio
+	 */
+	@RequestMapping(value={"/ads"})
+	public String pageAds(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
+		System.out.println("Log - " + "request @AnnounceCollectorController url='/ads'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO dao = new AnnounceDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+				
+		String id = request.getParameter("id");								//id do anuncio
+		Announce announce = (Announce) dao.readById(id, Announce.class);	//ler anuncio
+		
+		ModelILiketo model = new ModelILiketo(request, response);
+		model.addAttribute("announce", announce);							//recuperar dados do anuncio na jsp
+		
+		
+		//identificar paginas de anuncios do membro
+		String pageMeuLeilao = "page.jsp?id=705";				//pagina meu anuncio leilao para item
+		String pageMeuAnuncio = "page.jsp?id=729";				//pagina meu anuncio venda/troca para item		
+		String pageMeuAnuncioCompra = "page.jsp?id=xxx";		//pagina meu anuncio de compra
+		
+		String pageLeilaoTerceiro = "page.jsp?id=706";			//pagina terceiro anuncio leilao para item
+		String pageAnuncioTerceiro = "page.jsp?id=728";			//pagina terceiro venda/troca para item
+		String pageAnuncioCompraTerceiro = "page.jsp?id=xxx";	//pagina terceiro anuncio de compra
+		
+		String pageVisualizarAnuncio = "";						//pagina para redirecionar
+		
+		if(announce.getIdMember().equals(myUserid)){
+			//visao do meu anuncio
+			if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
+				if(!announce.getIdItem().equals("")){	
+					pageVisualizarAnuncio = pageMeuLeilao;			//leilao para item
+				}
+			}else if(announce.getTypeAnnounce().equals("Purchase")){
+				pageVisualizarAnuncio = pageMeuAnuncioCompra;		//anuncio de compra
+			}else{
+				if(!announce.getIdItem().equals("")){
+					pageVisualizarAnuncio = pageMeuAnuncio;			//venda/troca para item
+				}
+			}
+		}else{
+			//visao de terceiros do anuncio
+			if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
+				if(!announce.getIdItem().equals("")){	
+					pageVisualizarAnuncio = pageLeilaoTerceiro;		//leilao para item
+				}
+			}else if(announce.getTypeAnnounce().equals("Purchase")){
+				pageVisualizarAnuncio = pageAnuncioCompraTerceiro;	//anuncio de compra
+			}else{
+				if(!announce.getIdItem().equals("")){
+					pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
+				}
+			}
+		}
+		
+		//valida pagina correta do anuncio
+		if(!pageVisualizarAnuncio.equals("")){			
+			return pageVisualizarAnuncio;		//redireciona para pagina correspondente ao anuncio
+		}else{
+			return "page.jsp?id=xxx"; 			//page conteudo nao disponivel
+		}
+		
+	}
+	
+	/**
+	 * Metodo faz o lance de precos no anuncio por solicitacao ajax e retorna resposta com conteudo 'ok' para jsp
+	 */
+	@RequestMapping(value={"/ajax/ads/bid"})
+	public void adsBid(HttpServletRequest request, HttpServletResponse response) throws IOException, JSONException{
+		
+		System.out.println("Log - " + "ajax @AnnounceCollectorController url='/ajax/ads/bid'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		AuctionBidDAO auctionDAO = new AuctionBidDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		
+		String id = request.getParameter("idAnnounce");								//id do anuncio
+		String bid = request.getParameter("bid");									//valor novo lance
+		Announce announce = (Announce) announceDAO.readById(id, Announce.class);	//ler anuncio
+		
+		JSONArray jsonArray = new JSONArray();	//resposta json
+	    JSONObject jsonObj = new JSONObject();
+	    
+		//valida novo lance
+		Pattern p = Pattern.compile("^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$");	//ex 1000.99
+		Matcher m = p.matcher(bid);
+	    if (m.find()) {
+	    	if(Double.parseDouble(bid) > Double.parseDouble(announce.getBidActual().replaceAll(",", "."))){
+	    		//format double
+	    		String valueBid = String.format( "%.2f", Double.parseDouble(bid));
+				AuctionBid auction = new AuctionBid();
+				auction.setIdAnnounce(id);
+				auction.setIdMember(myUserid);
+				auction.setBid(valueBid);
+				auctionDAO.create(auction);			//cria lance de leilao				
+				int total = Integer.parseInt(announce.getTotalBids()) + 1;	//incrementa total de lances
+				announce.setTotalBids(Integer.toString(total));	//seta total de lances no anuncio				
+				announce.setBidActual(valueBid);				//seta valor lance no anuncio
+				announce.setBidUserId(myUserid);				//seta id membro proprietario do lance
+				announceDAO.update(announce);					//atualiza anuncio			
+				jsonObj.put("resposta", "ok");					//resposta lance ok
+				jsonObj.put("valueBid", valueBid);
+				jsonObj.put("totalBids", announce.getTotalBids());
+			}else{
+				jsonObj.put("resposta", "below");				//erro valor lance tem q ser maior q atual
+				jsonObj.put("valueBid", announce.getBidActual());
+				jsonObj.put("totalBids", announce.getTotalBids());
+			}
+	    }else{
+	    	jsonObj.put("resposta", "invalid!");				//erro valor lance invalido
+	    	jsonObj.put("valueBid", announce.getBidActual());
+	    	jsonObj.put("totalBids", announce.getTotalBids());
+	    }
+	    
+	    jsonArray.put(jsonObj);
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+		response.getWriter().write(jsonArray.toString());
+	}
+	
+	/**
+	 * Metodo redireciona para page Visualizar todos lances do anuncio
+	 */
+	@RequestMapping(value={"/ads/seeBids"})
+	public String seeBids(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @AnnounceCollectorController url='/ads/seeBids'");
+				
+		return "page.jsp?id=856"; //page ads see bids
+	}
+	
+	
 }

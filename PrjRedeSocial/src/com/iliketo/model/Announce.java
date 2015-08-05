@@ -26,8 +26,14 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "price_initial")	//preco inicial (auction)
 	private String priceInitial;	
 	
+	@ColumnILiketo(name = "date_initial")	//data inicial (auction)
+	private String dateInitial;
+	
 	@ColumnILiketo(name = "bid_actual")		//lance atual (auction)
-	private String bidActual;		
+	private String bidActual;
+	
+	@ColumnILiketo(name = "bid_user_id")	//id membro lance atual (auction)
+	private String bidUserId;
 		
 	@ColumnILiketo(name = "lasting")		//duaracao (auction)
 	private String lasting;			
@@ -108,6 +114,16 @@ public class Announce extends ContentILiketo {
 	public String getPriceInitial() {
 		return priceInitial;
 	}
+	
+
+	public String getDateInitial() {
+		return dateInitial;
+	}
+
+
+	public void setDateInitial(String dateInitial) {
+		this.dateInitial = dateInitial;
+	}
 
 
 	public void setPriceInitial(String priceInitial) {
@@ -117,6 +133,16 @@ public class Announce extends ContentILiketo {
 
 	public String getBidActual() {
 		return bidActual;
+	}
+	
+
+	public String getBidUserId() {
+		return bidUserId;
+	}
+
+
+	public void setBidUserId(String bidUserId) {
+		this.bidUserId = bidUserId;
 	}
 
 

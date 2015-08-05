@@ -156,7 +156,7 @@ public class TimelineController {
 		String SQLAnnounce = 
 				"select ad.id_announce as id_announce, ad.fk_item_id as fk_item_id, ad.fk_collection_id as fk_collection_id, ad.fk_category_id as fk_category_id, "
 			  + "ad.name_category as name_category, ad.title as title, ad.description as description, ad.type_announce as type_announce, ad.price_fixed as price_fixed, "
-			  + "ad.price_initial as price_initial, ad.bid_actual as bid_actual, ad.lasting as lasting, ad.total_bids as total_bids, "
+			  + "ad.price_initial as price_initial, ad.date_initial as date_initial, ad.bid_actual as bid_actual, ad.lasting as lasting, ad.total_bids as total_bids, "
 			  + "ad.date_created as date_created, ad.date_updated as date_updated, ad.path_photo_ad as path_photo_ad, "
 			  + "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 			  + "from dbannounce ad join dbmembers as m on ad.fk_user_id = m.id_member "
@@ -282,6 +282,7 @@ public class TimelineController {
 			announceJB.setTypeAnnounce(recordsAnnounce.get(rec).get("type_announce"));
 			announceJB.setPriceFixed(recordsAnnounce.get(rec).get("price_fixed"));
 			announceJB.setPriceInitial(recordsAnnounce.get(rec).get("price_initial"));
+			announceJB.setDateInitial(recordsAnnounce.get(rec).get("date_initial"));
 			announceJB.setBidActual(recordsAnnounce.get(rec).get("bid_actual"));
 			announceJB.setLasting(recordsAnnounce.get(rec).get("lasting"));
 			announceJB.setTotalBids(recordsAnnounce.get(rec).get("total_bids"));

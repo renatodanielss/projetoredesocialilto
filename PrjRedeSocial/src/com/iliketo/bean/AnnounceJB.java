@@ -25,6 +25,7 @@ public class AnnounceJB extends ContentILiketoJB {
 	private String idMember;
 	private String idCategory;
 	private String path_photo_ad;
+	private String dateInitial;
 	private MemberJB member;
 
 	public AnnounceJB(){
@@ -157,6 +158,14 @@ public class AnnounceJB extends ContentILiketoJB {
 
 	public void setMember(MemberJB member) {
 		this.member = member;
+	}
+
+	public String getDateInitial() {
+		return dateInitial;
+	}
+
+	public void setDateInitial(String dateInitial) {
+		this.dateInitial = dateInitial;
 	}
 
 	
