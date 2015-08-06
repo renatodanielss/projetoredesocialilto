@@ -360,6 +360,16 @@ public class AnnounceCollectorController {
 		
 		System.out.println("Log - " + "request @AnnounceCollectorController url='/ads/seeBids'");
 				
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		
+		String id = request.getParameter("id");										//id do anuncio
+		Announce announce = (Announce) announceDAO.readById(id, Announce.class);	//ler anuncio
+		
+		ModelILiketo model = new ModelILiketo(request, response);
+		model.addAttribute("announce", announce);									//recuperar dados do anuncio na jsp
+		
 		return "page.jsp?id=856"; //page ads see bids
 	}
 	
