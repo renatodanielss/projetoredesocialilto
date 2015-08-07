@@ -2085,7 +2085,7 @@ public class UCmaintainContent {
 							body = body.replaceAll("@@@user_expiration@@@", user.getScheduledUnpublish().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 							body = body.replaceAll("@@@personalpage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/?" + user.getUsername().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 							
-							body = body.replaceAll("@@@logoimage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image/logo6.png");
+							body = body.replaceAll("@@@logoimage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image.jsp?id=545");
 							
 							body = body.replaceAll("@@@validationlink@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/activation.jsp?user=" + username + "&activationkey=" + uuid);
 							
@@ -2129,7 +2129,7 @@ public class UCmaintainContent {
 							body = body.replaceAll("@@@user_expiration@@@", user.getScheduledUnpublish().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 							body = body.replaceAll("@@@personalpage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/?" + user.getUsername().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 							
-							body = body.replaceAll("@@@logoimage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image/logo6.png");
+							body = body.replaceAll("@@@logoimage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image.jsp?id=545");
 							
 							body = body.replaceAll("@@@validationlink@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/activation.jsp?user=" + username + "&activationkey=" + uuid);
 							
@@ -2172,7 +2172,7 @@ public class UCmaintainContent {
 		mybody = mybody.replaceAll("@@@user_expiration@@@", user.getScheduledUnpublish().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 		mybody = mybody.replaceAll("@@@personalpage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/personal/?" + user.getUsername().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 		
-		mybody = mybody.replaceAll("@@@logoimage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image/logo6.png");
+		mybody = mybody.replaceAll("@@@logoimage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image.jsp?id=545");
 		
 		mybody = mybody.replaceAll("@@@validationlink@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/activation.jsp?user=" + username + "&activationkey=" + uuid);
 		
