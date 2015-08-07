@@ -1,10 +1,29 @@
-<%@ page buffer="256kb" %><%@ include file="../webadmin.jsp" %><%
+<%@ page buffer="256kb" %><%@ include file="../webadmin.jsp" %><%@ page import="com.iliketo.dao.MemberDAO" %>
+<%@ page import="com.iliketo.model.Member" %><%
 
-//gerando chave de recuperação de senha
-String uuid = CmsConfigILiketo.generateRandomKey(32);
-String uuid2 = CmsConfigILiketo.generateRandomKey(32);
+//Declarando chave de recuperação de senha
+String uuid1 = "";
+String uuid2 = "";
+String uuid = "";
 
-UCbrowseWebsite browseWebsite = new UCbrowseWebsite(mytext, uuid+uuid2);
+MemberDAO memberDao = new MemberDAO(db, request);
+Member member = new Member();
+member = (Member) memberDao.readByColumn("username", myrequest.getParameter("user"), Member.class);
+
+//Gerando chave de recuperação de senha
+if (member.getIdMember() != null){
+	if (member.getRetrievePassword().equals("0")){
+		uuid1 = CmsConfigILiketo.generateRandomKey(32);
+		uuid2 = CmsConfigILiketo.generateRandomKey(32);
+		uuid = uuid1+uuid2;
+		member.setRetrievePassword(uuid);
+		memberDao.update(member);
+	} else{
+		uuid = member.getRetrievePassword();
+	}
+}
+
+UCbrowseWebsite browseWebsite = new UCbrowseWebsite(mytext, uuid);
 Page mypage = browseWebsite.doRetrievePassword(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 cms.CMSpage(myrequest.getParameter("id"), mypage);
 cms.HttpHeaders(myrequest.getParameter("id"));
