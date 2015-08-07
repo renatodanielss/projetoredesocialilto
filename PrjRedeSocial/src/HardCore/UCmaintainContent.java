@@ -36,12 +36,10 @@ public class UCmaintainContent {
 		if (mytext != null) text = mytext;
 	}
 
-	public UCmaintainContent(Text mytext, String uuid, String username) {
+	public UCmaintainContent(Text mytext, String uuid) {
 		if (mytext != null) text = mytext;
 		
 		this.uuid = uuid;
-		this.username = username;
-		
 	}
 
 	public void getAccess(Session mysession, Request myrequest, Response myresponse, Configuration myconfig, DB db) {

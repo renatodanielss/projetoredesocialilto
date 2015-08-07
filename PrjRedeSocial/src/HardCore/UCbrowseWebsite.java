@@ -3,14 +3,14 @@ package HardCore;
 import java.io.*;
 import java.io.File;
 import java.text.*;
-import java.text.DateFormat;
 import java.util.*;
 import java.util.regex.*;
+
 import javax.servlet.*;
 
 public class UCbrowseWebsite {
 	private Text text = new Text();
-
+	private String uuid;
 
 
 	public UCbrowseWebsite() {
@@ -22,7 +22,11 @@ public class UCbrowseWebsite {
 		if (mytext != null) text = mytext;
 	}
 
-
+	public UCbrowseWebsite(Text mytext, String uuid) {
+		if (mytext != null) text = mytext;
+		
+		this.uuid = uuid;
+	}
 
 	public void doLog(String requestid, String requestclass, String requestdatabase, Session mysession, Request myrequest, Configuration myconfig, DB db) {
 		if (myconfig.get(db, "do_log_" + requestclass).equals("yes")) {
@@ -90,6 +94,13 @@ public class UCbrowseWebsite {
 				body = body.replaceAll("@@@username@@@", user.getUsername().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 				body = body.replaceAll("@@@password@@@", user.getPassword().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 				body = body.replaceAll("@@@email@@@", user.getEmail().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				
+				body = body.replaceAll("@@@emailbackground@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image.jsp?id=535");
+				
+				body = body.replaceAll("@@@logoimage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image.jsp?id=545");
+				
+				body = body.replaceAll("@@@resetpasswordlink@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/resetpassword.jsp?user=" + user.getUsername() + "&resetkey=" + uuid);
+				
 				HashMap<String,String> requestForm = Email.getForm(myrequest);
 				Email.send_email(text, requestForm, email.getTitle(), body, "", sender, user.getEmail(), cc, bcc, "", "", myrequest.getServerName(), server, mysession, myrequest, myresponse, myconfig, db);
 				if ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "retrieve_password_confirmation").equals(""))) {
@@ -100,6 +111,13 @@ public class UCbrowseWebsite {
 				page.setBody(page.getBody().replaceAll("@@@username@@@", user.getUsername().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")));
 				page.setBody(page.getBody().replaceAll("@@@password@@@", user.getPassword().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")));
 				page.setBody(page.getBody().replaceAll("@@@email@@@", user.getEmail().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")));
+				
+				page.setBody(page.getBody().replaceAll("@@@emailbackground@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image.jsp?id=535"));
+				
+				page.setBody(page.getBody().replaceAll("@@@logoimage@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/image.jsp?id=545"));
+				
+				page.setBody(page.getBody().replaceAll("@@@resetpasswordlink@@@", myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + "/resetpassword.jsp?user=" + user.getUsername() + "&resetkey=" + uuid));
+				
 			} else {
 				if ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "retrieve_password_error").equals(""))) {
 					page = getPageById(mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "retrieve_password_error"), server, mysession, myrequest, myresponse, myconfig, db);

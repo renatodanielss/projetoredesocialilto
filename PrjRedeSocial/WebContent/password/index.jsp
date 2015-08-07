@@ -1,6 +1,10 @@
 <%@ page buffer="256kb" %><%@ include file="../webadmin.jsp" %><%
 
-UCbrowseWebsite browseWebsite = new UCbrowseWebsite(mytext);
+//gerando chave de recuperação de senha
+String uuid = CmsConfigILiketo.generateRandomKey(32);
+String uuid2 = CmsConfigILiketo.generateRandomKey(32);
+
+UCbrowseWebsite browseWebsite = new UCbrowseWebsite(mytext, uuid+uuid2);
 Page mypage = browseWebsite.doRetrievePassword(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 cms.CMSpage(myrequest.getParameter("id"), mypage);
 cms.HttpHeaders(myrequest.getParameter("id"));

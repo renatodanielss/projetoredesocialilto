@@ -101,6 +101,9 @@ public class Member extends ContentILiketo{
 	@ColumnILiketo(name = "activated")
 	private String activated;
 	
+	@ColumnILiketo(name = "retrieve_password")
+	private String retrievePassword;
+	
 	public Member(){
 		
 	}
@@ -327,5 +330,13 @@ public class Member extends ContentILiketo{
 
 	public void setActivated(String activated) {
 		this.activated = activated;
+	}
+
+	public String getRetrievePassword() {
+		return retrievePassword;
+	}
+
+	public void setRetrievePassword(String retrievePassword) {
+		this.retrievePassword = retrievePassword;
 	}
 }
