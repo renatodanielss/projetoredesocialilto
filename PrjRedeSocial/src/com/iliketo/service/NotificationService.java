@@ -495,19 +495,19 @@ public class NotificationService {
 			
 			
 			String SQLCollection = "select t1.id_collection as id_collection, t1.name_collection as name_collection, t1.name_category as name_category, t1.date_updated as date_updated, "
-					+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
 					+ "from dbcollection as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
 					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_collection where n.fk_user_id != '"+myUserid+"' and n.content_type = 'collection' "
 					+ "and n.date_created > '"+dateDaysNotific+"' and n.date_created <= '"+dateNow+"'";
 			
 			String SQLItem = "select t1.id_item as id_item, t1.title_item as title_item, t1.date_updated as date_updated,  "
-					+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
 					+ "from dbcollectionitem as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
 					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_item where n.fk_user_id != '"+myUserid+"' and n.content_type = 'item' "
 					+ "and n.date_created > '"+dateDaysNotific+"' and n.date_created <= '"+dateNow+"'";
 			
 			String SQLVideo = "select t1.id_video as id_video, t1.title_video as title_video, t1.date_updated as date_updated,  "
-					+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
 					+ "from dbcollectionvideo as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
 					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_video where n.fk_user_id != '"+myUserid+"' and n.content_type = 'video' "
 					+ "and n.date_created > '"+dateDaysNotific+"' and n.date_created <= '"+dateNow+"'";
@@ -530,7 +530,7 @@ public class NotificationService {
 					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_topic where n.fk_user_id != '"+myUserid+"' and n.content_type = 'topic' "
 					+ "and n.date_created > '"+dateDaysNotific+"' and n.date_created <= '"+dateNow+"'";
 			
-			String SQLComment = "select t1.id_comment as id_comment, t1.text_comment as text_comment, t1.date_updated as date_updated,  "
+			String SQLComment = "select t1.id_comment as id_comment, t1.text_comment as text_comment, t1.date_updated as date_updated, t1.fk_topic_id as fk_topic_id,  "
 					+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
 					+ "from dbforumcomment as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
 					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_comment where n.fk_user_id != '"+myUserid+"' and n.content_type = 'comment' "
@@ -673,6 +673,7 @@ public class NotificationService {
 				col.setNameCollection(recordsCollections.get(rec).get("name_collection"));
 				col.setNameCategory(recordsCollections.get(rec).get("name_category"));
 				col.setDateUpdated(recordsCollections.get(rec).get("date_updated"));
+				m.setIdMember(recordsCollections.get(rec).get("id_member"));
 				m.setNickname(recordsCollections.get(rec).get("nickname"));
 				m.setPathPhoto(recordsCollections.get(rec).get("path_photo_member"));
 				col.setMember(m);
@@ -684,6 +685,7 @@ public class NotificationService {
 				item.setIdItem(recordsItems.get(rec).get("id_item"));
 				item.setTitle(recordsItems.get(rec).get("title_item"));
 				item.setDateUpdated(recordsItems.get(rec).get("date_updated"));
+				m.setIdMember(recordsItems.get(rec).get("id_member"));
 				m.setNickname(recordsItems.get(rec).get("nickname"));
 				m.setPathPhoto(recordsItems.get(rec).get("path_photo_member"));
 				item.setMember(m);
@@ -695,6 +697,7 @@ public class NotificationService {
 				v.setIdVideo(recordsVideos.get(rec).get("id_video"));
 				v.setTitle(recordsVideos.get(rec).get("title_video"));
 				v.setDateUpdated(recordsVideos.get(rec).get("date_updated"));
+				m.setIdMember(recordsVideos.get(rec).get("id_member"));
 				m.setNickname(recordsVideos.get(rec).get("nickname"));
 				m.setPathPhoto(recordsVideos.get(rec).get("path_photo_member"));
 				v.setMember(m);
@@ -739,6 +742,7 @@ public class NotificationService {
 				c.setIdComment(recordsComment.get(rec).get("id_comment"));
 				c.setComment(recordsComment.get(rec).get("text_comment"));
 				c.setDateUpdated(recordsComment.get(rec).get("date_updated"));
+				c.setIdTopic(recordsComment.get(rec).get("fk_topic_id"));
 				m.setNickname(recordsComment.get(rec).get("nickname"));
 				m.setPathPhoto(recordsComment.get(rec).get("path_photo_member"));
 				c.setMember(m);
@@ -774,7 +778,7 @@ public class NotificationService {
 							s = s.replaceAll("@@@pathPhoto@@@", col.getMember().getPathPhoto());	//foto membro
 							s = s.replaceAll("@@@nickname@@@", col.getMember().getNickname());		//nickname
 							s = s.replaceAll("@@@dateUpdated@@@", col.getDateUpdated());			//data publicacao
-							s = s.replaceAll("@@@redirect@@@", "");									//link da publicacao
+							s = s.replaceAll("@@@redirect@@@", "/redirect_profile_collector.jsp?idCollector="+col.getIdCollection()+"&idMember="+col.getMember().getIdMember());
 							div.append(s);
 						}
 					}					
@@ -795,7 +799,7 @@ public class NotificationService {
 							s = s.replaceAll("@@@pathPhoto@@@", item.getMember().getPathPhoto());	//foto membro
 							s = s.replaceAll("@@@nickname@@@", item.getMember().getNickname());		//nickname
 							s = s.replaceAll("@@@dateUpdated@@@", item.getDateUpdated());			//data publicacao
-							s = s.replaceAll("@@@redirect@@@", "");									//link da publicacao
+							s = s.replaceAll("@@@redirect@@@", "/redirect_info_item.jsp?idItem="+item.getIdItem()+"&idMember="+item.getMember().getIdMember());
 							div.append(s);
 						}
 					}					
@@ -816,7 +820,7 @@ public class NotificationService {
 							s = s.replaceAll("@@@pathPhoto@@@", video.getMember().getPathPhoto());	//foto membro
 							s = s.replaceAll("@@@nickname@@@", video.getMember().getNickname());	//nickname
 							s = s.replaceAll("@@@dateUpdated@@@", video.getDateUpdated());			//data publicacao
-							s = s.replaceAll("@@@redirect@@@", "");									//link da publicacao
+							s = s.replaceAll("@@@redirect@@@", "/redirect_info_item.jsp?idVideo="+video.getIdVideo()+"&idMember="+video.getMember().getIdMember());
 							div.append(s);
 						}
 					}					
@@ -829,7 +833,7 @@ public class NotificationService {
 					s = s.replaceAll("@@@pathPhoto@@@", event.getMember().getPathPhoto());	//foto membro
 					s = s.replaceAll("@@@nickname@@@", event.getMember().getNickname());	//nickname
 					s = s.replaceAll("@@@dateUpdated@@@", event.getDateUpdated());			//data publicacao
-					s = s.replaceAll("@@@redirect@@@", "");									//link da publicacao
+					s = s.replaceAll("@@@redirect@@@", "/page.jsp?id=737&idevent=" + event.getIdEvent());	//link da publicacao
 					div.append(s);
 				}
 				if(bean instanceof Announce){
@@ -840,7 +844,7 @@ public class NotificationService {
 					s = s.replaceAll("@@@pathPhoto@@@", announce.getMember().getPathPhoto());	//foto membro
 					s = s.replaceAll("@@@nickname@@@", announce.getMember().getNickname());		//nickname
 					s = s.replaceAll("@@@dateUpdated@@@", announce.getDateUpdated());			//data publicacao
-					s = s.replaceAll("@@@redirect@@@", "");										//link da publicacao
+					s = s.replaceAll("@@@redirect@@@", "/ilt/ads?id=" + announce.getIdAnnounce());	//link da publicacao
 					div.append(s);
 				}
 				if(bean instanceof Topic){
@@ -851,7 +855,7 @@ public class NotificationService {
 					s = s.replaceAll("@@@pathPhoto@@@", topic.getMember().getPathPhoto());		//foto membro
 					s = s.replaceAll("@@@nickname@@@", topic.getMember().getNickname());		//nickname
 					s = s.replaceAll("@@@dateUpdated@@@", topic.getDateUpdated());				//data publicacao
-					s = s.replaceAll("@@@redirect@@@", "");										//link da publicacao
+					s = s.replaceAll("@@@redirect@@@", "/ilt/group/forum/topic?id=" + topic.getIdTopic());		//link da publicacao
 					div.append(s);
 				}
 				if(bean instanceof Comment){
@@ -862,7 +866,7 @@ public class NotificationService {
 					s = s.replaceAll("@@@pathPhoto@@@", comment.getMember().getPathPhoto());	//foto membro
 					s = s.replaceAll("@@@nickname@@@", comment.getMember().getNickname());		//nickname
 					s = s.replaceAll("@@@dateUpdated@@@", comment.getDateUpdated());			//data publicacao
-					s = s.replaceAll("@@@redirect@@@", "");										//link da publicacao
+					s = s.replaceAll("@@@redirect@@@", "/ilt/group/forum/topic?id=" + comment.getIdTopic());	//link da publicacao
 					div.append(s);
 				}
 			}			

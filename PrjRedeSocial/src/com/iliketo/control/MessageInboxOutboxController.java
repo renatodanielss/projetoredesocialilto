@@ -113,6 +113,8 @@ public class MessageInboxOutboxController {
 		MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);
 		
 		MessageInbox message = (MessageInbox) cms.getObjectOfParameter(MessageInbox.class);	//objeto com dados do form
+		message.setSenderHidden("n");			//nao oculta
+		message.setReceiverHidden("n");			//nao oculta
 		
 		messageDAO.create(message);				//cria e envia mensagem		
 		response.getWriter().write("ok");		//enviado com sucesso, retorna 'ok' para view
@@ -150,5 +152,32 @@ public class MessageInboxOutboxController {
 		
 	}
 	
+	/**
+	 * Metodo marca mensagens como oculta/excluida para usario remetente ou destinatario
+	 */
+	@RequestMapping(value={"/ajax/message/deleteMessages"})
+	public void deleteMessages(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "ajax @MessageInboxOutboxController url='/ajax/message/deleteMessages'");
+		
+		//dao e cms
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);
+		
+		String id = request.getParameter("id");
+		MessageInbox message = (MessageInbox) messageDAO.readById(id, MessageInbox.class); //ler dados atual da mensagem
+		
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		
+		if(message.getSenderIdMember().equals(myUserid)){
+			message.setSenderHidden("y");	//marca sender como oculta
+		}else if(message.getReceiverIdMember().equals(myUserid)){
+			message.setReceiverHidden("y");	//marca Receiver como oculta
+		}
+		messageDAO.update(message);			//atualiza mensagem marcando como oculta(excluida) para o destinatario ou remetente		
+		
+		response.getWriter().write("ok");	//delete ok
+		
+	}
 
 }

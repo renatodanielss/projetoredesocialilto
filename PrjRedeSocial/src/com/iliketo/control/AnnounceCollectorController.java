@@ -222,7 +222,7 @@ public class AnnounceCollectorController {
 		}
 			
 		
-		return "redirect:/ads.jsp?id=" + idCreated; 	//success - page anuncio criado
+		return "redirect:/ilt/ads?id=" + idCreated; 	//success - page anuncio criado
 	}
 	
 	
@@ -371,6 +371,37 @@ public class AnnounceCollectorController {
 		model.addAttribute("announce", announce);									//recuperar dados do anuncio na jsp
 		
 		return "page.jsp?id=856"; //page ads see bids
+	}
+	
+	
+	@RequestMapping(value={"/announce/delete"})
+	public String deleteCollection(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @AnnounceCollectorController url='/announce/delete'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		
+		String id = request.getParameter("id");										//id anuncio
+		Announce announce = (Announce) announceDAO.readById(id, Announce.class);	//ler anuncio
+		
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		String redirect = "";
+		if(announce.getIdMember().equals(myUserid)){
+			if(announce.getTypeAnnounce().contains("Sell")){
+				redirect = "/page.jsp?id=751&id_member=" + myUserid;
+			}else if(announce.getTypeAnnounce().contains("Auction")){
+				redirect = "/page.jsp?id=753&id_member=" + myUserid;
+			}else if(announce.getTypeAnnounce().contains("Exchange")){
+				redirect = "/page.jsp?id=752&id_member=" + myUserid;
+			}else if(announce.getTypeAnnounce().contains("Purchase")){
+				redirect = "/page.jsp?id=756&id_member=" + myUserid;
+			}
+			announceDAO.deleteAnnounce(id);		//deleta anuncio
+		}
+				
+		return "redirect:" + redirect;			//success
 	}
 	
 	

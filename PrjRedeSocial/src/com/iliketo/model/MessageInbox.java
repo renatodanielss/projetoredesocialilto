@@ -37,6 +37,12 @@ public class MessageInbox extends ContentILiketo {
 	
 	@ColumnILiketo(name = "fk_content_id")
 	private String idContent;
+	
+	@ColumnILiketo(name = "receiver_hidden")
+	private String receiverHidden;
+	
+	@ColumnILiketo(name = "sender_hidden")
+	private String senderHidden;
 
 	public MessageInbox(){ }
 
@@ -118,6 +124,26 @@ public class MessageInbox extends ContentILiketo {
 
 	public void setIdContent(String idContent) {
 		this.idContent = idContent;
+	}
+
+
+	public String getReceiverHidden() {
+		return receiverHidden;
+	}
+
+
+	public void setReceiverHidden(String receiverHidden) {
+		this.receiverHidden = receiverHidden;
+	}
+
+
+	public String getSenderHidden() {
+		return senderHidden;
+	}
+
+
+	public void setSenderHidden(String senderHidden) {
+		this.senderHidden = senderHidden;
 	}
 	
 
