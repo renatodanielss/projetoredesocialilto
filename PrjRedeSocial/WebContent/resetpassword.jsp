@@ -17,12 +17,13 @@
 		System.out.println("Verdadeiro ou falso: " + verdadeiro.toString());
 		member.setRetrievePassword ("0");
 		memberDao.update(member);
+		myrequest.setParameter("old_parameter", user.getPassword());
 		%>
 		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
 		<jsp:forward page="/login_post_iliketo.jsp">
 			<jsp:param value="<%=user.getUsername()%>" name="username"/>
 			<jsp:param value="<%=user.getPassword()%>" name="password"/>
-			<jsp:param value="/page.jsp?id=286" name="redirect"/>
+			<jsp:param value="/page.jsp?id=859" name="redirect"/>
 		</jsp:forward>
 		<%
 	}
