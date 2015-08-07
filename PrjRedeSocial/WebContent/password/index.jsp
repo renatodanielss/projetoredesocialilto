@@ -8,7 +8,7 @@ String uuid = "";
 
 MemberDAO memberDao = new MemberDAO(db, request);
 Member member = new Member();
-member = (Member) memberDao.readByColumn("username", myrequest.getParameter("user"), Member.class);
+member = (Member) memberDao.readByColumn("email", myrequest.getParameter("email"), Member.class);
 
 System.out.println("Email: " + myrequest.getParameter("email"));
 System.out.println("Username: " + myrequest.getParameter("username"));
