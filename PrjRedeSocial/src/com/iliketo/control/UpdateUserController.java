@@ -74,7 +74,6 @@ public class UpdateUserController {
 	 * @return
 	 */
 	public boolean validatePassword(DB db, HttpServletRequest request){
-		System.out.println("Validate password username: " + request.getParameter("username"));
 		if (request.getParameter("old_password") != null){
 			if(!IliketoDAO.authenticUsernamePassword(db, tableUsers, request.getParameter("username"), request.getParameter("old_password"))){
 				msg = "Old password is not correct!"; //msg padrão do erro para outros idioma "<br>" + text.display("register.error.exists");
