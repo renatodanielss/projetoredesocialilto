@@ -15,7 +15,7 @@ System.out.println("Username: " + myrequest.getParameter("username"));
 
 //Gerando chave de recuperação de senha
 if (member.getIdMember() != null){
-	if (member.getRetrievePassword().equals("0") || member.getRetrievePassword().equals("1")){
+	if (member.getRetrievePassword().equals("0")){
 		uuid1 = CmsConfigILiketo.generateRandomKey(32);
 		uuid2 = CmsConfigILiketo.generateRandomKey(32);
 		uuid = uuid1+uuid2;

@@ -14,14 +14,15 @@
 		System.out.println("Usuário link:" + myrequest.getParameter("user"));
 		System.out.println("Recuperação = " + member.getRetrievePassword() + "\nid = " + member.getEmail());
 		System.out.println("Verdadeiro ou falso: " + verdadeiro.toString());
-		member.setRetrievePassword ("1");
+		member.setRetrievePassword ("0");
 		memberDao.update(member);
 		myrequest.setParameter("old_parameter", user.getPassword());
 		%>
 		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
-		<jsp:forward page="/page.jsp?id=859">
+		<jsp:forward page="/login_post_iliketo.jsp">
 			<jsp:param value="<%=user.getUsername()%>" name="username"/>
 			<jsp:param value="<%=user.getPassword()%>" name="password"/>
+			<jsp:param value="/page.jsp?id=859" name="redirect"/>
 		</jsp:forward>
 		<%
 	}
