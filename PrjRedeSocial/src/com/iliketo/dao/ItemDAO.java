@@ -26,7 +26,10 @@ public class ItemDAO extends GenericDAO{
 		super.deleteFilePhysically(namePhotoDelete, localImagePath); //metodo deleta fisicamente
 		
 		IliketoDAO.deleteDadosIliketo(db, "dbcollectionitem", "id", idDeleteItem); //metodo deleta dados na database
-
+		
+		//delete anuncio do item se houver
+		IliketoDAO.deleteDadosIliketo(db, "dbannounce", "fk_item_id", idDeleteItem); //metodo deleta dados na database
+		
 	}
 	
 }
