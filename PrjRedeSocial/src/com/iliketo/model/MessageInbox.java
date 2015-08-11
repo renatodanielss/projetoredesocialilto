@@ -20,10 +20,10 @@ public class MessageInbox extends ContentILiketo {
 	@ColumnILiketo(name = "subject")
 	private String subject;
 	
-	@ColumnILiketo(name = "receiver_user_id")
+	@ColumnILiketo(name = "receiver_user_id")	//id membro destinatario
 	private String receiverIdMember;
 	
-	@ColumnILiketo(name = "sender_user_id")
+	@ColumnILiketo(name = "sender_user_id")		//id membro remetente
 	private String senderIdMember;
 	
 	@ColumnILiketo(name = "was_read")
@@ -38,11 +38,17 @@ public class MessageInbox extends ContentILiketo {
 	@ColumnILiketo(name = "fk_content_id")
 	private String idContent;
 	
-	@ColumnILiketo(name = "receiver_hidden")
+	@ColumnILiketo(name = "receiver_hidden")	//exclui/oculta msg destinatario(caixa entrada)
 	private String receiverHidden;
 	
-	@ColumnILiketo(name = "sender_hidden")
+	@ColumnILiketo(name = "sender_hidden")		//exclui/oculta msg remetente(caixa saida)
 	private String senderHidden;
+	
+	@ColumnILiketo(name = "fk_msg_id")			//id da mensagem para responder
+	private String fkMsgId;
+	
+	@ColumnILiketo(name = "fk_announce_id")		//id do anuncio
+	private String idAnnounce;
 
 	public MessageInbox(){ }
 
@@ -144,6 +150,26 @@ public class MessageInbox extends ContentILiketo {
 
 	public void setSenderHidden(String senderHidden) {
 		this.senderHidden = senderHidden;
+	}
+
+
+	public String getFkMsgId() {
+		return fkMsgId;
+	}
+
+
+	public void setFkMsgId(String fkMsgId) {
+		this.fkMsgId = fkMsgId;
+	}
+
+
+	public String getIdAnnounce() {
+		return idAnnounce;
+	}
+
+
+	public void setIdAnnounce(String idAnnounce) {
+		this.idAnnounce = idAnnounce;
 	}
 	
 

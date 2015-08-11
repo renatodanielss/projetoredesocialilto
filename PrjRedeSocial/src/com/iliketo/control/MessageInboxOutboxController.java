@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
-import com.iliketo.dao.CommentDAO;
+import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.MessageInboxDAO;
-import com.iliketo.model.Comment;
+import com.iliketo.model.Announce;
 import com.iliketo.model.MessageInbox;
-import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -67,7 +66,12 @@ public class MessageInboxOutboxController {
 			ModelILiketo model = new ModelILiketo(request, response);
 			messageInbox.setWasRead("y");						//set msg lida
 			messageDAO.update(messageInbox);					//atualiza mensagem lida
-			model.addAttribute("messageInbox", messageInbox);	//add objeto recuperar na jsp
+			model.addAttribute("messageInbox", messageInbox);	//add objeto recuperar na jsp			
+			if(messageInbox.getIdAnnounce() != null && !messageInbox.getIdAnnounce().equals("")){
+				AnnounceDAO dao = new AnnounceDAO(db, request);
+				Announce announce = (Announce) dao.readById(messageInbox.getIdAnnounce(), Announce.class); //recupera dados do anuncio da mensagem
+				model.addAttribute("announce", announce);		//add objeto recuperar na jsp
+			}
 			return "/page.jsp?id=837"; 							//page visualizar mensagem			
 		}else{
 			return "/page.jsp?id=xxx"; 							//page conteudo nao disponivel
@@ -95,6 +99,11 @@ public class MessageInboxOutboxController {
 		if(messageInbox != null && messageInbox.getSenderIdMember().equals(myUserid)){			
 			ModelILiketo model = new ModelILiketo(request, response);
 			model.addAttribute("messageInbox", messageInbox);	//add objeto recuperar na jsp
+			if(messageInbox.getIdAnnounce() != null && !messageInbox.getIdAnnounce().equals("")){
+				AnnounceDAO dao = new AnnounceDAO(db, request);
+				Announce announce = (Announce) dao.readById(messageInbox.getIdAnnounce(), Announce.class); //recupera dados do anuncio da mensagem
+				model.addAttribute("announce", announce);		//add objeto recuperar na jsp
+			}
 			return "/page.jsp?id=839"; 							//page visualizar mensagem			
 		}else{
 			return "/page.jsp?id=xxx"; 							//page conteudo nao disponivel
