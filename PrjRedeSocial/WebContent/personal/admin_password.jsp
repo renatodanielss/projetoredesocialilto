@@ -6,11 +6,9 @@
 	String password = "";
 	UpdateUserController controller = new UpdateUserController();
 	
-	if(!myrequest.getParameter("password").equals(mysession.get("password"))){
-		if(!controller.validatePassword(db, request)){
-			if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
-				password = (String) request.getAttribute("msgError");
-			}
+	if(!controller.validatePassword(db, request)){
+		if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
+			password = (String) request.getAttribute("msgError");
 		}
 	}
 	
@@ -19,20 +17,8 @@
 	if(!password.equals("")){ //se conter error na validação do registro, adiciona o erro na page
 				
 		//reponse mesma pagina passando error no parametro
-		myresponse.sendRedirect("/page.jsp?id=678&p=" + password); //recuperar parametro no html >> ###error###	%>
-			
-		<script>
-			alert("teste");
-			if(document.getElementById("divErro").innerHTML != ""){
-				document.getElementById("divErro").innerHTML += "<p>&nbsp;<font color='red'><b>" + <%=password%> + "</b></font></p><br>";
-			}
-			else{
-				document.getElementById("divErro").innerHTML += "<p>&nbsp;<font color='red'><b>" + <%=password%> + "</b></font></p><br>";
-				document.getElementById("divErro").innerHTML = "<p><font color='red'><b>Errors:</b></font></p><br>" + document.getElementById("divErro").innerHTML;
-			}
-
-	    </script> <%
-		
+		myresponse.sendRedirect("/page.jsp?id=678&p=" + password); //recuperar parametro no html >> ###error###	
+				
 		//Cria um UCbrowseWebsite
 		//UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
 		//mypage = browseWebsite.getPage(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
