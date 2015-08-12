@@ -45,6 +45,7 @@
 	
 		Page adminpage = maintainContent.getPersonalAdmin(myuser, mypage, servletcontext, mysession, myrequest, myresponse, myconfig, db);
 		mysession.set("id", adminpage.getId());
+		System.out.println("Old Password:" + mysession.get("old_password"));
 		
 		%>
 		<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
