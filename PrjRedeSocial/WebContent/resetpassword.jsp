@@ -16,7 +16,6 @@
 		System.out.println("Verdadeiro ou falso: " + verdadeiro.toString());
 		member.setRetrievePassword ("0");
 		memberDao.update(member);
-		myrequest.setParameter("old_parameter", user.getPassword());
 		
 		ServletContext server = request.getServletContext();
 		
@@ -31,8 +30,7 @@
 		%>
 		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
 		<jsp:forward page="/page.jsp?id=859">
-			<jsp:param value="<%=user.getUsername()%>" name="username"/>
-			<jsp:param value="<%=user.getPassword()%>" name="password"/>
+			<jsp:param value="<%=user.getPassword()%>" name="old_parameter"/>
 		</jsp:forward>
 		<%
 	}
