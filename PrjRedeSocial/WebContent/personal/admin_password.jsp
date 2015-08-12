@@ -24,10 +24,10 @@
 		<script type="text/javascript">
 
 			if(document.getElementById("divErro").innerHTML != ""){
-				document.getElementById("divErro").innerHTML += "<p>&nbsp;<font color='red'><b>" + password + "</b></font></p><br>";
+				document.getElementById("divErro").innerHTML += "<p>&nbsp;<font color='red'><b>" + <%=password%> + "</b></font></p><br>";
 			}
 			else{
-				document.getElementById("divErro").innerHTML += "<p>&nbsp;<font color='red'><b>" + password + "</b></font></p><br>";
+				document.getElementById("divErro").innerHTML += "<p>&nbsp;<font color='red'><b>" + <%=password%> + "</b></font></p><br>";
 				document.getElementById("divErro").innerHTML = "<p><font color='red'><b>Errors:</b></font></p><br>" + document.getElementById("divErro").innerHTML;
 			}
 
