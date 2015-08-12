@@ -6,6 +6,9 @@
 	String password = "";
 	UpdateUserController controller = new UpdateUserController();
 	
+	request.setAttribute("password", mysession.get("password"));
+	System.out.println("Password MySession: " + mysession.get("password"));
+	
 	if(!controller.validatePassword(db, request)){
 		if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
 			password = (String) request.getAttribute("msgError");
@@ -17,7 +20,7 @@
 	if(!password.equals("")){ //se conter error na validação do registro, adiciona o erro na page
 				
 		//reponse mesma pagina passando error no parametro
-		myresponse.sendRedirect("/page.jsp?id=678&p=" + password); //recuperar parametro no html >> ###error###	
+		myresponse.sendRedirect("/page.jsp?id=859&p=" + password); //recuperar parametro no html >> ###error###	
 				
 		//Cria um UCbrowseWebsite
 		//UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
