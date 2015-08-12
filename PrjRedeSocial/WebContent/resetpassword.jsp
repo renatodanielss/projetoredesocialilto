@@ -26,6 +26,8 @@
 		myrequest.setParameter("password", user.getPassword());
 		
 		Login.login(text, null, "/login.jsp", "-", server, mysession, myrequest, myresponse, myconfig, db, myconfig.get(db, "require_ssl_user"), database);
+		System.out.println("Password: " + user.getPassword());
+		
 		%>
 		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
 		<jsp:forward page="/page.jsp?id=859">
@@ -33,7 +35,6 @@
 			<jsp:param value="<%=user.getPassword()%>" name="password"/>
 		</jsp:forward>
 		<%
-		System.out.println("Password: " + user.getPassword());
 	}
 	else{
 		%>
