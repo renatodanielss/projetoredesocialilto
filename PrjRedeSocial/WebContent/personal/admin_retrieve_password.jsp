@@ -15,6 +15,8 @@
 		}
 	}
 	
+	System.out.println("Erro password: " + password);
+	
 	Page mypage = null;
 	
 	if(!password.equals("")){ //se conter error na validação do registro, adiciona o erro na page
