@@ -19,7 +19,7 @@
 	if(!password.equals("")){ //se conter error na validação do registro, adiciona o erro na page
 				
 		//reponse mesma pagina passando error no parametro
-		//myresponse.sendRedirect("/page.jsp?id=678&p=" + password); //recuperar parametro no html >> ###error###	%>
+		myresponse.sendRedirect("/page.jsp?id=678&p=" + password); //recuperar parametro no html >> ###error###	%>
 			
 		<script type="text/javascript">
 
