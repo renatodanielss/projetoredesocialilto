@@ -21,8 +21,8 @@
 		//reponse mesma pagina passando error no parametro
 		myresponse.sendRedirect("/page.jsp?id=678&p=" + password); //recuperar parametro no html >> ###error###	%>
 			
-		<script type="text/javascript">
-
+		<script>
+			alert("teste");
 			if(document.getElementById("divErro").innerHTML != ""){
 				document.getElementById("divErro").innerHTML += "<p>&nbsp;<font color='red'><b>" + <%=password%> + "</b></font></p><br>";
 			}
