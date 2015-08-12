@@ -2,7 +2,6 @@ package com.iliketo.control;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +10,7 @@ import HardCore.DB;
 
 import com.iliketo.dao.InterestDAO;
 import com.iliketo.model.Interest;
-import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
 
@@ -24,8 +23,31 @@ public class InterestController {
 		
 		System.out.println("Log - " + "request @InterestController url='/interest/registerInterest'");
 		
-		return "/page.jsp?id=695"; 			//page form register interest
+		return "/page.jsp?id=696"; 			//page add the group to your interest
 		
+	}
+	
+	@RequestMapping(value={"/interest/profile"})
+	public String myInterestProfile(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @InterestController url='/interest/profile'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		InterestDAO interestDAO = new InterestDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		
+		String id = request.getParameter("id");										//id interesse
+		Interest interest = (Interest) interestDAO.readById(id, Interest.class);	//ler dados interesse
+		
+		//valida interesse do membro
+		if(interest != null && interest.getIdMember().equals(myUserid)){
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("interest", interest);
+			return "/page.jsp?id=699"; 				//page interest profile
+		}else{
+			return "page.jsp?id=xxx"; 				//page conteudo nao disponivel
+		}
 	}
 	
 	@RequestMapping(value={"/interest/createInterest"})
@@ -35,17 +57,22 @@ public class InterestController {
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		HttpSession session = request.getSession();
 		InterestDAO interestDAO = new InterestDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
 		
-		Interest interest = (Interest) cms.getObjectOfParameter(Interest.class);	//objeto com dados do form
-		String idCreate = interestDAO.create(interest);								//cria interesse
-		session.setAttribute(Str.S_ID_INTEREST, idCreate);							//seta id na sessao
+		String idCategory = request.getParameter("idCat");
+		String nameCategory = request.getParameter("nameCat");
 		
-		System.out.println("Log - Interesse criado ok, id interesse: " + idCreate + " - nome: " + interest.getNameInterest());
+		if(idCategory != null && !idCategory.equals("") && nameCategory != null && !nameCategory.equals("")){
+			Interest interest = new Interest();
+			interest.setIdCategory(idCategory);
+			interest.setNameCategory(nameCategory);
+			interest.setIdMember(myUserid);
+			String idCreate = interestDAO.create(interest);		//cria interesse
+			System.out.println("Log - Interesse criado ok, id interesse: " + idCreate + " - nome categoria/grupo: " + interest.getNameCategory());
+		}
 		
-		return "redirect:/page.jsp?id=696"; 		//sucess
+		return "redirect:/ilt/groupCategory?id=" + idCategory + "&cat=" + nameCategory; 	//sucess page group
 		
 	}
 		

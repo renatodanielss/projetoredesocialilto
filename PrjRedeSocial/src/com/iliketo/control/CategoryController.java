@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
+import com.iliketo.dao.IliketoDAO;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.Str;
 
@@ -53,6 +55,29 @@ public class CategoryController {
 		response.getWriter().write(json);
 	}
 	
-
+	/**
+	 * Redireciona para pagina principal do grupo
+	 */
+	@RequestMapping(value={"/groupCategory"})
+	private String groupCategory(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory'");
+		
+		HttpSession session = request.getSession();		
+		String s_id_category = (String) session.getAttribute("s_id_category");	//id da categoria na sessao
+		String idCategory = request.getParameter("id");							//id da categoria requisitado na url
+		
+		//seta configuracoes do id da categoria, grupo e forum na sessao
+		if(s_id_category == null || !idCategory.equals(s_id_category)){
+			DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+			String idGroup = IliketoDAO.getValueOfDatabase(db, "id_group", "dbgroup", "fk_category_id", idCategory);
+			String idForum = IliketoDAO.getValueOfDatabase(db, "id_forum", "dbforum", "fk_group_id", idGroup);
+			session.setAttribute("s_id_category", idCategory);
+			session.setAttribute("s_id_group", idGroup);
+			session.setAttribute("s_id_forum", idForum);
+		}
+		
+		return "page.jsp?id=623&group=" + session.getAttribute("idGroup"); 	//page group of category
+	}
 
 }
