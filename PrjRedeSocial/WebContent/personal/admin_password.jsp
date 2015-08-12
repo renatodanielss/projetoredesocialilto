@@ -28,7 +28,7 @@
 			}
 			else{
 				document.getElementById("divErro").innerHTML += "<p>&nbsp;<font color='red'><b>" + password + "</b></font></p><br>";
-				div.innerHTML = "<p><font color='red'><b>Errors:</b></font></p><br>" + div.innerHTML;
+				document.getElementById("divErro").innerHTML = "<p><font color='red'><b>Errors:</b></font></p><br>" + document.getElementById("divErro").innerHTML;
 			}
 
 	    </script> <%
