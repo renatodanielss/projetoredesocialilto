@@ -2,6 +2,7 @@
 <%@ page import="com.iliketo.control.UpdateUserController" %><%@ page import="com.iliketo.dao.IliketoDAO"%><%
 	
 	//***Executa e valida Registro iliketo**** 
+	System.out.println("Old Password:" + mysession.get("old_password"));
 	String email = "";
 	String password = "";
 	UpdateUserController controller = new UpdateUserController();
@@ -28,8 +29,6 @@
 		//website.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_doctype");
 		
 	}else{
-		
-		System.out.println("Old Password:" + mysession.get("old_password"));
 		
 		String idRegisterUser = IliketoDAO.getValueOfDatabase(db, "id", "dbmembers", "id_member", mysession.get("userid"));
 		mytext = new Text(myrequest);
