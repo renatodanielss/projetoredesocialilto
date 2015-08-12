@@ -33,6 +33,7 @@
 			<jsp:param value="<%=user.getPassword()%>" name="password"/>
 		</jsp:forward>
 		<%
+		System.out.println("Password: " + user.getPassword());
 	}
 	else{
 		%>
