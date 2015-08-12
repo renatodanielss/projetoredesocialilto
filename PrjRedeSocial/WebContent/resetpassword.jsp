@@ -8,6 +8,7 @@
 	User user = new User();
 	user.readByUsername(myconfig.get(db, "superadmin"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myrequest.getParameter("user"));
 	
+	System.out.println("Password: " + user.getPassword());
 	
 	if (member.getRetrievePassword().equals(myrequest.getParameter("resetkey")) && !member.getRetrievePassword().equals("0")){
 		Boolean verdadeiro = member.getRetrievePassword() == "0";
@@ -25,7 +26,6 @@
 		myrequest.setParameter("password", user.getPassword());
 		
 		Login.login(text, null, "/login.jsp", "-", server, mysession, myrequest, myresponse, myconfig, db, myconfig.get(db, "require_ssl_user"), database);
-		System.out.println("Password: " + user.getPassword());
 		
 		%>
 		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
