@@ -287,7 +287,7 @@ public class CollectionController {
 			}
 		}
 		
-		return "redirect:/ilt/groupCategory?id=" + idCategory + "&cat=" + nameCategory; 		//sucess page category of group
+		return "redirect:/ilt/groupCategory?idCat=" + idCategory + "&cat=" + nameCategory; 		//sucess page category of group
 	}
 	
 	@RequestMapping(value={"/collection/ajaxParticipateCategory"})

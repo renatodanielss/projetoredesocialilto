@@ -101,7 +101,7 @@ public class CollectionDAO extends GenericDAO{
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		String dataid = CS.getDATA(db, nameDatabase);
 		
-		String SQL = "SELECT * FROM " + dataid + " WHERE " + CS.getCOL(db, nameDatabase, "id_member") + " = '" + idMember +"';";
+		String SQL = "SELECT * FROM " + dataid + " WHERE " + CS.getCOL(db, nameDatabase, "fk_user_id") + " = '" + idMember +"';";
 		HashMap<String, HashMap<String, String>> rows = db.query_records(SQL);
 		
 		List<Collection> list = new ArrayList<Collection>();

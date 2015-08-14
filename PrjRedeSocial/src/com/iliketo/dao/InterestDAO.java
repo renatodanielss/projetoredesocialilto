@@ -73,11 +73,11 @@ public class InterestDAO extends GenericDAO{
 	public List<Interest> listInterestByUser(String idMember){
 		
 		DB db = super.getDb();
-		String nameDatabase = super.getNameDatabase();		
+		String nameDatabase = super.getNameDatabase();
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		String dataid = CS.getDATA(db, nameDatabase);
 		
-		String SQL = "SELECT * FROM " + dataid + " WHERE " + CS.getCOL(db, nameDatabase, "id_member") + " = '" + idMember +"';";
+		String SQL = "SELECT * FROM " + dataid + " WHERE " + CS.getCOL(db, nameDatabase, "fk_user_id") + " = '" + idMember +"';";
 		HashMap<String, HashMap<String, String>> rows = db.query_records(SQL);
 		
 		List<Interest> list = new ArrayList<Interest>();

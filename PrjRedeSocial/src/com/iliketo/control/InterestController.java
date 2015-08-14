@@ -84,7 +84,7 @@ public class InterestController {
 			System.out.println("Log - Interesse criado ok, id interesse: " + idCreate + " - nome categoria/grupo: " + interest.getNameCategory());
 		}
 		
-		return "redirect:/ilt/groupCategory?id=" + idCategory + "&cat=" + nameCategory; 	//sucess page group
+		return "redirect:/ilt/groupCategory?idCat=" + idCategory + "&cat=" + nameCategory; 	//sucess page group
 		
 	}
 		
