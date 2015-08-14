@@ -69,7 +69,7 @@ public class CategoryController {
 		
 		HttpSession session = request.getSession();		
 		String s_id_category = (String) session.getAttribute("s_id_category");	//id da categoria na sessao
-		String idCategory = request.getParameter("id");							//id da categoria requisitado na url
+		String idCategory = request.getParameter("idCat");						//id da categoria requisitado na url
 		
 		//seta configuracoes do id da categoria, grupo e forum na sessao
 		if(s_id_category == null || !idCategory.equals(s_id_category)){
@@ -94,7 +94,7 @@ public class CategoryController {
 		
 		HttpSession session = request.getSession();
 		String s_id_category = (String) session.getAttribute("s_id_category");	//id da categoria na sessao
-		String idCategory = request.getParameter("id");							//id da categoria requisitado na url
+		String idCategory = request.getParameter("idCat");						//id da categoria requisitado na url
 		
 		//seta configuracoes do id da categoria, grupo e forum na sessao
 		if(s_id_category == null || !idCategory.equals(s_id_category)){
