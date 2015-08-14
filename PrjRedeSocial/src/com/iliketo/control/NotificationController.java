@@ -1,6 +1,7 @@
 package com.iliketo.control;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,27 +27,46 @@ public class NotificationController {
 	
 	
 	/**
-	 * Redireciona para pagina configuracao de notificacao de interesse
+	 * Redireciona para pagina configuracao de notificacao do grupo
 	 */
-	@RequestMapping(value={"/notification/interest/settings"})
-	public String pageNoticiationsSettingsInterest(HttpServletRequest request, HttpServletResponse response){
+	@RequestMapping(value={"/notification/groupCategory/settings"})
+	public String pageNoticiationsSettingsGroup(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @NotificationController url='/notification/interest/settings'");
+		System.out.println("Log - " + "request @NotificationController url='/notification/group/settings'");
 		
-		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);				//db
-		InterestDAO dao = new InterestDAO(db, request);						//dao
+		//db e dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		InterestDAO interestDAO = new InterestDAO(db, request);
+		CollectionDAO collectionDAO = new CollectionDAO(db, request);
 		
-		String id = request.getParameter("id");		
-		Interest interest = (Interest) dao.readById(id, Interest.class);	//ler dados do interesse
+		String idCategory = request.getParameter("idCat");
+		String myUserid = (String) request.getSession().getAttribute("userid");
 		
-		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("interest", interest);		//set model recuperar na view jsp
 		
-		return "page.jsp?id=810";						//page Interest notifications 
+		//verifica se o membro possui uma colecao ou interesse no grupo (obs configuracoes de notificacoes sao vinculadas a colecao ou interesse q pertence ao grupo)
+		List<Collection> listCollection = collectionDAO.listCollectionByUser(myUserid);
+		List<Interest> listInterest = interestDAO.listInterestByUser(myUserid);
+		
+		for(Collection c : listCollection){
+			if(c.getIdCategory() != null && c.getIdCategory().equals(idCategory)){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("collection", c);		//set model recuperar na view jsp
+				return "page.jsp?id=807";					//page group notifications
+			}
+		}
+		for(Interest i : listInterest){
+			if(i.getIdCategory() != null && i.getIdCategory().equals(idCategory)){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("interest", i);			//set model recuperar na view jsp
+				return "page.jsp?id=810";					//page group notifications
+			}
+		}
+		
+		return "page.jsp?id=703"; 	//membro sem acesso ao grupo, page join group of category
 	}
 	
 	/**
-	 * Salva configuracoes da notificacao de interesse
+	 * Salva configuracoes da notificacao do grupo no interesse
 	 */
 	@RequestMapping(value={"/notification/interest/saveNotifications"})
 	public String saveInterestNotifications(HttpServletRequest request, HttpServletResponse response){
@@ -59,35 +79,14 @@ public class NotificationController {
 		
 		Interest interest = (Interest) cms.getObjectOfParameter(Interest.class);	 	//objeto dados do form html		
 		
-		dao.updateNotificationSettings(interest);			//atualiza dados		
+		dao.updateNotificationSettings(interest);			//atualiza dados
 		System.out.println("Log - " + "Configuracoes de notificacoes salvas - id interesse: " + interest.getIdInterest());
 		
-		return "redirect:/redirect_profile_interest.jsp?myIdInterest=" + interest.getIdInterest();	 //success page interest profile
-	}
-	
-	
-	/**
-	 * Redireciona para pagina configuracao de notificacao da colecao
-	 */
-	@RequestMapping(value={"/notification/collection/settings"})
-	public String pageNoticiationsSettings(HttpServletRequest request, HttpServletResponse response){
-		
-		System.out.println("Log - " + "request @NotificationController url='/notification/collection/settings'");
-		
-		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);				//db
-		CollectionDAO dao = new CollectionDAO(db, request);					//dao
-		
-		String idCol = request.getParameter("id");		
-		Collection collection = (Collection) dao.readById(idCol, Collection.class);	//ler dados colecao
-		
-		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("collection", collection);	//set model recuperar na view jsp
-		
-		return "page.jsp?id=807";						//page Collection notifications 
+		return "redirect:/ilt/groupCategory?id=" + interest.getIdCategory() + "&cat=" + interest.getNameCategory(); 	//sucess page category of group
 	}
 	
 	/**
-	 * Salva configuracoes da notificacao
+	 * Salva configuracoes da notificacao do grupo na colecao
 	 */
 	@RequestMapping(value={"/notification/collection/saveNotifications"})
 	public String saveCollectionNotifications(HttpServletRequest request, HttpServletResponse response){
@@ -103,8 +102,10 @@ public class NotificationController {
 		dao.updateNotificationSettings(collection);				//atualiza dados		
 		System.out.println("Log - " + "Configuracoes de notificacoes salvas - id colecao: " + collection.getIdCollection());
 		
-		return "redirect:/ilt/collection/profile?id=" + collection.getIdCollection();	 //success page collection profile
+		return "redirect:/ilt/groupCategory?id=" + collection.getIdCategory() + "&cat=" + collection.getNameCategory(); 	//sucess page category of group
 	}
+	
+	
 	
 	/**
 	 * Retorna o total de notificacao nao lida pelo ajax

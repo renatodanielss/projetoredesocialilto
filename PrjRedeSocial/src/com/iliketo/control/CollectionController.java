@@ -11,10 +11,12 @@ import HardCore.DB;
 
 import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.IliketoDAO;
+import com.iliketo.dao.InterestDAO;
 import com.iliketo.dao.ItemDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Collection;
+import com.iliketo.model.Interest;
 import com.iliketo.model.Item;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
@@ -254,21 +256,38 @@ public class CollectionController {
 		String idCollection = request.getParameter("idCollection");
 		String idCategory = request.getParameter("idCat");
 		String nameCategory = request.getParameter("nameCat");
-		Collection collection = (Collection) dao.readById(idCollection, Collection.class);	//ler colecao	
+		Collection collection = (Collection) dao.readById(idCollection, Collection.class);	//ler colecao
 		
 		if(!collection.getIdCategory().equals(idCategory)){		//valida se colecao pertence a categoria
 			//entra para categoria
 			collection.setIdCategory(idCategory);
 			collection.setNameCategory(nameCategory);
-			dao.update(collection);						//update categoria da colecao
-			System.out.println("Log - Coleção: '"+ idCollection +"' entrou para a categoria/grupo: " + nameCategory);
+			//por padrao todas notificacoes sao ativadas
+			collection.setNotificCollection("Activate");
+			collection.setNotificItem("Activate");
+			collection.setNotificVideo("Activate");
+			collection.setNotificEvent("Activate");
+			collection.setNotificAnnounce("Activate");
+			collection.setNotificTopic("Activate");
+			collection.setNotificComment("Activate");
+			
+			dao.update(collection);								//atualiza colecao
+			System.out.println("Log - Coleção: '"+ collection.getNameCollection() +"' entrou para a categoria/grupo: " + nameCategory);
 			
 			//cria notificacao para o grupo da categoria
 			String myUserid = (String) request.getSession().getAttribute("userid");
 			NotificationService.createNotification(db, idCategory, "collection", idCollection, Str.JOINED, myUserid);
+			
+			//remove interesse do membro no grupo se houver
+			for( Interest i : new InterestDAO(db, null).listInterestByUser((String) request.getSession().getAttribute("userid")) ){
+				if(i.getIdCategory() != null && i.getIdCategory().equals(idCategory)){				
+					new InterestDAO(db, null).deleteInterest(i.getIdInterest());				//exclui interesse
+					System.out.println("Log - Interesse: '"+ i.getIdInterest() +"' removido da categoria/grupo: " + nameCategory);
+				}
+			}
 		}
 		
-		return "redirect:/redirect_info_group.jsp?myIdCollection="+idCollection+"&id_category="+idCategory;	//sucess page category of group
+		return "redirect:/ilt/groupCategory?id=" + idCategory + "&cat=" + nameCategory; 		//sucess page category of group
 	}
 	
 	@RequestMapping(value={"/collection/ajaxParticipateCategory"})

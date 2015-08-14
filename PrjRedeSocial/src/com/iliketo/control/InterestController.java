@@ -50,6 +50,9 @@ public class InterestController {
 		}
 	}
 	
+	/**
+	 * Metodo cria um interesse e faz o join para adicionar o grupo nos interesses
+	 */
 	@RequestMapping(value={"/interest/createInterest"})
 	public String createInterest(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
@@ -68,6 +71,15 @@ public class InterestController {
 			interest.setIdCategory(idCategory);
 			interest.setNameCategory(nameCategory);
 			interest.setIdMember(myUserid);
+			//por padrao todas notificacoes sao ativadas
+			interest.setNotificCollection("Activate");
+			interest.setNotificItem("Activate");
+			interest.setNotificVideo("Activate");
+			interest.setNotificEvent("Activate");
+			interest.setNotificAnnounce("Activate");
+			interest.setNotificTopic("Activate");
+			interest.setNotificComment("Activate");
+			
 			String idCreate = interestDAO.create(interest);		//cria interesse
 			System.out.println("Log - Interesse criado ok, id interesse: " + idCreate + " - nome categoria/grupo: " + interest.getNameCategory());
 		}
