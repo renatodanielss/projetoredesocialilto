@@ -52,8 +52,8 @@
 	else{
 		%>
 		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
-		<jsp:forward page="/logout.jsp">
-			<jsp:param value="/page.jsp?id=863" name="redirect"/>
+		<jsp:forward page="/page.jsp?id=863">
+			<jsp:param value="1" name="expired"/>
 		</jsp:forward>
 		<%
 	}
