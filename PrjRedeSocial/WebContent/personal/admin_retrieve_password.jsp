@@ -2,62 +2,32 @@
 <%@ page import="com.iliketo.control.UpdateUserController" %><%@ page import="com.iliketo.dao.IliketoDAO"%><%
 	
 	//***Executa e valida Registro iliketo**** 
-	String email = "";
-	String password = "";
-	UpdateUserController controller = new UpdateUserController();
-	
-	request.setAttribute("old_password", mysession.get("password"));
-	System.out.println("Password MySession: " + mysession.get("password"));
-	
-	if(!controller.validatePassword(db, request)){
-		if(request.getAttribute("msgError") != null && !request.getAttribute("msgError").equals("")){ //se tiver msg de error
-			password = (String) request.getAttribute("msgError");
-		}
-	}
-	
-	System.out.println("Erro password: " + password);
-	
 	Page mypage = null;
+			
+	String idRegisterUser = IliketoDAO.getValueOfDatabase(db, "id", "dbmembers", "id_member", mysession.get("userid"));
+	mytext = new Text(myrequest);
+
+	mysession.set("mode", "");
+	RequireUser.User(mytext, mysession.get("username"), myrequest, myresponse, mysession, db);
+
+	UCmaintainUsers maintainUsers = new UCmaintainUsers(mytext);
+	User myuser = maintainUsers.doPersonalUpdate(mysession, myrequest, myresponse, myconfig, db);
+
+	Login.userSession(myuser, mysession, db);
+
+	UCmaintainContent maintainContent = new UCmaintainContent(mytext);
+	mypage = maintainContent.doPersonalUpdate(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
+
+	Page adminpage = maintainContent.getPersonalAdmin(myuser, mypage, servletcontext, mysession, myrequest, myresponse, myconfig, db);
+	mysession.set("id", adminpage.getId());
 	
-	if(!password.equals("")){ //se conter error na validação do registro, adiciona o erro na page
-				
-		//reponse mesma pagina passando error no parametro
-		myresponse.sendRedirect("/page.jsp?id=859&p=" + password); //recuperar parametro no html >> ###error###	
-				
-		//Cria um UCbrowseWebsite
-		//UCbrowseWebsite browseWebsite = new UCbrowseWebsite(new Text());
-		//mypage = browseWebsite.getPage(servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
-		
-		//coloca os valores do campo do form novamente na page para não perder os dados que o usuário digitou
-		//mypage.parse_output_register_iliketo(errorILiketo, request);
-		//website.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_doctype");
-		
-	}else{
-		
-		String idRegisterUser = IliketoDAO.getValueOfDatabase(db, "id", "dbmembers", "id_member", mysession.get("userid"));
-		mytext = new Text(myrequest);
+	%>
+	<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
+	<jsp:forward page="/post.jsp?database=dbmembers">
+		<jsp:param value="<%=idRegisterUser%>" name="id"/>
+		<jsp:param value="/page.jsp?id=620" name="redirect"/>
+	</jsp:forward>
+	<%
 	
-		mysession.set("mode", "");
-		RequireUser.User(mytext, mysession.get("username"), myrequest, myresponse, mysession, db);
-	
-		UCmaintainUsers maintainUsers = new UCmaintainUsers(mytext);
-		User myuser = maintainUsers.doPersonalUpdate(mysession, myrequest, myresponse, myconfig, db);
-	
-		Login.userSession(myuser, mysession, db);
-	
-		UCmaintainContent maintainContent = new UCmaintainContent(mytext);
-		mypage = maintainContent.doPersonalUpdate(servletcontext, DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db);
-	
-		Page adminpage = maintainContent.getPersonalAdmin(myuser, mypage, servletcontext, mysession, myrequest, myresponse, myconfig, db);
-		mysession.set("id", adminpage.getId());
-		
-		%>
-		<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
-		<jsp:forward page="/post.jsp?database=dbmembers">
-			<jsp:param value="<%=idRegisterUser%>" name="id"/>
-			<jsp:param value="/page.jsp?id=620" name="redirect"/>
-		</jsp:forward>
-		<%
-}
 %>
 <% if (db != null) db.close(); %><% if (logdb != null) logdb.close(); %>
