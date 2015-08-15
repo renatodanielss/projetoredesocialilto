@@ -6,7 +6,7 @@
 	String password = "";
 	UpdateUserController controller = new UpdateUserController();
 	
-	request.setAttribute("password", mysession.get("password"));
+	request.setAttribute("old_password", mysession.get("password"));
 	System.out.println("Password MySession: " + mysession.get("password"));
 	
 	if(!controller.validatePassword(db, request)){
