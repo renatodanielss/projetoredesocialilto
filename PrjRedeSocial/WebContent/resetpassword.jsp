@@ -12,7 +12,7 @@
 		
 		System.out.println("Password: " + user.getPassword());
 		
-		if (member.getRetrievePassword().equals(myrequest.getParameter("resetkey")) && !member.getRetrievePassword().equals("0")){
+		if (member.getRetrievePassword().equals(myrequest.getParameter("resetkey")) && !member.getRetrievePassword().equals("0") && !member.getRetrievePassword().equals("1")){
 			Boolean verdadeiro = member.getRetrievePassword() == "0";
 			System.out.println("Usuário link:" + myrequest.getParameter("user"));
 			System.out.println("Recuperação = " + member.getRetrievePassword() + "\nid = " + member.getEmail());
