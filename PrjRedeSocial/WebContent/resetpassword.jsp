@@ -48,5 +48,13 @@
 	%>
 	<% if (db != null) db.close(); %><% if (logdb != null) logdb.close(); %>
     <%
+    
+    %>
+	<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
+	<jsp:forward page="/logout.jsp">
+		<jsp:param value="/page.jsp?id=863" name="redirect"/>
+	</jsp:forward>
+	<%
+    
     }
     %>
