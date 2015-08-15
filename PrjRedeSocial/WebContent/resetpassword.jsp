@@ -17,28 +17,22 @@
 		System.out.println("Verdadeiro ou falso: " + verdadeiro.toString());
 		member.setRetrievePassword ("0");
 		memberDao.update(member);
-				
-		//Text text = new Text();
+		
+		ServletContext server = request.getServletContext();
+		
+		Text text = new Text();
 		
 		myrequest.setParameter("username", user.getUsername());
 		myrequest.setParameter("password", user.getPassword());
-		myrequest.setParameter("old_password", user.getPassword());
 		
-		//Login.login(text, null, "/login.jsp", "-", server, mysession, myrequest, myresponse, myconfig, db, myconfig.get(db, "require_ssl_user"), database);
+		Login.login(text, null, "/login.jsp", "-", server, mysession, myrequest, myresponse, myconfig, db, myconfig.get(db, "require_ssl_user"), database);
 		
 		%>
 		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
 		<jsp:forward page="/page.jsp?id=859">
-			<jsp:param value="<%=user.getUsername()%>" name="username"/>
-			<jsp:param value="<%=user.getPassword()%>" name="password"/>
 			<jsp:param value="<%=user.getPassword()%>" name="old_password"/>
 		</jsp:forward>
 		<%
-		
-		mysession.set("log", "login");
-		UCbrowseWebsite browseWebsite = new UCbrowseWebsite(mytext);
-		browseWebsite.doLogin(cms, servletcontext, mysession, myrequest, myresponse, myconfig, db, database);
-		
 	}
 	else{
 		%>
