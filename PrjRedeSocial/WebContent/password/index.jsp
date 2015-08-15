@@ -10,9 +10,6 @@ MemberDAO memberDao = new MemberDAO(db, request);
 Member member = new Member();
 member = (Member) memberDao.readByColumn("email", myrequest.getParameter("email"), Member.class);
 
-System.out.println("Email: " + myrequest.getParameter("email"));
-System.out.println("Username: " + myrequest.getParameter("username"));
-
 //Gerando chave de recuperação de senha
 if (member.getIdMember() != null){
 	if (member.getRetrievePassword().equals("0") || member.getRetrievePassword().equals("1")){
