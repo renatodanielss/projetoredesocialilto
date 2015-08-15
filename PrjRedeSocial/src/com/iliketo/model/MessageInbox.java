@@ -50,6 +50,8 @@ public class MessageInbox extends ContentILiketo {
 	@ColumnILiketo(name = "fk_announce_id")		//id do anuncio
 	private String idAnnounce;
 
+	private Member member;
+	
 	public MessageInbox(){ }
 
 
@@ -170,6 +172,16 @@ public class MessageInbox extends ContentILiketo {
 
 	public void setIdAnnounce(String idAnnounce) {
 		this.idAnnounce = idAnnounce;
+	}
+
+
+	public Member getMember() {
+		return member;
+	}
+
+
+	public void setMember(Member member) {
+		this.member = member;
 	}
 	
 

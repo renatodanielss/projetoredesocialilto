@@ -12,6 +12,7 @@ import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.MessageInboxDAO;
 import com.iliketo.model.Announce;
 import com.iliketo.model.MessageInbox;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -125,7 +126,12 @@ public class MessageInboxOutboxController {
 		message.setSenderHidden("n");			//nao oculta
 		message.setReceiverHidden("n");			//nao oculta
 		
-		messageDAO.create(message);				//cria e envia mensagem		
+		String idCreate = messageDAO.create(message);				//cria e envia mensagem
+		
+		//cria notificacao de envio de mensagem
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
+		
 		response.getWriter().write("ok");		//enviado com sucesso, retorna 'ok' para view
 		
 	}
