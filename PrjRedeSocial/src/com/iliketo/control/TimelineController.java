@@ -81,8 +81,8 @@ public class TimelineController {
 				  "select c1.id_collection as id_collection, c1.name_collection as name_collection, c1.description as description, c1.name_category as name_category, c1.path_photo_collection as path_photo_collection, "
 				 + "c1.date_created as date_created, c1.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 				 + "from dbcollection c1 join dbmembers m on c1.fk_user_id = m.id_member "
-				 + "where exists (select c2.fk_category_id from dbcollection c2 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
-				+ "where (c1.fk_category_id = c2.fk_category_id and c2.fk_user_id ='" +myUserid+ "') or (c1.fk_category_id = it.fk_category_id)) "
+				 + "where exists (select c2.fk_category_id from dbcollection c2 where c1.fk_category_id = c2.fk_category_id and c2.fk_user_id ='" +myUserid+ "' "
+				+ "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and c1.fk_category_id = it.fk_category_id)) "
 				+ "order by c1.date_updated desc limit 2 offset '" +mapOffset.get("offsetCol")+ "';";
 		
 		System.out.println("SQLCollection Comum: " + SQLCollection);		
@@ -96,8 +96,8 @@ public class TimelineController {
 				  + "i.date_created as date_created, i.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 				  + "from dbcollectionitem i join dbmembers m on i.fk_user_id = m.id_member "
 				  + "where exists (select c1.id_collection from dbcollection c1 "
-				+ "where exists (select c2.fk_category_id from dbcollection c2 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
-				+ "where ((c1.fk_category_id = c2.fk_category_id and c2.fk_user_id = '" +myUserid+ "') or (c1.fk_category_id = it.fk_category_id)) and i.fk_collection_id = c1.id_collection)) "
+				+ "where exists (select c2.fk_category_id from dbcollection c2 where c1.fk_category_id = c2.fk_category_id and c2.fk_user_id = '" +myUserid+ "' "
+				+ "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and c1.fk_category_id = it.fk_category_id)) and i.fk_collection_id = c1.id_collection) "
 				+ "order by i.date_updated desc limit 2 offset '" +mapOffset.get("offsetItem")+ "';";
 		
 		System.out.println("\nSQLItem Comum: " + SQLItem);
@@ -111,8 +111,8 @@ public class TimelineController {
 				  + "v.date_created as date_created, v.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 				  + "from dbcollectionvideo v join dbmembers m on v.fk_user_id = m.id_member "
 				  + "where exists (select c1.id_collection from dbcollection c1 "
-				+ "where exists (select c2.fk_category_id from dbcollection c2 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
-				+ "where ((c1.fk_category_id = c2.fk_category_id and c2.fk_user_id = '" +myUserid+ "') or (c1.fk_category_id = it.fk_category_id)) and v.fk_collection_id = c1.id_collection)) "
+				+ "where exists (select c2.fk_category_id from dbcollection c2 where c1.fk_category_id = c2.fk_category_id and c2.fk_user_id = '" +myUserid+ "' "
+				+ "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and c1.fk_category_id = it.fk_category_id)) and v.fk_collection_id = c1.id_collection) "
 				+ "order by v.date_updated desc limit 2 offset '" +mapOffset.get("offsetVideo")+ "';";
 		
 		System.out.println("\nSQLVideo Comum: " + SQLVideo);
@@ -143,8 +143,8 @@ public class TimelineController {
 			  + "e.date_event as date_event, e.hour_event as hour_event, e.type_event as type_event, e.local_event as local_event, "
 			  + "e.date_created as date_created, e.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 			  + "from dbevent e join dbmembers m on e.fk_user_id = m.id_member "
-			  + "where exists (select c1.id_collection from dbcollection c1 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
-			  + "where (c1.fk_user_id = '" +myUserid+ "' and e.fk_category_id = c1.fk_category_id) or (e.fk_category_id = it.fk_category_id)) "
+			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and e.fk_category_id = c1.fk_category_id "
+			  + "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and e.fk_category_id = it.fk_category_id)) "
 			  + "order by e.date_updated desc limit 2 offset '" +mapOffset.get("offsetEvent")+ "';";
 		
 		System.out.println("\nSQLEvent Comum: " + SQLEvent);
@@ -160,8 +160,8 @@ public class TimelineController {
 			  + "ad.date_created as date_created, ad.date_updated as date_updated, ad.path_photo_ad as path_photo_ad, "
 			  + "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 			  + "from dbannounce ad join dbmembers as m on ad.fk_user_id = m.id_member "
-			  + "where exists (select c1.id_collection from dbcollection c1 join dbinterest it on it.fk_user_id ='" +myUserid+ "' "
-			  + "where (c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id) or (ad.fk_category_id = it.fk_category_id)) "
+			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id "
+			  + "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and ad.fk_category_id = it.fk_category_id)) "
 			  + "order by ad.date_updated desc limit 2 offset '" +mapOffset.get("offsetAd")+ "';";
 		
 		System.out.println("\nSQLAnnounce Comum: " + SQLAnnounce);
