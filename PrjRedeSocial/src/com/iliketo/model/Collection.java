@@ -40,6 +40,12 @@ public class Collection extends ContentILiketo {
 	@ColumnILiketo(name = "fk_user_id")
 	private String idMember;
 	
+	@ColumnILiketo(name = "collection_year")
+	private String collectionYear;
+	
+	@ColumnILiketo(name = "total_items")
+	private String totalItems;
+	
 	//notificacoes
 	@ColumnILiketo(name = "notific_collection")
 	private String notificCollection;
@@ -226,4 +232,25 @@ public class Collection extends ContentILiketo {
 	public void setMember(Member member) {
 		this.member = member;
 	}
+
+
+	public String getCollectionYear() {
+		return collectionYear;
+	}
+
+
+	public void setCollectionYear(String collectionYear) {
+		this.collectionYear = collectionYear;
+	}
+
+
+	public String getTotalItems() {
+		return totalItems;
+	}
+
+
+	public void setTotalItems(String totalItems) {
+		this.totalItems = totalItems;
+	}
+	
 }

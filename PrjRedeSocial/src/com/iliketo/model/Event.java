@@ -52,6 +52,12 @@ public class Event extends ContentILiketo {
 	@ColumnILiketo(name = "fk_category_id")
 	private String idCategory;
 	
+	@ColumnILiketo(name = "phone")
+	private String phone;
+	
+	@ColumnILiketo(name = "email")
+	private String email;
+	
 	private Member member;
 	
 	public Event(){
@@ -160,6 +166,22 @@ public class Event extends ContentILiketo {
 
 	public void setMember(Member member) {
 		this.member = member;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	
