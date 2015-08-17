@@ -192,11 +192,6 @@ public class AnnounceCollectorController {
 		String idCreated = "";
 		
 		if(announce != null && userCard != null){
-			//seta data inicial para anuncio leilao
-			if(announce.getTypeAnnounce().equals("Auction")){
-				String dataInicialLeilao = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-				announce.setDateInitial(dataInicialLeilao);
-			}
 			
 			idCreated = announceDAO.create(announce);							//salva anuncio no bd
 			//***operacao para pagamento do anuncio aqui***

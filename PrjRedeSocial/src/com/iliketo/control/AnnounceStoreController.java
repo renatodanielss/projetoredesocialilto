@@ -91,10 +91,6 @@ public class AnnounceStoreController {
 			idCreated = announceDAO.create(announce);												//salva anuncio
 		}else{
 			//Sell, Auction, Exchange
-			if(announce.getTypeAnnounce().equals("Auction")){
-				String dataInicialLeilao = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-				announce.setDateInitial(dataInicialLeilao);
-			}
 			try {
 				cms.processFileuploadImages(itemsPhotos);								//salva arquivos
 			} catch (StorageILiketoException e) {
