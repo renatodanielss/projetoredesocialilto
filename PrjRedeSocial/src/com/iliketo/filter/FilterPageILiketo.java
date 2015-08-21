@@ -60,9 +60,20 @@ public class FilterPageILiketo implements Filter {
 		Request myrequest = new Request(req);
 		Response myresponse = new Response(res);
 		Session mysession = new Session(req.getSession());
+		//valida member
+		if(req.getSession().getAttribute("member") == null){
+			if((myrequest.getParameter("timeline") != null && !myrequest.getParameter("timeline").equals("")) || myrequest.getRequestURI().contains("ajax")){
+				//solicitacoes ajax faz nada
+			}else{
+				//remove username e id da sessao
+				mysession.remove("username");
+				mysession.remove("userid");
+			}
+		}
+		
 		boolean accesspermission = RequireUser.User(new Text(), mysession.get("username"), myrequest, myresponse, mysession, db);
 		
-		if(accesspermission){
+		if(accesspermission && !(req.getSession().getAttribute("member") == null)){
 			//valida acesso login - permissao ok
 			chain.doFilter(request, response);
 		}
