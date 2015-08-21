@@ -1,5 +1,6 @@
 package com.iliketo.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,6 +64,45 @@ public class NotificationService {
 	}
 	
 	/**
+	 * Metodo cria notificacao de aviso de uma hora antes do leilao iniciar.
+	 */
+	public static void createNotificationAuctionOneHour(DB db, String idCategory, String contentType, String idContent, String postType, String idMember, String dateInitial){
+		
+		NotificationDAO dao = new NotificationDAO(db, null);
+		Notification notific = new Notification();
+		notific.setIdCategory(idCategory);
+		notific.setContentType(contentType);
+		//notific.setIdContent(idContent); //nao mostrar notific
+		notific.setIdMember(idMember);
+		notific.setPostType(postType);
+		String idCreated = dao.create(notific);
+		
+		//programa notificacao para uma hora antes do leilao iniciar		
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	    		
+			long miliInicial = format.parse(dateInitial).getTime();
+			long miliHora = ( miliInicial - (1000*60*60) );
+			String dataLeilaoHora = format.format(new java.util.Date(miliHora));
+			
+			String nameDatabase = dao.getNameDatabase();
+			ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+			
+			String dataid = CS.getDATA(db, nameDatabase);
+			String col1 = CS.getCOL(db, nameDatabase, "fk_content_id");
+			String col2 = CS.getCOL(db, nameDatabase, "date_created");
+			String SQLupdate = col1 + "='" + idContent + "', "
+							+ col2 + "='" + dataLeilaoHora  + "'";
+			
+			db.updateSet(dataid, "id", idCreated, SQLupdate);
+			System.out.println("Log - Nova notificacao = id notific: " + idCreated + " / id publicacao: " + idContent + " - tipo conteudo: " + contentType);
+			
+		} catch (ParseException e) {
+			System.out.println("Erro criacao de notificacao leilao uma hora antes.");
+			e.printStackTrace();
+		}		
+	}
+
+	/**
 	 * Metodo retorna um inteiro com total de notificacoes nao lida a partir da ultima data de visto do membro(last_seen_date).
 	 * @param db
 	 * @param member
@@ -111,6 +151,9 @@ public class NotificationService {
 		System.out.println("SQL Interest: " + SQL);
 		LinkedHashMap<String,HashMap<String,String>> recordsCatInterest  = db.query_records(SQL);
 		
+		
+		//verifica notificacao de mensagem de leilao encerrado
+		verificaStatusLeilaoEncerrado(request, db, CS, member);
 		
 		//SQL para recuperar o total de mensagens novas da caixa de entrada do membro
 		SQL = "select t1.id_msg as id_msg from dbmessageinbox as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_msg "
@@ -557,7 +600,7 @@ public class NotificationService {
 						+ "join dbgroupnotification as n on n.fk_content_id = t1.id_event where n.fk_user_id != '"+myUserid+"' and n.content_type = 'event' "
 						+ "and n.date_created > '"+dateDaysNotific+"' and n.date_created <= '"+dateNow+"'";
 				
-				String SQLAnnounce = "select t1.id_announce as id_announce, t1.title as title, t1.date_updated as date_updated,  "
+				String SQLAnnounce = "select t1.id_announce as id_announce, t1.title as title, t1.date_updated as date_updated, t1.type_announce as type_announce,  "
 						+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
 						+ "from dbannounce as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
 						+ "join dbgroupnotification as n on n.fk_content_id = t1.id_announce where n.fk_user_id != '"+myUserid+"' and n.content_type = 'announce' "
@@ -749,6 +792,7 @@ public class NotificationService {
 					Member m = new Member();
 					a.setIdAnnounce(recordsAnnounce.get(rec).get("id_announce"));
 					a.setTitle(recordsAnnounce.get(rec).get("title"));
+					a.setTypeAnnounce(recordsAnnounce.get(rec).get("type_announce"));
 					a.setDateUpdated(recordsAnnounce.get(rec).get("date_updated"));
 					m.setNickname(recordsAnnounce.get(rec).get("nickname"));
 					m.setPathPhoto(recordsAnnounce.get(rec).get("path_photo_member"));
@@ -886,14 +930,27 @@ public class NotificationService {
 					}
 					if(bean instanceof Announce){
 						Announce announce = (Announce) bean;
-						String msg = announce.getMember().getNickname() + " has announced the \"" + announce.getTitle() + "\" item.";
-						String s = listEntryNotific;
-						s = s.replaceAll("@@@message@@@", msg);										//mensagem post
-						s = s.replaceAll("@@@pathPhoto@@@", announce.getMember().getPathPhoto());	//foto membro
-						s = s.replaceAll("@@@nickname@@@", announce.getMember().getNickname());		//nickname
-						s = s.replaceAll("@@@dateUpdated@@@", announce.getDateUpdated());			//data publicacao
-						s = s.replaceAll("@@@redirect@@@", "/ilt/ads?id=" + announce.getIdAnnounce());	//link da publicacao
-						div.append(s);
+						for(String rec : recordsAnnounce.keySet()){
+							String id = recordsAnnounce.get(rec).get("id_announce");
+							if(id.equals(announce.getIdAnnounce())){
+								String msg = "";
+								if(recordsAnnounce.get(rec).get("post_type").equals(Str.INCLUDED)){
+									if(announce.getTypeAnnounce().equals("Auction"))
+										msg = announce.getMember().getNickname() + " has announced a item in auction - \"" + announce.getTitle() + "\".";
+									else 
+										msg = announce.getMember().getNickname() + " has announced the \"" + announce.getTitle() + "\" item.";
+								}else if(recordsAnnounce.get(rec).get("post_type").equals(Str.AUCTION_HOUR)){
+									msg = "Auction item \"" + announce.getTitle() + "\", starts in an hour.";
+								}
+								String s = listEntryNotific;
+								s = s.replaceAll("@@@message@@@", msg);										//mensagem post
+								s = s.replaceAll("@@@pathPhoto@@@", announce.getMember().getPathPhoto());	//foto membro
+								s = s.replaceAll("@@@nickname@@@", announce.getMember().getNickname());		//nickname
+								s = s.replaceAll("@@@dateUpdated@@@", announce.getDateUpdated());			//data publicacao
+								s = s.replaceAll("@@@redirect@@@", "/ilt/ads?id=" + announce.getIdAnnounce());	//link da publicacao
+								div.append(s);
+							}
+						}
 					}
 					if(bean instanceof Topic){
 						Topic topic = (Topic) bean;
@@ -943,5 +1000,49 @@ public class NotificationService {
 			return "No notifications!";	//nao ha notificacao
 		}
 	}
+	
+	
+	
+	private static void verificaStatusLeilaoEncerrado(HttpServletRequest request, DB db, ColumnsSingleton CS, Member member){
+		
+		/*SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	    		
+		long miliInicial = format.parse(announce.getDateInitial()).getTime();	//milisegundos inicial
+		long miliFinal = miliInicial + ( Integer.parseInt(announce.getLasting()) * (1000*60*60*24) );
+		long miliAgora = new java.util.Date().getTime(); 								//milisegundos agora
+		
+		if(miliFinal <= miliAgora){
+			
+		}else{
+			
+		
+		String SQLAnnounce = "select t1.id_announce as id_announce, t1.date_initial as date_initial "
+				+ "from dbannounce t1 where t1.fk_user_id = '" +member.getIdMember()+ "' and t1.type_announce = 'Auction' and t1.status = 'Open'";
+				
+		String[][] aliasSQL = { {"dbannounce", "t1"} };
+		SQLAnnounce = CS.transformSQLReal(SQLAnnounce, aliasSQL);
+		LinkedHashMap<String,HashMap<String,String>> records  = db.query_records(SQLAnnounce);
+		}*/
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

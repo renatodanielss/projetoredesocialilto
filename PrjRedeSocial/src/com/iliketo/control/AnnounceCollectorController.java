@@ -1,6 +1,7 @@
 package com.iliketo.control;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -209,6 +210,10 @@ public class AnnounceCollectorController {
 			if(idCategory != null && !idCategory.equals("")){
 				String myUserid = (String) request.getSession().getAttribute("userid");
 				NotificationService.createNotification(db, idCategory, "announce", idCreated, Str.INCLUDED, myUserid);
+				if(announce.getTypeAnnounce().equals("Auction")){
+					//notificacao aviso uma hora antes leilao
+					NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", idCreated, Str.AUCTION_HOUR, myUserid, announce.getDateInitial());
+				}
 			}
 			
 		}else{
@@ -324,22 +329,36 @@ public class AnnounceCollectorController {
 		Pattern p = Pattern.compile("^\\s*(?=.*[1-9])\\d*(?:\\.\\d{1,2})?\\s*$");	//ex 1000.99
 		Matcher m = p.matcher(bid);
 	    if (m.find()) {
-	    	if(Double.parseDouble(bid) > Double.parseDouble(announce.getBidActual().replaceAll(",", "."))){
-	    		//format double
-	    		String valueBid = String.format( "%.2f", Double.parseDouble(bid));
-				AuctionBid auction = new AuctionBid();
-				auction.setIdAnnounce(id);
-				auction.setIdMember(myUserid);
-				auction.setBid(valueBid);
-				auctionDAO.create(auction);			//cria lance de leilao				
-				int total = Integer.parseInt(announce.getTotalBids()) + 1;	//incrementa total de lances
-				announce.setTotalBids(Integer.toString(total));	//seta total de lances no anuncio				
-				announce.setBidActual(valueBid);				//seta valor lance no anuncio
-				announce.setBidUserId(myUserid);				//seta id membro proprietario do lance
-				announceDAO.update(announce);					//atualiza anuncio			
-				jsonObj.put("resposta", "ok");					//resposta lance ok
-				jsonObj.put("valueBid", valueBid);
-				jsonObj.put("totalBids", announce.getTotalBids());
+	    	if(Double.parseDouble(bid) > Double.parseDouble(announce.getBidActual().replaceAll(",", "."))){	    			    		
+	    		try {
+		    		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	    		
+		    		long miliInicial = format.parse(announce.getDateInitial()).getTime();	//milisegundos inicial
+		    		long miliFinal = miliInicial + ( Integer.parseInt(announce.getLasting()) * (1000*60*60*24) );
+		    		long miliAgora = new java.util.Date().getTime(); 								//milisegundos agora
+		    		//valida leilao encerrado
+		    		if(miliFinal > miliAgora){
+		    			String valueBid = String.format( "%.2f", Double.parseDouble(bid)); //format double
+						AuctionBid auction = new AuctionBid();
+						auction.setIdAnnounce(id);
+						auction.setIdMember(myUserid);
+						auction.setBid(valueBid);
+						auctionDAO.create(auction);			//cria lance de leilao				
+						int total = Integer.parseInt(announce.getTotalBids()) + 1;	//incrementa total de lances
+						announce.setTotalBids(Integer.toString(total));	//seta total de lances no anuncio				
+						announce.setBidActual(valueBid);				//seta valor lance no anuncio
+						announce.setBidUserId(myUserid);				//seta id membro proprietario do lance
+						announceDAO.update(announce);					//atualiza anuncio			
+						jsonObj.put("resposta", "ok");					//resposta lance ok
+						jsonObj.put("valueBid", valueBid);
+						jsonObj.put("totalBids", announce.getTotalBids());
+		    		}else{
+		    			//encerrado
+		    			jsonObj.put("resposta", "ended");			//erro leilao encerrado
+						jsonObj.put("valueBid", announce.getBidActual());
+						jsonObj.put("totalBids", announce.getTotalBids());
+		    		}
+				} catch (ParseException e) {
+				}
 			}else{
 				jsonObj.put("resposta", "below");				//erro valor lance tem q ser maior q atual
 				jsonObj.put("valueBid", announce.getBidActual());

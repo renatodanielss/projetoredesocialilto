@@ -20,6 +20,7 @@ import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Announce;
 import com.iliketo.model.StoreItem;
 import com.iliketo.model.UserCard;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -149,12 +150,24 @@ public class AnnounceStoreController {
 		
 		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/addAnnounce'");
 		
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		HttpSession session = request.getSession();		
 		Announce announce = (Announce) session.getAttribute("announce");	//recupera anuncio da sessao
 		session.removeAttribute("announce");								//remove da sessao
 		session.removeAttribute("userCard");								//remove da sessao
 		
 		System.out.println("Log - " + "Anuncio de loja cadastrado com sucesso!");
+		
+		//cria notificacao para o grupo da categoria
+		String idCategory = announce.getIdCategory();
+		if(idCategory != null && !idCategory.equals("")){
+			String myUserid = (String) request.getSession().getAttribute("userid");
+			NotificationService.createNotification(db, idCategory, "announce", announce.getIdAnnounce(), Str.INCLUDED, myUserid);
+			if(announce.getTypeAnnounce().equals("Auction")){
+				//notificacao aviso uma hora antes leilao
+				NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", announce.getIdAnnounce(), Str.AUCTION_HOUR, myUserid, announce.getDateInitial());
+			}
+		}
 		
 		return "redirect:/ilt/ads?id=" + announce.getIdAnnounce(); 			//success - page anuncio criado
 	}

@@ -100,6 +100,9 @@ public class Str {
 	/**Constante INCLUDED é a variavel para identificar o tipo de post da notificacao no grupo/categoria*/
 	public static final String INCLUDED = "included";
 
+	/**Constante AUCTION_HOUR é a variavel para identificar o tipo de post da notificacao no grupo/categoria*/
+	public static final String AUCTION_HOUR = "auction_hour";
+	
 	//construtor privado
 	private Str(){
 		
