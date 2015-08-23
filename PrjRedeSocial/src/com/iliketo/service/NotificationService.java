@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import HardCore.DB;
 
 import com.iliketo.dao.MemberDAO;
+import com.iliketo.dao.MessageInboxDAO;
 import com.iliketo.dao.NotificationDAO;
 import com.iliketo.model.Announce;
 import com.iliketo.model.Collection;
@@ -153,7 +154,7 @@ public class NotificationService {
 		
 		
 		//verifica notificacao de mensagem de leilao encerrado
-		verificaStatusLeilaoEncerrado(request, db, CS, member);
+		//verificaStatusLeilaoEncerrado(request, db, CS, member);
 		
 		//SQL para recuperar o total de mensagens novas da caixa de entrada do membro
 		SQL = "select t1.id_msg as id_msg from dbmessageinbox as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_msg "
@@ -919,14 +920,24 @@ public class NotificationService {
 					}
 					if(bean instanceof Event){
 						Event event = (Event) bean;
-						String msg = event.getMember().getNickname() + " has created \"" + event.getNameEvent() + "\" event.";
-						String s = listEntryNotific;
-						s = s.replaceAll("@@@message@@@", msg);									//mensagem post
-						s = s.replaceAll("@@@pathPhoto@@@", event.getMember().getPathPhoto());	//foto membro
-						s = s.replaceAll("@@@nickname@@@", event.getMember().getNickname());	//nickname
-						s = s.replaceAll("@@@dateUpdated@@@", event.getDateUpdated());			//data publicacao
-						s = s.replaceAll("@@@redirect@@@", "/page.jsp?id=737&idevent=" + event.getIdEvent());	//link da publicacao
-						div.append(s);
+						for(String rec : recordsEvent.keySet()){
+							String id = recordsEvent.get(rec).get("id_event");
+							if(id.equals(event.getIdEvent())){
+								String msg = "";
+								if(recordsEvent.get(rec).get("post_type").equals(Str.INCLUDED)){
+									msg = event.getMember().getNickname() + " has created \"" + event.getNameEvent() + "\" event.";
+								}else if(recordsEvent.get(rec).get("post_type").equals(Str.UPDATED)){
+									msg = event.getMember().getNickname() + " has updated his event - \"" + event.getNameEvent() + "\"";
+								}
+								String s = listEntryNotific;
+								s = s.replaceAll("@@@message@@@", msg);									//mensagem post
+								s = s.replaceAll("@@@pathPhoto@@@", event.getMember().getPathPhoto());	//foto membro
+								s = s.replaceAll("@@@nickname@@@", event.getMember().getNickname());	//nickname
+								s = s.replaceAll("@@@dateUpdated@@@", event.getDateUpdated());			//data publicacao
+								s = s.replaceAll("@@@redirect@@@", "/page.jsp?id=737&idevent=" + event.getIdEvent());	//link da publicacao
+								div.append(s);
+							}
+						}
 					}
 					if(bean instanceof Announce){
 						Announce announce = (Announce) bean;
@@ -1021,8 +1032,30 @@ public class NotificationService {
 		String[][] aliasSQL = { {"dbannounce", "t1"} };
 		SQLAnnounce = CS.transformSQLReal(SQLAnnounce, aliasSQL);
 		LinkedHashMap<String,HashMap<String,String>> records  = db.query_records(SQLAnnounce);
-		}*/
+		}
 		
+		MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);
+		MessageInbox message = new MessageInbox();
+		
+		message.setMessage("");
+		message.setSubject("");
+		message.setReceiverIdMember("");
+		message.setSenderIdMember("");
+		message.setWasRead("n");
+		message.setContentType("item");
+		message.setIdContent("");
+		message.setFkMsgId("0");
+		message.setIdAnnounce("");		
+		message.setSenderHidden("n");
+		message.setReceiverHidden("n");
+		
+		String idCreate = messageDAO.create(message);				//cria e envia mensagem
+		
+		//cria notificacao de envio de mensagem
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
+		
+		*/
 	}
 	
 	

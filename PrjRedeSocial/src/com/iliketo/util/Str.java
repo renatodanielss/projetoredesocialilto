@@ -103,6 +103,9 @@ public class Str {
 	/**Constante AUCTION_HOUR é a variavel para identificar o tipo de post da notificacao no grupo/categoria*/
 	public static final String AUCTION_HOUR = "auction_hour";
 	
+	/**Constante AUCTION_ENDED é a variavel para identificar o tipo de post da notificacao no grupo/categoria*/
+	public static final String AUCTION_ENDED = "auction_ended";
+	
 	//construtor privado
 	private Str(){
 		
