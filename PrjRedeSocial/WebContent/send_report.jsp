@@ -13,14 +13,15 @@ if (member.getActivated().equals(myrequest.getParameter("activationkey")) && !me
 	member.setActivated("0");
 	memberDao.update(member);*/
 	
-	System.out.println("Report: " + myrequest.getParameter("report"));
-	System.out.println("Message: " + myrequest.getParameter("message"));
+	String report = myrequest.getParameter("report");
+	String message = myrequest.getParameter("message");
+	
+	System.out.println("Teste");
+	System.out.println("Report: " + report);
+	System.out.println("Message: " + message);
+	System.out.println("Username: " + myrequest.getParameter("username"));
 	
 	%>
-	<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
-	<jsp:forward page="/post.jsp?database=dbreport">
-		<jsp:param value="<%=myrequest.getParameter("report")%>" name="report"/>
-		<jsp:param value="<%=myrequest.getParameter("message")%>" name="message"/>
-	</jsp:forward>
+	
 
 <% if (db != null) db.close(); %><% if (logdb != null) logdb.close(); %>
