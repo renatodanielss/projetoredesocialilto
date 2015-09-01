@@ -13,6 +13,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import HardCore.DB;
 
 import com.iliketo.dao.MemberDAO;
@@ -109,7 +113,28 @@ public class NotificationService {
 	 * @param member
 	 * @return
 	 */
-	public static int totalNotifications(HttpServletRequest request){
+	public static int totalNotifications(HttpServletRequest request){		
+		try {
+			JSONArray array = newsAndTotalNotifications(request, false);
+			if(array != null){
+				JSONObject obj = (JSONObject) array.get(0);
+				return (int) obj.get("total");
+			}
+		} catch (JSONException e) {	e.printStackTrace(); }
+		return 0;
+	}
+	
+	/**
+	 * Metodo retorna um array json de novas notificacoes a partir da ultima data de visto do membro(last_seen_date).
+	 * @param db
+	 * @param member
+	 * @return
+	 */
+	public static JSONArray newsNotificationsMobile(HttpServletRequest request){
+			return newsAndTotalNotifications(request, true);
+	}
+	
+	private static JSONArray newsAndTotalNotifications(HttpServletRequest request, boolean isMobile){
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);				//db		
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);				//auxiliar para o db
@@ -222,6 +247,18 @@ public class NotificationService {
 			}
 		}
 		
+		
+		ArrayList<ContentILiketo> listModelNotification = new ArrayList<ContentILiketo>();
+		LinkedHashMap<String,HashMap<String,String>> recordsCollections = new LinkedHashMap<String,HashMap<String,String>>();
+		LinkedHashMap<String,HashMap<String,String>> recordsItems = new LinkedHashMap<String,HashMap<String,String>>();
+		LinkedHashMap<String,HashMap<String,String>> recordsVideos = new LinkedHashMap<String,HashMap<String,String>>();
+		LinkedHashMap<String,HashMap<String,String>> recordsEvent = new LinkedHashMap<String,HashMap<String,String>>();
+		LinkedHashMap<String,HashMap<String,String>> recordsAnnounce = new LinkedHashMap<String,HashMap<String,String>>();
+		LinkedHashMap<String,HashMap<String,String>> recordsTopic = new LinkedHashMap<String,HashMap<String,String>>();
+		LinkedHashMap<String,HashMap<String,String>> recordsComment = new LinkedHashMap<String,HashMap<String,String>>();
+		int totalNews = 0;
+		
+		
 		//verifica se a lista possui configuracao de notificacao (colecao/interesse) em alguma categoria
 		if(!listConfigNotificationCategory.isEmpty()){
 			
@@ -252,33 +289,47 @@ public class NotificationService {
 			if(!collectionCats.equals("")) System.out.println("Receber notificacoes de comment das categorias: " + commentCats + "\n");
 			
 			
-			String SQLCollection = "select t1.id_collection as id_collection "
-					+ "from dbcollection as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_collection "
-					+ "where n.fk_user_id != '"+myUserid+"' and n.content_type = 'collection' and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
+			String SQLCollection = "select t1.id_collection as id_collection, t1.name_collection as name_collection, t1.name_category as name_category, t1.date_updated as date_updated, "
+					+ "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "from dbcollection as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
+					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_collection where n.fk_user_id != '"+myUserid+"' and n.content_type = 'collection' "
+					+ "and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
 			
-			String SQLItem = "select t1.id_item as id_item "
-					+ "from dbcollectionitem as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_item "
-					+ "where n.fk_user_id != '"+myUserid+"' and n.content_type = 'item' and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
+			String SQLItem = "select t1.id_item as id_item, t1.title_item as title_item, t1.date_updated as date_updated,  "
+					+ "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "from dbcollectionitem as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
+					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_item where n.fk_user_id != '"+myUserid+"' and n.content_type = 'item' "
+					+ "and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
 			
-			String SQLVideo = "select t1.id_video as id_video "
-					+ "from dbcollectionvideo as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_video "
-					+ "where n.fk_user_id != '"+myUserid+"' and n.content_type = 'video' and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
+			String SQLVideo = "select t1.id_video as id_video, t1.title_video as title_video, t1.date_updated as date_updated,  "
+					+ "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "from dbcollectionvideo as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
+					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_video where n.fk_user_id != '"+myUserid+"' and n.content_type = 'video' "
+					+ "and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
 			
-			String SQLEvent = "select t1.id_event as id_event "
-					+ "from dbevent as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_event "
-					+ "where n.fk_user_id != '"+myUserid+"' and n.content_type = 'event' and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
+			String SQLEvent = "select t1.id_event as id_event, t1.name_event as name_event, t1.date_updated as date_updated,  "
+					+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "from dbevent as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
+					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_event where n.fk_user_id != '"+myUserid+"' and n.content_type = 'event' "
+					+ "and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
 			
-			String SQLAnnounce = "select t1.id_announce as id_announce "
-					+ "from dbannounce as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_announce "
-					+ "where n.fk_user_id != '"+myUserid+"' and n.content_type = 'announce' and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
+			String SQLAnnounce = "select t1.id_announce as id_announce, t1.title as title, t1.date_updated as date_updated, t1.type_announce as type_announce,  "
+					+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "from dbannounce as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
+					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_announce where n.fk_user_id != '"+myUserid+"' and n.content_type = 'announce' "
+					+ "and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
 			
-			String SQLTopic = "select t1.id_topic as id_topic "
-					+ "from dbforumtopic as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_topic "
-					+ "where n.fk_user_id != '"+myUserid+"' and n.content_type = 'topic' and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
+			String SQLTopic = "select t1.id_topic as id_topic, t1.subject as subject, t1.date_updated as date_updated,  "
+					+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "from dbforumtopic as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
+					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_topic where n.fk_user_id != '"+myUserid+"' and n.content_type = 'topic' "
+					+ "and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
 			
-			String SQLComment = "select t1.id_comment as id_comment "
-					+ "from dbforumcomment as t1 join dbgroupnotification as n on n.fk_content_id = t1.id_comment "
-					+ "where n.fk_user_id != '"+myUserid+"' and n.content_type = 'comment' and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
+			String SQLComment = "select t1.id_comment as id_comment, t1.text_comment as text_comment, t1.date_updated as date_updated, t1.fk_topic_id as fk_topic_id,  "
+					+ "m.nickname as nickname, m.path_photo_member as path_photo_member, n.post_type as post_type "
+					+ "from dbforumcomment as t1 join dbmembers as m on t1.fk_user_id = m.id_member "
+					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_comment where n.fk_user_id != '"+myUserid+"' and n.content_type = 'comment' "
+					+ "and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
 			
 			
 			//Se a lista possui uma categoria com a configuracao de publicacao ativada, adiciona id categoria no sql para cada tipo de conteudo ativado.
@@ -353,14 +404,6 @@ public class NotificationService {
 			
 			//executa sql de registros de notificacoes para cada tipo de conteudo(publicacao)
 			//valida se sql contem pelo menos um id_category de notificacao ativado para executar o sql
-
-			LinkedHashMap<String,HashMap<String,String>> recordsCollections = new LinkedHashMap<String,HashMap<String,String>>();
-			LinkedHashMap<String,HashMap<String,String>> recordsItems = new LinkedHashMap<String,HashMap<String,String>>();
-			LinkedHashMap<String,HashMap<String,String>> recordsVideos = new LinkedHashMap<String,HashMap<String,String>>();
-			LinkedHashMap<String,HashMap<String,String>> recordsEvent = new LinkedHashMap<String,HashMap<String,String>>();
-			LinkedHashMap<String,HashMap<String,String>> recordsAnnounce = new LinkedHashMap<String,HashMap<String,String>>();
-			LinkedHashMap<String,HashMap<String,String>> recordsTopic = new LinkedHashMap<String,HashMap<String,String>>();
-			LinkedHashMap<String,HashMap<String,String>> recordsComment = new LinkedHashMap<String,HashMap<String,String>>();
 			
 			String[][] alias;
 			if(SQLCollection.contains("fk_category_id")){
@@ -404,15 +447,244 @@ public class NotificationService {
 				SQLComment = CS.transformSQLReal(SQLComment, alias);
 				System.out.println("SQLComment: " + SQLComment);
 				recordsComment = db.query_records(SQLComment);
+			}			
+			
+			//set conteudo e add na listModelNotification			
+			if(isMobile){
+				//Mobile
+				for(String rec : recordsCollections.keySet()){
+					Collection col = new Collection();
+					Member m = new Member();	
+					col.setIdCollection(recordsCollections.get(rec).get("id_collection"));				
+					col.setNameCollection(recordsCollections.get(rec).get("name_collection"));
+					col.setNameCategory(recordsCollections.get(rec).get("name_category"));
+					col.setDateUpdated(recordsCollections.get(rec).get("date_updated"));
+					m.setNickname(recordsCollections.get(rec).get("nickname"));
+					col.setMember(m);
+					listModelNotification.add(col);
+				}
+				for(String rec : recordsItems.keySet()){			
+					Item item = new Item();
+					Member m = new Member();
+					item.setIdItem(recordsItems.get(rec).get("id_item"));
+					item.setTitle(recordsItems.get(rec).get("title_item"));
+					item.setDateUpdated(recordsItems.get(rec).get("date_updated"));
+					m.setNickname(recordsItems.get(rec).get("nickname"));
+					item.setMember(m);
+					listModelNotification.add(item);
+				}
+				for(String rec : recordsVideos.keySet()){			
+					Video v = new Video();
+					Member m = new Member();
+					v.setIdVideo(recordsVideos.get(rec).get("id_video"));
+					v.setTitle(recordsVideos.get(rec).get("title_video"));
+					v.setDateUpdated(recordsVideos.get(rec).get("date_updated"));
+					m.setNickname(recordsVideos.get(rec).get("nickname"));
+					v.setMember(m);
+					listModelNotification.add(v);
+				}
+				for(String rec : recordsEvent.keySet()){			
+					Event e = new Event();
+					Member m = new Member();
+					e.setIdEvent(recordsEvent.get(rec).get("id_event"));
+					e.setNameEvent(recordsEvent.get(rec).get("name_event"));
+					e.setDateUpdated(recordsEvent.get(rec).get("date_updated"));
+					m.setNickname(recordsEvent.get(rec).get("nickname"));
+					e.setMember(m);
+					listModelNotification.add(e);
+				}
+				for(String rec : recordsAnnounce.keySet()){			
+					Announce a = new Announce();
+					Member m = new Member();
+					a.setIdAnnounce(recordsAnnounce.get(rec).get("id_announce"));
+					a.setTitle(recordsAnnounce.get(rec).get("title"));
+					a.setTypeAnnounce(recordsAnnounce.get(rec).get("type_announce"));
+					a.setDateUpdated(recordsAnnounce.get(rec).get("date_updated"));
+					m.setNickname(recordsAnnounce.get(rec).get("nickname"));
+					a.setMember(m);
+					listModelNotification.add(a);
+				}
+				for(String rec : recordsTopic.keySet()){			
+					Topic t = new Topic();
+					Member m = new Member();
+					t.setIdTopic(recordsTopic.get(rec).get("id_topic"));
+					t.setSubject(recordsTopic.get(rec).get("subject"));
+					t.setDateUpdated(recordsTopic.get(rec).get("date_updated"));
+					m.setNickname(recordsTopic.get(rec).get("nickname"));
+					t.setMember(m);
+					listModelNotification.add(t);
+				}
+				for(String rec : recordsComment.keySet()){			
+					Comment c = new Comment();
+					Member m = new Member();
+					c.setIdComment(recordsComment.get(rec).get("id_comment"));
+					c.setComment(recordsComment.get(rec).get("text_comment"));
+					c.setIdTopic(recordsComment.get(rec).get("fk_topic_id"));
+					c.setDateUpdated(recordsComment.get(rec).get("date_updated"));
+					m.setNickname(recordsComment.get(rec).get("nickname"));
+					c.setMember(m);
+					listModelNotification.add(c);
+				}
 			}
 			
 			//total de notificacoes
-			int totalNews = recordsCollections.size() + recordsItems.size() + recordsVideos.size() + recordsEvent.size() + 
-					recordsAnnounce.size() + recordsTopic.size() + recordsComment.size() + recordsMessages.size();
+			totalNews = recordsCollections.size() + recordsItems.size() + recordsVideos.size() + recordsEvent.size() + 
+					recordsAnnounce.size() + recordsTopic.size() + recordsComment.size() + recordsMessages.size();			
+		}		
+		
+		if(!isMobile){
+			try {
+				JSONArray array = new JSONArray();
+				return ( array.put(new JSONObject().put("total", totalNews)) ); 	//retorna total notificacoes novas
+			} catch (JSONException e) { e.printStackTrace(); }
+			return null;	//nao ha notificacoes novas
+		}else{
+			//Mobile
+			//notificacoes especificas da caixa de entrada
+			if(!recordsMessages.isEmpty()){
+				for(String rec : recordsMessages.keySet()){
+					MessageInbox message = new MessageInbox();
+					Member m = new Member();
+					message.setIdMsg(recordsMessages.get(rec).get("id_msg"));
+					message.setSubject(recordsMessages.get(rec).get("subject"));
+					m.setNickname(recordsMessages.get(rec).get("nickname"));
+					message.setMember(m);
+					listModelNotification.add(message);
+				}
+			}
 			
-			return totalNews; 	//retorna total notificacoes novas
-		}
-		return 0;			//nao ha notificacoes novas
+			//JSONArray armazena mensagens de notificacoes
+			JSONArray array = new JSONArray();
+			if(!listModelNotification.isEmpty()){				
+				try{
+					array.put(new JSONObject().put("total", Integer.toString(totalNews))); 	//primeiro json contem total de notificacoes
+					Collections.sort(listModelNotification);
+					for(int i = 0; i < listModelNotification.size(); i++){
+						ContentILiketo bean = listModelNotification.get(i);
+						if(bean instanceof Collection){
+							Collection col = (Collection) bean;
+							for(String rec : recordsCollections.keySet()){
+								String id = recordsCollections.get(rec).get("id_collection");
+								if(id.equals(col.getIdCollection())){
+									String msg = "";
+									if(recordsCollections.get(rec).get("post_type").equals(Str.JOINED)){
+										msg = col.getMember().getNickname() + " has joined the group - \"" + col.getNameCategory() + "\".";
+									}else if(recordsCollections.get(rec).get("post_type").equals(Str.UPDATED)){
+										msg = col.getMember().getNickname() + " has updated his collection - \"" + col.getNameCollection() + "\".";
+									}
+									JSONObject json = new JSONObject();
+									json.put("msg", msg);
+									array.put(json);
+								}
+							}					
+						}
+						if(bean instanceof Item){
+							Item item = (Item) bean;
+							for(String rec : recordsItems.keySet()){
+								String id = recordsItems.get(rec).get("id_item");
+								if(id.equals(item.getIdItem())){
+									String msg = "";
+									if(recordsItems.get(rec).get("post_type").equals(Str.INCLUDED)){
+										msg = item.getMember().getNickname() + " has included a new item - \"" + item.getTitle() + "\".";
+									}else if(recordsItems.get(rec).get("post_type").equals(Str.UPDATED)){
+										msg = item.getMember().getNickname() + " has updated his item - \"" + item.getTitle() + "\".";
+									}
+									JSONObject json = new JSONObject();
+									json.put("msg", msg);
+									array.put(json);
+								}
+							}					
+						}
+						if(bean instanceof Video){
+							Video video = (Video) bean;
+							for(String rec : recordsVideos.keySet()){
+								String id = recordsVideos.get(rec).get("id_video");
+								if(id.equals(video.getIdVideo())){
+									String msg = "";
+									if(recordsVideos.get(rec).get("post_type").equals(Str.INCLUDED)){
+										msg = video.getMember().getNickname() + " has included a new video - \"" + video.getTitle() + "\".";
+									}else if(recordsVideos.get(rec).get("post_type").equals(Str.UPDATED)){
+										msg = video.getMember().getNickname() + " has updated his video - \"" + video.getTitle() + "\".";
+									}
+									JSONObject json = new JSONObject();
+									json.put("msg", msg);
+									array.put(json);
+								}
+							}					
+						}
+						if(bean instanceof Event){
+							Event event = (Event) bean;
+							for(String rec : recordsEvent.keySet()){
+								String id = recordsEvent.get(rec).get("id_event");
+								if(id.equals(event.getIdEvent())){
+									String msg = "";
+									if(recordsEvent.get(rec).get("post_type").equals(Str.INCLUDED)){
+										msg = event.getMember().getNickname() + " has created \"" + event.getNameEvent() + "\" event.";
+									}else if(recordsEvent.get(rec).get("post_type").equals(Str.UPDATED)){
+										msg = event.getMember().getNickname() + " has updated his event - \"" + event.getNameEvent() + "\"";
+									}
+									JSONObject json = new JSONObject();
+									json.put("msg", msg);
+									array.put(json);
+								}
+							}
+						}
+						if(bean instanceof Announce){
+							Announce announce = (Announce) bean;
+							for(String rec : recordsAnnounce.keySet()){
+								String id = recordsAnnounce.get(rec).get("id_announce");
+								if(id.equals(announce.getIdAnnounce())){
+									String msg = "";
+									if(recordsAnnounce.get(rec).get("post_type").equals(Str.INCLUDED)){
+										if(announce.getTypeAnnounce().equals("Auction"))
+											msg = announce.getMember().getNickname() + " has announced a item in auction - \"" + announce.getTitle() + "\".";
+										else 
+											msg = announce.getMember().getNickname() + " has announced the \"" + announce.getTitle() + "\" item.";
+									}else if(recordsAnnounce.get(rec).get("post_type").equals(Str.AUCTION_HOUR)){
+										msg = "Auction item \"" + announce.getTitle() + "\", starts in an hour.";
+									}
+									JSONObject json = new JSONObject();
+									json.put("msg", msg);
+									array.put(json);
+								}
+							}
+						}
+						if(bean instanceof Topic){
+							Topic topic = (Topic) bean;
+							String msg = topic.getMember().getNickname() + " has created a new topic in the forum.";
+							JSONObject json = new JSONObject();
+							json.put("msg", msg);
+							array.put(json);
+						}
+						if(bean instanceof Comment){
+							Comment comment = (Comment) bean;
+							String msg = comment.getMember().getNickname() + " has replied on forum.";
+							JSONObject json = new JSONObject();
+							json.put("msg", msg);
+							array.put(json);
+						}
+						if(bean instanceof MessageInbox){
+							MessageInbox message = (MessageInbox) bean;
+							String msg = message.getMember().getNickname() + " sent you a message - '"+message.getSubject()+"'";
+							JSONObject json = new JSONObject();
+							json.put("msg", msg);
+							array.put(json);
+						}
+					}
+				}catch(JSONException e){
+					e.printStackTrace();
+				}
+				return array;
+			}
+			
+			try {
+				array.put(new JSONObject().put("total", Integer.toString(totalNews)));	//primeiro json contem total de notificacoes
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} 	
+			return null;	//nao ha notificacoes novas	
+		}		
+		
 	}
 	
 	/**

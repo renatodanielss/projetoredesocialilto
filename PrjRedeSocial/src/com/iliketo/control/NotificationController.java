@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jettison.json.JSONArray;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -157,5 +158,25 @@ public class NotificationController {
 	}
 	
 	
+	/**
+	 * Retorna json de novas notificacoes para mobile
+	 */
+	@RequestMapping(value={"/notification/ajaxNotificationsMobile"})
+	public void notificationsMobile(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		
+		System.out.println("Log - " + "request @NotificationController url='/notification/ajaxNotificationsMobile'");
+		
+		JSONArray json = NotificationService.newsNotificationsMobile(request);	
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+		
+		if(json != null){
+			System.out.println("\nJSON Notific Mobile: " + json.toString());
+			response.getWriter().write(json.toString());
+		}else{
+			System.out.println("\nJSON Notific Mobile: total 0");
+			response.getWriter().write("");
+		}
+	}
 
 }
