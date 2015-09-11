@@ -557,7 +557,8 @@ public class NotificationService {
 			JSONArray array = new JSONArray();
 			if(!listModelNotification.isEmpty()){				
 				try{
-					array.put(new JSONObject().put("total", Integer.toString(totalNews))); 	//primeiro json contem total de notificacoes
+					array.put(new JSONObject().put("total", Integer.toString(totalNews))); 		//primeiro json contem total de notificacoes
+					array.put(new JSONObject().put("lastSeenDate", member.getLastSeenDate())); 	//segundo json contem data ultimo visto					
 					Collections.sort(listModelNotification);
 					for(int i = 0; i < listModelNotification.size(); i++){
 						ContentILiketo bean = listModelNotification.get(i);
