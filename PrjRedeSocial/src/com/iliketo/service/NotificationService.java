@@ -1186,7 +1186,7 @@ public class NotificationService {
 								s = s.replaceAll("@@@pathPhoto@@@", video.getMember().getPathPhoto());	//foto membro
 								s = s.replaceAll("@@@nickname@@@", video.getMember().getNickname());	//nickname
 								s = s.replaceAll("@@@dateUpdated@@@", video.getDateUpdated());			//data publicacao
-								s = s.replaceAll("@@@redirect@@@", "/redirect_info_item.jsp?idVideo="+video.getIdVideo()+"&idMember="+video.getMember().getIdMember());
+								s = s.replaceAll("@@@redirect@@@", "/redirect_info_video.jsp?idVideo="+video.getIdVideo()+"&idMember="+video.getMember().getIdMember());
 								div.append(s);
 							}
 						}					
@@ -1207,7 +1207,7 @@ public class NotificationService {
 								s = s.replaceAll("@@@pathPhoto@@@", event.getMember().getPathPhoto());	//foto membro
 								s = s.replaceAll("@@@nickname@@@", event.getMember().getNickname());	//nickname
 								s = s.replaceAll("@@@dateUpdated@@@", event.getDateUpdated());			//data publicacao
-								s = s.replaceAll("@@@redirect@@@", "/page.jsp?id=737&idevent=" + event.getIdEvent());	//link da publicacao
+								s = s.replaceAll("@@@redirect@@@", "/ilt/event/view?id=" + event.getIdEvent());	//link da publicacao
 								div.append(s);
 							}
 						}
