@@ -138,7 +138,7 @@ public class ItemController {
 		
 		Item item  = (Item) cms.getObjectOfParameter(Item.class);		//objeto com dados do form
 		
-		itemDAO.update(item);											//atualiza item
+		itemDAO.update(item, false);									//atualiza item
 		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
 		
 		//cria notificacao para o grupo da categoria

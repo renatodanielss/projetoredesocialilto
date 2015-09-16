@@ -143,7 +143,7 @@ public class CategoryController {
 			if(c.getIdCategory() != null && c.getIdCategory().equals(idCategory)){				
 				c.setIdCategory("");
 				c.setNameCategory("");
-				collectionDAO.update(c);				//atualiza colecao
+				collectionDAO.update(c, false);				//atualiza colecao
 				System.out.println("Log - Coleção: '"+ c.getNameCollection() +"' saiu da categoria/grupo: " + idCategory);
 			}
 		}

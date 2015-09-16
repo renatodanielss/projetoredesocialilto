@@ -94,7 +94,7 @@ public class CollectionController {
 			}else{
 				idCreated = ((Collection) session.getAttribute("newCollection")).getIdCollection();
 				collection.setIdCollection(idCreated);
-				collectionDAO.update(collection);					//update, exemplo: back da pagina ou refresh
+				collectionDAO.update(collection, true);					//update, exemplo: back da pagina ou refresh
 				System.out.println("Log - " + "Update colecao - name: " + collection.getNameCollection());
 			}
 			session.setAttribute("newCollection", collection);							//add nova colecao na session, evitar duplicidade
@@ -217,7 +217,7 @@ public class CollectionController {
 			return model.redirectError("/ilt/collection/edit?id=" + collection.getIdCollection()); 	//page form edit collection
 		}
 		
-		collectionDAO.update(collection);												//atualiza colecao
+		collectionDAO.update(collection, true);												//atualiza colecao
 		
 		//cria notificacao para o grupo da categoria
 		String idCategory = collection.getIdCategory();
@@ -271,7 +271,7 @@ public class CollectionController {
 			collection.setNotificTopic("Activate");
 			collection.setNotificComment("Activate");
 			
-			dao.update(collection);								//atualiza colecao
+			dao.update(collection, false);								//atualiza colecao
 			System.out.println("Log - Coleção: '"+ collection.getNameCollection() +"' entrou para a categoria/grupo: " + nameCategory);
 			
 			//cria notificacao para o grupo da categoria
@@ -310,7 +310,7 @@ public class CollectionController {
 			//entra para categoria
 			collection.setIdCategory(idCategory);
 			collection.setNameCategory(nameCategory);
-			dao.update(collection);						//update categoria da colecao
+			dao.update(collection, false);						//update categoria da colecao
 			System.out.println("Log - Coleção: '"+ idCollection +"' entrou para a categoria/grupo: " + nameCategory);
 			resultButton = "Leave category";
 			
@@ -322,7 +322,7 @@ public class CollectionController {
 			//sai da categoria
 			collection.setIdCategory("");
 			collection.setNameCategory("");
-			dao.update(collection);						//update categoria da colecao
+			dao.update(collection, false);						//update categoria da colecao
 			System.out.println("Log - Coleção: '"+ idCollection +"' saiu da categoria/grupo: " + nameCategory);
 			resultButton = "Participate";
 		}

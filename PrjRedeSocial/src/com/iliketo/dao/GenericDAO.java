@@ -202,11 +202,12 @@ public abstract class GenericDAO {
 	
 	/**
 	 * Metodo atualiza registro do objeto no banco de dados
-	 * Objeto deve conter o valor do id chave para atualizar
-	 * Se conter files, imagens ou video, deleta o antigo e atualiza o novo
+	 * Objeto deve conter o valor do id chave para atualizar.
+	 * Se deletarArquivo for true e conter files, imagens ou video, deleta o antigo e atualiza o novo
 	 * @param object
+	 * @param deletarArquivo
 	 */
-	public void update(Object object){
+	public void update(Object object, boolean deletarArquivo){
 		
 		Fileupload filepost = new Fileupload(null, null, null);
 		String idReal = "";	//id real para update
@@ -232,19 +233,21 @@ public abstract class GenericDAO {
 				if(value != null){
 					ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
 					if(coluna != null && !coluna.name().equals("")){
-						//verifica antes nome do arquivo antigo para deletar
+						//verifica antes nome do arquivo antigo para deletar						
 						FileILiketo file = atributo.getAnnotation(FileILiketo.class);
 						if(file != null){
-							//deleta arquivo antigo fisicamente para atualizar o novo
-							String nameFileDelete = (String) atributo.get(old);			//nome do arquivo no objecto do registro antigo antes do update
-							if(nameFileDelete != null && !nameFileDelete.equals("")){			
-								String localFilePath = (String) request.getSession().getAttribute(Str.STORAGE); 		//local arquivado
-								//verifica arquivos defaults
-								if(!nameFileDelete.equals("avatar_male.png") && !nameFileDelete.equals("avatar_female.png") && !nameFileDelete.equals("avatar_store.png")){
-									deleteFilePhysically(nameFileDelete, localFilePath);	//exclui arquivo e calcula espaco utilizado
+							if(deletarArquivo){
+								//deleta arquivo antigo fisicamente para atualizar o novo
+								String nameFileDelete = (String) atributo.get(old);			//nome do arquivo no objecto do registro antigo antes do update
+								if(nameFileDelete != null && !nameFileDelete.equals("")){			
+									String localFilePath = (String) request.getSession().getAttribute(Str.STORAGE); 		//local arquivado
+									//verifica arquivos defaults
+									if(!nameFileDelete.equals("avatar_male.png") && !nameFileDelete.equals("avatar_female.png") && !nameFileDelete.equals("avatar_store.png")){
+										deleteFilePhysically(nameFileDelete, localFilePath);	//exclui arquivo e calcula espaco utilizado
+									}
 								}
+								filepost.setParameter(coluna.name(), ""+value);	//set no filepost "coluna", "valor" para atualizar no BD
 							}
-							filepost.setParameter(coluna.name(), ""+value);	//set no filepost "coluna", "valor" para atualizar no BD
 						}else{
 							filepost.setParameter(coluna.name(), ""+value);	//set no filepost "coluna", "valor" para atualizar no BD
 						}

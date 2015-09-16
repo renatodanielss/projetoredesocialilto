@@ -66,7 +66,7 @@ public class MessageInboxOutboxController {
 		if(messageInbox != null && messageInbox.getReceiverIdMember().equals(myUserid)){			
 			ModelILiketo model = new ModelILiketo(request, response);
 			messageInbox.setWasRead("y");						//set msg lida
-			messageDAO.update(messageInbox);					//atualiza mensagem lida
+			messageDAO.update(messageInbox, false);				//atualiza mensagem lida
 			model.addAttribute("messageInbox", messageInbox);	//add objeto recuperar na jsp			
 			if(messageInbox.getIdAnnounce() != null && !messageInbox.getIdAnnounce().equals("")){
 				AnnounceDAO dao = new AnnounceDAO(db, request);
@@ -162,7 +162,7 @@ public class MessageInboxOutboxController {
 			message.setWasRead("y");
 		}
 		
-		messageDAO.update(message);							//atualiza mensagem lida ou nao lida		
+		messageDAO.update(message, false);					//atualiza mensagem lida ou nao lida		
 		response.getWriter().write(String.valueOf(isRead));	//retorna "true = lida" ou "false = nao lida"
 		
 	}
@@ -189,7 +189,7 @@ public class MessageInboxOutboxController {
 		}else if(message.getReceiverIdMember().equals(myUserid)){
 			message.setReceiverHidden("y");	//marca Receiver como oculta
 		}
-		messageDAO.update(message);			//atualiza mensagem marcando como oculta(excluida) para o destinatario ou remetente		
+		messageDAO.update(message, false);	//atualiza mensagem marcando como oculta(excluida) para o destinatario ou remetente		
 		
 		response.getWriter().write("ok");	//delete ok
 		

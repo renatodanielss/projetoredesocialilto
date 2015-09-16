@@ -128,7 +128,7 @@ public class EventController {
 		
 		Event event = (Event) cms.getObjectOfParameter(Event.class);	//objeto com dados do form
 		
-		eventDAO.update(event);											//atualiza event
+		eventDAO.update(event, false);									//atualiza event
 		
 		//cria notificacao para o grupo da categoria
 		String idCategory = event.getIdCategory();

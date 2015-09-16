@@ -134,7 +134,7 @@ public class VideoController {
 		
 		Video video = (Video) cms.getObjectOfParameter(Video.class);	//objeto com dados do form
 		
-		videoDAO.update(video);											//atualiza video
+		videoDAO.update(video, false);									//atualiza video
 		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
 		
 		//cria notificacao para o grupo da categoria

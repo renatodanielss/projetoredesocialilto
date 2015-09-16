@@ -347,7 +347,7 @@ public class AnnounceCollectorController {
 						announce.setTotalBids(Integer.toString(total));	//seta total de lances no anuncio				
 						announce.setBidActual(valueBid);				//seta valor lance no anuncio
 						announce.setBidUserId(myUserid);				//seta id membro proprietario do lance
-						announceDAO.update(announce);					//atualiza anuncio			
+						announceDAO.update(announce, false);			//atualiza anuncio			
 						jsonObj.put("resposta", "ok");					//resposta lance ok
 						jsonObj.put("valueBid", valueBid);
 						jsonObj.put("totalBids", announce.getTotalBids());
