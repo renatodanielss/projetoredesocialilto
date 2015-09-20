@@ -18,7 +18,7 @@
 			System.out.println("Recuperação = " + member.getRetrievePassword() + "\nid = " + member.getEmail());
 			System.out.println("Verdadeiro ou falso: " + verdadeiro.toString());
 			member.setRetrievePassword ("1");
-			memberDao.update(member);
+			memberDao.update(member, false);
 			
 			ServletContext server = request.getServletContext();
 			

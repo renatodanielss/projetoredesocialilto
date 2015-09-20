@@ -17,7 +17,7 @@ if (member.getIdMember() != null){
 		uuid2 = CmsConfigILiketo.generateRandomKey(32);
 		uuid = uuid1+uuid2;
 		member.setRetrievePassword(uuid);
-		memberDao.update(member);
+		memberDao.update(member, false);
 	} else{
 		uuid = member.getRetrievePassword();
 	}

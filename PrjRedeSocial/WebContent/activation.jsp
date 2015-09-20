@@ -12,7 +12,7 @@
 		System.out.println("Ativado = " + member.getActivated() + "\nid = " + member.getEmail());
 		System.out.println("Verdadeiro ou falso: " + verdadeiro.toString());
 		member.setActivated("0");
-		memberDao.update(member);
+		memberDao.update(member, false);
 		%>
 		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
 		<jsp:forward page="/logout.jsp">
