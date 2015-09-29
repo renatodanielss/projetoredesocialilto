@@ -76,8 +76,15 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@total_items@@@", total_items);
 			s = s.replaceAll("@@@id_collection@@@", collectionJB.getIdCollection());
 			s = s.replaceAll("@@@name_collection@@@", collectionJB.getNameCollection());
-			s = s.replaceAll("@@@description_collection@@@", collectionJB.getDescription());
-			s = s.replaceAll("@@@sub_description_collection@@@", collectionJB.getDescription().substring(0, 400));
+			
+			String description = collectionJB.getDescription();
+			if (description.length() > 400){
+				s = s.replaceAll("@@@sub_description_collection@@@", description.substring(0, 400));
+			}else{
+				s = s.replaceAll("@@@sub_description_collection@@@", description);
+			}
+			
+			s = s.replaceAll("@@@description_collection@@@", description);
 			s = s.replaceAll("@@@name_category@@@", collectionJB.getCategory());
 			s = s.replaceAll("@@@path_photo_collection@@@", collectionJB.getPathPhoto());
 			s = s.replaceAll("@@@date_created@@@", collectionJB.getDateCreated());
