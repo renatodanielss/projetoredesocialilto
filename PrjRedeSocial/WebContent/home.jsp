@@ -77,6 +77,7 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@id_collection@@@", collectionJB.getIdCollection());
 			s = s.replaceAll("@@@name_collection@@@", collectionJB.getNameCollection());
 			s = s.replaceAll("@@@description_collection@@@", collectionJB.getDescription());
+			s = s.replaceAll("@@@sub_description_collection@@@", collectionJB.getDescription().substring(0, 400));
 			s = s.replaceAll("@@@name_category@@@", collectionJB.getCategory());
 			s = s.replaceAll("@@@path_photo_collection@@@", collectionJB.getPathPhoto());
 			s = s.replaceAll("@@@date_created@@@", collectionJB.getDateCreated());
