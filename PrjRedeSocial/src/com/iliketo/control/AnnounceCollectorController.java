@@ -453,4 +453,44 @@ public class AnnounceCollectorController {
 		return "redirect:/ilt/ads?id=" + id; 	//success - page anuncio
 	}
 	
+	
+	@RequestMapping(value={"/announce/edit"})
+	public String editAnnounce(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @AnnounceCollectorController url='/announce/edit'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		
+		String id = request.getParameter("id");										//id anuncio
+		Announce announce = (Announce) announceDAO.readById(id, Announce.class);	//ler anuncio
+		
+		//valida anuncio membro
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		if(announce.getIdMember().equals(myUserid)){
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("announce", announce);		//dados atual do anuncio				
+			return "page.jsp?id=888";						//page form edit announcement
+		}else{
+			return "page.jsp?id=invalid";					//invalid page
+		}		
+	}
+	
+	@RequestMapping(value={"/announce/save"})
+	public String save(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @AnnounceCollectorController url='/announce/save'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		
+		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class);		//objeto com dados do form
+		announceDAO.update(announce, false);
+				
+		return "redirect:/ilt/ads?id=" + announce.getIdAnnounce(); 					//success - page anuncio
+	}
+	
 }
