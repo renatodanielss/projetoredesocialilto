@@ -74,6 +74,12 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "account_type")	//tipo de conta do anuncio(Store ou Collector)
 	private String accountType;
 	
+	@ColumnILiketo(name = "status")			//status(For sale, for auction, sold, canceled)
+	private String status;
+	
+	@ColumnILiketo(name = "featured")		//destaque
+	private String featured;
+	
 	private Member member;
 	
 	public Announce(){
@@ -288,4 +294,25 @@ public class Announce extends ContentILiketo {
 	public void setMember(Member member) {
 		this.member = member;
 	}
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
+	public String getFeatured() {
+		return featured;
+	}
+
+
+	public void setFeatured(String featured) {
+		this.featured = featured;
+	}
+	
 }

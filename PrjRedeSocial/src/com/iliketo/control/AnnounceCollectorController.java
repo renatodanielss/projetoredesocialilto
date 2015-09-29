@@ -428,5 +428,29 @@ public class AnnounceCollectorController {
 		return "redirect:" + redirect;			//success
 	}
 	
+	@RequestMapping(value={"/announce/changeStatus"})
+	public String changeStatus(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		System.out.println("Log - " + "request @AnnounceCollectorController url='/announce/changeStatus'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		
+		String id = request.getParameter("id");										//id anuncio
+		String status = request.getParameter("status");								//status
+		Announce announce = (Announce) announceDAO.readById(id, Announce.class);	//ler anuncio
+		
+		//valida status
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		if(announce.getIdMember().equals(myUserid)){
+			if(!status.equals("")){
+				announce.setStatus(status);
+				announceDAO.update(announce, false);
+			}
+		}
+				
+		return "redirect:/ilt/ads?id=" + id; 	//success - page anuncio
+	}
 	
 }
