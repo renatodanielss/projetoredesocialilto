@@ -80,8 +80,10 @@ if(!listTimeline.isEmpty()){
 			String description = collectionJB.getDescription();
 			if (description.length() > 400){
 				s = s.replaceAll("@@@sub_description_collection@@@", description.substring(0, 400));
+				s = s.replaceAll("@@@more_button@@@", "visible");
 			}else{
 				s = s.replaceAll("@@@sub_description_collection@@@", description);
+				s = s.replaceAll("@@@more_button@@@", "hidden");
 			}
 			
 			s = s.replaceAll("@@@description_collection@@@", description);
