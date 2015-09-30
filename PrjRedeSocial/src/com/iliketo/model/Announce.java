@@ -73,12 +73,12 @@ public class Announce extends ContentILiketo {
 	
 	@ColumnILiketo(name = "account_type")	//tipo de conta do anuncio(Store ou Collector)
 	private String accountType;
+
+	@ColumnILiketo(name = "featured")		//destaque
+	private String featured;
 	
 	@ColumnILiketo(name = "status")			//status(For sale, for auction, sold, canceled)
 	private String status;
-	
-	@ColumnILiketo(name = "featured")		//destaque
-	private String featured;
 	
 	private Member member;
 	
