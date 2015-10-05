@@ -1,5 +1,6 @@
 package com.iliketo.service;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1279,7 +1280,12 @@ public class NotificationService {
 		cms.getMysession().getSession().setAttribute("member", member);			//atualiza dados membro na sessao
 		
 		if(!div.toString().equals("")){
-			return div.toString();		//retorna lista de notificacao
+			try {
+				return new String(div.toString().getBytes("ISO-8859-1"));		//retorna lista de notificacao
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				return div.toString();
+			}
 		}else{
 			return "No notifications!";	//nao ha notificacao
 		}
