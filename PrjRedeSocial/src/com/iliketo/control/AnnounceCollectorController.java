@@ -150,7 +150,8 @@ public class AnnounceCollectorController {
 		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("userCard", userCard);
 		
-		return "page.jsp?id=659"; //page form payment
+		//return "page.jsp?id=659"; //page form payment
+		return "page.jsp?id=897"; //page form payment
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/collector/confirm"})
