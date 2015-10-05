@@ -135,6 +135,8 @@ public class NotificationController {
 		
 		String div = NotificationService.listHistoricNotification(cms, member, "809");	//page list entry notification template
 		
+		System.out.println("Div: " + new String(div.getBytes("UTF-8")));
+		
 		response.getWriter().write(new String(div.getBytes("UTF-8")));				//retorna ajax lista hostorico notificacao 		
 	}
 	
