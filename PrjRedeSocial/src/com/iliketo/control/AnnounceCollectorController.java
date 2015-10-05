@@ -22,13 +22,10 @@ import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.AuctionBidDAO;
 import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.ItemDAO;
-import com.iliketo.dao.UserCardDAO;
 import com.iliketo.model.Announce;
 import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Item;
-import com.iliketo.model.UserCard;
-import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -139,45 +136,28 @@ public class AnnounceCollectorController {
 			}
 		}
 		
-		session.setAttribute("announce", announce);							//set anuncio na session
-		
-		//dados cartao do membro
-		UserCardDAO userCardDAO = new UserCardDAO(db);		
-		UserCard userCard = userCardDAO.readInfoCard((String) session.getAttribute("userid"));
-		
-		
-		//model view jsp para binding do bean
+		session.setAttribute("announce", announce);		//set anuncio na session
 		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("userCard", userCard);
+		model.addAttribute("announce", announce);
 		
-		return "page.jsp?id=659"; //page form payment
+		return "page.jsp?id=897"; 						//page form payment
 	}
 	
-	
+	/**
 	@RequestMapping(value={"/registerAnnounce/collector/confirm"})
 	public String announceCollectorConfirm(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
 		System.out.println("Log - " + "request @AnnounceCollectorController url='/registerAnnounce/collector/confirm'");
 		
-		//dao e cms
-		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		UserCardDAO userCardDAO = new UserCardDAO(db);
 		HttpSession session = request.getSession();	
-		
-		UserCard userCard = (UserCard) cms.getObjectOfParameter(UserCard.class);	//recupera objeto com dados do form
-		
-		userCardDAO.saveInfoCard(userCard);									//salva dados atualizados do cartao
-		session.setAttribute("userCard", userCard);							//set dados cartao na session
-		
-		
-		//model view jsp para binding do bean
+
 		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("userCard", userCard);
 		model.addAttribute("announce", (Announce) session.getAttribute("announce"));
+		
 		
 		return "page.jsp?id=660"; //page confirm
 	}
+	*/
 	
 	@RequestMapping(value={"/registerAnnounce/collector/addAnnounce"})
 	public String announceCollectorAddAnnounce(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -189,23 +169,21 @@ public class AnnounceCollectorController {
 		AnnounceDAO announceDAO = new AnnounceDAO(db, request);		
 		HttpSession session = request.getSession();		
 		
-		Announce announce = (Announce) session.getAttribute("announce");	 	//recupera anuncio da sessao
-		UserCard userCard = (UserCard) session.getAttribute("userCard");	 	//recupera dados do cartao da sessao		
+		Announce announce = (Announce) session.getAttribute("announce");	 	//recupera anuncio da sessao	
 		String idCreated = "";
 		
-		if(announce != null && userCard != null){
+		if(announce != null){
 			
-			idCreated = announceDAO.create(announce);							//salva anuncio no bd
-			//***operacao para pagamento do anuncio aqui***
-			
+			announce.setStatus("Pending pay");						//pendente pagamento
+			idCreated = announceDAO.create(announce);				//salva anuncio no bd
 			
 			//remove atributos da sessao
 			session.removeAttribute("item");
 			session.removeAttribute("collection");
 			session.removeAttribute("announce");
-			session.removeAttribute("userCard");
 			System.out.println("Log - " + "Anuncio cadastrado com sucesso!");
 			
+			/**
 			//cria notificacao para o grupo da categoria
 			String idCategory = announce.getIdCategory();
 			if(idCategory != null && !idCategory.equals("")){
@@ -215,15 +193,14 @@ public class AnnounceCollectorController {
 					//notificacao aviso uma hora antes leilao
 					NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", idCreated, Str.AUCTION_HOUR, myUserid, announce.getDateInitial());
 				}
-			}
+			}*/
 			
 		}else{
 			System.out.println("Log - " + "Error acesso invalido, anuncio nao cadastrado!");
-			return "page.jsp?id=48"; 					//invalid - redirect page my collections
-		}
-			
+			return "page.jsp?id=invalid"; 					//invalid page
+		}			
 		
-		return "redirect:/ilt/ads?id=" + idCreated; 	//success - page anuncio criado
+		return "redirect:/ilt/ads?id=" + idCreated; 		//success - page anuncio criado
 	}
 	
 	
