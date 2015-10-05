@@ -176,7 +176,7 @@ public class AnnounceCollectorController {
 		model.addAttribute("userCard", userCard);
 		model.addAttribute("announce", (Announce) session.getAttribute("announce"));
 		
-		return "page.jsp?id=660"; //page confirm
+		return "/ilt/registerAnnounce/collector/addAnnounce"; //page confirm
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/collector/addAnnounce"})
