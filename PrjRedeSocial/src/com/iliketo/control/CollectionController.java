@@ -258,12 +258,11 @@ public class CollectionController {
 		String nameCategory = request.getParameter("nameCat");
 		Collection collection = (Collection) dao.readById(idCollection, Collection.class);	//ler colecao
 		
-		System.out.println("description:\n" + collection.getDescription());
-		
 		if(!collection.getIdCategory().equals(idCategory)){		//valida se colecao pertence a categoria
 			//entra para categoria
 			collection.setIdCategory(idCategory);
 			collection.setNameCategory(nameCategory);
+			collection.setDescription(null);
 			//por padrao todas notificacoes sao ativadas
 			collection.setNotificCollection("Activate");
 			collection.setNotificItem("Activate");
