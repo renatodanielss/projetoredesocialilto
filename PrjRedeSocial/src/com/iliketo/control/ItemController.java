@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
+import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.ItemDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
+import com.iliketo.model.Announce;
 import com.iliketo.model.Item;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
@@ -139,6 +141,16 @@ public class ItemController {
 		Item item  = (Item) cms.getObjectOfParameter(Item.class);		//objeto com dados do form
 		
 		itemDAO.update(item, false);									//atualiza item
+		
+		//verifica e atualiza anuncio
+		AnnounceDAO dao = new AnnounceDAO(db, request);
+		Announce a = (Announce) dao.readByColumn("fk_item_id", item.getIdItem(), Announce.class);
+		if(a != null && a.getId() != null && !a.getId().equals("")){
+			a.setTitle(item.getTitle());
+			a.setDescription(item.getDescription());
+			dao.update(a, false);
+		}
+				
 		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
 		
 		//cria notificacao para o grupo da categoria
