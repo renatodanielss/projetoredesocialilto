@@ -228,20 +228,20 @@ public class AnnounceCollectorController {
 		String pageMeuLeilao = "page.jsp?id=705";				//pagina meu anuncio leilao para item
 		String pageMeuAnuncio = "page.jsp?id=729";				//pagina meu anuncio venda/troca para item		
 		String pageMeuAnuncioCompra = "page.jsp?id=882";		//pagina meu anuncio de compra
-		String pageMeuAnuncioLoja = "page.jsp?id=862";			//pagina meu anuncio de loja
+		//String pageMeuAnuncioLoja = "page.jsp?id=862";			//pagina meu anuncio de loja
 		
 		String pageLeilaoTerceiro = "page.jsp?id=706";			//pagina terceiro anuncio leilao para item
 		String pageAnuncioTerceiro = "page.jsp?id=728";			//pagina terceiro venda/troca para item
 		String pageAnuncioCompraTerceiro = "page.jsp?id=881";	//pagina terceiro anuncio de compra
-		String pageAnuncioLoja = "page.jsp?id=861";				//pagina terceiro anuncio de loja
+		//String pageAnuncioLoja = "page.jsp?id=861";				//pagina terceiro anuncio de loja
 		
 		String pageVisualizarAnuncio = "";						//pagina para redirecionar
 		
 		if(announce.getIdMember().equals(myUserid)){
 			//visao do meu anuncio
-			if(announce.getAccountType().equals("Store")){
-				pageVisualizarAnuncio = pageMeuAnuncioLoja;				//anuncio de loja
-			}else{
+			//if(announce.getAccountType().equals("Store")){
+				//pageVisualizarAnuncio = pageMeuAnuncioLoja;				//anuncio de loja
+			//}else{
 				if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
 					if(!announce.getIdItem().equals("")){	
 						pageVisualizarAnuncio = pageMeuLeilao;			//leilao para item
@@ -253,12 +253,12 @@ public class AnnounceCollectorController {
 						pageVisualizarAnuncio = pageMeuAnuncio;			//venda/troca para item
 					}
 				}
-			}
+			//}
 		}else{
 			//visao de terceiros do anuncio
-			if(announce.getAccountType().equals("Store")){
-				pageVisualizarAnuncio = pageAnuncioLoja;				//anuncio de loja
-			}else{
+			//if(announce.getAccountType().equals("Store")){
+				//pageVisualizarAnuncio = pageAnuncioLoja;				//anuncio de loja
+			//}else{
 				if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
 					if(!announce.getIdItem().equals("")){	
 						pageVisualizarAnuncio = pageLeilaoTerceiro;		//leilao para item
@@ -270,7 +270,7 @@ public class AnnounceCollectorController {
 						pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
 					}
 				}
-			}
+			//}
 		}
 		
 		//valida pagina correta do anuncio
