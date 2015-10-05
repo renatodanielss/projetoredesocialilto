@@ -30,6 +30,11 @@ public class AnnounceStoreController {
 		
 		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store'");
 		
+		if(ModelILiketo.validateAndProcessError(request)){
+			//valida e mostra error na pagina
+			System.out.println("Log - " + "Erro ao adicionar imagem item de loja. Tela formulario registrar anuncio");
+		}
+		
 		return "page.jsp?id=757"; //page form choose type announce
 	}
 	
@@ -89,12 +94,17 @@ public class AnnounceStoreController {
 			idCreated = announceDAO.create(announce);												//salva anuncio
 		}else{
 			//Sell, Auction, Exchange
+			ModelILiketo model = new ModelILiketo(request, response);
 			try {
 				cms.processFileuploadImages(itemsPhotos);								//salva arquivos
 			} catch (StorageILiketoException e) {
 				//return msg erro nao possui espaco de armazenamento suficiente
+				model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
+				return model.redirectError("/ilt/registerAnnounce/store");
 			} catch (ImageILiketoException e) {
 				//return msg erro formato de imagem invalido
+				model.addMessageError("imageFormat", "Upload only Image in jpg format."); 													//msg erro
+				return model.redirectError("/ilt/registerAnnounce/store");
 			}
 			announce.setPathPhotoAd(((StoreItem)itemsPhotos[0]).getPhotoStoreItem());	//seta foto principal			
 			idCreated = announceDAO.create(announce);									//salva anuncio
