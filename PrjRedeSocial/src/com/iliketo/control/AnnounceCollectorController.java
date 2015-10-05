@@ -153,6 +153,7 @@ public class AnnounceCollectorController {
 		return "page.jsp?id=659"; //page form payment
 	}
 	
+	
 	@RequestMapping(value={"/registerAnnounce/collector/confirm"})
 	public String announceCollectorConfirm(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
