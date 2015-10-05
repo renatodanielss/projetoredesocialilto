@@ -172,7 +172,7 @@ public class NotificationController {
 		
 		if(json != null){
 			System.out.println("\nJSON Notific Mobile: " + json.toString());
-			response.getWriter().write(json.toString());
+			response.getWriter().write(new String(json.toString().getBytes("UTF-8")));
 		}else{
 			System.out.println("\nJSON Notific Mobile: total 0");
 			response.getWriter().write("");
