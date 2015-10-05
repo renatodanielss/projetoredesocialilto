@@ -1,7 +1,6 @@
 package com.iliketo.control;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,13 +13,10 @@ import HardCore.DB;
 
 import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.StoreItemDAO;
-import com.iliketo.dao.UserCardDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Announce;
 import com.iliketo.model.StoreItem;
-import com.iliketo.model.UserCard;
-import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -86,6 +82,7 @@ public class AnnounceStoreController {
 		
 		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
 		Object[] itemsPhotos = cms.getObjectsFileOfParameter(StoreItem.class); 		//popula vetor de objetos quando há um ou varios input "file"
+		announce.setStatus("Pending pay");											//pendente pagamento
 		
 		String idCreated = "";
 		if(announce.getTypeAnnounce().equals("Purchase")){
@@ -110,17 +107,15 @@ public class AnnounceStoreController {
 		announce.setIdAnnounce(idCreated);
 		session.setAttribute("announce", announce);
 		
-		//dados cartao do membro
-		UserCardDAO userCardDAO = new UserCardDAO(db);		
-		UserCard userCard = userCardDAO.readInfoCard((String) session.getAttribute("userid"));
-		
 		//model view jsp para binding do bean
 		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("userCard", userCard);
+		model.addAttribute("announce", announce);
+		
 		
 		return "page.jsp?id=800"; //page form payment
 	}
 	
+	/**
 	@RequestMapping(value={"/registerAnnounce/store/confirm"})
 	public String announceStoreConfirm(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
@@ -144,6 +139,7 @@ public class AnnounceStoreController {
 		
 		return "page.jsp?id=801"; //page confirm
 	}
+	*/
 	
 	@RequestMapping(value={"/registerAnnounce/store/addAnnounce"})
 	public String announceStoreaddAnnounce(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -154,10 +150,10 @@ public class AnnounceStoreController {
 		HttpSession session = request.getSession();		
 		Announce announce = (Announce) session.getAttribute("announce");	//recupera anuncio da sessao
 		session.removeAttribute("announce");								//remove da sessao
-		session.removeAttribute("userCard");								//remove da sessao
 		
 		System.out.println("Log - " + "Anuncio de loja cadastrado com sucesso!");
 		
+		/**
 		//cria notificacao para o grupo da categoria
 		String idCategory = announce.getIdCategory();
 		if(idCategory != null && !idCategory.equals("")){
@@ -168,6 +164,7 @@ public class AnnounceStoreController {
 				NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", announce.getIdAnnounce(), Str.AUCTION_HOUR, myUserid, announce.getDateInitial());
 			}
 		}
+		*/
 		
 		return "redirect:/ilt/ads?id=" + announce.getIdAnnounce(); 			//success - page anuncio criado
 	}
