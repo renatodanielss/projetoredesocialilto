@@ -119,7 +119,7 @@ public class NotificationController {
 		String totalNews = Integer.toString(NotificationService.totalNotifications(request));
 		System.out.println("\nTotal novas notificacoes: " + totalNews + "\n");
 		
-		response.getWriter().write(totalNews);				//retorna total notificacao ajax
+		response.getWriter().write(new String(totalNews.getBytes("ISO-8859-1")));				//retorna total notificacao ajax
 	}
 	
 	/**
