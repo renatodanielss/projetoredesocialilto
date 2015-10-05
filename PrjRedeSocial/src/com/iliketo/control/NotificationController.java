@@ -119,7 +119,7 @@ public class NotificationController {
 		String totalNews = Integer.toString(NotificationService.totalNotifications(request));
 		System.out.println("\nTotal novas notificacoes: " + totalNews + "\n");
 		
-		response.getWriter().write(new String(totalNews.getBytes("ISO-8859-1")));				//retorna total notificacao ajax
+		response.getWriter().write(new String(totalNews.getBytes("UTF-8")));				//retorna total notificacao ajax
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class NotificationController {
 		
 		String div = NotificationService.listHistoricNotification(cms, member, "809");	//page list entry notification template
 		
-		response.getWriter().write(new String(div.getBytes("ISO-8859-1")));				//retorna ajax lista hostorico notificacao 		
+		response.getWriter().write(new String(div.getBytes("UTF-8")));				//retorna ajax lista hostorico notificacao 		
 	}
 	
 	/**

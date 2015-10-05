@@ -1281,7 +1281,7 @@ public class NotificationService {
 		
 		if(!div.toString().equals("")){
 			try {
-				return new String(div.toString().getBytes("ISO-8859-1"));		//retorna lista de notificacao
+				return new String(div.toString().getBytes("UTF-8"));		//retorna lista de notificacao
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 				return div.toString();
