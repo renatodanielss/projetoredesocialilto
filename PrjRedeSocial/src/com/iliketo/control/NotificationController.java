@@ -137,6 +137,8 @@ public class NotificationController {
 		
 		System.out.println("Div: " + new String(div.getBytes("UTF-8")));
 		
+		response.setContentType("text/html; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(new String(div.getBytes("UTF-8")));				//retorna ajax lista hostorico notificacao 		
 	}
 	
