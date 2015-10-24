@@ -119,10 +119,9 @@ if (db != null) {
 	if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){ //se tiver configuração
 		
 		//Exemplo: DOCUMENT_ROOT = "D:\\Todos Arquivos\\Documentos\\Asbru";	//'Diretorio Raiz'	
-		DOCUMENT_ROOT = myconfig.get("csrootpath");
-		myconfig.setTemp("URLimagepath", DOCUMENT_ROOT + "/image/");
+		String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
 		
-		String diretorioArmazenamento = DOCUMENT_ROOT + "/" + myconfig.get("URLuploadpath"); //diretorio armazenamento + pasta upload padrão
+		String diretorioArmazenamento = DOCUMENT_ROOT_UPLOAD + "/" + myconfig.get("URLuploadpath"); //diretorio armazenamento + pasta upload padrão
 		mysession.set(Str.STORAGE, diretorioArmazenamento); //seta na session o diretorio raiz + pasta upload de arquivos recuperar no html @@@get:storage@@@
 	
 	}else{

@@ -439,6 +439,12 @@ public class UCmaintainDataILiketo {
 		error = "";
 		Page mypage = new Page(text);
 		Fileupload filepost = new Fileupload(null, null, null);
+		
+		//novo diretorio externo de upload definido no Media Library do Asbru
+		if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
+			DOCUMENT_ROOT = myconfig.get("csrootpath"); //altera documento raiz para pasta upload definida na conf asbru
+		}
+		
 		filepost = getFileupload(DOCUMENT_ROOT, mysession, myrequest, myresponse, myconfig, db, 32);
 		
 		//se action for post_collection realiza o fluxo abaixo

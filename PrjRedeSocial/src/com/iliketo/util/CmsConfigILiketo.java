@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.catalina.Context;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -49,6 +50,7 @@ import com.iliketo.model.annotation.FileILiketo;
 public class CmsConfigILiketo {
 	
 	private ServletContext servletcontext;
+	private String DOCUMENT_ROOT_UPLOAD;
 	private String DOCUMENT_ROOT;
 	private Request myrequest;
 	private Response myresponse;
@@ -80,6 +82,13 @@ public class CmsConfigILiketo {
 		myconfig.setTemp("URLuploadpath", "upload/");			//configura��o pasta 'upload' dentro do diret�rio raiz
 		memberDAO = new MemberDAO((DB) request.getAttribute(Str.CONNECTION_DB), request);	//dao membro
 		setCmsAsbru(request);
+		//diretorio de upload definido no Media Library do Asbru
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
+			DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
+		}else{
+			DOCUMENT_ROOT_UPLOAD = DOCUMENT_ROOT;
+		}
 		
 	}
 	
@@ -170,7 +179,7 @@ public class CmsConfigILiketo {
 					        HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
 			            	mapMyFormInput.put("name", item.getFieldName());
 			            	mapMyFormInput.put("filename", item.getName());
-					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
 					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
 					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);					        
 					        
@@ -267,7 +276,7 @@ public class CmsConfigILiketo {
 			            	HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
 			            	mapMyFormInput.put("name", item.getFieldName());
 			            	mapMyFormInput.put("filename", item.getName());
-					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
 					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
 					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	        
 
