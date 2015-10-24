@@ -120,6 +120,7 @@ if (db != null) {
 		
 		//Exemplo: DOCUMENT_ROOT = "D:\\Todos Arquivos\\Documentos\\Asbru";	//'Diretorio Raiz'	
 		String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
+		DOCUMENT_ROOT = myconfig.get("csrootpath");
 		
 		String diretorioArmazenamento = DOCUMENT_ROOT_UPLOAD + "/" + myconfig.get("URLuploadpath"); //diretorio armazenamento + pasta upload padrão
 		mysession.set(Str.STORAGE, diretorioArmazenamento); //seta na session o diretorio raiz + pasta upload de arquivos recuperar no html @@@get:storage@@@
