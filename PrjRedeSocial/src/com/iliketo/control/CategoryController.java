@@ -281,7 +281,7 @@ public class CategoryController {
 				return "page.jsp?id=623";	//pagina grupo
 			}
 		}
-		return "/invalidPage"; 				//pagina invalida
+		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
 	/** 2 Redireciona para pagina Trade do grupo */
@@ -304,7 +304,7 @@ public class CategoryController {
 				return "page.jsp?id=686";	//pagina trade
 			}
 		}
-		return "/invalidPage"; 				//pagina invalida
+		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
 	/** 3 Redireciona para pagina Auction do grupo */
@@ -327,7 +327,7 @@ public class CategoryController {
 				return "page.jsp?id=723";	//pagina Auction
 			}
 		}
-		return "/invalidPage"; 				//pagina invalida
+		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
 	/** 4 Redireciona para pagina Store do grupo */
@@ -350,7 +350,7 @@ public class CategoryController {
 				return "page.jsp?id=781";	//pagina Store
 			}
 		}
-		return "/invalidPage"; 				//pagina invalida
+		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
 	/** 5 Redireciona para pagina Forum do grupo */
@@ -376,7 +376,7 @@ public class CategoryController {
 				return "page.jsp?id=675";	//pagina Forum
 			}
 		}
-		return "/invalidPage"; 				//pagina invalida
+		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
 	/** 6 Redireciona para pagina Collections do grupo */
@@ -399,7 +399,7 @@ public class CategoryController {
 				return "page.jsp?id=867";	//pagina Collections
 			}
 		}
-		return "/invalidPage"; 				//pagina invalida
+		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
 	/** 7 Redireciona para pagina Events do grupo */
@@ -422,7 +422,7 @@ public class CategoryController {
 				return "page.jsp?id=653";	//pagina Events
 			}
 		}
-		return "/invalidPage"; 				//pagina invalida
+		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
 	/** 8 Redireciona para pagina Members do grupo */
@@ -445,7 +445,7 @@ public class CategoryController {
 				return "page.jsp?id=679";	//pagina Members
 			}
 		}
-		return "/invalidPage"; 				//pagina invalida
+		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
 	

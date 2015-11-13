@@ -14,10 +14,7 @@ import com.iliketo.model.annotation.IdILiketo;
 public class Category extends ContentILiketo {
 
 	@IdILiketo
-	@ColumnILiketo(name = "id_forum")
-	private String idForum;	
-	
-	@ColumnILiketo(name = "fk_category_id")
+	@ColumnILiketo(name = "id_category")
 	private String idCategory;
 	
 	@ColumnILiketo(name = "name_category")
@@ -25,17 +22,7 @@ public class Category extends ContentILiketo {
 	
 	
 	public Category(){ }
-
-
-	public String getIdForum() {
-		return idForum;
-	}
-
-
-	public void setIdForum(String idForum) {
-		this.idForum = idForum;
-	}
-
+	
 
 	public String getIdCategory() {
 		return idCategory;
