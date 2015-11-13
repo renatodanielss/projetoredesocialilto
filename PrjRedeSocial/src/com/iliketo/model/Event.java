@@ -43,9 +43,6 @@ public class Event extends ContentILiketo {
 	@ColumnILiketo(name = "name_category")
 	private String nameCategory;
 	
-	@ColumnILiketo(name = "fk_group_id")
-	private String idGroup;
-	
 	@ColumnILiketo(name = "fk_user_id")
 	private String idMember;
 	
@@ -134,14 +131,6 @@ public class Event extends ContentILiketo {
 
 	public void setNameCategory(String nameCategory) {
 		this.nameCategory = nameCategory;
-	}
-
-	public String getIdGroup() {
-		return idGroup;
-	}
-
-	public void setIdGroup(String idGroup) {
-		this.idGroup = idGroup;
 	}
 
 	public String getIdMember() {

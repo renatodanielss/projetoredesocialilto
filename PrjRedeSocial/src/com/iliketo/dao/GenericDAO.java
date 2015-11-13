@@ -367,8 +367,8 @@ public abstract class GenericDAO {
 		Object object = null;
 		try {
 				
-			object = clazz.newInstance();			
 			if(row != null){
+				object = clazz.newInstance();	
 				for(Field atributo : object.getClass().getDeclaredFields()) {						
 					atributo.setAccessible(true);
 					ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);

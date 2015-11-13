@@ -95,7 +95,7 @@ public class EventController {
 			NotificationService.createNotification(db, idCategory, "event", idCreate, Str.INCLUDED, myUserid);
 		}
 		
-		return "redirect:/page.jsp?id=623&group=" + event.getIdGroup();	//success event group
+		return "redirect:/ilt/groupCategory/group?id=" + event.getIdCategory();	//success event group
 	}
 	
 	

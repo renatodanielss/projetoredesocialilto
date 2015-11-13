@@ -17,12 +17,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
+import com.iliketo.dao.CategoryDAO;
 import com.iliketo.dao.CollectionDAO;
+import com.iliketo.dao.ForumDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.InterestDAO;
+import com.iliketo.model.Category;
 import com.iliketo.model.Collection;
+import com.iliketo.model.Forum;
 import com.iliketo.model.Interest;
 import com.iliketo.util.ColumnsSingleton;
+import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
 
@@ -159,17 +164,289 @@ public class CategoryController {
 	}
 	
 	
+	/**
+	 * Cria nova categoria/grupo para o interesse
+	 */
+	@RequestMapping(value={"/groupCategory/interest/createCategory"})
+	private String interestCreateCategory(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/interest/createCategory'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//BD
+		String idCat = request.getParameter("idCat");			//id categoria
+		String cat = request.getParameter("cat");				//nome categoria
+		
+		//valida se existe categoria		
+		if(IliketoDAO.readRecordExistsDatabase(db, "dbcategory", "name_category", cat)){
+			
+			//retorna mesma pagina com o erro que ja existe a categoria
+			String msgErro = "Category already exists, choose category below or other name!";			
+			return "redirect:/page.jsp?id=696&error=" + msgErro + "&category=" + cat;
+			
+		}else{
+		
+			//Cria nova categoria/grupo
+			CategoryDAO categoryDAO = new CategoryDAO(db, request);
+			Category category = new Category();
+			category.setNameCategory(cat);
+			String idCreated = categoryDAO.create(category);
+			
+			//cria novo forum da categoria/grupo
+			ForumDAO forumDAO = new ForumDAO(db, request);
+			Forum forum = new Forum();
+			forum.setIdCategory(idCreated);
+			forum.setNameCategory(cat);			
+			forumDAO.create(forum);
+
+			//Category e forum criados				
+			System.out.println("Log - Create Category/Group - name: " + cat);				
+			
+			//action redireciona para criar novo interesse e participar da categoria nova
+			String action = "/ilt/interest/createInterest?idCat=" + idCat + "&nameCat=" + cat; 
+			return action;
+		}
+	}
 	
 	
+	/**
+	 * Cria categoria/grupo para colecao
+	 */
+	@RequestMapping(value={"/groupCategory/collection/createCategory"})
+	private String collectionCreateCategory(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/collection/createCategory'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		String cat = request.getParameter("cat");					//nome categoria
+		String idCollection = request.getParameter("idCollection");	//id colecao
+		
+		//valida se existe categoria
+		if(IliketoDAO.readRecordExistsDatabase(db, "dbcategory", "name_category", cat)){
+			
+			//retorna mesma pagina com o erro que ja existe a categoria
+			String msgErro = "Category already exists, choose category below or other name!";
+			return "redirect:/page.jsp?id=622&error=" + msgErro + "&category=" + cat;
+			
+		}else{
+		
+			//Cria nova categoria/grupo
+			CategoryDAO categoryDAO = new CategoryDAO(db, request);
+			Category category = new Category();
+			category.setNameCategory(cat);
+			String idCreated = categoryDAO.create(category);
+			
+			//cria novo forum da categoria/grupo
+			ForumDAO forumDAO = new ForumDAO(db, request);
+			Forum forum = new Forum();
+			forum.setIdCategory(idCreated);
+			forum.setNameCategory(cat);
+			forumDAO.create(forum);
+
+			//Category e forum criados
+			System.out.println("Log - Create Category/Group - name: " + cat);			
+			
+			//action redireciona para criar novo interesse e participar da categoria nova
+			String action = "/ilt/collection/participateCategory?idCat=" + idCat + "&nameCat=" + cat+"&idCollection="+idCollection;
+			return action;
+		}
+	}
 	
 	
+	/* REDIRECIONAMENTOS DAS PAGINAS DA CATEGORIA/GRUPO */
 	
 	
+	/** 1 Redireciona para pagina principal do grupo */
+	@RequestMapping(value={"/groupCategory/group"})
+	private String groupCategoryHome(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/group'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ForumDAO forumDAO = new ForumDAO(db, request);
+				Forum forum = (Forum) forumDAO.readById(idCat, Forum.class);		//recupera forum
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				model.addAttribute("forum", forum);
+				return "page.jsp?id=623";	//pagina grupo
+			}
+		}
+		return "/invalidPage"; 				//pagina invalida
+	}
 	
+	/** 2 Redireciona para pagina Trade do grupo */
+	@RequestMapping(value={"/groupCategory/trade"})
+	private String groupCategoryTrade(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/trade'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				return "page.jsp?id=686";	//pagina trade
+			}
+		}
+		return "/invalidPage"; 				//pagina invalida
+	}
 	
+	/** 3 Redireciona para pagina Auction do grupo */
+	@RequestMapping(value={"/groupCategory/auction"})
+	private String groupCategoryAuction(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/auction'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				return "page.jsp?id=723";	//pagina Auction
+			}
+		}
+		return "/invalidPage"; 				//pagina invalida
+	}
 	
+	/** 4 Redireciona para pagina Store do grupo */
+	@RequestMapping(value={"/groupCategory/store"})
+	private String groupCategoryStore(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/store'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				return "page.jsp?id=781";	//pagina Store
+			}
+		}
+		return "/invalidPage"; 				//pagina invalida
+	}
 	
+	/** 5 Redireciona para pagina Forum do grupo */
+	@RequestMapping(value={"/groupCategory/forum"})
+	private String groupCategoryForum(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/forum'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);		//recupera categoria		
+			//valida categoria
+			if(category != null){
+				ForumDAO forumDAO = new ForumDAO(db, request);
+				Forum forum = (Forum) forumDAO.readById(idCat, Forum.class);		//recupera forum
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				model.addAttribute("forum", forum);
+				return "page.jsp?id=675";	//pagina Forum
+			}
+		}
+		return "/invalidPage"; 				//pagina invalida
+	}
 	
+	/** 6 Redireciona para pagina Collections do grupo */
+	@RequestMapping(value={"/groupCategory/collections"})
+	private String groupCategoryCollections(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/collections'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				return "page.jsp?id=867";	//pagina Collections
+			}
+		}
+		return "/invalidPage"; 				//pagina invalida
+	}
+	
+	/** 7 Redireciona para pagina Events do grupo */
+	@RequestMapping(value={"/groupCategory/events"})
+	private String groupCategoryEvents(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/events'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				return "page.jsp?id=653";	//pagina Events
+			}
+		}
+		return "/invalidPage"; 				//pagina invalida
+	}
+	
+	/** 8 Redireciona para pagina Members do grupo */
+	@RequestMapping(value={"/groupCategory/members"})
+	private String groupCategoryMembers(HttpServletRequest request, HttpServletResponse response){
+		
+		System.out.println("Log - " + "request @CategoryController url='/groupCategory/members'");
+		
+		//dao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				return "page.jsp?id=679";	//pagina Members
+			}
+		}
+		return "/invalidPage"; 				//pagina invalida
+	}
 	
 	
 
