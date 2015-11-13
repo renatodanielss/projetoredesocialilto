@@ -174,8 +174,7 @@ public class CategoryController {
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//BD
-		String idCat = request.getParameter("idCat");			//id categoria
-		String cat = request.getParameter("cat");				//nome categoria
+		String cat = request.getParameter("name_category");		//nome categoria
 		
 		//valida se existe categoria		
 		if(IliketoDAO.readRecordExistsDatabase(db, "dbcategory", "name_category", cat)){
@@ -203,7 +202,7 @@ public class CategoryController {
 			System.out.println("Log - Create Category/Group - name: " + cat);				
 			
 			//action redireciona para criar novo interesse e participar da categoria nova
-			String action = "/ilt/interest/createInterest?idCat=" + idCat + "&nameCat=" + cat; 
+			String action = "/ilt/interest/createInterest?idCat=" + idCreated + "&nameCat=" + cat; 
 			return action;
 		}
 	}
@@ -218,10 +217,9 @@ public class CategoryController {
 		System.out.println("Log - " + "request @CategoryController url='/groupCategory/collection/createCategory'");
 		
 		//dao
-		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
-		String idCat = request.getParameter("idCat");				//id categoria
-		String cat = request.getParameter("cat");					//nome categoria
-		String idCollection = request.getParameter("idCollection");	//id colecao
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);			//BD
+		String cat = request.getParameter("name_category");				//nome categoria
+		String idCollection = request.getParameter("idCollection");		//id colecao
 		
 		//valida se existe categoria
 		if(IliketoDAO.readRecordExistsDatabase(db, "dbcategory", "name_category", cat)){
@@ -249,7 +247,7 @@ public class CategoryController {
 			System.out.println("Log - Create Category/Group - name: " + cat);			
 			
 			//action redireciona para criar novo interesse e participar da categoria nova
-			String action = "/ilt/collection/participateCategory?idCat=" + idCat + "&nameCat=" + cat+"&idCollection="+idCollection;
+			String action = "/ilt/collection/participateCategory?idCat=" + idCreated + "&nameCat=" + cat+"&idCollection="+idCollection;
 			return action;
 		}
 	}
