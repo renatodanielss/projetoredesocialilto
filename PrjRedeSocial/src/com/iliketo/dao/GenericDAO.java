@@ -358,6 +358,10 @@ public abstract class GenericDAO {
 	 */
 	public Object readById(String id, Class clazz){
 		
+		if(id == null || id.isEmpty()){		//valida id
+			return null;
+		}
+		
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		String dataid = CS.getDATA(db, nameDatabase);
 		

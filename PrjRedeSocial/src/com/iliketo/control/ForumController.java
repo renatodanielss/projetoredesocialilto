@@ -8,12 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
+import com.iliketo.dao.CategoryDAO;
 import com.iliketo.dao.CommentDAO;
+import com.iliketo.dao.ForumDAO;
 import com.iliketo.dao.TopicDAO;
+import com.iliketo.model.Category;
 import com.iliketo.model.Comment;
+import com.iliketo.model.Forum;
 import com.iliketo.model.Topic;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
 
@@ -29,10 +34,24 @@ public class ForumController {
 		
 		System.out.println("Log - " + "request @ForumController url='/group/forum/topic'");
 		
-		String id = request.getParameter("id"); 		//id do topico
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//DB
+		String idTopic = request.getParameter("idTop"); 		//id do topico
+		String idForum = request.getParameter("idForum"); 		//id do forum
 		
-		return "/page.jsp?id=628&topic=" + id; 			//page comment topic
+		ForumDAO forumDAO = new ForumDAO(db, request);
+		TopicDAO topicDAO = new TopicDAO(db, request);
+		Forum forum = (Forum) forumDAO.readById(idForum, Forum.class);
+		Topic topico = (Topic) topicDAO.readById(idTopic, Topic.class);
 		
+		//valida forum e topico
+		if(forum != null && topico != null){
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("forum", forum);
+			model.addAttribute("topic", topico);
+			return "/page.jsp?id=628&topic=" + idTopic; 	//page comment topic
+		}
+		
+		return "/page.jsp?id=invalidPage"; 					//pagina invalida
 	}
 	
 	@RequestMapping(value={"/group/forum/createTopic"})

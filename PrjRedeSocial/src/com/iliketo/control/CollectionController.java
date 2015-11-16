@@ -18,6 +18,7 @@ import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Interest;
 import com.iliketo.model.Item;
+import com.iliketo.model.Member;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
@@ -35,23 +36,30 @@ public class CollectionController {
 		
 		System.out.println("Log - " + "request @CollectionController url='/collection/profile'");
 		
-		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
-		HttpSession session = request.getSession();									//session
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);							//db
+		CollectionDAO dao = new CollectionDAO(db, request);
 		
-		String myIdUser = (String) request.getSession().getAttribute("userid"); 	//my userid
-		String IdCollection = request.getParameter("id"); 							//id da colecao
-		String IDMember = IliketoDAO.getValueOfDatabase(db, "fk_user_id", "dbcollection", "id_collection", IdCollection);
-
+		String myIdUser = (String) request.getSession().getAttribute("userid"); 		//my userid
+		String IdCollection = request.getParameter("id"); 								//id da colecao
+		Collection colecao = (Collection) dao.readById(IdCollection, Collection.class);	//recupera colecao
 		
-		//valida membro dono da colecao
-		if(myIdUser.equals(IDMember)){
-			session.setAttribute(Str.S_ID_COLLECTION, IdCollection);	//seta na session o id da coleção
-			return "page.jsp?id=505";									//page collection profile
-		}else{
-			session.setAttribute(Str.S_ID_COLLECTOR, IdCollection);		//seta na session o id da coleção
-			session.setAttribute(Str.S_ID_MEMBER_COLLECTOR, IDMember);	//seta na session id membro dono da colecao
-			return "page.jsp?id=529";									//page collection profile terceiro
-		}
+		//valida colecao e usuario
+		if(colecao != null){			
+			//add objetos no modelo para recuperar na view jsp
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("collection", colecao);			
+			if(myIdUser.equals(colecao.getIdMember())){
+				Member member = (Member) request.getSession().getAttribute("member");	//myUser session
+				model.addAttribute("member", member);
+				return "page.jsp?id=505";			//page my collection profile
+			}else{
+				Member member = (Member) dao.readByColumn("id_member", colecao.getIdMember(), Member.class);
+				model.addAttribute("member", member);
+				return "page.jsp?id=529";			//page collection profile terceiro
+			}
+		}	
+		
+		return "page.jsp?id=invalidPage";			//pagina invalida, id colecao nao existe		
 	}
 	
 	
