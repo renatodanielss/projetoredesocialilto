@@ -63,31 +63,7 @@ public class CategoryController {
 		response.setContentType("application/json");
 		response.getWriter().write(json);
 	}
-	
-	/**
-	 * Redireciona para pagina principal do grupo
-	 */
-	@RequestMapping(value={"/groupCategory"})
-	private String groupCategory(HttpServletRequest request, HttpServletResponse response){
-		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory'");
-		
-		HttpSession session = request.getSession();		
-		String s_id_category = (String) session.getAttribute("s_id_category");	//id da categoria na sessao
-		String idCategory = request.getParameter("idCat");						//id da categoria requisitado na url
-		
-		//seta configuracoes do id da categoria, grupo e forum na sessao
-		if(s_id_category == null || !idCategory.equals(s_id_category)){
-			DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-			String idGroup = IliketoDAO.getValueOfDatabase(db, "id_group", "dbgroup", "fk_category_id", idCategory);
-			String idForum = IliketoDAO.getValueOfDatabase(db, "id_forum", "dbforum", "fk_group_id", idGroup);
-			session.setAttribute("s_id_category", idCategory);
-			session.setAttribute("s_id_group", idGroup);
-			session.setAttribute("s_id_forum", idForum);
-		}
-		
-		return "page.jsp?id=623&group=" + session.getAttribute("idGroup"); 	//page group of category
-	}
+
 	
 	/**
 	 * Redireciona para pagina do grupo para nao membros
@@ -97,21 +73,20 @@ public class CategoryController {
 		
 		System.out.println("Log - " + "request @CategoryController url='/groupCategory/join'");
 		
-		HttpSession session = request.getSession();
-		String s_id_category = (String) session.getAttribute("s_id_category");	//id da categoria na sessao
-		String idCategory = request.getParameter("idCat");						//id da categoria requisitado na url
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
 		
-		//seta configuracoes do id da categoria, grupo e forum na sessao
-		if(s_id_category == null || !idCategory.equals(s_id_category)){
-			DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-			String idGroup = IliketoDAO.getValueOfDatabase(db, "id_group", "dbgroup", "fk_category_id", idCategory);
-			String idForum = IliketoDAO.getValueOfDatabase(db, "id_forum", "dbforum", "fk_group_id", idGroup);
-			session.setAttribute("s_id_category", idCategory);
-			session.setAttribute("s_id_group", idGroup);
-			session.setAttribute("s_id_forum", idForum);
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				return "page.jsp?id=703";			//page join group of category
+			}
 		}
-		
-		return "page.jsp?id=703"; 	//page join group of category
+		return "/page.jsp?id=invalidPage"; 			//pagina invalida
 	}
 	
 	/**
