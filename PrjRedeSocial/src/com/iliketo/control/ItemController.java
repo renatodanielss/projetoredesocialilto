@@ -4,7 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -18,6 +20,7 @@ import com.iliketo.model.Announce;
 import com.iliketo.model.Item;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -26,13 +29,24 @@ import com.iliketo.util.Str;
 public class ItemController {
 	
 	
+	static final Logger log = Logger.getLogger(ItemController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	/**
 	 * Redireciona pagina para visualizar meu item ou item de outro colecionador
 	 */
 	@RequestMapping(value={"/item/view"})
 	public String itemView(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CollectionController url='/item/view'");
+		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
 		HttpSession session = request.getSession();									//session
@@ -59,11 +73,11 @@ public class ItemController {
 	@RequestMapping(value={"/item/addItems"})
 	public String addItems(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @ItemController url='/item/addItems'");
+		log.info(request.getRequestURL());
 		
 		if(ModelILiketo.validateAndProcessError(request)){
 			//valida e mostra error na pagina
-			System.out.println("Log - " + "Erro ao adicionar itens. Tela formulario add mais itens");
+			log.warn("Erro ao adicionar itens. Tela formulario add mais itens");
 		}
 		return "page.jsp?id=596";	//page form add more items
  	}
@@ -71,7 +85,7 @@ public class ItemController {
 	@RequestMapping(value={"/item/createItems"})
 	public String createItems(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @ItemController url='/item/createItems'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -114,7 +128,7 @@ public class ItemController {
 	@RequestMapping(value={"/item/edit"})
 	public String editItem(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @ItemController url='/item/edit'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -132,7 +146,7 @@ public class ItemController {
 	@RequestMapping(value={"/item/save"})
 	public String saveItem(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @ItemController url='/item/save'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -168,7 +182,7 @@ public class ItemController {
 	@RequestMapping(value={"/item/delete"})
 	public String deleteItem(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @ItemController url='/item/delete'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);

@@ -3,7 +3,9 @@ package com.iliketo.control;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -14,6 +16,7 @@ import com.iliketo.model.Announce;
 import com.iliketo.model.MessageInbox;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -22,13 +25,24 @@ import com.iliketo.util.Str;
 public class MessageInboxOutboxController {
 	
 
+	static final Logger log = Logger.getLogger(MessageInboxOutboxController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	/**
 	 * Redireciona para pagina caixa de entrada de mensagens
 	 */
 	@RequestMapping(value={"/message/inbox"})
 	public String inbox(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @MessageInboxOutboxController url='/message/inbox'");
+		log.info(request.getRequestURL());
 		
 		return "/page.jsp?id=811"; 			//page message inbox
 		
@@ -40,7 +54,7 @@ public class MessageInboxOutboxController {
 	@RequestMapping(value={"/message/outbox"})
 	public String outbox(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @MessageInboxOutboxController url='/message/outbox'");
+		log.info(request.getRequestURL());
 		
 		return "/page.jsp?id=813"; 			//page message outbox
 		
@@ -52,7 +66,7 @@ public class MessageInboxOutboxController {
 	@RequestMapping(value={"/message/inbox/view"})
 	public String viewMessageInbox(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @MessageInboxOutboxController url='/message/inbox/view'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -86,7 +100,7 @@ public class MessageInboxOutboxController {
 	@RequestMapping(value={"/message/outbox/view"})
 	public String viewMessageOutbox(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @MessageInboxOutboxController url='/message/outbox/view'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -115,7 +129,7 @@ public class MessageInboxOutboxController {
 	@RequestMapping(value={"/ajax/message/send"})
 	public void createAndSendMessage(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @MessageInboxOutboxController url='/ajax/message/send'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -142,7 +156,7 @@ public class MessageInboxOutboxController {
 	@RequestMapping(value={"/ajax/message/wasReadAndNotRead"})
 	public void read(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "ajax @MessageInboxOutboxController url='/ajax/message/wasReadAndNotRead'");
+		log.info("ajax @MessageInboxOutboxController url='/ajax/message/wasReadAndNotRead'");
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -173,7 +187,7 @@ public class MessageInboxOutboxController {
 	@RequestMapping(value={"/ajax/message/deleteMessages"})
 	public void deleteMessages(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "ajax @MessageInboxOutboxController url='/ajax/message/deleteMessages'");
+		log.info("ajax " + request.getRequestURI());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);

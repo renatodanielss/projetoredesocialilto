@@ -21,6 +21,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.log4j.Logger;
 
 import HardCore.Cms;
 import HardCore.Common;
@@ -34,6 +35,7 @@ import HardCore.Text;
 import HardCore.UCbrowseWebsite;
 import HardCore.Website;
 
+import com.iliketo.control.VideoController;
 import com.iliketo.dao.MemberDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
@@ -48,6 +50,8 @@ import com.iliketo.model.annotation.FileILiketo;
  *
  */
 public class CmsConfigILiketo {
+	
+	static final Logger log = Logger.getLogger(CmsConfigILiketo.class);
 	
 	private ServletContext servletcontext;
 	private String DOCUMENT_ROOT_UPLOAD;
@@ -104,7 +108,7 @@ public class CmsConfigILiketo {
 		long totalSpace = Long.parseLong(member.getTotalSpace());
 		//valida armazenamento
 		if(usedSpace + uploadBytes <= totalSpace){ 	//524288 KB > 536870912 bytes
-			System.out.println("Size files upload = " + (uploadBytes>0?uploadBytes/1024:0) + " KB - " + uploadBytes + " bytes");
+			log.info("Size files upload = " + (uploadBytes>0?uploadBytes/1024:0) + " KB - " + uploadBytes + " bytes");
 			return true;
 		}		
 		return false;
@@ -428,12 +432,12 @@ public class CmsConfigILiketo {
 		LinkedHashMap<String,HashMap<String,String>> recordsEvent  = db.query_records(SQLEvent); 			//map de registros eventos
 		LinkedHashMap<String,HashMap<String,String>> recordsStore  = db.query_records(SQLStore); 			//map de registros fotos item de loja
 		
-		System.out.println("\nArquivos do usuario na sessao:");
+		log.info("\nArquivos do usuario na sessao:");
 		for(String rec : recordsCollections.keySet()){			
 			myfilename = recordsCollections.get(rec).get("path_photo_collection");
 			File file = new File (pathname + myfilename);
 			if(file.exists()){
-				System.out.println("Photo collection: " + myfilename + " - " + file.length() + " bytes");
+				log.info("Photo collection: " + myfilename + " - " + file.length() + " bytes");
 				sizeTotal += file.length();
 			}
 		}
@@ -441,7 +445,7 @@ public class CmsConfigILiketo {
 			myfilename = recordsItems.get(rec).get("path_photo_item");
 			File file = new File (pathname + myfilename);
 			if(file.exists()){
-				System.out.println("Photo item: " + myfilename + " - " + file.length() + " bytes");
+				log.info("Photo item: " + myfilename + " - " + file.length() + " bytes");
 				sizeTotal += file.length();
 			}
 		}
@@ -449,7 +453,7 @@ public class CmsConfigILiketo {
 			myfilename = recordsVideos.get(rec).get("path_file_video");
 			File file = new File (pathname + myfilename);
 			if(file.exists()){
-				System.out.println("File video: " + myfilename + " - " + file.length() + " bytes");
+				log.info("File video: " + myfilename + " - " + file.length() + " bytes");
 				sizeTotal += file.length();
 			}
 		}
@@ -457,7 +461,7 @@ public class CmsConfigILiketo {
 			myfilename = recordsEvent.get(rec).get("path_photo_event");
 			File file = new File (pathname + myfilename);
 			if(file.exists()){
-				System.out.println("Photo event: " + myfilename + " - " + file.length() + " bytes");
+				log.info("Photo event: " + myfilename + " - " + file.length() + " bytes");
 				sizeTotal += file.length();
 			}
 		}
@@ -465,7 +469,7 @@ public class CmsConfigILiketo {
 			myfilename = recordsStore.get(rec).get("photo_store_item");
 			File file = new File (pathname + myfilename);
 			if(file.exists()){
-				System.out.println("Photo store item: " + myfilename + " - " + file.length() + " bytes");
+				log.info("Photo store item: " + myfilename + " - " + file.length() + " bytes");
 				sizeTotal += file.length();
 			}
 		}
@@ -719,7 +723,7 @@ public class CmsConfigILiketo {
 			int begin = content.indexOf("${error:");
 			int end = content.indexOf("}", begin);
 			if(begin >= 1 && end >= 1){
-				//System.out.println("substring teste msg error: " + content.substring(begin, end+1));
+				//log.debug("substring teste msg error: " + content.substring(begin, end+1));
 				content = content.replaceAll("\\$\\{error:" + content.substring(begin+8, end+1), "");
 			}else if(begin >= 1){
 				content = content.replaceAll("\\$\\{error:", "");
@@ -730,7 +734,7 @@ public class CmsConfigILiketo {
 			int begin = content.indexOf("${");
 			int end = content.indexOf("}", begin);
 			if(begin >= 1 && end >= 1){
-				//System.out.println("substring expressao geral: " + content.substring(begin, end+1));
+				//log.debug("substring expressao geral: " + content.substring(begin, end+1));
 				content = content.replaceAll("\\$\\{" + content.substring(begin+2, end+1), "");
 			}else if(begin >= 1){
 				break;
@@ -847,12 +851,12 @@ public class CmsConfigILiketo {
 			listEntry = pageEntry.getBody();
 		
 		} catch (Exception e) {
-			System.out.println("Ocorreu um problema para carregar pagina, idPage: " + idPage);
+			log.warn("Ocorreu um problema para carregar pagina, idPage: " + idPage);
 			e.printStackTrace();
 			try {
 				myresponse.getResponse().sendRedirect("/pageNotFound");
 			} catch (IOException e1) {
-				System.out.println("Nao achou pagina '/pageNotFound'");
+				log.warn("Nao achou pagina '/pageNotFound'");
 				e1.printStackTrace();
 			}
 		}
@@ -870,12 +874,12 @@ public class CmsConfigILiketo {
 		try {
 			content = (cms.Page(idPage).getBody());
 		} catch (Exception e) {
-			System.out.println("Ocorreu um problema para carregar pagina, idPage: " + idPage);
+			log.warn("Ocorreu um problema para carregar pagina, idPage: " + idPage);
 			e.printStackTrace();
 			try {
 				myresponse.getResponse().sendRedirect("/pageNotFound");
 			} catch (IOException e1) {
-				System.out.println("Nao achou pagina '/pageNotFound'");
+				log.warn("Nao achou pagina '/pageNotFound'");
 				e1.printStackTrace();
 			}
 		}
@@ -897,7 +901,7 @@ public class CmsConfigILiketo {
 		}else{
 			return null;
 		}
-		System.out.println("Gerar chave aleatoria: " + randomfilename);
+		log.info("Gerar chave aleatoria: " + randomfilename);
 		return randomfilename;
 	}
 	

@@ -3,13 +3,16 @@ package com.iliketo.control;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
 import com.iliketo.dao.InterestDAO;
 import com.iliketo.model.Interest;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -18,10 +21,21 @@ import com.iliketo.util.Str;
 public class InterestController {
 	
 
+	static final Logger log = Logger.getLogger(InterestController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	@RequestMapping(value={"/interest/registerInterest"})
 	public String registerInterest(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @InterestController url='/interest/registerInterest'");
+		log.info(request.getRequestURL());
 		
 		return "/page.jsp?id=696"; 			//page add the group to your interest
 		
@@ -30,7 +44,7 @@ public class InterestController {
 	@RequestMapping(value={"/interest/profile"})
 	public String myInterestProfile(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @InterestController url='/interest/profile'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -56,7 +70,7 @@ public class InterestController {
 	@RequestMapping(value={"/interest/createInterest"})
 	public String createInterest(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @InterestController url='/interest/createInterest'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -81,7 +95,7 @@ public class InterestController {
 			interest.setNotificComment("Activate");
 			
 			String idCreate = interestDAO.create(interest);		//cria interesse
-			System.out.println("Log - Interesse criado ok, id interesse: " + idCreate + " - nome categoria/grupo: " + interest.getNameCategory());
+			log.info("Interesse criado ok, id interesse: " + idCreate + " - nome categoria/grupo: " + interest.getNameCategory());
 		}
 		
 		return "redirect:/ilt/groupCategory?idCat=" + idCategory + "&cat=" + nameCategory; 	//sucess page group

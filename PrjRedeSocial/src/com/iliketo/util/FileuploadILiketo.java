@@ -12,16 +12,22 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 import HardCore.Common;
 import HardCore.Request;
 
 import com.coremedia.iso.IsoFile;
 import com.coremedia.iso.boxes.MovieBox;
 import com.coremedia.iso.boxes.MovieHeaderBox;
+import com.iliketo.control.VideoController;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.VideoILiketoException;
 
 public class FileuploadILiketo {
+	
+	static final Logger log = Logger.getLogger(FileuploadILiketo.class);
+	
 	private HttpServletRequest httpservletrequest = null;
 	private HashMap<String,Object> myfileupload = new HashMap<String,Object>();
 	private String pathname = "";
@@ -36,7 +42,6 @@ public class FileuploadILiketo {
 	public Charset fileuploadcharset = Charset.forName("ISO-8859-1");
 
 
-	
 	public FileuploadILiketo(Request request, String rootpath, String myfilepathname, int randomize, InputStream stream, HashMap<String,String> mapMyFormInput) {
 		if ((request != null) && (rootpath != null) && (myfilepathname != null)) {
 			httpservletrequest = request.getRequest();
@@ -302,8 +307,8 @@ public class FileuploadILiketo {
 					if(myforminputname.equals(Str.FILE)){						
 						//add o parametro com o nome 'path_file_default', para armazenar o valor do nome da foto evento no banco de dados q terá o mesmo nome na coluna
 						addParameter(Str.PATH_FILE_DEFAULT, filename);
-						System.out.println("UPLOAD - file = " + filename);
-						System.out.println("path = " + pathname);
+						log.info("UPLOAD - file = " + filename);
+						log.info("path = " + pathname);
 					}
 				} catch (Exception e) {
 					file = null;
@@ -365,7 +370,7 @@ public class FileuploadILiketo {
 			long min = (m.getDuration() / m.getTimescale() / 60);
 			long sec = (m.getDuration() / m.getTimescale() % 60);
 			result = (min + (sec * 0.01));
-			System.out.println("Duration video: " + result);
+			log.info("Duration video: " + result);
 			isoFile.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -377,7 +382,7 @@ public class FileuploadILiketo {
 		}else{
 			//deleta arquivo fisicamente
 			try {
-				System.out.println("Delete file - video: " + filename);
+				log.warn("Delete file - video: " + filename);
 				Common.deleteFile(pathname + filename);
 			} catch (Exception e) {
 				e.printStackTrace();

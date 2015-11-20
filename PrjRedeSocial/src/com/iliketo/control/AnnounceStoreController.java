@@ -6,7 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -18,6 +20,7 @@ import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Announce;
 import com.iliketo.model.StoreItem;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -25,14 +28,26 @@ import com.iliketo.util.Str;
 @Controller
 public class AnnounceStoreController {
 
+	
+	static final Logger log = Logger.getLogger(AnnounceStoreController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	@RequestMapping(value={"/registerAnnounce/store"})
 	public String announceStoreChoose(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store'");
+		log.info(request.getRequestURL());
 		
 		if(ModelILiketo.validateAndProcessError(request)){
 			//valida e mostra error na pagina
-			System.out.println("Log - " + "Erro ao adicionar imagem item de loja. Tela formulario registrar anuncio");
+			log.warn("Erro ao adicionar imagem item de loja. Tela formulario registrar anuncio");
 		}
 		
 		return "page.jsp?id=757"; //page form choose type announce
@@ -41,7 +56,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/sale"})
 	public String announceStoreSale(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/sale'");
+		log.info(request.getRequestURL());
 		
 		return "page.jsp?id=758"; //page form Register Sale 
 		
@@ -50,7 +65,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/auction"})
 	public String announceStoreAuction(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/auction'");
+		log.info(request.getRequestURL());
 		
 		return "page.jsp?id=762"; //page form Register Auction 
 	}
@@ -58,7 +73,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/exchange"})
 	public String announceStoreExchange(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/exchange'");
+		log.info(request.getRequestURL());
 		
 		return "page.jsp?id=763"; //page form Register Exchange 
 	}
@@ -66,7 +81,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/purchase"})
 	public String announceStorePurchase(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/purchase'");
+		log.info(request.getRequestURL());
 		
 		return "page.jsp?id=774"; //page form Register Purchase 
 	}
@@ -74,7 +89,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/payment"})
 	public String announceStorePayment(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/payment'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -129,7 +144,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/confirm"})
 	public String announceStoreConfirm(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/confirm'");
+		log.info(request.getRequestURL()); url='/registerAnnounce/store/confirm'");
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -154,14 +169,14 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/registerAnnounce/store/addAnnounce"})
 	public String announceStoreaddAnnounce(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceStoreController url='/registerAnnounce/store/addAnnounce'");
+		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		HttpSession session = request.getSession();		
 		Announce announce = (Announce) session.getAttribute("announce");	//recupera anuncio da sessao
 		session.removeAttribute("announce");								//remove da sessao
 		
-		System.out.println("Log - " + "Anuncio de loja cadastrado com sucesso!");
+		log.info("Anuncio de loja cadastrado com sucesso!");
 		
 		/**
 		//cria notificacao para o grupo da categoria
@@ -183,7 +198,7 @@ public class AnnounceStoreController {
 	@RequestMapping(value={"/ajax/negotiateBuy"})
 	public void announceStoreaNegotiateBuy(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "ajax @AnnounceStoreController url='/ajax/negotiateBuy'");
+		log.info("ajax " + request.getRequestURI());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);

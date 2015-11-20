@@ -3,6 +3,9 @@ package com.iliketo.util;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
+
+import com.iliketo.control.VideoController;
 import com.sun.javafx.collections.MapAdapterChange;
 
 import HardCore.Configuration;
@@ -19,6 +22,8 @@ import HardCore.Text;
  *
  */
 public class ColumnsSingleton {
+	
+	static final Logger log = Logger.getLogger(ColumnsSingleton.class);
 	
 	private static ColumnsSingleton instance = null;
 	private HashMap<String,HashMap<String,String>> COL_DBMEMBERS;
@@ -346,12 +351,12 @@ public class ColumnsSingleton {
 						}else if(column != null && column.equals("id")){ //coluna id da tabela							
 							SQL = SQL.replaceAll(as + "." + column, as + "." + "id");							
 						}else{
-							System.out.println("SQL error: column " +as+"."+column+ " no find or no exists in table " +table+ "!");
+							log.warn("SQL error: column " +as+"."+column+ " no find or no exists in table " +table+ "!");
 						}
 					}
 				}
 			}else{
-				System.out.println("SQL error: table " +table+ " no find or no exists!");
+				log.warn("SQL error: table " +table+ " no find or no exists!");
 			}			
 		}
 		return SQL;

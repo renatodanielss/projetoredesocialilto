@@ -4,7 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -16,6 +18,7 @@ import com.iliketo.exception.VideoILiketoException;
 import com.iliketo.model.Video;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -24,13 +27,24 @@ import com.iliketo.util.Str;
 public class VideoController {
 	
 	
+	static final Logger log = Logger.getLogger(VideoController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	/**
 	 * Redireciona pagina para visualizar meu video ou video de outro colecionador
 	 */
 	@RequestMapping(value={"/video/view"})
 	public String videoView(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @VideoController url='/video/view'");
+		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
 		HttpSession session = request.getSession();									//session
@@ -56,10 +70,10 @@ public class VideoController {
 	@RequestMapping(value={"/video/addVideo"})
 	public String addVideo(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @VideoController url='/video/addVideo'");
+		log.info(request.getRequestURL());
 		if(ModelILiketo.validateAndProcessError(request)){
 			//valida e mostra error na pagina
-			System.out.println("Log - " + "Erro ao adicionar video. Tela formulario add video");
+			log.warn("Erro ao adicionar video. Tela formulario add video");
 		}
 		
 		return "page.jsp?id=654";	//page form add video
@@ -68,7 +82,7 @@ public class VideoController {
 	@RequestMapping(value={"/video/createVideo"})
 	public String createVideo(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @VideoController url='/video/createVideo'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -107,7 +121,7 @@ public class VideoController {
 	@RequestMapping(value={"/video/edit"})
 	public String editVideo(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @VideoController url='/video/edit'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -125,7 +139,7 @@ public class VideoController {
 	@RequestMapping(value={"/video/save"})
 	public String saveVideo(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @VideoController url='/video/save'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -149,7 +163,7 @@ public class VideoController {
 	@RequestMapping(value={"/video/delete"})
 	public String deleteVideo(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @VideoController url='/video/delete'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);

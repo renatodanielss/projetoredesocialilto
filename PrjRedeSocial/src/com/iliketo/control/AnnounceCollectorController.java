@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -27,6 +29,7 @@ import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Item;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -35,10 +38,21 @@ import com.iliketo.util.Str;
 public class AnnounceCollectorController {
 
 
+	static final Logger log = Logger.getLogger(AnnounceCollectorController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	@RequestMapping(value={"/registerAnnounce/collector/purchase"})
 	public String announceCollectorPurchase(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/registerAnnounce/collector/purchase'");
+		log.info(request.getRequestURL());
 				
 		return "page.jsp?id=754"; //page form Register Purchase
 	}
@@ -46,7 +60,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/registerAnnounce/collector/item"})
 	public String announceCollectorItem(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/registerAnnounce/collector/item'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -69,7 +83,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/registerAnnounce/collector/collection"})
 	public String announceCollectorCollection(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/registerAnnounce/collector/collection'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -93,7 +107,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/registerAnnounce/collector/payment"})
 	public String announceCollectorPayment(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/registerAnnounce/collector/payment'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -147,7 +161,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/registerAnnounce/collector/confirm"})
 	public String announceCollectorConfirm(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/registerAnnounce/collector/confirm'");
+		log.info(request.getRequestURL()); url='/registerAnnounce/collector/confirm'");
 		
 		HttpSession session = request.getSession();	
 
@@ -162,7 +176,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/registerAnnounce/collector/addAnnounce"})
 	public String announceCollectorAddAnnounce(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/registerAnnounce/collector/addAnnounce'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -181,7 +195,7 @@ public class AnnounceCollectorController {
 			session.removeAttribute("item");
 			session.removeAttribute("collection");
 			session.removeAttribute("announce");
-			System.out.println("Log - " + "Anuncio cadastrado com sucesso!");
+			log.info("Anuncio cadastrado com sucesso!");
 			
 			/**
 			//cria notificacao para o grupo da categoria
@@ -196,7 +210,7 @@ public class AnnounceCollectorController {
 			}*/
 			
 		}else{
-			System.out.println("Log - " + "Error acesso invalido, anuncio nao cadastrado!");
+			log.warn("Error acesso invalido, anuncio nao cadastrado!");
 			return "page.jsp?id=invalid"; 					//invalid page
 		}			
 		
@@ -210,7 +224,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/ads"})
 	public String pageAds(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/ads'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -288,7 +302,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/ajax/ads/bid"})
 	public void adsBid(HttpServletRequest request, HttpServletResponse response) throws IOException, JSONException{
 		
-		System.out.println("Log - " + "ajax @AnnounceCollectorController url='/ajax/ads/bid'");
+		log.info("ajax " + request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -360,7 +374,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/ads/seeBids"})
 	public String seeBids(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/ads/seeBids'");
+		log.info(request.getRequestURL());
 				
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -379,7 +393,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/announce/delete"})
 	public String deleteCollection(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/announce/delete'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -409,7 +423,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/announce/changeStatus"})
 	public String changeStatus(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/announce/changeStatus'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -435,7 +449,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/announce/edit"})
 	public String editAnnounce(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/announce/edit'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -458,7 +472,7 @@ public class AnnounceCollectorController {
 	@RequestMapping(value={"/announce/save"})
 	public String save(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @AnnounceCollectorController url='/announce/save'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);

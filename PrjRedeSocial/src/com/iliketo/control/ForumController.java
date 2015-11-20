@@ -3,21 +3,22 @@ package com.iliketo.control;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
-import com.iliketo.dao.CategoryDAO;
 import com.iliketo.dao.CommentDAO;
 import com.iliketo.dao.ForumDAO;
 import com.iliketo.dao.TopicDAO;
-import com.iliketo.model.Category;
 import com.iliketo.model.Comment;
 import com.iliketo.model.Forum;
 import com.iliketo.model.Topic;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -26,13 +27,24 @@ import com.iliketo.util.Str;
 public class ForumController {
 	
 
+	static final Logger log = Logger.getLogger(ForumController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	/**
 	 * Redireciona para pagina do comentario do topico
 	 */
 	@RequestMapping(value={"/group/forum/topic"})
 	public String forumTopic(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @ForumController url='/group/forum/topic'");
+		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//DB
 		String idTopic = request.getParameter("idTop"); 		//id do topico
@@ -57,7 +69,7 @@ public class ForumController {
 	@RequestMapping(value={"/group/forum/createTopic"})
 	public String createTopic(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @ForumController url='/group/forum/createTopic'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -81,7 +93,7 @@ public class ForumController {
 	@RequestMapping(value={"/group/forum/topic/createComment"})
 	public String createComment(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @ForumController url='/group/forum/topic/createComment'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);

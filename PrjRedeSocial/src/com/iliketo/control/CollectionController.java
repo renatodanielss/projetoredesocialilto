@@ -4,15 +4,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
 import com.iliketo.dao.CollectionDAO;
-import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.InterestDAO;
 import com.iliketo.dao.ItemDAO;
+import com.iliketo.dao.MemberDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Collection;
@@ -21,6 +23,7 @@ import com.iliketo.model.Item;
 import com.iliketo.model.Member;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -28,13 +31,26 @@ import com.iliketo.util.Str;
 @Controller
 public class CollectionController {
 	
+	
+	static final Logger log = Logger.getLogger(CollectionController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
+	
 	/**
 	 * Redireciona para perfil da minha colecao ou outro colecionador
 	 */
 	@RequestMapping(value={"/collection/profile"})
 	public String collectorProfile(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/profile'");
+		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);							//db
 		CollectionDAO dao = new CollectionDAO(db, request);
@@ -53,7 +69,8 @@ public class CollectionController {
 				model.addAttribute("member", member);
 				return "page.jsp?id=505";			//page my collection profile
 			}else{
-				Member member = (Member) dao.readByColumn("id_member", colecao.getIdMember(), Member.class);
+				MemberDAO mDAO = new MemberDAO(db, request);
+				Member member = (Member) mDAO.readByColumn("id_member", colecao.getIdMember(), Member.class);
 				model.addAttribute("member", member);
 				return "page.jsp?id=529";			//page collection profile terceiro
 			}
@@ -66,14 +83,14 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/registerCollection"})
 	public String registerCollection(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/registerCollection'");
+		log.info(request.getRequestURL());
 		
 		if(ModelILiketo.validateAndProcessError(request)){
 			//valida e mostra error na pagina
-			System.out.println("Log - " + "Erro ao adicionar colecao. Tela formulario registrar nova colecao");
+			log.warn("Erro ao adicionar colecao. Tela formulario registrar nova colecao");
 		}else{			
 			request.getSession().removeAttribute("newCollection");		//limpa colecao da session
-			System.out.println("Log - " + "Tela formulario registrar nova colecao");		
+			log.info("Tela formulario registrar nova colecao");		
 		}		
 		return "page.jsp?id=410";		//page form register collection
 		
@@ -82,7 +99,8 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/createCollection"})
 	public String createCollection(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/createCollection'");
+		log.info(request.getRequestURL());
+		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);				//db
 		HttpSession session = request.getSession();							//session
@@ -98,12 +116,12 @@ public class CollectionController {
 			if(session.getAttribute("newCollection") == null){
 				idCreated = collectionDAO.create(collection);		//create
 				collection.setIdCollection(idCreated);
-				System.out.println("Log - " + "Create colecao - name: " + collection.getNameCollection());
+				log.info("Create colecao - name: " + collection.getNameCollection());
 			}else{
 				idCreated = ((Collection) session.getAttribute("newCollection")).getIdCollection();
 				collection.setIdCollection(idCreated);
 				collectionDAO.update(collection, true);					//update, exemplo: back da pagina ou refresh
-				System.out.println("Log - " + "Update colecao - name: " + collection.getNameCollection());
+				log.info("Update colecao - name: " + collection.getNameCollection());
 			}
 			session.setAttribute("newCollection", collection);							//add nova colecao na session, evitar duplicidade
 			session.setAttribute(Str.S_COLLECTION, collection.getNameCollection());		//add nome coleção na session	
@@ -126,13 +144,13 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/registerCollection/addItems"})
 	public String addNewItems(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/registerCollection/addItems'");
+		log.info(request.getRequestURL());
 		
 		if(ModelILiketo.validateAndProcessError(request)){
 			//valida e mostra error na pagina
-			System.out.println("Log - " + "Erro ao adicionar novos itens. Tela formulario registrar novos itens da colecao");
+			log.warn("Erro ao adicionar novos itens. Tela formulario registrar novos itens da colecao");
 		}else{
-			System.out.println("Log - " + "Tela formulario registrar novos itens da colecao");
+			log.info("Tela formulario registrar novos itens da colecao");
 			ModelILiketo model = new ModelILiketo(request, response);
 			model.addAttribute("collection", request.getSession().getAttribute("newCollection"));	//model na view jsp
 		}
@@ -143,7 +161,7 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/registerCollection/createItems"})
 	public String createItems(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @ItemController url='/collection/registerCollection/createItems'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -179,7 +197,7 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/edit"})
 	public String editCollection(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/edit'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -187,7 +205,7 @@ public class CollectionController {
 		
 		if(ModelILiketo.validateAndProcessError(request)){	
 			//valida e mostra error na pagina
-			System.out.println("Log - " + "Erro ao salvar atualizacao da colecao. Tela formulario editar colecao");
+			log.warn("Erro ao salvar atualizacao da colecao. Tela formulario editar colecao");
 		}else{
 			String id = request.getParameter("id");													//id colecao
 			Collection collection = (Collection) collectionDAO.readById(id, Collection.class);		//ler colecao
@@ -203,7 +221,7 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/save"})
 	public String saveCollection(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/save'");
+		log.info(request.getRequestURL());
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -240,7 +258,7 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/delete"})
 	public String deleteCollection(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/delete'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -255,7 +273,7 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/participateCategory"})
 	public String participateCategory(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/participateCategory'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -281,7 +299,7 @@ public class CollectionController {
 			collection.setNotificComment("Activate");
 			
 			dao.update(collection, false);								//atualiza colecao
-			System.out.println("Log - Coleção: '"+ collection.getNameCollection() +"' entrou para a categoria/grupo: " + nameCategory);
+			log.info("Coleção: '"+ collection.getNameCollection() +"' entrou para a categoria/grupo: " + nameCategory);
 			
 			//cria notificacao para o grupo da categoria
 			String myUserid = (String) request.getSession().getAttribute("userid");
@@ -291,7 +309,7 @@ public class CollectionController {
 			for( Interest i : new InterestDAO(db, null).listInterestByUser((String) request.getSession().getAttribute("userid")) ){
 				if(i.getIdCategory() != null && i.getIdCategory().equals(idCategory)){				
 					new InterestDAO(db, null).deleteInterest(i.getIdInterest());				//exclui interesse
-					System.out.println("Log - Interesse: '"+ i.getIdInterest() +"' removido da categoria/grupo: " + nameCategory);
+					log.info("Interesse: '"+ i.getIdInterest() +"' removido da categoria/grupo: " + nameCategory);
 				}
 			}
 		}
@@ -302,7 +320,7 @@ public class CollectionController {
 	@RequestMapping(value={"/collection/ajaxParticipateCategory"})
 	public void participateAndLeaveCategory(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		System.out.println("Log - " + "request @CollectionController url='/collection/ajaxParticipateCategory'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -320,7 +338,7 @@ public class CollectionController {
 			collection.setIdCategory(idCategory);
 			collection.setNameCategory(nameCategory);
 			dao.update(collection, false);						//update categoria da colecao
-			System.out.println("Log - Coleção: '"+ idCollection +"' entrou para a categoria/grupo: " + nameCategory);
+			log.info("Coleção: '"+ idCollection +"' entrou para a categoria/grupo: " + nameCategory);
 			resultButton = "Leave category";
 			
 			//cria notificacao para o grupo da categoria
@@ -332,7 +350,7 @@ public class CollectionController {
 			collection.setIdCategory("");
 			collection.setNameCategory("");
 			dao.update(collection, false);						//update categoria da colecao
-			System.out.println("Log - Coleção: '"+ idCollection +"' saiu da categoria/grupo: " + nameCategory);
+			log.info("Coleção: '"+ idCollection +"' saiu da categoria/grupo: " + nameCategory);
 			resultButton = "Participate";
 		}
 		

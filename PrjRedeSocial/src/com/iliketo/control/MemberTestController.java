@@ -1,11 +1,11 @@
 package com.iliketo.control;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -13,12 +13,25 @@ import HardCore.UCmaintainContent;
 
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.Str;
 
 
 @Controller
 public class MemberTestController {
 
+	
+	static final Logger log = Logger.getLogger(MemberTestController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	@RequestMapping(value={"/registerCollectorExemplo"})
 	public String registerCollectorExemplo(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		

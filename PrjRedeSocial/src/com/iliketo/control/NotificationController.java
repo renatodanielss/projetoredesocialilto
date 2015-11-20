@@ -6,8 +6,10 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -19,6 +21,7 @@ import com.iliketo.model.Interest;
 import com.iliketo.model.Member;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
@@ -27,13 +30,24 @@ import com.iliketo.util.Str;
 public class NotificationController {
 	
 	
+	static final Logger log = Logger.getLogger(NotificationController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
 	/**
 	 * Redireciona para pagina configuracao de notificacao do grupo
 	 */
 	@RequestMapping(value={"/notification/groupCategory/settings"})
 	public String pageNoticiationsSettingsGroup(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @NotificationController url='/notification/group/settings'");
+		log.info(request.getRequestURL());
 		
 		//db e dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -72,7 +86,7 @@ public class NotificationController {
 	@RequestMapping(value={"/notification/interest/saveNotifications"})
 	public String saveInterestNotifications(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @NotificationController url='/notification/interest/saveNotifications");
+		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);				//db
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);		//cms
@@ -81,7 +95,7 @@ public class NotificationController {
 		Interest interest = (Interest) cms.getObjectOfParameter(Interest.class);	 	//objeto dados do form html		
 		
 		dao.updateNotificationSettings(interest);			//atualiza dados
-		System.out.println("Log - " + "Configuracoes de notificacoes salvas - id interesse: " + interest.getIdInterest());
+		log.info("Configuracoes de notificacoes salvas - id interesse: " + interest.getIdInterest());
 		
 		return "redirect:/ilt/groupCategory?idCat=" + interest.getIdCategory() + "&cat=" + interest.getNameCategory(); 	//sucess page category of group
 	}
@@ -92,7 +106,7 @@ public class NotificationController {
 	@RequestMapping(value={"/notification/collection/saveNotifications"})
 	public String saveCollectionNotifications(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @NotificationController url='/notification/collection/saveNotifications");
+		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);				//db
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);		//cms
@@ -101,7 +115,7 @@ public class NotificationController {
 		Collection collection = (Collection) cms.getObjectOfParameter(Collection.class); //objeto dados do form html		
 		
 		dao.updateNotificationSettings(collection);				//atualiza dados		
-		System.out.println("Log - " + "Configuracoes de notificacoes salvas - id colecao: " + collection.getIdCollection());
+		log.info("Configuracoes de notificacoes salvas - id colecao: " + collection.getIdCollection());
 		
 		return "redirect:/ilt/groupCategory?idCat=" + collection.getIdCategory() + "&cat=" + collection.getNameCategory(); 	//sucess page category of group
 	}
@@ -114,10 +128,10 @@ public class NotificationController {
 	@RequestMapping(value={"/notification/ajaxTotalNotifications"})
 	public void totalNotification(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @NotificationController url='/notification/ajaxTotalNotifications'");
+		log.info(request.getRequestURL());
 		
 		String totalNews = Integer.toString(NotificationService.totalNotifications(request));
-		System.out.println("\nTotal novas notificacoes: " + totalNews + "\n");
+		log.info("\nTotal novas notificacoes: " + totalNews + "\n");
 		
 		response.getWriter().write(new String(totalNews.getBytes("UTF-8")));				//retorna total notificacao ajax
 	}
@@ -128,7 +142,7 @@ public class NotificationController {
 	@RequestMapping(value={"/notification/ajaxListNotifications"})
 	public void notificationHistoric(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @NotificationController url='/notification/ajaxListNotifications'");
+		log.info(request.getRequestURL());
 		
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);			//cms		
 		Member member = (Member) request.getSession().getAttribute("member");	//member session
@@ -146,7 +160,7 @@ public class NotificationController {
 	@RequestMapping(value={"/notifications"})
 	public String pageMoreNotificationHistoric(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @NotificationController url='/notifications'");
+		log.info(request.getRequestURL());
 		
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);			//cms		
 		Member member = (Member) request.getSession().getAttribute("member");	//member session
@@ -166,17 +180,17 @@ public class NotificationController {
 	@RequestMapping(value={"/notification/ajaxNotificationsMobile"})
 	public void notificationsMobile(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		System.out.println("Log - " + "request @NotificationController url='/notification/ajaxNotificationsMobile'");
+		log.info(request.getRequestURL());
 		
 		JSONArray json = NotificationService.newsNotificationsMobile(request);	
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 		
 		if(json != null){
-			System.out.println("\nJSON Notific Mobile: " + json.toString());
+			log.info("\nJSON Notific Mobile: " + json.toString());
 			response.getWriter().write(new String(json.toString().getBytes("UTF-8")));
 		}else{
-			System.out.println("\nJSON Notific Mobile: total 0");
+			log.info("\nJSON Notific Mobile: total 0");
 			response.getWriter().write("");
 		}
 	}

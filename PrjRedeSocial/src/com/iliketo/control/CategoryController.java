@@ -7,12 +7,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -27,12 +28,25 @@ import com.iliketo.model.Collection;
 import com.iliketo.model.Forum;
 import com.iliketo.model.Interest;
 import com.iliketo.util.ColumnsSingleton;
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
 
 @Controller
 public class CategoryController {
+	
+	
+	static final Logger log = Logger.getLogger(CategoryController.class);
+	
+	/**
+	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 */
+	@ExceptionHandler(Exception.class)
+	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
+		String pageError = "/page.jsp?id=902";
+		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
 	
 	@RequestMapping(value={"/searchCategory"})
 	public void searchCategory(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
@@ -71,7 +85,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/join"})
 	private String joinGroupCategory(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/join'");
+		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
 		String idCat = request.getParameter("idCat");				//id categoria
@@ -95,7 +109,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/joinGroup"})
 	private String joinGroup(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/joinGroup'");
+		log.info(request.getRequestURL());
 		
 		return "page.jsp?id=695"; 	//page join group
 	}
@@ -106,7 +120,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/unjoin"})
 	private String unjoin(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/unjoin'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
@@ -124,14 +138,14 @@ public class CategoryController {
 				c.setIdCategory("");
 				c.setNameCategory("");
 				collectionDAO.update(c, false);				//atualiza colecao
-				System.out.println("Log - Coleção: '"+ c.getNameCollection() +"' saiu da categoria/grupo: " + idCategory);
+				log.info("Coleção: '"+ c.getNameCollection() +"' saiu da categoria/grupo: " + idCategory);
 			}
 		}
 		//remove interesse do membro no grupo
 		for(Interest i : listInterest){
 			if(i.getIdCategory() != null && i.getIdCategory().equals(idCategory)){
 				interestDAO.deleteInterest(i.getIdInterest());					//exclui interesse
-				System.out.println("Log - Interesse: '"+ i.getIdInterest() +"' removido da categoria/grupo: " + idCategory);
+				log.info("Interesse: '"+ i.getIdInterest() +"' removido da categoria/grupo: " + idCategory);
 			}
 		}
 		
@@ -145,7 +159,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/interest/createCategory"})
 	private String interestCreateCategory(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/interest/createCategory'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//BD
@@ -174,7 +188,7 @@ public class CategoryController {
 			forumDAO.create(forum);
 
 			//Category e forum criados				
-			System.out.println("Log - Create Category/Group - name: " + cat);				
+			log.info("Create Category/Group - name: " + cat);				
 			
 			//action redireciona para criar novo interesse e participar da categoria nova
 			String action = "/ilt/interest/createInterest?idCat=" + idCreated + "&nameCat=" + cat; 
@@ -189,7 +203,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/collection/createCategory"})
 	private String collectionCreateCategory(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/collection/createCategory'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);			//BD
@@ -219,7 +233,7 @@ public class CategoryController {
 			forumDAO.create(forum);
 
 			//Category e forum criados
-			System.out.println("Log - Create Category/Group - name: " + cat);			
+			log.info("Create Category/Group - name: " + cat);			
 			
 			//action redireciona para criar novo interesse e participar da categoria nova
 			String action = "/ilt/collection/participateCategory?idCat=" + idCreated + "&nameCat=" + cat+"&idCollection="+idCollection;
@@ -235,7 +249,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/group"})
 	private String groupCategoryHome(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/group'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
@@ -261,7 +275,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/trade"})
 	private String groupCategoryTrade(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/trade'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
@@ -284,7 +298,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/auction"})
 	private String groupCategoryAuction(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/auction'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
@@ -307,7 +321,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/store"})
 	private String groupCategoryStore(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/store'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
@@ -330,7 +344,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/forum"})
 	private String groupCategoryForum(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/forum'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
@@ -356,7 +370,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/collections"})
 	private String groupCategoryCollections(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/collections'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
@@ -379,7 +393,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/events"})
 	private String groupCategoryEvents(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/events'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
@@ -402,7 +416,7 @@ public class CategoryController {
 	@RequestMapping(value={"/groupCategory/members"})
 	private String groupCategoryMembers(HttpServletRequest request, HttpServletResponse response){
 		
-		System.out.println("Log - " + "request @CategoryController url='/groupCategory/members'");
+		log.info(request.getRequestURL());
 		
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
