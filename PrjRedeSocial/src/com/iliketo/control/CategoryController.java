@@ -111,7 +111,20 @@ public class CategoryController {
 		
 		log.info(request.getRequestURL());
 		
-		return "page.jsp?id=695"; 	//page join group
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
+		String idCat = request.getParameter("idCat");				//id categoria
+		
+		if(idCat != null && !idCat.isEmpty()){
+			CategoryDAO dao = new CategoryDAO(db, request);
+			Category category = (Category) dao.readById(idCat, Category.class);			
+			//valida categoria
+			if(category != null){
+				ModelILiketo model = new ModelILiketo(request, response);
+				model.addAttribute("category", category);
+				return "page.jsp?id=695"; 		//page join group
+			}
+		}
+		return "/page.jsp?id=invalidPage"; 		//pagina invalida		
 	}
 	
 	/**
@@ -154,6 +167,27 @@ public class CategoryController {
 	
 	
 	/**
+	 * Direciona para pagina criar nova categoria
+	 */
+	@RequestMapping(value={"/category/new"})
+	private String pageCreateCategory(HttpServletRequest request, HttpServletResponse response){
+		
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CollectionDAO dao = new CollectionDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		
+		String idCollection = request.getParameter("idCollection");
+		Collection colecao = (Collection) dao.readById(idCollection, Collection.class);
+		
+		//valida colecao
+		if(colecao != null && colecao.getIdMember().equals(myUserid)){
+			return "/page.jsp?id=622&idCollection=" + idCollection;
+		}else{
+			return "/page.jsp?id=conteudoIndisponivel";	//conteudo indisponivel
+		}
+	}
+	
+	/**
 	 * Cria nova categoria/grupo para o interesse
 	 */
 	@RequestMapping(value={"/groupCategory/interest/createCategory"})
@@ -191,7 +225,7 @@ public class CategoryController {
 			log.info("Create Category/Group - name: " + cat);				
 			
 			//action redireciona para criar novo interesse e participar da categoria nova
-			String action = "/ilt/interest/createInterest?idCat=" + idCreated + "&nameCat=" + cat; 
+			String action = "redirect:/ilt/interest/createInterest?idCat=" + idCreated + "&nameCat=" + cat; 
 			return action;
 		}
 	}
@@ -214,8 +248,8 @@ public class CategoryController {
 		if(IliketoDAO.readRecordExistsDatabase(db, "dbcategory", "name_category", cat)){
 			
 			//retorna mesma pagina com o erro que ja existe a categoria
-			String msgErro = "Category already exists, choose category below or other name!";
-			return "redirect:/page.jsp?id=622&error=" + msgErro + "&category=" + cat;
+			String msgErro = "Note: Category already exists, choose category below or choose other name!";
+			return "/page.jsp?id=622&idCollection="+idCollection+"&error=" + msgErro + "&category=" + cat;
 			
 		}else{
 		
@@ -236,7 +270,7 @@ public class CategoryController {
 			log.info("Create Category/Group - name: " + cat);			
 			
 			//action redireciona para criar novo interesse e participar da categoria nova
-			String action = "/ilt/collection/participateCategory?idCat=" + idCreated + "&nameCat=" + cat+"&idCollection="+idCollection;
+			String action = "redirect:/ilt/collection/participateCategory?idCat=" + idCreated + "&nameCat=" + cat+"&idCollection="+idCollection;
 			return action;
 		}
 	}

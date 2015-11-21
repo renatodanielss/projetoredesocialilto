@@ -128,10 +128,10 @@ public class NotificationController {
 	@RequestMapping(value={"/notification/ajaxTotalNotifications"})
 	public void totalNotification(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		log.info(request.getRequestURL());
-		
 		String totalNews = Integer.toString(NotificationService.totalNotifications(request));
-		log.info("\nTotal novas notificacoes: " + totalNews + "\n");
+		Member member = (Member) request.getSession().getAttribute("member");
+		
+		log.info(request.getRequestURL() + " - [user: "+member.getUsername()+"]" + " - Total notifc novas: " + totalNews);
 		
 		response.getWriter().write(new String(totalNews.getBytes("UTF-8")));				//retorna total notificacao ajax
 	}
@@ -180,17 +180,16 @@ public class NotificationController {
 	@RequestMapping(value={"/notification/ajaxNotificationsMobile"})
 	public void notificationsMobile(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		log.info(request.getRequestURL());
-		
 		JSONArray json = NotificationService.newsNotificationsMobile(request);	
 		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json");
+		response.setContentType("application/json");		
+		Member member = (Member) request.getSession().getAttribute("member");
 		
 		if(json != null){
-			log.info("\nJSON Notific Mobile: " + json.toString());
+			log.info(request.getRequestURL() + " - [user: "+member.getUsername()+"]" + " - JSON Notific Mobile: " + json.toString());
 			response.getWriter().write(new String(json.toString().getBytes("UTF-8")));
 		}else{
-			log.info("\nJSON Notific Mobile: total 0");
+			log.info(request.getRequestURL() + " - [user: "+member.getUsername()+"]" + " - JSON Notific Mobile: total 0");
 			response.getWriter().write("");
 		}
 	}

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import oracle.jdbc.proxy.annotation.Methods;
+
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -17,6 +19,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import HardCore.DB;
 
@@ -117,6 +120,11 @@ public class AnnounceCollectorController {
 				
 		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
 		
+		if(announce.getIdItem() == null || announce.getIdItem().equals("") || announce.getTitle() == null || announce.getTitle().equals("")){
+			log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do item para anunciar!");
+			return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
+		}
+		
 		//Purchase
 		if(announce.getTypeAnnounce().equals("Purchase")){
 			//announce.setPathPhotoAd(); //photo default registro de compra
@@ -210,8 +218,8 @@ public class AnnounceCollectorController {
 			}*/
 			
 		}else{
-			log.warn("Error acesso invalido, anuncio nao cadastrado!");
-			return "page.jsp?id=invalid"; 					//invalid page
+			log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do anuncio!");
+			return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
 		}			
 		
 		return "redirect:/ilt/ads?id=" + idCreated; 		//success - page anuncio criado
@@ -483,6 +491,17 @@ public class AnnounceCollectorController {
 		announceDAO.update(announce, false);
 				
 		return "redirect:/ilt/ads?id=" + announce.getIdAnnounce(); 					//success - page anuncio
+	}
+	
+	
+	/** ACESSO SOMENTE PARA PESSOAS AUTORIZADAS A MUDAR STATUS PENDENTE PAGAMENTO PARA OK*/
+	
+	@RequestMapping(value={"/announce/changeStatus/paymentOK"}, method = RequestMethod.POST)
+	public String changeStatusPendingPay(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		
+		
+		return "";
 	}
 	
 }

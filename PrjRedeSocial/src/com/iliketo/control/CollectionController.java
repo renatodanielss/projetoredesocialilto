@@ -190,7 +190,7 @@ public class CollectionController {
 		itemDAO.creates(items);							//cria items
 		session.removeAttribute("newCollection");		//limpa colecao da session
 		
-		return "redirect:/page.jsp?id=474";	//page choose category
+		return "redirect:/page.jsp?id=474&idCollection=" + collection.getIdCollection();	//page choose category
 	}
 	
 	
