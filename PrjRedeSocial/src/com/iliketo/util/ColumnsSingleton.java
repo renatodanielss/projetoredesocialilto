@@ -41,6 +41,7 @@ public class ColumnsSingleton {
 	private HashMap<String,HashMap<String,String>> COL_DBSTOREITEM;
 	private HashMap<String,HashMap<String,String>> COL_DBGROUPNOTIFICATION;
 	private HashMap<String,HashMap<String,String>> COL_DBMESSAGEINBOX;
+	private HashMap<String,HashMap<String,String>> COL_DBAUCTIONBID;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
@@ -56,6 +57,7 @@ public class ColumnsSingleton {
 	private String DATA_DBSTOREITEM;
 	private String DATA_DBGROUPNOTIFICATION;
 	private String DATA_DBMESSAGEINBOX;
+	private String DATA_DBAUCTIONBID;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
@@ -136,6 +138,9 @@ public class ColumnsSingleton {
 		DATA_DBMESSAGEINBOX = database.getTable();
 		COL_DBMESSAGEINBOX = database.namedcolumns;
 		
+		database.read(db, new Configuration(), "dbauctionbid");	
+		DATA_DBAUCTIONBID = database.getTable();
+		COL_DBAUCTIONBID = database.namedcolumns;
 	}
 	
 	/**
@@ -195,6 +200,8 @@ public class ColumnsSingleton {
 			mapcolumns = COL_DBGROUPNOTIFICATION;
 		}else if(nameDatabase.equals("dbmessageinbox")){
 			mapcolumns = COL_DBMESSAGEINBOX;
+		}else if(nameDatabase.equals("dbauctionbid")){
+			mapcolumns = COL_DBAUCTIONBID;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -251,6 +258,8 @@ public class ColumnsSingleton {
 			return DATA_DBGROUPNOTIFICATION;
 		}else if(nameDatabase.equals("dbmessageinbox")){
 			return DATA_DBMESSAGEINBOX;
+		}else if(nameDatabase.equals("dbauctionbid")){
+			return DATA_DBAUCTIONBID;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -328,6 +337,9 @@ public class ColumnsSingleton {
 			}else if(table.equals("dbmessageinbox")){
 				mapcolumns = COL_DBMESSAGEINBOX;
 				tableReal = DATA_DBMESSAGEINBOX;
+			}else if(table.equals("dbauctionbid")){
+				mapcolumns = COL_DBAUCTIONBID;
+				tableReal = DATA_DBAUCTIONBID;
 			}	
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){
