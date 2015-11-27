@@ -19,8 +19,6 @@ import com.iliketo.dao.AuctionBidDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.model.Announce;
 import com.iliketo.model.AuctionBid;
-import com.iliketo.model.Member;
-import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
@@ -29,7 +27,7 @@ import com.iliketo.util.Str;
 @Controller
 public class HistoryController {
 
-	private static final Logger log = Logger.getLogger(AnnounceStoreController.class);
+	private static final Logger log = Logger.getLogger(HistoryController.class);
 	
 	
 	/**
@@ -41,7 +39,7 @@ public class HistoryController {
 		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
 	}
 	
-	@RequestMapping(value={"/history/myBid"})
+	@RequestMapping(value={"/history/myBids"})
 	public String myBid(HttpServletRequest request, HttpServletResponse response){
 		
 		log.info(request.getRequestURL());
@@ -84,8 +82,9 @@ public class HistoryController {
 			Announce anuncio = (Announce) listaAndamento.get(i)[1];		//anuncio
 			String s = listEntry;
 			s = s.replaceAll("@@@date_bid@@@", bid.getDateCreated());
-			s = s.replaceAll("@@@my_bid@@@", bid.getBid());
-			s = s.replaceAll("@@@title@@@", anuncio.getTitle());
+			s = s.replaceAll("@@@bid@@@", bid.getBid());
+			s = s.replaceAll("@@@title_ad@@@", anuncio.getTitle());
+			s = s.replaceAll("@@@id_announce@@@", anuncio.getIdAnnounce());
 			s = s.replaceAll("@@@date_initial@@@", anuncio.getDateInitial());
 			s = s.replaceAll("@@@price@@@", anuncio.getPriceInitial());
 			s = s.replaceAll("@@@bid_actual@@@", anuncio.getBidActual());
@@ -102,8 +101,9 @@ public class HistoryController {
 			Announce anuncio = (Announce) listaEncerrados.get(i)[1];		//anuncio
 			String s = listEntry;
 			s = s.replaceAll("@@@date_bid@@@", bid.getDateCreated());
-			s = s.replaceAll("@@@my_bid@@@", bid.getBid());
-			s = s.replaceAll("@@@title@@@", anuncio.getTitle());
+			s = s.replaceAll("@@@bid@@@", bid.getBid());
+			s = s.replaceAll("@@@id_announce@@@", anuncio.getIdAnnounce());
+			s = s.replaceAll("@@@title_ad@@@", anuncio.getTitle());
 			s = s.replaceAll("@@@date_initial@@@", anuncio.getDateInitial());
 			s = s.replaceAll("@@@price@@@", anuncio.getPriceInitial());
 			s = s.replaceAll("@@@bid_actual@@@", anuncio.getBidActual());
@@ -111,7 +111,12 @@ public class HistoryController {
 			s = s.replaceAll("@@@total@@@", anuncio.getTotalBids());
 			s = s.replaceAll("@@@category@@@", anuncio.getNameCategory());
 			s = s.replaceAll("@@@photo@@@", anuncio.getPathPhotoAd());
-			s = s.replaceAll("@@@winner@@@", IliketoDAO.getValueOfDatabase(db, "nickname", "dbmembers", "username", anuncio.getBidUserId()));
+			String nickname = IliketoDAO.getValueOfDatabase(db, "nickname", "dbmembers", "id_member", anuncio.getBidUserId());
+			if(nickname != null && !nickname.equals("")){
+				s = s.replaceAll("@@@winner@@@", nickname);
+			}else{
+				s = s.replaceAll("@@@winner@@@", "Member deactivated");
+			}
 			if(anuncio.getBidUserId().equals(myUserid)){
 				s = s.replaceAll("@@@you_win@@@", "You won the auction!");
 			}
