@@ -78,7 +78,7 @@ public class ItemController {
 		log.info(request.getRequestURL());
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
 		String myUserid = (String) request.getSession().getAttribute("userid");
-		String idCollection = (String) request.getParameter("idCol");
+		String idCollection = (String) request.getParameter("id_col");
 		CollectionDAO dao = new CollectionDAO(db, request);
 		Collection colecao = (Collection) dao.readById(idCollection, Collection.class);
 		
@@ -103,7 +103,7 @@ public class ItemController {
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		ItemDAO itemDAO = new ItemDAO(db, request);
-		String idCollection = (String) request.getParameter("idCol");
+		String idCollection = (String) request.getParameter("id_col");
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		
 		Object[] items  = cms.getObjectsFileOfParameter(Item.class);				//array objetos com os items

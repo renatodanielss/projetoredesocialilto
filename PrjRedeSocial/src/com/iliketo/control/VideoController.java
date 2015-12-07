@@ -75,7 +75,7 @@ public class VideoController {
 		log.info(request.getRequestURL());
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
 		String myUserid = (String) request.getSession().getAttribute("userid");
-		String idCollection = (String) request.getParameter("idCol");
+		String idCollection = (String) request.getParameter("id_col");
 		CollectionDAO dao = new CollectionDAO(db, request);
 		Collection colecao = (Collection) dao.readById(idCollection, Collection.class);
 		
@@ -85,7 +85,7 @@ public class VideoController {
 				//valida e mostra error na pagina
 				log.warn("Erro ao adicionar video. Tela formulario add video");
 			}
-			return "page.jsp?id=654&idCol=" + idCollection;		//page form add video
+			return "page.jsp?id=654&id_col=" + idCollection;		//page form add video
 		}else{
 			return "page.jsp?id=invalid";						//invalid page
 		}
