@@ -2,7 +2,6 @@ package com.iliketo.control;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -12,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import HardCore.DB;
 
 import com.iliketo.dao.AnnounceDAO;
+import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.ItemDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Announce;
+import com.iliketo.model.Collection;
 import com.iliketo.model.Item;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
@@ -46,27 +47,28 @@ public class ItemController {
 	@RequestMapping(value={"/item/view"})
 	public String itemView(HttpServletRequest request, HttpServletResponse response){
 		
-		log.info(request.getRequestURL());
+		log.info(LogUtilsILiketoo.getUsername(request) + request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
-		HttpSession session = request.getSession();									//session
 		ItemDAO dao = new ItemDAO(db, request);										//dao
 		
 		String idItem = request.getParameter("id"); 								//id do item
 		String myIdUser = (String) request.getSession().getAttribute("userid"); 	//my userid
 		Item item = (Item) dao.readById(idItem, Item.class);						//ler item
 		
-		//valida membro dono do item
-		if(myIdUser.equals(item.getIdMember())){
-			session.setAttribute(Str.S_ID_ITEM, idItem);							//seta na session id item
-			session.setAttribute(Str.S_ID_COLLECTION, item.getIdCollection());		//seta na session id coleção
-			return "/page.jsp?id=594";												//page visualizar my item
+		if(item != null){	
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("item", item);
+			if(myIdUser.equals(item.getIdMember())){
+				return "/page.jsp?id=594";			//page visualizar my item
+			}else{
+				return "/page.jsp?id=595";			//page visualizar item terceiro
+			}			
 		}else{
-			session.setAttribute(Str.S_ID_ITEM, idItem);							//seta na session id item
-			session.setAttribute(Str.S_ID_MEMBER_COLLECTOR, item.getIdMember());	//seta na session id membro
-			session.setAttribute(Str.S_ID_COLLECTOR, item.getIdCollection());		//seta na session id coleção
-			return "/page.jsp?id=595";												//page visualizar item terceiro
+			log.info("Item nao encontrado ou indisponivel!");
+			return "/page.jsp?id=invalid";			//invalid page
 		}
+		
 	}
 	
 	
@@ -74,12 +76,22 @@ public class ItemController {
 	public String addItems(HttpServletRequest request, HttpServletResponse response){
 		
 		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		String idCollection = (String) request.getParameter("idCol");
+		CollectionDAO dao = new CollectionDAO(db, request);
+		Collection colecao = (Collection) dao.readById(idCollection, Collection.class);
 		
-		if(ModelILiketo.validateAndProcessError(request)){
-			//valida e mostra error na pagina
-			log.warn("Erro ao adicionar itens. Tela formulario add mais itens");
+		//valida colecao
+		if(colecao != null && colecao.getIdMember().equals(myUserid)){		
+			if(ModelILiketo.validateAndProcessError(request)){
+				//valida e mostra error na pagina
+				log.warn("Erro ao adicionar itens. Tela formulario add mais itens");
+			}
+			return "page.jsp?id=596&idCol=" + idCollection;	//page form add more items
+		}else{
+			return "page.jsp?id=invalid";	//invalid page
 		}
-		return "page.jsp?id=596";	//page form add more items
  	}
 	
 	@RequestMapping(value={"/item/createItems"})
@@ -91,7 +103,7 @@ public class ItemController {
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		ItemDAO itemDAO = new ItemDAO(db, request);
-		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		String idCollection = (String) request.getParameter("idCol");
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		
 		Object[] items  = cms.getObjectsFileOfParameter(Item.class);				//array objetos com os items
@@ -105,10 +117,10 @@ public class ItemController {
 			cms.processFileuploadImages(items);							//salva arquivos			
 		} catch (StorageILiketoException e) {
 			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
-			return model.redirectError("/ilt/item/addItems");				//page form add more item
+			return model.redirectError("/ilt/item/addItems?idCol=" + idCollection);				//page form add more item
 		} catch (ImageILiketoException e) {
 			model.addMessageError("imageFormat", "Upload only Image in jpg format."); 													//msg erro
-			return model.redirectError("/ilt/item/addItems");				//page form add more item
+			return model.redirectError("/ilt/item/addItems?idCol=" + idCollection);				//page form add more item
 		}
 		
 		String[] idCreates = itemDAO.creates(items);											//cria items
@@ -166,7 +178,7 @@ public class ItemController {
 			dao.update(a, false);
 		}
 				
-		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		String idCollection = item.getIdCollection();
 		
 		//cria notificacao para o grupo da categoria
 		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbcollection", "id_collection", idCollection);

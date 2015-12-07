@@ -13,6 +13,11 @@ public class LogUtilsILiketoo {
 	public LogUtilsILiketoo(){		
 	}
 	
+	public static String getUsername(HttpServletRequest req){
+		String username = (String) req.getAttribute("username");
+		return " [user: " + username + "]";
+	}
+	
 	public static void mostrarLogStackException(Exception ex, Logger log, 
 			HttpServletRequest req, HttpServletResponse res, String pageError){
 		log.error("CAUSA ERRO: " + ex);

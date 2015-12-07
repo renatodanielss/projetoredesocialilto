@@ -2,7 +2,6 @@ package com.iliketo.control;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -11,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
+import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.VideoDAO;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.exception.VideoILiketoException;
+import com.iliketo.model.Collection;
 import com.iliketo.model.Video;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
@@ -47,7 +48,6 @@ public class VideoController {
 		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
-		HttpSession session = request.getSession();									//session
 		VideoDAO dao = new VideoDAO(db, request);									//dao
 		
 		String idVideo = request.getParameter("id"); 								//id do video
@@ -55,15 +55,17 @@ public class VideoController {
 		Video video = (Video) dao.readById(idVideo, Video.class);					//ler video
 		
 		//valida membro dono do video
-		if(myIdUser.equals(video.getIdMember())){
-			session.setAttribute(Str.S_ID_VIDEO, idVideo);							//seta na session id video
-			session.setAttribute(Str.S_ID_COLLECTION, video.getIdCollection());		//seta na session id coleção
-			return "/page.jsp?id=655";												//page visualizar my video
+		if(video != null){	
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("video", video);
+			if(myIdUser.equals(video.getIdMember())){
+				return "/page.jsp?id=655";			//page visualizar my video
+			}else{
+				return "/page.jsp?id=657";			//page visualizar video terceiro
+			}			
 		}else{
-			session.setAttribute(Str.S_ID_VIDEO, idVideo);							//seta na session id video
-			session.setAttribute(Str.S_ID_MEMBER_COLLECTOR, video.getIdMember());	//seta na session id membro
-			session.setAttribute(Str.S_ID_COLLECTOR, video.getIdCollection());		//seta na session id coleção
-			return "/page.jsp?id=657";												//page visualizar video terceiro
+			log.info("Video nao encontrado ou indisponivel!");
+			return "/page.jsp?id=invalid";			//invalid page
 		}
 	}
 	
@@ -71,12 +73,23 @@ public class VideoController {
 	public String addVideo(HttpServletRequest request, HttpServletResponse response){
 		
 		log.info(request.getRequestURL());
-		if(ModelILiketo.validateAndProcessError(request)){
-			//valida e mostra error na pagina
-			log.warn("Erro ao adicionar video. Tela formulario add video");
-		}
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);						//db
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		String idCollection = (String) request.getParameter("idCol");
+		CollectionDAO dao = new CollectionDAO(db, request);
+		Collection colecao = (Collection) dao.readById(idCollection, Collection.class);
 		
-		return "page.jsp?id=654";	//page form add video
+		//valida colecao
+		if(colecao != null && colecao.getIdMember().equals(myUserid)){	
+			if(ModelILiketo.validateAndProcessError(request)){
+				//valida e mostra error na pagina
+				log.warn("Erro ao adicionar video. Tela formulario add video");
+			}
+			return "page.jsp?id=654&idCol=" + idCollection;		//page form add video
+		}else{
+			return "page.jsp?id=invalid";						//invalid page
+		}
+			
 	}
 	
 	@RequestMapping(value={"/video/createVideo"})
@@ -105,7 +118,7 @@ public class VideoController {
 		}
 		
 		String idCreate = videoDAO.create(video);											//cria video
-		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		String idCollection = video.getIdCollection();
 		
 		//cria notificacao para o grupo da categoria
 		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbcollection", "id_collection", idCollection);
@@ -149,7 +162,7 @@ public class VideoController {
 		Video video = (Video) cms.getObjectOfParameter(Video.class);	//objeto com dados do form
 		
 		videoDAO.update(video, false);									//atualiza video
-		String idCollection = (String) request.getSession().getAttribute(Str.S_ID_COLLECTION);
+		String idCollection = video.getIdCollection();
 		
 		//cria notificacao para o grupo da categoria
 		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbcollection", "id_collection", idCollection);
