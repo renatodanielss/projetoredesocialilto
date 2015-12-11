@@ -88,7 +88,7 @@ public class ItemController {
 				//valida e mostra error na pagina
 				log.warn("Erro ao adicionar itens. Tela formulario add mais itens");
 			}
-			return "page.jsp?id=596&idCol=" + idCollection;	//page form add more items
+			return "page.jsp?id=596&idCollection=" + idCollection;	//page form add more items
 		}else{
 			return "page.jsp?id=invalid";	//invalid page
 		}
@@ -103,12 +103,12 @@ public class ItemController {
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		ItemDAO itemDAO = new ItemDAO(db, request);
-		String idCollection = (String) request.getParameter("id_col");
+		String idCollection = "";
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		
 		Object[] items  = cms.getObjectsFileOfParameter(Item.class);				//array objetos com os items
 		for(Object item : items){
-			((Item)item).setIdCollection(idCollection);				//seta fk_collection_id no item
+			idCollection = ((Item)item).getIdCollection();
 			((Item)item).setIdMember(myUserid);						//seta fk_user_id no item
 		}
 		
@@ -117,10 +117,10 @@ public class ItemController {
 			cms.processFileuploadImages(items);							//salva arquivos			
 		} catch (StorageILiketoException e) {
 			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
-			return model.redirectError("/ilt/item/addItems?idCol=" + idCollection);				//page form add more item
+			return model.redirectError("/ilt/item/addItems?id_col=" + idCollection);				//page form add more item
 		} catch (ImageILiketoException e) {
 			model.addMessageError("imageFormat", "Upload only Image in jpg format."); 													//msg erro
-			return model.redirectError("/ilt/item/addItems?idCol=" + idCollection);				//page form add more item
+			return model.redirectError("/ilt/item/addItems?id_col=" + idCollection);				//page form add more item
 		}
 		
 		String[] idCreates = itemDAO.creates(items);											//cria items
