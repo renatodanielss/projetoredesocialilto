@@ -284,7 +284,7 @@ public class CollectionController {
 		String nameCategory = request.getParameter("nameCat");
 		Collection collection = (Collection) dao.readById(idCollection, Collection.class);	//ler colecao
 		
-		if(!collection.getIdCategory().equals(idCategory)){		//valida se colecao pertence a categoria
+		if(collection.getIdCategory() == null || (!collection.getIdCategory().equals(idCategory))){		//valida se colecao pertence a categoria
 			//entra para categoria
 			collection.setIdCategory(idCategory);
 			collection.setNameCategory(nameCategory);

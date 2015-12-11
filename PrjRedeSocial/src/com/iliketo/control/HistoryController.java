@@ -49,7 +49,7 @@ public class HistoryController {
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		
 		AuctionBidDAO dao = new AuctionBidDAO(db, request);
-		List<Object[]> lista = dao.listAuctionBidsByUser(myUserid);		
+		List<Object[]> lista = dao.listAuctionBidsByUser(myUserid);
 		List<Object[]> listaEncerrados = new ArrayList<Object[]>();
 		List<Object[]> listaAndamento  = new ArrayList<Object[]>();
 		
@@ -128,8 +128,26 @@ public class HistoryController {
 		model.addAttribute("listHistoryMyBidsEntryEnds", resultHTMLEnds);	//recuperar list entry html na jsp
 		
 		return "page.jsp?id=904";	//page My Bid		
-	}
+	}	
 	
+	@RequestMapping(value={"/history/myShopping"})
+	public String myShopping(){
+		
+		return "page.jsp?id=911";
+	}	
+	
+	@RequestMapping(value={"/history/myTrade"})
+	public String myTrade(HttpServletRequest request, HttpServletResponse response){
+		
+		log.info(request.getRequestURL());
+		
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		
+		
+		
+		return "page.jsp?id=xxx";
+	}
 	
 	
 }
