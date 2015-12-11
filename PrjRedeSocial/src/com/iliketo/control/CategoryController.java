@@ -390,7 +390,7 @@ public class CategoryController {
 			//valida categoria
 			if(category != null){
 				ForumDAO forumDAO = new ForumDAO(db, request);
-				Forum forum = (Forum) forumDAO.readById(idCat, Forum.class);		//recupera forum
+				Forum forum = (Forum) forumDAO.readByColumn("fk_category_id", idCat, Forum.class);	//recupera forum
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
 				model.addAttribute("forum", forum);
