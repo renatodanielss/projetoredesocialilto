@@ -77,6 +77,39 @@ public class CategoryController {
 		response.setContentType("application/json");
 		response.getWriter().write(json);
 	}
+	
+	/**
+	 * Pesquisa categoria e retorna uma lista das categorias
+	 */
+	@RequestMapping(value={"/searchCategory/listEntryJoin"})
+	public void searchCategoryListEntry(HttpServletRequest request, HttpServletResponse response) throws JSONException, IOException{
+		
+		String name = request.getParameter("category");
+		DB db = (DB)request.getAttribute(Str.CONNECTION_DB);
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+		
+		String SQLCategory = "select t1.id_category as id_category, t1.name_category as name_category from dbcategory t1"
+				+ " where t1.name_category ilike '" +name+ "%' limit 5;";
+		String[][] aliasCat = { {"dbcategory", "t1"} };
+		SQLCategory = CS.transformSQLReal(SQLCategory, aliasCat);
+
+		LinkedHashMap<String,HashMap<String,String>> recordsCategory  = db.query_records(SQLCategory);
+
+		JSONArray respJson = new JSONArray();
+		for(String rec : recordsCategory.keySet()){
+			String idCategry = recordsCategory.get(rec).get("id_category");
+			String nameCategory = recordsCategory.get(rec).get("name_category");
+		    JSONObject obj  = new JSONObject();
+	        obj.put("name", nameCategory);
+	        obj.put("id", idCategry);
+		    respJson.put(obj);
+		}
+		String json = respJson.toString();
+		
+		String divResult ="";
+		response.setContentType("text/html");
+		response.getWriter().write(divResult);
+	}
 
 	
 	/**

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
+import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.AuctionBidDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.model.Announce;
@@ -139,14 +140,40 @@ public class HistoryController {
 	@RequestMapping(value={"/history/myTrade"})
 	public String myTrade(HttpServletRequest request, HttpServletResponse response){
 		
+		log.info(request.getRequestURL());		
+		
+		return "page.jsp?id=912";
+	}
+	
+	@RequestMapping(value={"/history/myTrade/saveBuyer"})
+	public String myTradeNegotiateSales(HttpServletRequest request, HttpServletResponse response){
+		
 		log.info(request.getRequestURL());
 		
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO dao = new AnnounceDAO(db, request);
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		
+		String idAds = request.getParameter("idAds");
+		String comprador = request.getParameter("idBuyer");
 		
-		
-		return "page.jsp?id=xxx";
+		//valida parametros
+		if(idAds != null && !idAds.isEmpty() && comprador != null && !comprador.isEmpty()){
+			//valida comprador
+			if(!comprador.equals(myUserid)){
+				Announce anuncio = (Announce) dao.readById(idAds, Announce.class);
+				//valida anuncio
+				if(anuncio != null){
+					anuncio.setIdBuyer(comprador);
+					anuncio.setStatus("Sold");
+					dao.update(anuncio, false);		//atualiza anuncio
+					return "page.jsp?id=912";
+				}
+			}			
+		}
+
+		//conteudo indisponivel/dados invalidos
+		return "/page.jsp?id=invalid";
 	}
 	
 	

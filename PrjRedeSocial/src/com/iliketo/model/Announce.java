@@ -80,6 +80,9 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "status")			//status(For sale, for auction, sold, canceled)
 	private String status;
 	
+	@ColumnILiketo(name = "buyer_user_id")	//id do comprador/colecionador
+	private String idBuyer;
+	
 	private Member member;
 	
 	public Announce(){
@@ -313,6 +316,16 @@ public class Announce extends ContentILiketo {
 
 	public void setFeatured(String featured) {
 		this.featured = featured;
+	}
+
+
+	public String getIdBuyer() {
+		return idBuyer;
+	}
+
+
+	public void setIdBuyer(String idBuyer) {
+		this.idBuyer = idBuyer;
 	}
 	
 }

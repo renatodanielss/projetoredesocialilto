@@ -327,10 +327,10 @@ public class FileuploadILiketo {
 	 * @throws VideoILiketoException
 	 */
 	public static boolean validateExtensionImage(String filename) throws ImageILiketoException{		
-		String[] extensions = { "jpg", "jpeg" };
+		String[] extensions = { "jpg", "jpeg", "png", "JPG", "JPEG", "PNG" };
 		String ext = filename.substring(filename.lastIndexOf('.') + 1);		
 		for(String e : extensions){
-			if(ext.equals(e)){
+			if(ext.equalsIgnoreCase(e)){
 				return true;
 			}
 		}		
@@ -344,10 +344,10 @@ public class FileuploadILiketo {
 	 * @throws VideoILiketoException
 	 */
 	public static boolean validateExtensionVideo(String filename) throws VideoILiketoException{		
-		String[] extensions = { "mp4" };
+		String[] extensions = { "mp4", "MP4" };
 		String ext = filename.substring(filename.lastIndexOf('.') + 1);		
 		for(String e : extensions){
-			if(ext.equals(e)){
+			if(ext.equalsIgnoreCase(e)){
 				return true;
 			}
 		}		

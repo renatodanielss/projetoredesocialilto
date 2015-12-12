@@ -120,11 +120,6 @@ public class AnnounceCollectorController {
 				
 		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
 		
-		if(announce.getIdItem() == null || announce.getIdItem().equals("") || announce.getTitle() == null || announce.getTitle().equals("")){
-			log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do item para anunciar!");
-			return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
-		}
-		
 		//Purchase
 		if(announce.getTypeAnnounce().equals("Purchase")){
 			//announce.setPathPhotoAd(); //photo default registro de compra
@@ -161,6 +156,11 @@ public class AnnounceCollectorController {
 		session.setAttribute("announce", announce);		//set anuncio na session
 		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("announce", announce);
+		
+		if(announce.getIdItem() == null || announce.getIdItem().equals("") || announce.getTitle() == null || announce.getTitle().equals("")){
+			log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do item para anunciar!");
+			return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
+		}
 		
 		return "page.jsp?id=897"; 						//page form payment
 	}
