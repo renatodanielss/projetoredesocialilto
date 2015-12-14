@@ -85,9 +85,9 @@
 			<option value="Sold">Sold</option>
 		</select>
 		</td>
-		<td><input type="text" value="<%=lista.get(i).getIdBuyer()%>" id="comprador"+i></td>
+		<td><input type="text" value="<%=lista.get(i).getIdBuyer()%>" id="comprador<%=i%>"></td>
 		<td>			
-			<input type="button" value="Atualizar" onclick="changeStatus('<%=lista.get(i).getIdAnnounce()%>', 'status<%=i%>', 'comprador'+<%=i%>)">
+			<input type="button" value="Atualizar" onclick="changeStatus('<%=lista.get(i).getIdAnnounce()%>', 'status<%=i%>', 'comprador<%=i%>')">
 		</td>
 	</tr>
 	<%} %>
@@ -100,7 +100,7 @@
 function changeStatus(id, status_id, comprador_id){
 	var e = document.getElementById(status_id);
 	var status = e.options[e.selectedIndex].value;
-	var buyer = document.getElementById(comprador_id);
+	var buyer = document.getElementById(comprador_id).value;
 	if(status != ""){
 	  	var url = '/webadmin/status_payment_ok.jsp?idAnnounce=' +id+ '&status=' + status + "&idBuyer=" + buyer;
 	  	window.location.href = url;

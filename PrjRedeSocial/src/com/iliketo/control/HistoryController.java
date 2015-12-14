@@ -167,7 +167,7 @@ public class HistoryController {
 					anuncio.setIdBuyer(comprador);
 					anuncio.setStatus("Sold");
 					dao.update(anuncio, false);		//atualiza anuncio
-					return "page.jsp?id=912";
+					return "redirect:/ilt/history/myTrade";
 				}
 			}			
 		}

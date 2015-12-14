@@ -20,6 +20,7 @@ public class Category extends ContentILiketo {
 	@ColumnILiketo(name = "name_category")
 	private String nameCategory;
 	
+	private String total;
 	
 	public Category(){ }
 	
@@ -41,6 +42,16 @@ public class Category extends ContentILiketo {
 
 	public void setNameCategory(String nameCategory) {
 		this.nameCategory = nameCategory;
+	}
+
+
+	public String getTotal() {
+		return total;
+	}
+
+
+	public void setTotal(String total) {
+		this.total = total;
 	}
 
 	
