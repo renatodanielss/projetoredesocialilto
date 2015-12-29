@@ -97,7 +97,7 @@ public class NotificationController {
 		dao.updateNotificationSettings(interest);			//atualiza dados
 		log.info("Configuracoes de notificacoes salvas - id interesse: " + interest.getIdInterest());
 		
-		return "redirect:/ilt/groupCategory?idCat=" + interest.getIdCategory() + "&cat=" + interest.getNameCategory(); 	//sucess page category of group
+		return "redirect:/ilt/groupCategory/group?idCat=" + interest.getIdCategory(); 	//sucess page category of group
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class NotificationController {
 		dao.updateNotificationSettings(collection);				//atualiza dados		
 		log.info("Configuracoes de notificacoes salvas - id colecao: " + collection.getIdCollection());
 		
-		return "redirect:/ilt/groupCategory?idCat=" + collection.getIdCategory() + "&cat=" + collection.getNameCategory(); 	//sucess page category of group
+		return "redirect:/ilt/groupCategory/group?idCat=" + collection.getIdCategory(); 	//sucess page category of group
 	}
 	
 	

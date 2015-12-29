@@ -85,7 +85,7 @@ public class VideoController {
 				//valida e mostra error na pagina
 				log.warn("Erro ao adicionar video. Tela formulario add video");
 			}
-			return "page.jsp?id=654&id_col=" + idCollection;		//page form add video
+			return "page.jsp?id=654&idCollection=" + idCollection;		//page form add video
 		}else{
 			return "page.jsp?id=invalid";						//invalid page
 		}

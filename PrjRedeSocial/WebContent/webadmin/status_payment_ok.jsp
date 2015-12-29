@@ -18,12 +18,14 @@
 	String idAnnounce = request.getParameter("idAnnounce");
 	String status = request.getParameter("status");
 	String idBuyer = request.getParameter("idBuyer");
+	String votos = request.getParameter("votos");
 	
 	AnnounceDAO announceDAO = new AnnounceDAO(db, request);
 	Announce anuncio = new Announce();
 	anuncio.setIdAnnounce(idAnnounce);
 	anuncio.setStatus(status);
 	anuncio.setIdBuyer(idBuyer);
+	anuncio.setRating(votos);
 	announceDAO.update(anuncio, false);
 	log.info("ID: " + idAnnounce + " Status: " + status + " - alterado com sucesso!");
 	response.sendRedirect("/webadmin/status_payment_ads_iliketoo.jsp");

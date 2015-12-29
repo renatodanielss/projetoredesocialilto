@@ -103,6 +103,7 @@ public class AnnounceStoreController {
 		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
 		Object[] itemsPhotos = cms.getObjectsFileOfParameter(StoreItem.class); 		//popula vetor de objetos quando há um ou varios input "file"
 		announce.setStatus("Pending pay");											//pendente pagamento
+		announce.setRating("0");
 		
 		String idCreated = "";
 		if(announce.getTypeAnnounce().equals("Purchase")){

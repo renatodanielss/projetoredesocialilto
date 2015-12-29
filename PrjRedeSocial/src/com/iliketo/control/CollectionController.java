@@ -127,15 +127,31 @@ public class CollectionController {
 			session.setAttribute(Str.S_COLLECTION, collection.getNameCollection());		//add nome coleção na session	
 			session.setAttribute(Str.S_ID_COLLECTION, collection.getIdCollection());	//add id coleção na session	
 			
+			if(collection.getIdCategory() != null && !collection.getIdCategory().isEmpty()){				
+				log.info("Coleção: '"+ collection.getNameCollection() +"' entrou para a categoria/grupo: " + collection.getNameCollection());			
+				
+				//cria notificacao para o grupo da categoria
+				String myUserid = (String) request.getSession().getAttribute("userid");
+				NotificationService.createNotification(db, collection.getIdCategory(), "collection", idCreated, Str.JOINED, myUserid);
+				
+				//remove interesse do membro no grupo se houver
+				for( Interest i : new InterestDAO(db, null).listInterestByUser((String) request.getSession().getAttribute("userid")) ){
+					if(i.getIdCategory() != null && i.getIdCategory().equals(collection.getIdCategory())){				
+						new InterestDAO(db, null).deleteInterest(i.getIdInterest());				//exclui interesse
+						log.info("Interesse: '"+ i.getIdInterest() +"' removido da categoria/grupo: " + collection.getNameCollection());
+					}
+				}
+			}
+			
 			return "redirect:/ilt/collection/registerCollection/addItems";				//page form add new items
 			
 		} catch (StorageILiketoException e) {
 			model.addAttribute("collection", collection);
-			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");
+			model.addMessageError("freeSpace", "Error: You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");
 			return model.redirectError("/ilt/collection/registerCollection"); 			//page form register collection
 		} catch (ImageILiketoException e) {
 			model.addAttribute("collection", collection);
-			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
+			model.addMessageError("imageFormat", "Error: Upload only Image in jpg format.");
 			return model.redirectError("/ilt/collection/registerCollection"); 			//page form register collection
 		}
 		
@@ -170,27 +186,33 @@ public class CollectionController {
 		ItemDAO itemDAO = new ItemDAO(db, request);
 		Collection collection = (Collection) session.getAttribute("newCollection");
 		
-		Object[] items  = cms.getObjectsFileOfParameter(Item.class);				//array objetos com os items
-		for(Object item : items){
-			((Item)item).setIdCollection(collection.getIdCollection());				//seta fk_collection_id no item
-			((Item)item).setIdMember(collection.getIdMember());						//seta fk_user_id no item
+		//valida nova colecao
+		if(session.getAttribute("newCollection") != null){
+			Object[] items  = cms.getObjectsFileOfParameter(Item.class);				//array objetos com os items
+			for(Object item : items){
+				((Item)item).setIdCollection(collection.getIdCollection());				//seta fk_collection_id no item
+				((Item)item).setIdMember(collection.getIdMember());						//seta fk_user_id no item
+			}
+			
+			ModelILiketo model = new ModelILiketo(request, response);
+			try {
+				cms.processFileuploadImages(items);								//salva arquivos			
+			} catch (StorageILiketoException e) {
+				model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
+				return model.redirectError("/ilt/collection/registerCollection/addItems");	//page form add new item
+			} catch (ImageILiketoException e) {
+				model.addMessageError("imageFormat", "Upload only Image in jpg format."); 	//msg erro
+				return model.redirectError("/ilt/collection/registerCollection/addItems");	//page form add new item
+			}
+			
+			itemDAO.creates(items);							//cria items
+			session.removeAttribute("newCollection");		//limpa colecao da session
+			log.info("Itens da colecao salvos com sucesso! - collection: " + collection.getNameCollection());			
+			return "redirect:/ilt/collection/profile?id=" + collection.getIdCollection();	//page collection profile
+		}else{
+			log.warn("Itens ja foram adicionados, acesso invalido na pagina!");
+			return "redirect:/ilt/collection/profile?id=" + collection.getIdCollection();	//page collection profile
 		}
-		
-		ModelILiketo model = new ModelILiketo(request, response);
-		try {
-			cms.processFileuploadImages(items);								//salva arquivos			
-		} catch (StorageILiketoException e) {
-			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
-			return model.redirectError("/ilt/collection/registerCollection/addItems");	//page form add new item
-		} catch (ImageILiketoException e) {
-			model.addMessageError("imageFormat", "Upload only Image in jpg format."); 	//msg erro
-			return model.redirectError("/ilt/collection/registerCollection/addItems");	//page form add new item
-		}
-		
-		itemDAO.creates(items);							//cria items
-		session.removeAttribute("newCollection");		//limpa colecao da session
-		
-		return "redirect:/page.jsp?id=474&idCollection=" + collection.getIdCollection();	//page choose category
 	}
 	
 	

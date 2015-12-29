@@ -19,7 +19,7 @@
 	
 	String SQL = "select t1.id_announce as id_announce, t1.title as title, t1.date_created as date_created, t1.date_updated as date_updated, "
 				+"t1.type_announce as type_announce, t1.price_fixed as price_fixed, t1.bid_actual as bid_actual, t1.buyer_user_id as buyer_user_id, "
-				+"t1.status as status "
+				+"t1.status as status, t1.fk_user_id as fk_user_id, t1.rating as rating "
 				+ "from dbannounce as t1 order by t1.date_updated desc;";				
 	String[][] aliasSQL = { {"dbannounce", "t1"} };
 	SQL = CS.transformSQLReal(SQL, aliasSQL);
@@ -32,6 +32,8 @@
 		anuncio.setIdAnnounce(records.get(rec).get("id_announce"));
 		anuncio.setTitle(records.get(rec).get("title"));
 		anuncio.setPriceFixed(records.get(rec).get("price_fixed"));
+		anuncio.setIdMember(records.get(rec).get("fk_user_id"));
+		anuncio.setRating(records.get(rec).get("rating"));
 		if(anuncio.getPriceFixed() == null || anuncio.getPriceFixed().equals("")){
 			anuncio.setPriceFixed(records.get(rec).get("bid_actual"));
 		}
@@ -59,12 +61,13 @@
 		<td>Data Anuncio</td>
 		<td>ID Anuncio</td>
 		<td>Titulo</td>
+		<td>Id user</td>
 		<td>Preço</td>
 		<td>Tipo</td>
 		<td>Status atual</td>
 		<td>Novo status</td>
 		<td>Comprador</td>
-		<td></td>
+		<td>Votos</td>
 	</tr>
 	<%for(int i=0; i < lista.size(); i++){ %>
 	<tr>
@@ -72,6 +75,7 @@
 		<td><%=lista.get(i).getDateCreated()%></td>
 		<td><%=lista.get(i).getIdAnnounce()%></td>
 		<td><%=lista.get(i).getTitle()%></td>
+		<td><%=lista.get(i).getIdMember()%></td>
 		<td><%=lista.get(i).getPriceFixed()%></td>
 		<td><%=lista.get(i).getTypeAnnounce()%></td>
 		<td><%=lista.get(i).getStatus()%></td>
@@ -85,9 +89,18 @@
 			<option value="Sold">Sold</option>
 		</select>
 		</td>
-		<td><input type="text" value="<%=lista.get(i).getIdBuyer()%>" id="comprador<%=i%>"></td>
-		<td>			
-			<input type="button" value="Atualizar" onclick="changeStatus('<%=lista.get(i).getIdAnnounce()%>', 'status<%=i%>', 'comprador<%=i%>')">
+		<%
+		int voto = 0;
+		try{
+			voto = (int) Double.parseDouble(lista.get(i).getRating());
+		}catch(NumberFormatException e){
+			//ignore
+		}
+		%>
+		<td><input type="text" value="<%=lista.get(i).getIdBuyer()%>" id="comprador<%=i%>" size="8"></td>
+		<td><input type="text" value="<%=voto%>" id="votos<%=i%>" size="8"></td>
+		<td>
+			<input type="button" value="Atualizar" onclick="changeStatus('<%=lista.get(i).getIdAnnounce()%>', 'status<%=i%>', 'comprador<%=i%>', 'votos<%=i%>')">
 		</td>
 	</tr>
 	<%} %>
@@ -97,13 +110,16 @@
 </body>
 <script type="text/javascript">
 
-function changeStatus(id, status_id, comprador_id){
+function changeStatus(id, status_id, comprador_id, votos){
 	var e = document.getElementById(status_id);
 	var status = e.options[e.selectedIndex].value;
 	var buyer = document.getElementById(comprador_id).value;
+	var votos = document.getElementById(votos).value;
 	if(status != ""){
-	  	var url = '/webadmin/status_payment_ok.jsp?idAnnounce=' +id+ '&status=' + status + "&idBuyer=" + buyer;
+	  	var url = '/webadmin/status_payment_ok.jsp?idAnnounce=' +id+ '&status=' + status + "&idBuyer=" + buyer + "&votos=" + votos;
 	  	window.location.href = url;
+	}else{
+		alert("Favor preencher o status!");
 	}
 }
 

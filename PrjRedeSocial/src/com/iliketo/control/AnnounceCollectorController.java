@@ -119,6 +119,7 @@ public class AnnounceCollectorController {
 		HttpSession session = request.getSession();
 				
 		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
+		announce.setRating("0");
 		
 		//Purchase
 		if(announce.getTypeAnnounce().equals("Purchase")){
@@ -492,6 +493,30 @@ public class AnnounceCollectorController {
 				
 		return "redirect:/ilt/ads?id=" + announce.getIdAnnounce(); 					//success - page anuncio
 	}
+	
+	@RequestMapping(value={"/announce/saveRating"}, method = RequestMethod.POST)
+	public String saveRating(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		
+		String idAds = request.getParameter("id_announce");
+		String rating = request.getParameter("rating");
+		
+		if(idAds != null && !idAds.isEmpty() && rating != null && !rating.isEmpty()){
+			AnnounceDAO dao = new AnnounceDAO(db, request);
+			Announce anuncio = new Announce();
+			anuncio.setIdAnnounce(idAds);
+			anuncio.setRating(rating);			
+			dao.update(anuncio, false);
+			log.info("Id collector: " + myUserid + " avaliou a classificacao de venda do anuncio: " + idAds);
+		}
+		
+		return "redirect:/ilt/ads?id=" + idAds; 		//success - classificacao salva
+	}
+	
+	
 	
 	
 	/** ACESSO SOMENTE PARA PESSOAS AUTORIZADAS A MUDAR STATUS PENDENTE PAGAMENTO PARA OK*/

@@ -83,6 +83,12 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "buyer_user_id")	//id do comprador/colecionador
 	private String idBuyer;
 	
+	@ColumnILiketo(name = "rating")			//notas classificacao
+	private String rating;
+	
+	@ColumnILiketo(name = "details")		//notas detalhes para troca
+	private String details;
+	
 	private Member member;
 	
 	public Announce(){
@@ -327,5 +333,16 @@ public class Announce extends ContentILiketo {
 	public void setIdBuyer(String idBuyer) {
 		this.idBuyer = idBuyer;
 	}
+
+
+	public String getRating() {
+		return rating;
+	}
+
+
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+	
 	
 }

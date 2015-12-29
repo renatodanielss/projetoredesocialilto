@@ -56,7 +56,7 @@ public class ForumController {
 		Topic topico = (Topic) topicDAO.readById(idTopic, Topic.class);
 		
 		//valida forum e topico
-		if(forum != null && topico != null){
+		if(forum != null && topico != null && forum.getIdForum().equals(topico.getIdForum())){
 			ModelILiketo model = new ModelILiketo(request, response);
 			model.addAttribute("forum", forum);
 			model.addAttribute("topic", topico);
@@ -86,7 +86,7 @@ public class ForumController {
 			NotificationService.createNotification(db, idCategory, "topic", idCreate, Str.INCLUDED, myUserid);
 		}
 		
-		return "redirect:/ilt/group/forum/topic?id=" + idCreate; 		//redirect para page comment topic
+		return "redirect:/ilt/group/forum/topic?idTop=" + idCreate + "&idForum=" + topic.getIdForum(); 	//redirect para page comment topic
 		
 	}
 	
@@ -99,6 +99,7 @@ public class ForumController {
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		CommentDAO commentDAO = new CommentDAO(db, request);
+		String idForum = request.getParameter("idForum"); 		//id do forum
 		
 		Comment comment = (Comment) cms.getObjectOfParameter(Comment.class);	//objeto com dados do form
 		String idCreate = commentDAO.create(comment);							//cria comentario
@@ -110,7 +111,7 @@ public class ForumController {
 			NotificationService.createNotification(db, idCategory, "comment", idCreate, Str.INCLUDED, myUserid);
 		}
 		
-		return "redirect:/ilt/group/forum/topic?id=" + comment.getIdTopic(); 	//redirect para page comment topic
+		return "redirect:/ilt/group/forum/topic?idTop=" + comment.getIdTopic() + "&idForum=" + idForum; 	//redirect para page comment topic
 		
 	}	
 	

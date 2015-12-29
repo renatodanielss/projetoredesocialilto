@@ -1,7 +1,10 @@
 package com.iliketo.control;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -102,9 +105,12 @@ public class CategoryController {
 		String SQLCategory = "select t1.id_category as id_category, t1.name_category as name_category, "
 				+ "t1.date_created as date_created, "
 				+ "(select count(t2.id_collection) from dbcollection t2 where t1.id_category = t2.fk_category_id) as total1, "
-				+ "(select count(t3.id_interest) from dbinterest t3 where t1.id_category = t3.fk_category_id) as total2 "
+				+ "(select count(t3.id_interest) from dbinterest t3 where t1.id_category = t3.fk_category_id) as total2, "
+				+ "case when t1.name_category ilike '" +name+ "%' then 1 "
+				+ "     when t1.name_category ilike '% " +name+ "%' then 2 else 3 end as prioridade "
 				+ "from dbcategory t1 "
-				+ "where t1.name_category ilike '" +name+ "%' order by t1.name_category limit 5;";
+				+ "where t1.name_category ilike '%" +name+ "%' "
+				+ "order by prioridade, t1.name_category limit 5;";
 		String[][] aliasCat = { {"dbcategory", "t1"}, {"dbcollection", "t2"}, {"dbinterest", "t3"} };
 		SQLCategory = CS.transformSQLReal(SQLCategory, aliasCat);
 
@@ -134,21 +140,27 @@ public class CategoryController {
 		String listEntry = cms.getPageListEntry("915");		//List History - Choose Category Entry
 		StringBuffer resultHTML = new StringBuffer();
 		
+		//linguagem
+		final String LING = request.getLocale().getLanguage();
+		
 		//valida se existe categoria
-		if(name.length() >= 2){
+		if(name.length() >= 3){
 			if(!IliketoDAO.readRecordExistsDatabase(db, "dbcategory", "name_category", name)){
 				String s = listEntry;
 				s = s.replaceAll("@@@id_category@@@", "");
 				s = s.replaceAll("@@@name_category@@@", name);
 				s = s.replaceAll("Created:", "");
+				s = s.replaceAll("Criado:", "");
 				s = s.replaceAll("@@@date_created@@@", "");
 				s = s.replaceAll("Total collectors:", "");
-				s = s.replaceAll("@@@total@@@", "");	
-				s = s.replaceAll("@@@join@@@", "Create new category");	//botao para participar como colecionador
-				s = s.replaceAll("@@@hidden@@@", "button");				//botao oculto
-				s = s.replaceAll("@@@info@@@", "<br>Category not exists!");		//informacao jah participa
-				s = s.replaceAll("@@@action@@@", "criarNovaCategoria('"+name+"');");		//informacao jah participa
-				resultHTML.append(s + "<hr><br>");
+				s = s.replaceAll("Total colecionadores:", "");
+				s = s.replaceAll("@@@total@@@", "");
+				s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Criar nova categoria" : "Create new category");		//botao criar categoria
+				s = s.replaceAll("@@@hidden@@@", "button");								//botao
+				s = s.replaceAll("@@@info@@@", "");										//info				
+				s = s.replaceAll("@@@info2@@@", LING.equals("pt") ? "<br>Categoria não existe!" : "<br>Category does not exist!"); //info2 categoria nao existe
+				s = s.replaceAll("@@@action@@@", "criarNovaCategoria('"+name+"');");	//funcao javascript
+				resultHTML.append(s);
 			}
 		}
 		
@@ -170,21 +182,30 @@ public class CategoryController {
 			/*
 			 * Join
 			 */
+			String dataFormatada = "";
+			try {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date data = format.parse(lista.get(i).getDateCreated());
+				dataFormatada = new SimpleDateFormat("dd-MM-yyyy").format(data);
+			} catch (ParseException e) {
+				log.warn("ERRO PARSE DATA/n" + e);
+			}
 			String s = listEntry;
 			s = s.replaceAll("@@@id_category@@@", lista.get(i).getIdCategory());
-			s = s.replaceAll("@@@name_category@@@", lista.get(i).getNameCategory());
-			s = s.replaceAll("@@@date_created@@@", lista.get(i).getDateCreated());
+			s = s.replaceAll("@@@name_category@@@", lista.get(i).getNameCategory());			
+			s = s.replaceAll("@@@date_created@@@", dataFormatada);
 			s = s.replaceAll("@@@total@@@", lista.get(i).getTotal());
 			s = s.replaceAll("@@@action@@@", "joinCategory('"+lista.get(i).getIdCategory()+"', '"+lista.get(i).getNameCategory()+"');");
+			s = s.replaceAll("@@@info2@@@", "");				//info2
 			if(join.equalsIgnoreCase("join")){
 				if(tipo.equalsIgnoreCase("collection")){
 					//pesquisa como colecao
-					s = s.replaceAll("@@@join@@@", "Join like collector");	//botao para participar como colecionador
+					s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como colecionador" : "Join like collector");	//botao para participar como colecionador
 					s = s.replaceAll("@@@hidden@@@", "button");				//botao oculto
 					s = s.replaceAll("@@@info@@@", "");						//informacao jah participa
 				}else{
 					//pesquisa como interesse
-					s = s.replaceAll("@@@join@@@", "Join like interested");	//botao para participar como colecionador
+					s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como interessado" : "Join like interested");	//botao para participar como colecionador
 					s = s.replaceAll("@@@hidden@@@", "button");				//botao oculto
 					s = s.replaceAll("@@@info@@@", "");						//informacao jah participa
 				}				
@@ -192,17 +213,17 @@ public class CategoryController {
 				//ja participa como colecionador 
 				s = s.replaceAll("@@@join@@@", "Unjoin");					//botao unjoin
 				s = s.replaceAll("@@@hidden@@@", "hidden");					//botao oculto
-				s = s.replaceAll("@@@info@@@", "You joined like collector");//informacao jah participa
+				s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já entrou como colecionador" : "You already joined like collector");//informacao jah participa
 			}else{
 				//jah participa como interessado
 				if(tipo.equalsIgnoreCase("collection")){
-					s = s.replaceAll("@@@join@@@", "Join like collector");			//botao para participar como colecionador
+					s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como colecionador" : "Join like collector");			//botao para participar como colecionador
 					s = s.replaceAll("@@@hidden@@@", "button");						//botao oculto
-					s = s.replaceAll("@@@info@@@", "");								//informacao jah participa
+					s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já tem um interesse" : "You already have a interest");	//informacao jah participa
 				}else{
 					s = s.replaceAll("@@@join@@@", "Unjoin");						//botao unjoin
 					s = s.replaceAll("@@@hidden@@@", "hidden");						//botao oculto
-					s = s.replaceAll("@@@info@@@", "You joined like interested");	//informacao jah participa
+					s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já entrou como interessado" : "You already joined like interested");	//informacao jah participa
 				}
 			}
 			resultHTML.append(s);
@@ -242,6 +263,7 @@ public class CategoryController {
 				log.info("Nova categoria/grupo criado - name: " + cat);
 				response.setContentType("text/html");
 				response.getWriter().write("ok");
+				return;
 			}
 		}
 		log.info("Nao criou categoria, erro ou jah existe! - name: " + cat);
@@ -419,7 +441,8 @@ public class CategoryController {
 			}
 		}
 		
-		return "page.jsp?id=703"; 	//page join group of category
+		//return "page.jsp?id=703"; 	//page join group of category
+		return "redirect:/ilt/groupCategory/group?idCat=" + idCategory;
 	}
 	
 	
@@ -545,6 +568,7 @@ public class CategoryController {
 		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
 		String idCat = request.getParameter("idCat");				//id categoria
+		String myUserid = (String) request.getSession().getAttribute("userid");	
 		
 		if(idCat != null && !idCat.isEmpty()){
 			CategoryDAO dao = new CategoryDAO(db, request);
@@ -556,6 +580,12 @@ public class CategoryController {
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
 				model.addAttribute("forum", forum);
+				//verifica se entrou para o grupo
+				if(IliketoDAO.validateMemberInCategory(db, idCat, myUserid)){
+					model.addAttribute("join", "unjoin");	//jah participa, sair
+				}else{
+					model.addAttribute("join", "join");		//nao participa, entrar
+				}
 				return "page.jsp?id=623";		//pagina grupo
 			}
 		}

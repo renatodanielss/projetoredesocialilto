@@ -1,4 +1,8 @@
 <%@ page import="java.net.URLEncoder" %><%@ page import="java.sql.*" %><%@ page import="java.text.*" %><%@ page import="java.util.*" %><%@ page import="java.util.regex.*" %><%@ page import="HardCore.html" %><%@ page import="HardCore.inidb" %><%@ page import="HardCore.Cms" %><%@ page import="HardCore.Cache" %><%@ page import="HardCore.Common" %><%@ page import="HardCore.Configuration" %><%@ page import="HardCore.Currency" %><%@ page import="HardCore.DB" %><%@ page import="HardCore.Device" %><%@ page import="HardCore.Hosting" %><%@ page import="HardCore.License" %><%@ page import="HardCore.Login" %><%@ page import="HardCore.Request" %><%@ page import="HardCore.Response" %><%@ page import="HardCore.Session" %><%@ page import="HardCore.Text" %><%@ page import="HardCore.UCpublishScheduled" %><%@ page import="HardCore.User" %><%@ page import="HardCore.Website" %><%
+%>
+<%@ page import="com.iliketo.util.*"%>
+
+<%
 
 //ServletContext servletcontext = getServletContext();
 ServletContext servletcontext = getServletConfig().getServletContext();
@@ -86,8 +90,14 @@ if (db.isError()) {
 	db.connect(DB.DSN(database), database);
 }
 if (db.isError()) {
-	db = null;
+	db = null;	
+}else{
+	//pendura conexão do banco de dados no request
+	request.setAttribute(Str.CONNECTION_DB, db);
+	request.setAttribute("database", database);
 }
+
+
 
 if (License.valid(db, myconfig, "hosting")) {
 	Hosting hosting = new Hosting(mytext);
