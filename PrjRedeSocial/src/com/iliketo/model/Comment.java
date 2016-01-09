@@ -31,6 +31,8 @@ public class Comment extends ContentILiketo {
 	
 	private Member member;
 	
+	private String idForum;
+	
 	public Comment(){ }
 
 	public String getIdComment() {
@@ -80,5 +82,13 @@ public class Comment extends ContentILiketo {
 
 	public void setMember(Member member) {
 		this.member = member;
+	}
+
+	public String getIdForum() {
+		return idForum;
+	}
+
+	public void setIdForum(String idForum) {
+		this.idForum = idForum;
 	}
 }

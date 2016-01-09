@@ -19,7 +19,7 @@
 	
 	String SQL = "select t1.id_announce as id_announce, t1.title as title, t1.date_created as date_created, t1.date_updated as date_updated, "
 				+"t1.type_announce as type_announce, t1.price_fixed as price_fixed, t1.bid_actual as bid_actual, t1.buyer_user_id as buyer_user_id, "
-				+"t1.status as status, t1.fk_user_id as fk_user_id, t1.rating as rating "
+				+"t1.status as status, t1.fk_user_id as fk_user_id, t1.rating as rating, t1.featured as featured "
 				+ "from dbannounce as t1 order by t1.date_updated desc;";				
 	String[][] aliasSQL = { {"dbannounce", "t1"} };
 	SQL = CS.transformSQLReal(SQL, aliasSQL);
@@ -40,6 +40,7 @@
 		anuncio.setTypeAnnounce(records.get(rec).get("type_announce"));
 		anuncio.setStatus(records.get(rec).get("status"));
 		anuncio.setIdBuyer(records.get(rec).get("buyer_user_id"));
+		anuncio.setFeatured(records.get(rec).get("featured"));
 		lista.add(anuncio);
 	}
 	
@@ -68,6 +69,7 @@
 		<td>Novo status</td>
 		<td>Comprador</td>
 		<td>Votos</td>
+		<td>Destaque</td>
 	</tr>
 	<%for(int i=0; i < lista.size(); i++){ %>
 	<tr>
@@ -85,7 +87,7 @@
 			<option value="For sale">For sale</option>
 			<option value="For auction">For auction</option>
 			<option value="Pending pay">Pending pay</option>
-			<option value="Cancel">Cancel</option>
+			<option value="Canceled">Canceled</option>
 			<option value="Sold">Sold</option>
 		</select>
 		</td>
@@ -98,9 +100,17 @@
 		}
 		%>
 		<td><input type="text" value="<%=lista.get(i).getIdBuyer()%>" id="comprador<%=i%>" size="8"></td>
-		<td><input type="text" value="<%=voto%>" id="votos<%=i%>" size="8"></td>
+		<td><input type="text" value="<%=voto%>" id="votos<%=i%>" size="6"></td>
 		<td>
-			<input type="button" value="Atualizar" onclick="changeStatus('<%=lista.get(i).getIdAnnounce()%>', 'status<%=i%>', 'comprador<%=i%>', 'votos<%=i%>')">
+		<select name="destaque" id="destaque<%=i%>" style="width: 100%">
+			<option value="<%=lista.get(i).getFeatured()%>"><%=lista.get(i).getFeatured()%></option>
+			<option value="no">no</option>
+			<option value="yes">yes</option>
+		</select>
+		</td>
+		<td>
+			<input type="button" value="Atualizar" onclick="changeStatus('<%=lista.get(i).getIdAnnounce()%>', 'status<%=i%>', 'comprador<%=i%>', 
+																			'votos<%=i%>', 'destaque<%=i%>')">
 		</td>
 	</tr>
 	<%} %>
@@ -110,13 +120,14 @@
 </body>
 <script type="text/javascript">
 
-function changeStatus(id, status_id, comprador_id, votos){
+function changeStatus(id, status_id, comprador_id, votos, destaque_id){
 	var e = document.getElementById(status_id);
 	var status = e.options[e.selectedIndex].value;
 	var buyer = document.getElementById(comprador_id).value;
 	var votos = document.getElementById(votos).value;
+	var destaque = document.getElementById(destaque_id).value;
 	if(status != ""){
-	  	var url = '/webadmin/status_payment_ok.jsp?idAnnounce=' +id+ '&status=' + status + "&idBuyer=" + buyer + "&votos=" + votos;
+	  	var url = '/webadmin/status_payment_ok.jsp?idAnnounce=' +id+ '&status=' + status + "&idBuyer=" + buyer + "&votos=" + votos + "&destaque=" + destaque;
 	  	window.location.href = url;
 	}else{
 		alert("Favor preencher o status!");

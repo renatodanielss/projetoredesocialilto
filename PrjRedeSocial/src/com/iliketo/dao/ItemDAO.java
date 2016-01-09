@@ -27,9 +27,6 @@ public class ItemDAO extends GenericDAO{
 		
 		IliketoDAO.deleteDadosIliketo(db, "dbcollectionitem", "id", idDeleteItem); //metodo deleta dados na database
 		
-		//delete anuncio do item se houver
-		IliketoDAO.deleteDadosIliketo(db, "dbannounce", "fk_item_id", idDeleteItem); //metodo deleta dados na database
-		
 	}
 	
 }

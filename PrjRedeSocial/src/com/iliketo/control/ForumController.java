@@ -12,6 +12,7 @@ import HardCore.DB;
 
 import com.iliketo.dao.CommentDAO;
 import com.iliketo.dao.ForumDAO;
+import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.TopicDAO;
 import com.iliketo.model.Comment;
 import com.iliketo.model.Forum;
@@ -80,7 +81,7 @@ public class ForumController {
 		String idCreate = topicDAO.create(topic);						//cria topico
 		
 		//cria notificacao para o grupo da categoria
-		String idCategory = (String) request.getSession().getAttribute("s_id_category");
+		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbforum", "id_forum", topic.getIdForum());
 		if(idCategory != null && !idCategory.equals("")){
 			String myUserid = (String) request.getSession().getAttribute("userid");
 			NotificationService.createNotification(db, idCategory, "topic", idCreate, Str.INCLUDED, myUserid);
@@ -105,7 +106,7 @@ public class ForumController {
 		String idCreate = commentDAO.create(comment);							//cria comentario
 		
 		//cria notificacao para o grupo da categoria
-		String idCategory = (String) request.getSession().getAttribute("s_id_category");
+		String idCategory = IliketoDAO.getValueOfDatabase(db, "fk_category_id", "dbforum", "id_forum", idForum);
 		if(idCategory != null && !idCategory.equals("")){
 			String myUserid = (String) request.getSession().getAttribute("userid");
 			NotificationService.createNotification(db, idCategory, "comment", idCreate, Str.INCLUDED, myUserid);

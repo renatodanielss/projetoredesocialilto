@@ -3,6 +3,7 @@ package com.iliketo.dao;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -143,6 +144,26 @@ public class CollectionDAO extends GenericDAO{
 		}
 		
 		return list;
+	}
+	
+	public boolean verificaColecaoPossuiAnuncio(String idCollection){
+		
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(super.getDb());
+		
+		String SQL = "select t1.id_announce as id_announce "
+				+ "from dbannounce as t1 "
+				+ "join dbcollectionitem as t2 on t1.fk_item_id = t2.id_item "
+				+ "where t2.fk_collection_id = '" + idCollection + "' and t1.status != 'Sold';";
+		
+		String[][] aliasCat = { {"dbannounce", "t1"}, {"dbcollectionitem", "t2"} };
+		SQL = CS.transformSQLReal(SQL, aliasCat);
+		
+		HashMap<String,String> row = super.getDb().query_record(SQL);
+		
+		if(row != null){
+			return true;	//colecao possui item com anuncio em aberto
+		}
+		return false;
 	}
 	
 }

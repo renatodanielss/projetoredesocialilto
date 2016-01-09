@@ -102,135 +102,159 @@ public class CategoryController {
 		String name = request.getParameter("category").trim();
 		String tipo = request.getParameter("collection_interest");
 		
-		String SQLCategory = "select t1.id_category as id_category, t1.name_category as name_category, "
-				+ "t1.date_created as date_created, "
-				+ "(select count(t2.id_collection) from dbcollection t2 where t1.id_category = t2.fk_category_id) as total1, "
-				+ "(select count(t3.id_interest) from dbinterest t3 where t1.id_category = t3.fk_category_id) as total2, "
-				+ "case when t1.name_category ilike '" +name+ "%' then 1 "
-				+ "     when t1.name_category ilike '% " +name+ "%' then 2 else 3 end as prioridade "
-				+ "from dbcategory t1 "
-				+ "where t1.name_category ilike '%" +name+ "%' "
-				+ "order by prioridade, t1.name_category limit 5;";
-		String[][] aliasCat = { {"dbcategory", "t1"}, {"dbcollection", "t2"}, {"dbinterest", "t3"} };
-		SQLCategory = CS.transformSQLReal(SQLCategory, aliasCat);
-
-		LinkedHashMap<String,HashMap<String,String>> recordsCategory = db.query_records(SQLCategory);
-		ArrayList<Category> lista = new ArrayList<Category>();
-
-		for(String rec : recordsCategory.keySet()){
-			String idCategory = recordsCategory.get(rec).get("id_category");
-			String nameCategory = recordsCategory.get(rec).get("name_category");
-			String data = recordsCategory.get(rec).get("date_created");
-			String total1 = recordsCategory.get(rec).get("total1");
-			String total2 = recordsCategory.get(rec).get("total2");
-			Category categoria = new Category();
-			categoria.setIdCategory(idCategory);
-			categoria.setNameCategory(nameCategory);
-			categoria.setDateCreated(data);
-			categoria.setTotal(Integer.toString(Integer.parseInt(total1) + Integer.parseInt(total2)));
-			lista.add(categoria);
-		}
-		
-		CollectionDAO collectionDAO = new CollectionDAO(db, request);
-		InterestDAO interestDAO = new InterestDAO(db, request);
-		
-		List<Collection> listCollection = collectionDAO.listCollectionByUser(myUserid);
-		List<Interest> listInterest = interestDAO.listInterestByUser(myUserid);
-		
-		String listEntry = cms.getPageListEntry("915");		//List History - Choose Category Entry
-		StringBuffer resultHTML = new StringBuffer();
-		
-		//linguagem
-		final String LING = request.getLocale().getLanguage();
-		
-		//valida se existe categoria
-		if(name.length() >= 3){
-			if(!IliketoDAO.readRecordExistsDatabase(db, "dbcategory", "name_category", name)){
+		if(!name.isEmpty()){
+			while(name.contains("  ")){
+				name = name.replaceAll("  ", " ");
+			}		
+			String[] array = name.split(" ");
+			
+			String SQLCategory = "select t1.id_category as id_category, t1.name_category as name_category, "
+					+ "t1.date_created as date_created, "
+					+ "(select count(t2.id_collection) from dbcollection t2 where t1.id_category = t2.fk_category_id) as total1, "
+					+ "(select count(t3.id_interest) from dbinterest t3 where t1.id_category = t3.fk_category_id) as total2, "
+					+ "case when t1.name_category ilike '" +name+ "%' then 1 "
+					+ "     when t1.name_category ilike '% " +name+ "%' then 2 ";
+					if(array.length >= 2){
+						SQLCategory += " when (t1.name_category ilike '" +array[0]+ "%' or t1.name_category ilike '% " +array[0]+ "%') ";
+						for(int i = 1; i < array.length; i++){
+							SQLCategory +=  "and (t1.name_category ilike '" +array[i]+ "%' or t1.name_category ilike '% " +array[i]+ "%') ";
+						}
+						SQLCategory += " then 3 ";
+					}
+					SQLCategory += " else 4 end as prioridade "
+					+ "from dbcategory t1 "
+					+ "where t1.name_category ilike '%" +name+ "%' ";
+					if(array.length >= 2){
+						SQLCategory += " or (t1.name_category ilike '" +array[0]+ "%' or t1.name_category ilike '% " +array[0]+ "%') ";
+						for(int i = 1; i < array.length; i++){
+							SQLCategory +=  "and (t1.name_category ilike '" +array[i]+ "%' or t1.name_category ilike '% " +array[i]+ "%') ";
+						}
+					}
+					SQLCategory +=  "order by prioridade, t1.name_category limit 5;";
+			String[][] aliasCat = { {"dbcategory", "t1"}, {"dbcollection", "t2"}, {"dbinterest", "t3"} };
+			SQLCategory = CS.transformSQLReal(SQLCategory, aliasCat);
+	
+			LinkedHashMap<String,HashMap<String,String>> recordsCategory = db.query_records(SQLCategory);
+			ArrayList<Category> lista = new ArrayList<Category>();
+	
+			for(String rec : recordsCategory.keySet()){
+				String idCategory = recordsCategory.get(rec).get("id_category");
+				String nameCategory = recordsCategory.get(rec).get("name_category");
+				String data = recordsCategory.get(rec).get("date_created");
+				String total1 = recordsCategory.get(rec).get("total1");
+				String total2 = recordsCategory.get(rec).get("total2");
+				Category categoria = new Category();
+				categoria.setIdCategory(idCategory);
+				categoria.setNameCategory(nameCategory);
+				categoria.setDateCreated(data);
+				categoria.setTotal(Integer.toString(Integer.parseInt(total1) + Integer.parseInt(total2)));
+				lista.add(categoria);
+			}
+			
+			CollectionDAO collectionDAO = new CollectionDAO(db, request);
+			InterestDAO interestDAO = new InterestDAO(db, request);
+			
+			List<Collection> listCollection = collectionDAO.listCollectionByUser(myUserid);
+			List<Interest> listInterest = interestDAO.listInterestByUser(myUserid);
+			
+			String listEntry = cms.getPageListEntry("915");		//List History - Choose Category Entry
+			StringBuffer resultHTML = new StringBuffer();
+			
+			//linguagem
+			final String LING = request.getLocale().getLanguage();
+			
+			//valida se existe categoria
+			if(name.length() >= 3){
+				if(!IliketoDAO.readRecordExistsDatabase(db, "dbcategory", "name_category", name)){
+					String s = listEntry;
+					s = s.replaceAll("@@@id_category@@@", "");
+					s = s.replaceAll("@@@name_category@@@", name);
+					s = s.replaceAll("Created:", "");
+					s = s.replaceAll("Criado:", "");
+					s = s.replaceAll("@@@date_created@@@", "");
+					s = s.replaceAll("Total collectors:", "");
+					s = s.replaceAll("Total colecionadores:", "");
+					s = s.replaceAll("@@@total@@@", "");
+					s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Criar nova categoria" : "Create new category");		//botao criar categoria
+					s = s.replaceAll("@@@hidden@@@", "button");								//botao
+					s = s.replaceAll("@@@info@@@", "");										//info				
+					s = s.replaceAll("@@@info2@@@", LING.equals("pt") ? "<br>Categoria não existe!" : "<br>Category does not exist!"); //info2 categoria nao existe
+					s = s.replaceAll("@@@action@@@", "criarNovaCategoria('"+name+"');");	//funcao javascript
+					resultHTML.append(s);
+				}
+			}
+			
+			for(int i = 0; i < lista.size(); i++){
+				//procura nas colecoes e interesses se o colecionador jah participa da categoria pesquisada
+				String join = "join";
+				for(Collection colecao : listCollection){
+					if(colecao.getIdCategory().equals(lista.get(i).getIdCategory())){
+						join = "unjoin collector";
+						break;
+					}
+				}
+				for(Interest interest : listInterest){
+					if(interest.getIdCategory().equals(lista.get(i).getIdCategory())){
+						join = "unjoin interest";
+						break;
+					}
+				}
+				/*
+				 * Join
+				 */
+				String dataFormatada = "";
+				try {
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date data = format.parse(lista.get(i).getDateCreated());
+					dataFormatada = new SimpleDateFormat("dd-MM-yyyy").format(data);
+				} catch (ParseException e) {
+					log.warn("ERRO PARSE DATA/n" + e);
+				}
 				String s = listEntry;
-				s = s.replaceAll("@@@id_category@@@", "");
-				s = s.replaceAll("@@@name_category@@@", name);
-				s = s.replaceAll("Created:", "");
-				s = s.replaceAll("Criado:", "");
-				s = s.replaceAll("@@@date_created@@@", "");
-				s = s.replaceAll("Total collectors:", "");
-				s = s.replaceAll("Total colecionadores:", "");
-				s = s.replaceAll("@@@total@@@", "");
-				s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Criar nova categoria" : "Create new category");		//botao criar categoria
-				s = s.replaceAll("@@@hidden@@@", "button");								//botao
-				s = s.replaceAll("@@@info@@@", "");										//info				
-				s = s.replaceAll("@@@info2@@@", LING.equals("pt") ? "<br>Categoria não existe!" : "<br>Category does not exist!"); //info2 categoria nao existe
-				s = s.replaceAll("@@@action@@@", "criarNovaCategoria('"+name+"');");	//funcao javascript
+				s = s.replaceAll("@@@id_category@@@", lista.get(i).getIdCategory());
+				s = s.replaceAll("@@@name_category@@@", lista.get(i).getNameCategory());			
+				s = s.replaceAll("@@@date_created@@@", dataFormatada);
+				s = s.replaceAll("@@@total@@@", lista.get(i).getTotal());
+				s = s.replaceAll("@@@action@@@", "joinCategory('"+lista.get(i).getIdCategory()+"', '"+lista.get(i).getNameCategory()+"');");
+				s = s.replaceAll("@@@info2@@@", "");				//info2
+				if(join.equalsIgnoreCase("join")){
+					if(tipo.equalsIgnoreCase("collection")){
+						//pesquisa como colecao
+						s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como colecionador" : "Join like collector");	//botao para participar como colecionador
+						s = s.replaceAll("@@@hidden@@@", "button");				//botao oculto
+						s = s.replaceAll("@@@info@@@", "");						//informacao jah participa
+					}else{
+						//pesquisa como interesse
+						s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como interessado" : "Join like interested");	//botao para participar como colecionador
+						s = s.replaceAll("@@@hidden@@@", "button");				//botao oculto
+						s = s.replaceAll("@@@info@@@", "");						//informacao jah participa
+					}				
+				}else if(join.equalsIgnoreCase("unjoin collector")){
+					//ja participa como colecionador 
+					s = s.replaceAll("@@@join@@@", "Unjoin");					//botao unjoin
+					s = s.replaceAll("@@@hidden@@@", "hidden");					//botao oculto
+					s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já entrou como colecionador" : "You already joined like collector");//informacao jah participa
+				}else{
+					//jah participa como interessado
+					if(tipo.equalsIgnoreCase("collection")){
+						s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como colecionador" : "Join like collector");			//botao para participar como colecionador
+						s = s.replaceAll("@@@hidden@@@", "button");						//botao oculto
+						s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já tem um interesse" : "You already have a interest");	//informacao jah participa
+					}else{
+						s = s.replaceAll("@@@join@@@", "Unjoin");						//botao unjoin
+						s = s.replaceAll("@@@hidden@@@", "hidden");						//botao oculto
+						s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já entrou como interessado" : "You already joined like interested");	//informacao jah participa
+					}
+				}
 				resultHTML.append(s);
 			}
+			
+			response.setContentType("text/html");
+			response.getWriter().write(resultHTML.toString());
+		}else{
+			response.setContentType("text/html");
+			response.getWriter().write("");
 		}
-		
-		for(int i = 0; i < lista.size(); i++){
-			//procura nas colecoes e interesses se o colecionador jah participa da categoria pesquisada
-			String join = "join";
-			for(Collection colecao : listCollection){
-				if(colecao.getIdCategory().equals(lista.get(i).getIdCategory())){
-					join = "unjoin collector";
-					break;
-				}
-			}
-			for(Interest interest : listInterest){
-				if(interest.getIdCategory().equals(lista.get(i).getIdCategory())){
-					join = "unjoin interest";
-					break;
-				}
-			}
-			/*
-			 * Join
-			 */
-			String dataFormatada = "";
-			try {
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date data = format.parse(lista.get(i).getDateCreated());
-				dataFormatada = new SimpleDateFormat("dd-MM-yyyy").format(data);
-			} catch (ParseException e) {
-				log.warn("ERRO PARSE DATA/n" + e);
-			}
-			String s = listEntry;
-			s = s.replaceAll("@@@id_category@@@", lista.get(i).getIdCategory());
-			s = s.replaceAll("@@@name_category@@@", lista.get(i).getNameCategory());			
-			s = s.replaceAll("@@@date_created@@@", dataFormatada);
-			s = s.replaceAll("@@@total@@@", lista.get(i).getTotal());
-			s = s.replaceAll("@@@action@@@", "joinCategory('"+lista.get(i).getIdCategory()+"', '"+lista.get(i).getNameCategory()+"');");
-			s = s.replaceAll("@@@info2@@@", "");				//info2
-			if(join.equalsIgnoreCase("join")){
-				if(tipo.equalsIgnoreCase("collection")){
-					//pesquisa como colecao
-					s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como colecionador" : "Join like collector");	//botao para participar como colecionador
-					s = s.replaceAll("@@@hidden@@@", "button");				//botao oculto
-					s = s.replaceAll("@@@info@@@", "");						//informacao jah participa
-				}else{
-					//pesquisa como interesse
-					s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como interessado" : "Join like interested");	//botao para participar como colecionador
-					s = s.replaceAll("@@@hidden@@@", "button");				//botao oculto
-					s = s.replaceAll("@@@info@@@", "");						//informacao jah participa
-				}				
-			}else if(join.equalsIgnoreCase("unjoin collector")){
-				//ja participa como colecionador 
-				s = s.replaceAll("@@@join@@@", "Unjoin");					//botao unjoin
-				s = s.replaceAll("@@@hidden@@@", "hidden");					//botao oculto
-				s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já entrou como colecionador" : "You already joined like collector");//informacao jah participa
-			}else{
-				//jah participa como interessado
-				if(tipo.equalsIgnoreCase("collection")){
-					s = s.replaceAll("@@@join@@@", LING.equals("pt") ? "Entrar como colecionador" : "Join like collector");			//botao para participar como colecionador
-					s = s.replaceAll("@@@hidden@@@", "button");						//botao oculto
-					s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já tem um interesse" : "You already have a interest");	//informacao jah participa
-				}else{
-					s = s.replaceAll("@@@join@@@", "Unjoin");						//botao unjoin
-					s = s.replaceAll("@@@hidden@@@", "hidden");						//botao oculto
-					s = s.replaceAll("@@@info@@@", LING.equals("pt") ? "Você já entrou como interessado" : "You already joined like interested");	//informacao jah participa
-				}
-			}
-			resultHTML.append(s);
-		}
-		
-		response.setContentType("text/html");
-		response.getWriter().write(resultHTML.toString());
 	}
 
 	/**

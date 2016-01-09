@@ -625,10 +625,10 @@ public class CmsConfigILiketo {
 			while(it.hasNext()){
 				String nameBean = "" + it.next();				
 				if(content.contains("${" + nameBean  + "}")){ //${objeto}
-					content = content.replaceAll("\\$\\{" + nameBean + "}", mapModel.get(nameBean).toString());
+					content = content.replaceAll("\\$\\{" + nameBean + "}", mapModel.get(nameBean).toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
 				}
 				if(content.contains("@@@" + nameBean  + "@@@")){ //@@@objeto@@@
-					content = content.replaceAll("@@@" + nameBean + "@@@", mapModel.get(nameBean).toString());
+					content = content.replaceAll("@@@" + nameBean + "@@@", mapModel.get(nameBean).toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
 				}
 				if(content.contains("${" + nameBean + ".") || content.contains("@@@")){
 					try {
@@ -641,7 +641,7 @@ public class CmsConfigILiketo {
 								atributo.setAccessible(true);
 								Object value = atributo.get(obj);
 								if(value != null){
-									content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "}", value.toString());
+									content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "}", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")); //caractere especial $
 								}else{
 									content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "}", "");
 								}								
@@ -652,7 +652,7 @@ public class CmsConfigILiketo {
 										at.setAccessible(true);
 										Object value = at.get(atributo.get(obj));
 										if(value != null){
-											content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "." + at.getName() + "}", value.toString());
+											content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "." + at.getName() + "}", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")); //caractere especial $
 										}else{
 											content = content.replaceAll("\\$\\{" + nameBean + "." + atributo.getName() + "." + at.getName() + "}", "");
 										}
@@ -666,7 +666,7 @@ public class CmsConfigILiketo {
 									if(content.contains("@@@" + coluna.name() + "@@@")){	//@@@colunadatabase@@@
 										Object value =  atributo.get(obj);
 										if(value != null){
-											content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString());
+											content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
 										}else{
 											content = content.replaceAll("@@@" + coluna.name() + "@@@", "");
 										}
@@ -768,7 +768,7 @@ public class CmsConfigILiketo {
 							atributo.setAccessible(true);
 							Object value = atributo.get(obj);
 							if(value != null){
-								content = content.replaceAll("\\$\\{" + atributo.getName() + "}", value.toString());
+								content = content.replaceAll("\\$\\{" + atributo.getName() + "}", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")); //caractere especial $
 							}else{
 								content = content.replaceAll("\\$\\{" + atributo.getName() + "}", "");
 							}
@@ -779,7 +779,7 @@ public class CmsConfigILiketo {
 									at.setAccessible(true);
 									Object value = at.get(atributo.get(obj));
 									if(value != null){
-										content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", value.toString());
+										content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")); //caractere especial $
 									}else{
 										content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", "");
 									}
@@ -793,7 +793,7 @@ public class CmsConfigILiketo {
 								atributo.setAccessible(true);
 								Object value = atributo.get(obj);
 								if(value != null){
-									content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString());
+									content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
 								}else{
 									content = content.replaceAll("@@@" + coluna.name() + "@@@", "");
 								}

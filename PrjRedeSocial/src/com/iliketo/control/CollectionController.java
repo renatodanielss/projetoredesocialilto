@@ -67,6 +67,12 @@ public class CollectionController {
 			if(myIdUser.equals(colecao.getIdMember())){
 				Member member = (Member) request.getSession().getAttribute("member");	//myUser session
 				model.addAttribute("member", member);
+				//verifica anuncio vinculado
+				if(dao.verificaColecaoPossuiAnuncio(IdCollection)){
+					model.addAttribute("possuiAnuncio", "sim");		//nao pode deletar
+				}else{
+					model.addAttribute("possuiAnuncio", "nao");		//pode deletar
+				}
 				return "page.jsp?id=505";			//page my collection profile
 			}else{
 				MemberDAO mDAO = new MemberDAO(db, request);

@@ -79,15 +79,19 @@ public class MessageInboxOutboxController {
 		//valida mensagem caixa de entrada do membro(destinatario)
 		if(messageInbox != null && messageInbox.getReceiverIdMember().equals(myUserid)){			
 			ModelILiketo model = new ModelILiketo(request, response);
-			messageInbox.setWasRead("y");						//set msg lida
-			messageDAO.update(messageInbox, false);				//atualiza mensagem lida
+			if(messageInbox.getWasRead().equalsIgnoreCase("n")){
+				messageInbox.setWasRead("y");						//set msg lida
+				messageDAO.update(messageInbox, false);				//atualiza mensagem lida
+			}
 			model.addAttribute("messageInbox", messageInbox);	//add objeto recuperar na jsp			
 			if(messageInbox.getIdAnnounce() != null && !messageInbox.getIdAnnounce().equals("")){
 				AnnounceDAO dao = new AnnounceDAO(db, request);
 				Announce announce = (Announce) dao.readById(messageInbox.getIdAnnounce(), Announce.class); //recupera dados do anuncio da mensagem
-				model.addAttribute("announce", announce);		//add objeto recuperar na jsp
+				if(announce != null){
+					model.addAttribute("announce", announce);		//add objeto recuperar na jsp
+				}
 			}
-			return "/page.jsp?id=837"; 							//page visualizar mensagem			
+			return "/page.jsp?id=837"; 							//page visualizar mensagem
 		}else{
 			return "/page.jsp?id=xxx"; 							//page conteudo nao disponivel
 		}
@@ -117,7 +121,9 @@ public class MessageInboxOutboxController {
 			if(messageInbox.getIdAnnounce() != null && !messageInbox.getIdAnnounce().equals("")){
 				AnnounceDAO dao = new AnnounceDAO(db, request);
 				Announce announce = (Announce) dao.readById(messageInbox.getIdAnnounce(), Announce.class); //recupera dados do anuncio da mensagem
-				model.addAttribute("announce", announce);		//add objeto recuperar na jsp
+				if(announce != null){
+					model.addAttribute("announce", announce);		//add objeto recuperar na jsp
+				}
 			}
 			return "/page.jsp?id=839"; 							//page visualizar mensagem			
 		}else{

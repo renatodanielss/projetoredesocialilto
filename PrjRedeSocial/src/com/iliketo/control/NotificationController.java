@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -176,9 +178,10 @@ public class NotificationController {
 	
 	/**
 	 * Retorna json de novas notificacoes para mobile
+	 * @throws JSONException 
 	 */
 	@RequestMapping(value={"/notification/ajaxNotificationsMobile"})
-	public void notificationsMobile(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public void notificationsMobile(HttpServletRequest request, HttpServletResponse response) throws IOException, JSONException{
 		
 		JSONArray json = NotificationService.newsNotificationsMobile(request);	
 		response.setCharacterEncoding("UTF-8");

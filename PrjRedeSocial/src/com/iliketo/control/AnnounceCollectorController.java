@@ -243,10 +243,6 @@ public class AnnounceCollectorController {
 		String id = request.getParameter("id");								//id do anuncio
 		Announce announce = (Announce) dao.readById(id, Announce.class);	//ler anuncio
 		
-		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("announce", announce);							//recuperar dados do anuncio na jsp
-		
-		
 		//identificar paginas de anuncios do membro
 		String pageMeuLeilao = "page.jsp?id=705";				//pagina meu anuncio leilao para item
 		String pageMeuAnuncio = "page.jsp?id=729";				//pagina meu anuncio venda/troca para item		
@@ -260,47 +256,51 @@ public class AnnounceCollectorController {
 		
 		String pageVisualizarAnuncio = "";						//pagina para redirecionar
 		
-		if(announce.getIdMember().equals(myUserid)){
-			//visao do meu anuncio
-			//if(announce.getAccountType().equals("Store")){
-				//pageVisualizarAnuncio = pageMeuAnuncioLoja;				//anuncio de loja
-			//}else{
-				if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
-					if(!announce.getIdItem().equals("")){	
-						pageVisualizarAnuncio = pageMeuLeilao;			//leilao para item
+		if(announce != null){
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("announce", announce);							//recuperar dados do anuncio na jsp
+			if(announce.getIdMember().equals(myUserid)){
+				//visao do meu anuncio
+				//if(announce.getAccountType().equals("Store")){
+					//pageVisualizarAnuncio = pageMeuAnuncioLoja;				//anuncio de loja
+				//}else{
+					if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
+						if(!announce.getIdItem().equals("")){	
+							pageVisualizarAnuncio = pageMeuLeilao;			//leilao para item
+						}
+					}else if(announce.getTypeAnnounce().equals("Purchase")){
+						pageVisualizarAnuncio = pageMeuAnuncioCompra;		//anuncio de compra
+					}else{
+						if(!announce.getIdItem().equals("")){
+							pageVisualizarAnuncio = pageMeuAnuncio;			//venda/troca para item
+						}
 					}
-				}else if(announce.getTypeAnnounce().equals("Purchase")){
-					pageVisualizarAnuncio = pageMeuAnuncioCompra;		//anuncio de compra
-				}else{
-					if(!announce.getIdItem().equals("")){
-						pageVisualizarAnuncio = pageMeuAnuncio;			//venda/troca para item
+				//}
+			}else{
+				//visao de terceiros do anuncio
+				//if(announce.getAccountType().equals("Store")){
+					//pageVisualizarAnuncio = pageAnuncioLoja;				//anuncio de loja
+				//}else{
+					if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
+						if(!announce.getIdItem().equals("")){	
+							pageVisualizarAnuncio = pageLeilaoTerceiro;		//leilao para item
+						}
+					}else if(announce.getTypeAnnounce().equals("Purchase")){
+						pageVisualizarAnuncio = pageAnuncioCompraTerceiro;	//anuncio de compra
+					}else{
+						if(!announce.getIdItem().equals("")){
+							pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
+						}
 					}
-				}
-			//}
-		}else{
-			//visao de terceiros do anuncio
-			//if(announce.getAccountType().equals("Store")){
-				//pageVisualizarAnuncio = pageAnuncioLoja;				//anuncio de loja
-			//}else{
-				if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
-					if(!announce.getIdItem().equals("")){	
-						pageVisualizarAnuncio = pageLeilaoTerceiro;		//leilao para item
-					}
-				}else if(announce.getTypeAnnounce().equals("Purchase")){
-					pageVisualizarAnuncio = pageAnuncioCompraTerceiro;	//anuncio de compra
-				}else{
-					if(!announce.getIdItem().equals("")){
-						pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
-					}
-				}
-			//}
+				//}
+			}
 		}
 		
 		//valida pagina correta do anuncio
 		if(!pageVisualizarAnuncio.equals("")){			
 			return pageVisualizarAnuncio;		//redireciona para pagina correspondente ao anuncio
 		}else{
-			return "page.jsp?id=xxx"; 			//page conteudo nao disponivel
+			return "page.jsp?id=invalid"; 			//page conteudo nao disponivel
 		}
 		
 	}
@@ -516,6 +516,26 @@ public class AnnounceCollectorController {
 		return "redirect:/ilt/ads?id=" + idAds; 		//success - classificacao salva
 	}
 	
+	@RequestMapping(value={"/announce/buyFeatured"}, method = RequestMethod.POST)
+	public String buyFeatured(HttpServletRequest request, HttpServletResponse response){
+		
+		log.info(request.getRequestURL());
+				
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		String id = request.getParameter("id");										//id do anuncio
+		Announce anuncio = (Announce) announceDAO.readById(id, Announce.class);		//ler anuncio
+		
+		//valida anuncio
+		if(anuncio != null && anuncio.getIdMember().equals(myUserid)){
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("announce", anuncio);
+			return "page.jsp?id=856"; 		//page ads see bids
+		}
+		
+		return "/page.jsp?id=invalid";		//pagina conteudo indisponivel
+	}
 	
 	
 	
