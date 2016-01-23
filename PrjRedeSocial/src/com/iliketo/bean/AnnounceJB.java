@@ -26,6 +26,8 @@ public class AnnounceJB extends ContentILiketoJB {
 	private String idCategory;
 	private String path_photo_ad;
 	private String dateInitial;
+	private String offeredPrice;
+	private String details;
 	private MemberJB member;
 
 	public AnnounceJB(){
@@ -166,6 +168,22 @@ public class AnnounceJB extends ContentILiketoJB {
 
 	public void setDateInitial(String dateInitial) {
 		this.dateInitial = dateInitial;
+	}
+
+	public String getOfferedPrice() {
+		return offeredPrice;
+	}
+
+	public void setOfferedPrice(String offeredPrice) {
+		this.offeredPrice = offeredPrice;
+	}
+
+	public String getDetails() {
+		return details;
+	}
+
+	public void setDetails(String details) {
+		this.details = details;
 	}
 
 	

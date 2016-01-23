@@ -189,7 +189,8 @@ public class NotificationController {
 		Member member = (Member) request.getSession().getAttribute("member");
 		
 		if(json != null){
-			log.info(request.getRequestURL() + " - [user: "+member.getUsername()+"]" + " - JSON Notific Mobile: " + json.toString());
+			log.info(request.getRequestURL() + " - [user: "+member.getUsername()+"]" + " - JSON Notific Mobile: {" + 
+					json.getJSONObject(0).getString("total") +"},{"+ json.getJSONObject(1).getString("lastSeenDate")+"}");
 			response.getWriter().write(new String(json.toString().getBytes("UTF-8")));
 		}else{
 			log.info(request.getRequestURL() + " - [user: "+member.getUsername()+"]" + " - JSON Notific Mobile: total 0");

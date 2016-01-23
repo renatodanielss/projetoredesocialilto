@@ -73,8 +73,12 @@ public class AnnounceCollectorController {
 		Item item = (Item) itemDAO.readById(id, Item.class);		//ler item
 		
 		HttpSession session = request.getSession();
-		session.setAttribute("item", item);							//set item da colecao na session
+		//remove atributos da sessao
+		session.removeAttribute("item");
+		session.removeAttribute("collection");
+		session.removeAttribute("announce");
 		
+		session.setAttribute("item", item);							//set item da colecao na session
 		
 		//model view jsp para binding do bean
 		ModelILiketo model = new ModelILiketo(request, response);
@@ -96,8 +100,12 @@ public class AnnounceCollectorController {
 		Collection collection = (Collection) collectionDAO.readById(id, Collection.class);	//ler colecao
 		
 		HttpSession session = request.getSession();
+		//remove atributos da sessao
+		session.removeAttribute("item");
+		session.removeAttribute("collection");
+		session.removeAttribute("announce");
+				
 		session.setAttribute("collection", collection);										//set colecao na session
-		
 		
 		//model view jsp para binding do bean
 		ModelILiketo model = new ModelILiketo(request, response);
@@ -154,34 +162,36 @@ public class AnnounceCollectorController {
 			}
 		}
 		
-		session.setAttribute("announce", announce);		//set anuncio na session
+		if(!announce.getTypeAnnounce().equals("Purchase")){
+			if(announce.getIdItem() == null || announce.getIdItem().equals("") || announce.getTitle() == null || announce.getTitle().equals("")){
+				log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do item para anunciar!");
+				return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
+			}
+		}
+		
+		announce.setStatus("Pending pay");					//pendente pagamento
+		
+		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
+		String idCreated;
+		if(session.getAttribute("announce") == null){
+			idCreated = announceDAO.create(announce);	//salva novo anuncio no bd
+		}else{
+			announceDAO.update(announce, false);		//salva edicao do anuncio no bd
+			idCreated = announce.getIdAnnounce();
+		}
+		announce.setId(idCreated);
+		announce.setIdAnnounce(idCreated);
+		log.info("Anuncio cadastrado com sucesso - Id: " + idCreated + " Status: Pendente pagamento!");
+				
+		
+		session.setAttribute("announce", announce);			//set anuncio na session
 		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("announce", announce);
 		
-		if(announce.getIdItem() == null || announce.getIdItem().equals("") || announce.getTitle() == null || announce.getTitle().equals("")){
-			log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do item para anunciar!");
-			return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
-		}
-		
-		return "page.jsp?id=897"; 						//page form payment
+		return "page.jsp?id=897"; 							//page form payment
 	}
-	
-	/**
-	@RequestMapping(value={"/registerAnnounce/collector/confirm"})
-	public String announceCollectorConfirm(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		
-		log.info(request.getRequestURL()); url='/registerAnnounce/collector/confirm'");
-		
-		HttpSession session = request.getSession();	
 
-		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("announce", (Announce) session.getAttribute("announce"));
-		
-		
-		return "page.jsp?id=660"; //page confirm
-	}
-	*/
-	
+	/*
 	@RequestMapping(value={"/registerAnnounce/collector/addAnnounce"})
 	public String announceCollectorAddAnnounce(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
@@ -206,7 +216,7 @@ public class AnnounceCollectorController {
 			session.removeAttribute("announce");
 			log.info("Anuncio cadastrado com sucesso!");
 			
-			/**
+			
 			//cria notificacao para o grupo da categoria
 			String idCategory = announce.getIdCategory();
 			if(idCategory != null && !idCategory.equals("")){
@@ -216,7 +226,7 @@ public class AnnounceCollectorController {
 					//notificacao aviso uma hora antes leilao
 					NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", idCreated, Str.AUCTION_HOUR, myUserid, announce.getDateInitial());
 				}
-			}*/
+			}
 			
 		}else{
 			log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do anuncio!");
@@ -225,7 +235,7 @@ public class AnnounceCollectorController {
 		
 		return "redirect:/ilt/ads?id=" + idCreated; 		//success - page anuncio criado
 	}
-	
+	*/
 	
 	/**
 	 * Metodo redireciona para visualizar pagina do anuncio
@@ -278,21 +288,28 @@ public class AnnounceCollectorController {
 				//}
 			}else{
 				//visao de terceiros do anuncio
-				//if(announce.getAccountType().equals("Store")){
-					//pageVisualizarAnuncio = pageAnuncioLoja;				//anuncio de loja
-				//}else{
-					if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
-						if(!announce.getIdItem().equals("")){	
-							pageVisualizarAnuncio = pageLeilaoTerceiro;		//leilao para item
+				//valida anuncio pago
+				if(announce.getStatus().equals("Pending pay")){		
+					
+					//if(announce.getAccountType().equals("Store")){
+						//pageVisualizarAnuncio = pageAnuncioLoja;				//anuncio de loja
+					//}else{
+						if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
+							if(!announce.getIdItem().equals("")){	
+								pageVisualizarAnuncio = pageLeilaoTerceiro;		//leilao para item
+							}
+						}else if(announce.getTypeAnnounce().equals("Purchase")){
+							pageVisualizarAnuncio = pageAnuncioCompraTerceiro;	//anuncio de compra
+						}else{
+							if(!announce.getIdItem().equals("")){
+								pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
+							}
 						}
-					}else if(announce.getTypeAnnounce().equals("Purchase")){
-						pageVisualizarAnuncio = pageAnuncioCompraTerceiro;	//anuncio de compra
-					}else{
-						if(!announce.getIdItem().equals("")){
-							pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
-						}
-					}
-				//}
+					//}
+						
+				}else{
+					log.info("Anuncio cadastrado com status 'Pendente pagamento' - Id: " + id +" - visualizacao disponivel somente para o vendedor!");
+				}
 			}
 		}
 		
@@ -536,7 +553,6 @@ public class AnnounceCollectorController {
 		
 		return "/page.jsp?id=invalid";		//pagina conteudo indisponivel
 	}
-	
 	
 	
 	/** ACESSO SOMENTE PARA PESSOAS AUTORIZADAS A MUDAR STATUS PENDENTE PAGAMENTO PARA OK*/

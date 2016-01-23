@@ -56,6 +56,9 @@ String listEntryAnnounceAuction = pageEntry.getBody();
 pageEntry = browseWebsite.getPageById("735", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 String listEntryAnnounceFixed = pageEntry.getBody();
 
+pageEntry = browseWebsite.getPageById("985", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
+String listEntryAnuncioCompra = pageEntry.getBody();
+
 //pageEntry = browseWebsite.getPageById("667", servletcontext, mysession, myrequest, myresponse, myconfig, db, website);
 //String listEntryTopic = pageEntry.getBody();
 
@@ -149,18 +152,34 @@ if(!listTimeline.isEmpty()){
 			String s = "";
 			if(announceJB.getTypeAnnounce().equalsIgnoreCase("Auction")){
 				s = listEntryAnnounceAuction;
+			}else if(announceJB.getTypeAnnounce().equalsIgnoreCase("Purchase")){
+				s = listEntryAnuncioCompra;
 			}else{
 				s = listEntryAnnounceFixed;
 			}
-			if(announceJB.getTypeAnnounce().equalsIgnoreCase("Auction")){
-				s = s.replaceAll("@@@price_initial@@@", announceJB.getPriceInitial());
-				s = s.replaceAll("@@@bid_actual@@@", announceJB.getBidActual());
-				s = s.replaceAll("@@@lasting@@@", announceJB.getLasting());
-				s = s.replaceAll("@@@total_bids@@@", announceJB.getTotalBids());
-				s = s.replaceAll("@@@date_initial@@@", announceJB.getDateInitial());
-			}else{
-				s = s.replaceAll("@@@price_fixed@@@", announceJB.getPriceFixed());				
+			
+			//valida venda e troca
+			if(announceJB.getTypeAnnounce().equalsIgnoreCase("Sell")){
+				s = s.replaceAll("<p>&nbsp;&nbsp;&nbsp;<strong>Details:</strong> @@@details@@@</p>", "");	//limpa linha detalhes
+				s = s.replaceAll("<p>&nbsp;&nbsp;&nbsp;<strong>Detalhes:</strong> @@@details@@@</p>", "");	//limpa linha detalhes
+			}else if(announceJB.getTypeAnnounce().equalsIgnoreCase("Exchange")){
+				s = s.replaceAll("<p>&nbsp;&nbsp;&nbsp;<strong>Price:</strong> @@@price_fixed@@@</p>", "");	//limpa linha preco
+				s = s.replaceAll("<p>&nbsp;&nbsp;&nbsp;<strong>Preço:</strong> @@@price_fixed@@@</p>", "");	//limpa linha preco
 			}
+			
+			//Leilao
+			s = s.replaceAll("@@@price_initial@@@", announceJB.getPriceInitial());
+			s = s.replaceAll("@@@bid_actual@@@", announceJB.getBidActual());
+			s = s.replaceAll("@@@lasting@@@", announceJB.getLasting());
+			s = s.replaceAll("@@@total_bids@@@", announceJB.getTotalBids());
+			s = s.replaceAll("@@@date_initial@@@", announceJB.getDateInitial());
+			//Venda
+			s = s.replaceAll("@@@price_fixed@@@", announceJB.getPriceFixed());
+			//Compra
+			s = s.replaceAll("@@@price@@@", announceJB.getOfferedPrice());
+			//Troca
+			s = s.replaceAll("@@@details@@@", announceJB.getDetails());			
+			//Geral
 			s = s.replaceAll("@@@id_announce@@@", announceJB.getIdAnnounce());
 			s = s.replaceAll("@@@type_announce@@@", announceJB.getTypeAnnounce());
 			s = s.replaceAll("@@@ads_title@@@", announceJB.getTitle());

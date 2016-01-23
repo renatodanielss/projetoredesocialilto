@@ -157,7 +157,7 @@ public class TimelineController {
 				"select ad.id_announce as id_announce, ad.fk_item_id as fk_item_id, ad.fk_collection_id as fk_collection_id, ad.fk_category_id as fk_category_id, "
 			  + "ad.name_category as name_category, ad.title as title, ad.description as description, ad.type_announce as type_announce, ad.price_fixed as price_fixed, "
 			  + "ad.price_initial as price_initial, ad.date_initial as date_initial, ad.bid_actual as bid_actual, ad.lasting as lasting, ad.total_bids as total_bids, "
-			  + "ad.date_created as date_created, ad.date_updated as date_updated, ad.path_photo_ad as path_photo_ad, "
+			  + "ad.date_created as date_created, ad.date_updated as date_updated, ad.path_photo_ad as path_photo_ad, ad.offered_price as offered_price, ad.details as details, "
 			  + "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 			  + "from dbannounce ad join dbmembers as m on ad.fk_user_id = m.id_member "
 			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id "
@@ -289,6 +289,8 @@ public class TimelineController {
 			announceJB.setDateCreated(recordsAnnounce.get(rec).get("date_created"));
 			announceJB.setDateUpdated(recordsAnnounce.get(rec).get("date_updated"));
 			announceJB.setPath_photo_ad(recordsAnnounce.get(rec).get("path_photo_ad"));
+			announceJB.setOfferedPrice(recordsAnnounce.get(rec).get("offered_price"));
+			announceJB.setDetails(recordsAnnounce.get(rec).get("details"));
 			
 			memberJB.setIdMember(recordsAnnounce.get(rec).get("id_member"));
 			memberJB.setNickname(recordsAnnounce.get(rec).get("nickname"));

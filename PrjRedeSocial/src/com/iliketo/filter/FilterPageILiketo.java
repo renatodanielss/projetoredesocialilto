@@ -78,6 +78,11 @@ public class FilterPageILiketo implements Filter {
 			chain.doFilter(request, response);
 		}
 		
+		if(req.getRequestURL().toString().contains("/ilt/pagamentos/notificacaoIPN")){
+			//valida acesso notificacao NIP paypal - permissao ok
+			chain.doFilter(request, response);
+		}
+		
 		
 		//fecha conexao
 		db = (DB) req.getAttribute(Str.CONNECTION_DB);
