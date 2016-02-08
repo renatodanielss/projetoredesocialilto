@@ -291,8 +291,13 @@ public class AnnounceCollectorController {
 				//valida anuncio pago
 				if(announce.getStatus().equals("Pending pay")){		
 					
+					log.info("Anuncio cadastrado com status 'Pendente pagamento' - Id: " + id +" - visualizacao disponivel somente para o vendedor!");
+					pageVisualizarAnuncio = "page.jsp?id=994";		//Pagina anuncio indisponivel, em processo de pagamento.
+					
+				}else{
+					
 					//if(announce.getAccountType().equals("Store")){
-						//pageVisualizarAnuncio = pageAnuncioLoja;				//anuncio de loja
+					//pageVisualizarAnuncio = pageAnuncioLoja;					//anuncio de loja
 					//}else{
 						if(announce.getTypeAnnounce().equalsIgnoreCase("Auction")){				
 							if(!announce.getIdItem().equals("")){	
@@ -306,9 +311,7 @@ public class AnnounceCollectorController {
 							}
 						}
 					//}
-						
-				}else{
-					log.info("Anuncio cadastrado com status 'Pendente pagamento' - Id: " + id +" - visualizacao disponivel somente para o vendedor!");
+					
 				}
 			}
 		}

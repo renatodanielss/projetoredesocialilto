@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -30,14 +31,17 @@ import HardCore.DB;
 import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.IliketoDAO;
+import com.iliketo.dao.MessageInboxDAO;
 import com.iliketo.dao.VideoDAO;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.exception.VideoILiketoException;
 import com.iliketo.model.Announce;
 import com.iliketo.model.Collection;
+import com.iliketo.model.MessageInbox;
 import com.iliketo.model.Video;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -50,19 +54,19 @@ public class PagamentosController {
 	static final Logger log = Logger.getLogger(PagamentosController.class);
 	
 	/**
-	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
+	 * Mï¿½todo intercepta erros de Exception, salva no log e direciona para pagina de erro.
 	 */
 	@ExceptionHandler(Exception.class)
 	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
 		String pageError = "/page.jsp?id=902";
 		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
 	}
-	
-	
-	/** pagina de retorno de pagamento concluido com sucesso pelo paypal */
-	@RequestMapping(value={"/pagamentos/paymentCompleted"})
-	public String paymentCompletedPayPal(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
+	/** pagina de retorno de pagamento concluido com sucesso pelo paypal para anuncio */
+	@RequestMapping(value={"/registerAnnounce/paymentCompleted"})
+	public String paymentCompletedPayPalAnuncio(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		log.info(request.getRequestURL());
 		Announce anuncio = (Announce) request.getSession().getAttribute("announce");	 //recupera anuncio da sessao
 		if(anuncio != null){
 			ModelILiketo model = new ModelILiketo(request, response);
@@ -71,19 +75,35 @@ public class PagamentosController {
 		return "page.jsp?id=992";
 	}
 	
+	/** pagina de retorno de pagamento concluido com sucesso pelo paypal para armazenamento */
+	@RequestMapping(value={"/storage/paymentCompleted"})
+	public String paymentCompletedPayPalArmazenamento(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		log.info(request.getRequestURL());		
+		return "page.jsp?id=998";
+	}
+	
+	/** pagina de retorno de pagamento concluido com sucesso pelo paypal para destaque de anuncio */
+	@RequestMapping(value={"/featured/paymentCompleted"})
+	public String paymentCompletedPayPalDestaque(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		
+		log.info(request.getRequestURL());	
+		return "page.jsp?id=999";
+	}
+	
 	
 	/** metodo recebe as mensagens de notificacao NIP enviadas pelo paypal */
 	@RequestMapping(value={"/pagamentos/notificacaoIPN"}, method=RequestMethod.POST)
 	public void pagamentosNotificacaoNIP(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		/*
 		PROCEDIMENTOS NECESSARIOS:
-		1. Um usuário clica em um botão de pagamento, ou sua aplicação faz uma chamada para uma operação da API, ou um evento externo ocorre, como um pagamento de recorrência, ou uma disputa;
-		2. O serviço no notificações da PayPal envia um HTTP POST para sua aplicação, contendo uma mensagem IPN;
-		3. Seu manipulador de notificações retorna um status HTTP 200 sem conteúdo;
-		4. Seu manipulador de notificações faz um HTTP POST, na mesma ordem, com os mesmos campos e codificação recebidos, de volta para a PayPal;
-		5. PayPal retorna uma string simples, contendo apenas VERIFIED, caso a mensagem seja válida, ou INVALID, caso a mensagem seja inválida;
+		1. Um usuï¿½rio clica em um botï¿½o de pagamento, ou sua aplicaï¿½ï¿½o faz uma chamada para uma operaï¿½ï¿½o da API, ou um evento externo ocorre, como um pagamento de recorrï¿½ncia, ou uma disputa;
+		2. O serviï¿½o no notificaï¿½ï¿½es da PayPal envia um HTTP POST para sua aplicaï¿½ï¿½o, contendo uma mensagem IPN;
+		3. Seu manipulador de notificaï¿½ï¿½es retorna um status HTTP 200 sem conteï¿½do;
+		4. Seu manipulador de notificaï¿½ï¿½es faz um HTTP POST, na mesma ordem, com os mesmos campos e codificaï¿½ï¿½o recebidos, de volta para a PayPal;
+		5. PayPal retorna uma string simples, contendo apenas VERIFIED, caso a mensagem seja vï¿½lida, ou INVALID, caso a mensagem seja invï¿½lida;
 		
-		EXEMPLO E RESPOSTA:		
+		EXEMPLO E RESPOSTA:	
 		residence_country=BR&
 		invoice=abc1234&
 		address_city=S%C3%A3o+Paulo&
@@ -125,20 +145,20 @@ public class PagamentosController {
 		address_street=Rua+de+teste%2C+123
 		
 		STATUS EVENTOS:
-		Canceled_Reversal – Esse campo ocorre quando existe uma disputa e os valores que tinham sido revertidos anteriormente, voltam para sua conta.
-		Completed – Significa que a transação está completa e o valor foi depositado em sua conta. Você pode entregar os produtos para o cliente ou liberar acesso à alguma área exclusiva, ou conteúdo digital.
-		Denied – Significa que a transação foi negada. Esse valor apenas ocorre, caso o status anterior tenha sido Pending e o campo pending_reason tenha sido algum dos valores descritos no campo Fraud_Management_Filters_x.
-		Expired – Significa que a autorização expirou e não pode mais ser capturada.
-		Failed – Significa que o pagamento falhou. Esse valor apenas ocorre, caso o cliente tenha utilizado sua conta em bancária para fazer o pagamento.
-		Pending – Significa que o pagamento está pendente de revisão. Caso esse campo ocorra, verifique o campo pending_reason para mais detalhes sobre o motivo.
-		Refunded – Significa que um reembolso foi emitido.
-		Reversed – Significa que um pagamento foi revertido por causa de um chargeback ou qualquer outro motivo. O valor que havia sido pago foi removido da conta do vendedor e devolvido para a conta do cliente. O motivo da reversão pode ser encontrado no campo ReasonCode.
-		Processed – Significa que um pagamento foi aceito.
-		Voided – Significa que uma autorização foi cancelada.
+		Canceled_Reversal ï¿½ Esse campo ocorre quando existe uma disputa e os valores que tinham sido revertidos anteriormente, voltam para sua conta.
+		Completed ï¿½ Significa que a transaï¿½ï¿½o estï¿½ completa e o valor foi depositado em sua conta. Vocï¿½ pode entregar os produtos para o cliente ou liberar acesso ï¿½ alguma ï¿½rea exclusiva, ou conteï¿½do digital.
+		Denied ï¿½ Significa que a transaï¿½ï¿½o foi negada. Esse valor apenas ocorre, caso o status anterior tenha sido Pending e o campo pending_reason tenha sido algum dos valores descritos no campo Fraud_Management_Filters_x.
+		Expired ï¿½ Significa que a autorizaï¿½ï¿½o expirou e nï¿½o pode mais ser capturada.
+		Failed ï¿½ Significa que o pagamento falhou. Esse valor apenas ocorre, caso o cliente tenha utilizado sua conta em bancï¿½ria para fazer o pagamento.
+		Pending ï¿½ Significa que o pagamento estï¿½ pendente de revisï¿½o. Caso esse campo ocorra, verifique o campo pending_reason para mais detalhes sobre o motivo.
+		Refunded ï¿½ Significa que um reembolso foi emitido.
+		Reversed ï¿½ Significa que um pagamento foi revertido por causa de um chargeback ou qualquer outro motivo. O valor que havia sido pago foi removido da conta do vendedor e devolvido para a conta do cliente. O motivo da reversï¿½o pode ser encontrado no campo ReasonCode.
+		Processed ï¿½ Significa que um pagamento foi aceito.
+		Voided ï¿½ Significa que uma autorizaï¿½ï¿½o foi cancelada.
 		
 		AMBIENTES PAYPAL:
 		Sandbox		https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_notify-validate
-		Produção	https://www.paypal.com/cgi-bin/webscr?cmd=_notify-validate
+		Produï¿½ï¿½o	https://www.paypal.com/cgi-bin/webscr?cmd=_notify-validate
 		*/
 		
 		log.info(request.getRequestURL());
@@ -150,13 +170,14 @@ public class PagamentosController {
 		String receiver_email= request.getParameter("receiver_email");
 		String invoice= request.getParameter("invoice");
 		String payment_status= request.getParameter("payment_status");
+		String custom= request.getParameter("custom");
 		
 		log.info("Notificacao IPN - Parametros recebidos do Paypal");
 		String parametros = "";
 		Enumeration en = request.getParameterNames();	    
 	    while(en.hasMoreElements()){
 	    	String paramName = (String) en.nextElement();
-	    	String paramValue = (String) request.getParameter(paramName);
+	    	String paramValue = new String(request.getParameter(paramName).getBytes("UTF-8"), "UTF-8");	
 	    	log.info(paramName+"="+paramValue);
 	    	parametros += "&" + paramName + "=" + paramValue;	    	
 	    }
@@ -186,40 +207,183 @@ public class PagamentosController {
 			log.info("Notificacao IPN - Dados gravados no banco de dados");
 			
 			//regras de negocio
-			log.info("Notificacao IPN - payment_status: " + payment_status);
-			if(payment_status.equals(Completed)){
-				//transacao ok, o pagamento foi depositado				
-				if(invoice != null && !invoice.isEmpty()){					
+			log.info("Notificacao IPN - payment_status: " + payment_status);						
+			if(invoice != null && !invoice.isEmpty() && custom != null && !custom.isEmpty()){
+				if(payment_status.equals(Completed)){
+					//transacao ok, o pagamento foi depositado						
 					AnnounceDAO dao = new AnnounceDAO(db, null);
-					Announce anuncio = (Announce) dao.readById(invoice, Announce.class);
-					if(anuncio != null){
-						if(anuncio.getTypeAnnounce().equals("Auction")){
-							anuncio.setStatus("For auction");
-						}else{
-							anuncio.setStatus("For sale");
-						}
-						dao.update(anuncio, false);
-						log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, STATUS ANUNCIO ATUALIZADO - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + anuncio.getIdMember());
-						
-						//cria notificacao para o grupo da categoria
-						String idCategory = anuncio.getIdCategory();
-						if(idCategory != null && !idCategory.equals("")){
-							String myUserid = anuncio.getIdMember();
-							NotificationService.createNotification(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.INCLUDED, myUserid);
+					if(custom.equals("Ad")){
+						Announce anuncio = (Announce) dao.readById(invoice, Announce.class);
+						if(anuncio != null){
 							if(anuncio.getTypeAnnounce().equals("Auction")){
-								//notificacao aviso uma hora antes leilao
-								NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.AUCTION_HOUR, myUserid, anuncio.getDateInitial());
+								anuncio.setStatus("For auction");
+							}else{
+								anuncio.setStatus("For sale");
 							}
-						}						
-					}else{
-						log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);
-					}					
+							anuncio.setPaymentStatus(payment_status);	//status pagamento do anuncio
+							dao.update(anuncio, false);
+							log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, STATUS ANUNCIO ATUALIZADO - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + anuncio.getIdMember());
+							
+							//cria notificacao para o grupo da categoria
+							String myUserid = anuncio.getIdMember();
+							String idCategory = anuncio.getIdCategory();
+							if(idCategory != null && !idCategory.equals("")){							
+								NotificationService.createNotification(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.INCLUDED, myUserid);
+								if(anuncio.getTypeAnnounce().equals("Auction")){
+									//notificacao aviso uma hora antes leilao
+									NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.AUCTION_HOUR, myUserid, anuncio.getDateInitial());
+								}
+							}
+							
+							//cria notificacao e uma mensagem automatica do sistema para informar o usuario que o pagamento foi concluido
+							MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
+							MessageInbox message = new MessageInbox();
+							message.setIdAnnounce(anuncio.getIdAnnounce());		//id anuncio
+							message.setSubject(anuncio.getTitle());				//assunto
+							message.setReceiverIdMember(myUserid);				//id destinatario
+							message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
+							message.setWasRead("n");							//nao lida
+							message.setMessage("Completed_Ad");					//tipo mensagem automatica, status Completed pagamento
+							message.setContentType("item");						//conteudo
+							message.setIdContent(anuncio.getIdItem());			//id item
+							message.setFkMsgId("0");							//sem id resposta
+							message.setSenderHidden("n");						//nao oculta
+							message.setReceiverHidden("n");						//nao oculta						
+							String idCreate = messageDAO.create(message);		//cria e envia mensagem						
+							//cria notificacao de envio de mensagem
+							NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
+							return;
+						}else{
+							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);
+						}	
+					}else if(custom.equals("Featured")){
+						Announce anuncio = (Announce) dao.readById(invoice, Announce.class);
+						if(anuncio != null){
+							anuncio.setFeatured("yes");
+							dao.update(anuncio, false);
+							log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, DESTAQUE ANUNCIO ATUALIZADO - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + anuncio.getIdMember());
+							
+							String myUserid = anuncio.getIdMember();
+							//cria notificacao e uma mensagem automatica do sistema para informar o usuario que o pagamento foi concluido
+							MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
+							MessageInbox message = new MessageInbox();
+							message.setIdAnnounce(anuncio.getIdAnnounce());		//id anuncio
+							message.setSubject(anuncio.getTitle());				//assunto
+							message.setReceiverIdMember(myUserid);				//id destinatario
+							message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
+							message.setWasRead("n");							//nao lida
+							message.setMessage("Completed_Featured");			//tipo mensagem automatica, status Completed pagamento
+							message.setContentType("item");						//conteudo
+							message.setIdContent(anuncio.getIdItem());			//id item
+							message.setFkMsgId("0");							//sem id resposta
+							message.setSenderHidden("n");						//nao oculta
+							message.setReceiverHidden("n");						//nao oculta						
+							String idCreate = messageDAO.create(message);		//cria e envia mensagem						
+							//cria notificacao de envio de mensagem
+							NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
+							return;
+						}else{
+							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);
+						}
+					}else if(custom.equals("Storage")){
+						//atualiza conta premium para o membro
+						String myUserid = invoice;
+						ColumnsSingleton CS = ColumnsSingleton.getInstance(db);			
+						String tabela = CS.getDATA(db, "dbmembers");							//retorna tabela real
+						String coluna = CS.getCOL(db, "dbmembers", "storage_type");				//retorna coluna real
+						String comparar = CS.getCOL(db, "dbmembers", "id_member");				//retorna coluna real
+						HashMap<String, String> mapData = new HashMap<String, String>();
+						mapData.put(coluna, "Premium Account - unlimited");						//coluna e valor
+						db.updateWhere(tabela, comparar + "='" + myUserid + "'", mapData);	//update tabela anuncio
+						log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, ARMAZENAMENTO ATUALIZADO - ID MEMBRO=" + invoice);
+						
+						//cria notificacao e uma mensagem automatica do sistema para informar o usuario que o pagamento foi concluido						
+						MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
+						MessageInbox message = new MessageInbox();
+						message.setIdAnnounce("");							//id anuncio, nao aplicavel
+						message.setSubject("Premium Account - unlimited");	//assunto
+						message.setReceiverIdMember(myUserid);				//id destinatario
+						message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
+						message.setWasRead("n");							//nao lida
+						message.setMessage("Completed_Storage");			//tipo mensagem automatica, status Completed pagamento
+						message.setContentType("item");						//conteudo
+						message.setIdContent("");							//id item
+						message.setFkMsgId("0");							//sem id resposta
+						message.setSenderHidden("n");						//nao oculta
+						message.setReceiverHidden("n");						//nao oculta						
+						String idCreate = messageDAO.create(message);		//cria e envia mensagem						
+						//cria notificacao de envio de mensagem
+						NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);						
+						return;
+					}
 				}else{
-					log.info("Notificacao IPN - invoice(id anuncio) invalido!");
-				}
+					//1-Canceled_Reversal, 2-Completed, 3-Denied, 4-Expired, 5-Failed, 6-Pending, 7-Refunded, 8-Reversed, 9-Processed, 10-Voided
+					if(custom.equals("Ad") || custom.equals("Featured")){
+						AnnounceDAO dao = new AnnounceDAO(db, null);
+						Announce anuncio = (Announce) dao.readById(invoice, Announce.class);
+						if(anuncio != null){
+							String myUserid = anuncio.getIdMember();
+							//cria notificacao e uma mensagem automatica do sistema para informar o usuario qual status do pagamento
+							MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
+							MessageInbox message = new MessageInbox();
+							message.setIdAnnounce(anuncio.getIdAnnounce());		//id anuncio
+							message.setSubject(anuncio.getTitle());				//assunto
+							message.setReceiverIdMember(myUserid);				//id destinatario
+							message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
+							message.setWasRead("n");							//nao lida
+							if(custom.equals("Ad")){
+								message.setMessage(payment_status + "_Ad");			//tipo mensagem automatica, status Completed pagamento
+								log.info("Notificacao IPN - Pagamento anuncio nao foi concluido - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + myUserid);
+								//atualiza status pagamento do anuncio
+								ColumnsSingleton CS = ColumnsSingleton.getInstance(db);			
+								String tabela = CS.getDATA(db, "dbannounce");					//retorna tabela real
+								String coluna = CS.getCOL(db, "dbannounce", "payment_status");	//retorna coluna real
+								HashMap<String, String> mapData = new HashMap<String, String>();
+								mapData.put(coluna, payment_status);							//coluna e valor
+								db.updateWhere(tabela, "id=" + anuncio.getId(), mapData);		//update tabela anuncio
+							}else{
+								message.setMessage(payment_status + "_Featured");	//tipo mensagem automatica, status Completed pagamento
+								log.info("Notificacao IPN - Pagamento destaque nao foi concluido - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + myUserid);
+							}
+							message.setContentType("item");						//conteudo
+							message.setIdContent(anuncio.getIdItem());			//id item
+							message.setFkMsgId("0");							//sem id resposta
+							message.setSenderHidden("n");						//nao oculta
+							message.setReceiverHidden("n");						//nao oculta						
+							String idCreate = messageDAO.create(message);		//cria e envia mensagem						
+							//cria notificacao de envio de mensagem
+							NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
+							return;
+						}else{
+							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);
+						}
+					}else if(custom.equals("Storage")){
+						log.info("Notificacao IPN - Pagamento armazenamento nao foi concluido - ID MEMBRO=" + invoice);
+						
+						//cria notificacao e uma mensagem automatica do sistema para informar o usuario qual status do pagamento
+						String myUserid = invoice;
+						MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
+						MessageInbox message = new MessageInbox();
+						message.setIdAnnounce("");							//id anuncio, nao aplicavel
+						message.setSubject("Premium Account - unlimited");	//assunto
+						message.setReceiverIdMember(myUserid);				//id destinatario
+						message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
+						message.setWasRead("n");							//nao lida
+						message.setMessage(payment_status + "_Storage");	//tipo mensagem automatica, status Completed pagamento
+						message.setContentType("item");						//conteudo
+						message.setIdContent("");							//id item
+						message.setFkMsgId("0");							//sem id resposta
+						message.setSenderHidden("n");						//nao oculta
+						message.setReceiverHidden("n");						//nao oculta						
+						String idCreate = messageDAO.create(message);		//cria e envia mensagem						
+						//cria notificacao de envio de mensagem
+						NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);						
+						return;
+					}
+				}			
 			}else{
-				log.info("Notificacao IPN - Novo evento da notificacao!");
-			}
+				log.info("Notificacao IPN - invoice(id anuncio) ou custom(tipo conteudo) invalido!");
+			}			
 		}else{
 			log.info("Notificacao IPN - Descartada, email vendedor invalido: " + receiver_email);
 		}
@@ -245,16 +409,21 @@ public class PagamentosController {
 	    log.info("Notificacao IPN - Enviar parametros para confirmacao com Paypal");
 	    String parametros = "";
 	    Enumeration en = request.getParameterNames();	    
-	    while(en.hasMoreElements()){
-	    	String paramName = (String) en.nextElement();
-	    	String paramValue = (String) request.getParameter(paramName);	
-	    	log.info(paramName+"="+paramValue);
-	    	if(parametros.equals("")){
-	    		parametros += paramName + "=" + URLEncoder.encode(paramValue);
-	    	}else{
-	    		parametros += "&" + paramName + "=" + URLEncoder.encode(paramValue);
-	    	}
-	    }
+	    try {
+		    while(en.hasMoreElements()){
+		    	String paramName = (String) en.nextElement();
+		    	String paramValue = new String(request.getParameter(paramName).getBytes("UTF-8"), "UTF-8");				
+		    	log.info(paramName+"="+paramValue);
+		    	if(parametros.equals("")){
+		    		parametros += paramName + "=" + URLEncoder.encode(paramValue);
+		    	}else{
+		    		parametros += "&" + paramName + "=" + URLEncoder.encode(paramValue);
+		    	}
+		    }
+	    } catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    
 	    try {
 		    URL url = new URL(fonte);
@@ -291,61 +460,106 @@ public class PagamentosController {
 	
 	private void gravarDadosTransacaoPaypal(HttpServletRequest request, DB db){
 		
+		//PARAMETROS DO PAYPAL EM PRODUCAO, TOTAL 38
+		/*
+		receiver_id=48X5Y6B9ZC3FQ
+		receiver_email=contato.iliketo@gmail.com
+		business=contato.iliketo@gmail.com
+		residence_country=BR		
+		txn_id=70X3412430903114H
+		txn_type=web_accept		
+		payer_email=osvaldimar1@gmail.com
+		payer_id=JZ6HQYYKJQCHG
+		payer_status=unverified
+		first_name=Osvaldimar
+		last_name=Costa
+		
+		custom=Ad
+		item_name=Anuncio de Colecionador
+		item_number=1
+		mc_currency=BRL
+		shipping=0.00
+		mc_gross=0.50
+		mc_fee=0.50
+		tax=0.00
+		invoice=97
+		payment_date=19:45:30 Jan 25, 2016 PST
+		payment_status=Completed
+		payment_type=instant
+		verify_sign=AIYGCrJbVJZh0zt6m9U5DVRceEfNATVfag0veiE2O-UfyYrzJLeO8Khn
+		quantity=1
+		notify_version=3.8
+		ipn_track_id=def76a091a6bf
+		
+		//parametros sem necessidade de gravar na tabela
+		handling_amount=0.00
+		protection_eligibility=Ineligible
+		charset=UTF-8
+		btn_id=103486596
+		payment_fee=
+		insurance_amount=0.00
+		discount=0.00
+		shipping_discount=0.00
+		shipping_method=Default
+		transaction_subject=Ad
+		payment_gross=
+		*/
+		
 		//info vendedor
-		String receiver_id= request.getParameter("receiver_id");
+		String receiver_id= request.getParameter("receiver_id");				//NO
 		String receiver_email= request.getParameter("receiver_email");
 		String business= request.getParameter("business");
-		String residence_country= request.getParameter("residence_country");
+		String residence_country= request.getParameter("residence_country");	//NO
 		
 		//info transacao
 		String test_ipn= request.getParameter("test_ipn");
 		String txn_id= request.getParameter("txn_id");
 		String txn_type= request.getParameter("txn_type");
+		String ipn_track_id= request.getParameter("ipn_track_id");
 		
 		//info cliente
 		String payer_email= request.getParameter("payer_email");
 		String payer_id= request.getParameter("payer_id");
-		String payer_status= request.getParameter("payer_status");
+		String payer_status= request.getParameter("payer_status");				//NO
 		String first_name= request.getParameter("first_name");
 		String last_name= request.getParameter("last_name");
-		String address_city= request.getParameter("address_city");
-		String address_country= request.getParameter("address_country");
-		String address_country_code= request.getParameter("address_country_code");
-		String address_name= request.getParameter("address_name");
-		String address_state= request.getParameter("address_state");
-		String address_status= request.getParameter("address_status");
-		String address_street= request.getParameter("address_street");
-		String address_zip= request.getParameter("address_zip");
+		String address_city= request.getParameter("address_city");					
+		String address_country= request.getParameter("address_country");			
+		String address_country_code= request.getParameter("address_country_code");	
+		String address_name= request.getParameter("address_name");					
+		String address_state= request.getParameter("address_state");				
+		String address_status= request.getParameter("address_status");				
+		String address_street= request.getParameter("address_street");				
+		String address_zip= request.getParameter("address_zip");					
 		
 		//info pagamento
 		String custom= request.getParameter("custom");
-		String item_name1= request.getParameter("item_name1");
-		String item_number1= request.getParameter("item_number1");
+		String item_name= request.getParameter("item_name");
+		String item_number= request.getParameter("item_number");
 		String mc_currency= request.getParameter("mc_currency");
-		String mc_handling= request.getParameter("mc_handling");
-		String mc_handling1= request.getParameter("mc_handling1");
-		String mc_shipping= request.getParameter("mc_shipping");
-		String mc_shipping1= request.getParameter("mc_shipping1");
+		String handling= request.getParameter("handling");
+		String shipping= request.getParameter("shipping");
 		String mc_gross= request.getParameter("mc_gross");
-		String mc_gross1= request.getParameter("mc_gross1");
 		String mc_fee= request.getParameter("mc_fee");
 		String tax= request.getParameter("tax");
 		String invoice= request.getParameter("invoice");
 		String payment_date= request.getParameter("payment_date");
 		String payment_status= request.getParameter("payment_status");
 		String payment_type= request.getParameter("payment_type");
-		String verify_sign= request.getParameter("verify_sign");
-		String quantity1= request.getParameter("quantity1");
+		String verify_sign= request.getParameter("verify_sign");				//NO
+		String quantity= request.getParameter("quantity");		
 		String pending_reason= request.getParameter("pending_reason");
 		String reason_code= request.getParameter("reason_code");
 		
 		//outros
-		String notify_version= request.getParameter("notify_version");
+		String notify_version= request.getParameter("notify_version");			//NO
 		
 		//insert tabela log_ipn
 		HashMap<String, String> mapLog = new HashMap<String, String>();
 		if(txn_id != null) 			mapLog.put("txn_id", txn_id);
 		if(txn_type != null) 		mapLog.put("txn_type", txn_type);
+		if(test_ipn != null) 		mapLog.put("test_ipn", test_ipn);
+		if(ipn_track_id != null) 	mapLog.put("ipn_track_id", ipn_track_id);
 		if(receiver_email != null)	mapLog.put("receiver_email", receiver_email);
 		if(payment_status != null) 	mapLog.put("payment_status", payment_status);
 		if(custom != null) 			mapLog.put("custom", custom);
@@ -379,15 +593,19 @@ public class PagamentosController {
 	    if(txn_id != null) 			mapTransa.put("txn_id", txn_id);
 	    if(payer_id != null) 		mapTransa.put("payer_id", payer_id);
 	    if(mc_currency != null) 	mapTransa.put("currency", mc_currency);
-	    if(mc_gross != null) 		mapTransa.put("gross", mc_gross);
+	    if(mc_gross != null) 		mapTransa.put("mc_gross", mc_gross);
 	    if(mc_fee != null) 			mapTransa.put("fee", mc_fee);
-	    if(mc_handling != null)	 	mapTransa.put("handling", mc_handling);
-	    if(mc_shipping != null) 	mapTransa.put("shipping", mc_shipping);
+	    if(handling != null)	 	mapTransa.put("handling", handling);
+	    if(shipping != null) 		mapTransa.put("shipping", shipping);
 	    if(tax != null) 			mapTransa.put("tax", tax);
 	    if(payment_status != null) 	mapTransa.put("payment_status", payment_status);
+	    if(payment_type != null) 	mapTransa.put("payment_type", payment_type);
 	    if(pending_reason != null) 	mapTransa.put("pending_reason", pending_reason);
 	    if(reason_code != null) 	mapTransa.put("reason_code", reason_code);
 	    if(payment_date != null) 	mapTransa.put("payment_date", payment_date);
+	    if(quantity != null) 		mapTransa.put("quantity", quantity);
+	    if(item_name != null) 		mapTransa.put("item_name", item_name);
+	    if(item_number != null) 	mapTransa.put("item_number", item_number);
 	    db.insert("transacao", mapTransa);
 	    
 	}

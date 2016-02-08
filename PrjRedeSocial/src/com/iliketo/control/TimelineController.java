@@ -38,6 +38,7 @@ public class TimelineController {
 	 *Todos os eventos das categorias/grupos que pertenco
 	 *Todos topicos dos forums que pertenco
 	 *Todos comentarios dos forums que pertenco
+	 *Todos anuncios das categorias/grupos que pertenco com status diferente de pendente pagamento e vendido
 	 *
 	 *1 Identifica tipo de solicitação timeline news e olds
 	 *2 Identifica o uso de paginação com offset para olds
@@ -160,8 +161,8 @@ public class TimelineController {
 			  + "ad.date_created as date_created, ad.date_updated as date_updated, ad.path_photo_ad as path_photo_ad, ad.offered_price as offered_price, ad.details as details, "
 			  + "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 			  + "from dbannounce ad join dbmembers as m on ad.fk_user_id = m.id_member "
-			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id "
-			  + "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and ad.fk_category_id = it.fk_category_id)) "
+			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id and ad.status ilike 'For%' "
+			  + "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and ad.fk_category_id = it.fk_category_id and ad.status ilike 'For%')) "
 			  + "order by ad.date_updated desc limit 2 offset '" +mapOffset.get("offsetAd")+ "';";
 		
 		System.out.println("\nSQLAnnounce Comum: " + SQLAnnounce);

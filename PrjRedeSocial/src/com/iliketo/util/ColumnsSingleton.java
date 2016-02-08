@@ -42,6 +42,7 @@ public class ColumnsSingleton {
 	private HashMap<String,HashMap<String,String>> COL_DBGROUPNOTIFICATION;
 	private HashMap<String,HashMap<String,String>> COL_DBMESSAGEINBOX;
 	private HashMap<String,HashMap<String,String>> COL_DBAUCTIONBID;
+	private HashMap<String,HashMap<String,String>> COL_DBADVERTISING;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
@@ -58,6 +59,7 @@ public class ColumnsSingleton {
 	private String DATA_DBGROUPNOTIFICATION;
 	private String DATA_DBMESSAGEINBOX;
 	private String DATA_DBAUCTIONBID;
+	private String DATA_DBADVERTISING;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
@@ -141,6 +143,10 @@ public class ColumnsSingleton {
 		database.read(db, new Configuration(), "dbauctionbid");	
 		DATA_DBAUCTIONBID = database.getTable();
 		COL_DBAUCTIONBID = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbadvertising");	
+		DATA_DBADVERTISING = database.getTable();
+		COL_DBADVERTISING = database.namedcolumns;
 	}
 	
 	/**
@@ -202,6 +208,8 @@ public class ColumnsSingleton {
 			mapcolumns = COL_DBMESSAGEINBOX;
 		}else if(nameDatabase.equals("dbauctionbid")){
 			mapcolumns = COL_DBAUCTIONBID;
+		}else if(nameDatabase.equals("dbadvertising")){
+			mapcolumns = COL_DBADVERTISING;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -260,6 +268,8 @@ public class ColumnsSingleton {
 			return DATA_DBMESSAGEINBOX;
 		}else if(nameDatabase.equals("dbauctionbid")){
 			return DATA_DBAUCTIONBID;
+		}else if(nameDatabase.equals("dbadvertising")){
+			return DATA_DBADVERTISING;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -340,7 +350,10 @@ public class ColumnsSingleton {
 			}else if(table.equals("dbauctionbid")){
 				mapcolumns = COL_DBAUCTIONBID;
 				tableReal = DATA_DBAUCTIONBID;
-			}	
+			}else if(table.equals("dbadvertising")){
+				mapcolumns = COL_DBADVERTISING;
+				tableReal = DATA_DBADVERTISING;
+			}
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){
 				SQL = SQL.replaceAll(table, tableReal);

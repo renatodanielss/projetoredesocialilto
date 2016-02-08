@@ -56,6 +56,8 @@ public class CmsConfigILiketo {
 	private ServletContext servletcontext;
 	private String DOCUMENT_ROOT_UPLOAD;
 	private String DOCUMENT_ROOT;
+	private String FOLDER_ADVERTISER = "advertiser/";			//pasta upload para imagens de anunciantes
+	private boolean isUploadAdvertiser = false;					//define se eh upload para anunciantes
 	private Request myrequest;
 	private Response myresponse;
 	private Session mysession;
@@ -83,7 +85,7 @@ public class CmsConfigILiketo {
 		myconfig.setTemp("URLfilepath", "file/");
 		myconfig.setTemp("URLimagepath", "image/");
 		myconfig.setTemp("URLstylesheetpath", "stylesheet/");
-		myconfig.setTemp("URLuploadpath", "upload/");			//configura��o pasta 'upload' dentro do diret�rio raiz
+		myconfig.setTemp("URLuploadpath", "upload/");			//configuracao pasta 'upload' dentro do diretorio raiz
 		memberDAO = new MemberDAO((DB) request.getAttribute(Str.CONNECTION_DB), request);	//dao membro
 		setCmsAsbru(request);
 		//diretorio de upload definido no Media Library do Asbru
@@ -103,6 +105,12 @@ public class CmsConfigILiketo {
 	 * @return
 	 */
 	public boolean validateFreeSpaceStorage(Member member, long uploadBytes){
+		
+		//verifica conta Premium Account - ilimited
+		if(member.getStorageType().contains("unlimited")){
+			log.info("Size files upload = " + (uploadBytes>0?uploadBytes/1024:0) + " KB - " + uploadBytes + " bytes");
+			return true;
+		}
 		
 		long usedSpace = Long.parseLong(member.getUsedSpace());
 		long totalSpace = Long.parseLong(member.getTotalSpace());
@@ -183,9 +191,16 @@ public class CmsConfigILiketo {
 					        HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
 			            	mapMyFormInput.put("name", item.getFieldName());
 			            	mapMyFormInput.put("filename", item.getName());
-					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+			            	//valida upload para anunciantes
+			            	FileuploadILiketo filepostIliketo;
+			            	if(!isUploadAdvertiser){	
+					        	filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
 					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
-					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);					        
+					        }else{
+					        	filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+						        		FOLDER_ADVERTISER, 32, stream, mapMyFormInput);
+					        }
+			            	String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);					        
 					        
 					        //verifica e valida duracao de video
 					        if(typeFile.equals("video")){
@@ -251,6 +266,8 @@ public class CmsConfigILiketo {
 				if(isMultipart){
 					FileItemFactory factory = new DiskFileItemFactory();
 			        ServletFileUpload upload = new ServletFileUpload(factory);
+			        request.setCharacterEncoding("ISO-8859-1");
+			        upload.setHeaderEncoding("ISO-8859-1");
 			        List<FileItem> list;
 			        Iterator items;
 			        if(fileItems == null){
@@ -279,7 +296,16 @@ public class CmsConfigILiketo {
 			            	InputStream stream = item.getInputStream();
 			            	HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
 			            	mapMyFormInput.put("name", item.getFieldName());
-			            	mapMyFormInput.put("filename", item.getName());
+			            	//charset
+			            	String charsetname = upload.getHeaderEncoding();
+			            	log.info("Cms upload.getHeaderEncoding()=" + charsetname);
+			            	log.info("Cms item.getName()=" + item.getName());
+			            	log.info("Cms nomeArquivo lido ISO-8859-1=" + new String(item.getName().getBytes(charsetname)));
+			            	String nomeArquivo = new String(item.getName().getBytes(charsetname), charsetname);
+			            	log.info("Cms nomeArquivo lido ISO-8859-1 e escrito ISO-8859-1=" + nomeArquivo);
+			            	
+			            	//mapMyFormInput.put("filename", item.getName());
+			            	mapMyFormInput.put("filename", nomeArquivo);
 					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
 					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
 					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	        
@@ -623,7 +649,35 @@ public class CmsConfigILiketo {
 		if(mapModel != null && !mapModel.isEmpty()){
 			Iterator it = mapModel.keySet().iterator();
 			while(it.hasNext()){
-				String nameBean = "" + it.next();				
+				String nameBean = "" + it.next();
+				
+				//codigo especial para condicao
+				if(content.contains("${condition:" + nameBean + "=")){ //${condition:key=value}}
+					while(content.contains("${condition:" + nameBean + "=")){
+						//log.info("\n\n" + content);
+						int begin = content.indexOf("${condition:");
+						int end = content.indexOf("}", begin);
+						if(begin >= 1 && end >= 1){
+							String expressao = content.substring(begin+12, end);	//ex: ${condition:key=value} >>> 'key=value'
+							log.info("***parseBindingModelBean = ${condition: <expressao> " +expressao + "***");
+							
+							String condicaoAntes = mapModel.get(nameBean).toString();
+							log.info("***parseBindingModelBean = ${condition: <condicao antes> " +condicaoAntes+ "***");
+							
+							String[] array = expressao.split("=");						
+							String condicaoDepois = condicaoAntes.replaceAll("@@@value@@@", array[1]);
+							
+							log.info("***parseBindingModelBean = ${condition: <condicao depois> " +condicaoDepois+ "***");								
+							content = content.replaceAll("\\$\\{condition:" + content.substring(begin+12, end+1), condicaoDepois);
+							log.info("sbst= " + content.substring(begin+12, end+1));
+							log.info("TESTE CONTENT AQUIIIIIIIIIIIIIIIIIIII\n\n" + content+"\n\n");
+							break;
+						}else if(begin >= 1){
+							break;
+						}
+					}
+				}
+				
 				if(content.contains("${" + nameBean  + "}")){ //${objeto}
 					content = content.replaceAll("\\$\\{" + nameBean + "}", mapModel.get(nameBean).toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
 				}
@@ -993,6 +1047,22 @@ public class CmsConfigILiketo {
 
 	public void setDatabase(String database) {
 		this.database = database;
+	}
+
+	public boolean isUploadAdvertiser() {
+		return isUploadAdvertiser;
+	}
+
+	public void setUploadAdvertiser(boolean isUploadAdvertiser) {
+		this.isUploadAdvertiser = isUploadAdvertiser;
+	}
+
+	public String getFOLDER_ADVERTISER() {
+		return FOLDER_ADVERTISER;
+	}
+
+	public String getDOCUMENT_ROOT_UPLOAD() {
+		return DOCUMENT_ROOT_UPLOAD;
 	}
 	
 	

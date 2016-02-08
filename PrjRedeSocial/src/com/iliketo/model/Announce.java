@@ -89,13 +89,16 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "details")		//notas detalhes para troca
 	private String details;
 	
+	@ColumnILiketo(name = "payment_status")		//notas detalhes para troca
+	private String paymentStatus;
+	
 	private Member member;
 	
 	public Announce(){
 		
 	}
 
-
+	
 	public String getIdAnnounce() {
 		return idAnnounce;
 	}
@@ -342,6 +345,26 @@ public class Announce extends ContentILiketo {
 
 	public void setRating(String rating) {
 		this.rating = rating;
+	}
+
+
+	public String getDetails() {
+		return details;
+	}
+
+
+	public void setDetails(String details) {
+		this.details = details;
+	}
+
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
 	}
 	
 	

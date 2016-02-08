@@ -157,8 +157,14 @@ public class CategoryController {
 			List<Collection> listCollection = collectionDAO.listCollectionByUser(myUserid);
 			List<Interest> listInterest = interestDAO.listInterestByUser(myUserid);
 			
-			String listEntry = cms.getPageListEntry("915");		//List History - Choose Category Entry
+			String listEntry;
+			if(request.getParameter("listEntry") != null && request.getParameter("listEntry").equals("1020")){
+				listEntry = cms.getPageListEntry("1020");		//List Category - Choose Category Join - register your interest Entry
+			}else{
+				listEntry = cms.getPageListEntry("915");		//List History - Choose Category Join Entry
+			}			
 			StringBuffer resultHTML = new StringBuffer();
+			
 			
 			//linguagem
 			final String LING = request.getLocale().getLanguage();
@@ -379,6 +385,39 @@ public class CategoryController {
 		}
 		response.setContentType("text/html");
 		response.getWriter().write("ok");
+	}
+	
+	/**
+	 * Lista interesses
+	 */
+	@RequestMapping(value={"/ajaxListInterests"})
+	private void ajaxListInterests(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		
+		log.info(request.getRequestURL());
+		
+		//dao e cms
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);	
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		
+		InterestDAO interestDAO = new InterestDAO(db, request);
+		List<Interest> listInterest = interestDAO.listInterestByUser(myUserid);
+
+		String listEntry;		
+		if(request.getParameter("listEntry") != null && !request.getParameter("listEntry").isEmpty()){
+			listEntry = cms.getPageListEntry(request.getParameter("listEntry"));
+		}else{
+			listEntry = cms.getPageListEntry("697");		//List interest
+		}
+		
+		HashMap<Class, String> mapModelListEntry = new HashMap<Class, String>();
+		
+		//lista objeto, lista entrada para cada tipo de objeto
+		mapModelListEntry.put(Interest.class, listEntry);
+		StringBuilder resultHTML = cms.parseBindingModelBean(listInterest, mapModelListEntry);
+		
+		response.setContentType("text/html");
+		response.getWriter().write(resultHTML.toString());
 	}
 	
 	
@@ -780,6 +819,44 @@ public class CategoryController {
 		return "/page.jsp?id=invalidPage"; 				//pagina invalida
 	}
 	
-	
+	/** Redireciona para pagina todos anuncios dos grupos */
+	@RequestMapping(value={"/groups/announcements"})
+	private String todosAnunciosGrupos(HttpServletRequest request, HttpServletResponse response){
+		
+		log.info(request.getRequestURL());
+		
+		//dao e cms
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		
+		InterestDAO interestDAO = new InterestDAO(db, request);
+		CollectionDAO collectionDAO = new CollectionDAO(db, request);
+		List<Interest> listaInteresse = interestDAO.listInterestByUser(myUserid);
+		List<Collection> listaColecao = collectionDAO.listCollectionByUser(myUserid);
+		
+		String condicaoCategorias = "";
+		if(listaColecao.isEmpty()){
+			condicaoCategorias = listaColecao.get(0).getIdCategory() + "=@@@value@@@";
+			for(int i = 1; i < listaColecao.size(); i++){
+				condicaoCategorias += "||" + listaColecao.get(i).getIdCategory() + "=@@@value@@@";
+			}
+		}
+		if(listaInteresse.isEmpty()){
+			condicaoCategorias = listaInteresse.get(0).getIdCategory() + "=@@@value@@@";
+			for(int i = 1; i < listaInteresse.size(); i++){
+				condicaoCategorias += "||" + listaInteresse.get(i).getIdCategory() + "=@@@value@@@";
+			}
+		}		
+
+		condicaoCategorias = "41=@@@value@@@||21=@@@value@@@";
+		log.info("***condicaoCategorias para anuncios dos grupos: " + condicaoCategorias + "***");
+		//recuperar condicao no request da list entry para filtrar os anuncios das categorias que participa
+		if(!condicaoCategorias.equals("")){
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addAttribute("GRUPOS", condicaoCategorias);	
+		}
+		
+		return "/page.jsp?id=1015"; 	//pagina todos anuncios dos grupos que pariticipa
+	}	
 
 }

@@ -36,16 +36,18 @@ public class FileuploadILiketo {
 	private Charset charset = null;
 
 	public static String blocked_files = "\\.(asp|aspx|ascx|jsp|php|php3|php4|phtml|phps|cgi|sh|pl)$";
-	public String parametercharsetname = "iso-8859-1";
-	public String fileuploadcharsetname = "ISO-8859-1";
-	public Charset parametercharset = Charset.forName("iso-8859-1");
-	public Charset fileuploadcharset = Charset.forName("ISO-8859-1");
+	public String parametercharsetname = "utf-8";						//"iso-8859-1";
+	public String fileuploadcharsetname = "UTF-8";						//"ISO-8859-1";
+	public Charset parametercharset = Charset.forName("utf-8"); 		//Charset.forName("iso-8859-1");
+	public Charset fileuploadcharset = Charset.forName("UTF-8");		//Charset.forName("ISO-8859-1");
 
-
+	//construtor usado
 	public FileuploadILiketo(Request request, String rootpath, String myfilepathname, int randomize, InputStream stream, HashMap<String,String> mapMyFormInput) {
 		if ((request != null) && (rootpath != null) && (myfilepathname != null)) {
 			httpservletrequest = request.getRequest();
-			setCharset(request.getCharset());
+			//setCharset(request.getCharset());
+			setCharset("UTF-8");
+			//log.info("Fileupload request charset=" + getCharset());
 			filepathname = myfilepathname;
 			pathname = rootpath + filepathname;
 			try {
@@ -288,9 +290,13 @@ public class FileuploadILiketo {
 			if (! Pattern.compile(blocked_files).matcher(filename).find()) {
 				try {
 					String myfilename = "" + filename;
+					//log.info("charsetname=" + charsetname);
+					//log.info("parametercharsetname=" + parametercharsetname);
+					//log.info("charsetname.toLowerCase()=" + charsetname.toLowerCase());
 					if ((! charsetname.equals("")) && (! parametercharsetname.equals("")) && (! charsetname.toLowerCase().equals(parametercharsetname))) {
 						try {
 							myfilename = new String(myfilename.getBytes(parametercharsetname), charset);
+							//myfilename = new String(myfilename.getBytes(parametercharsetname), fileuploadcharset);
 						} catch (Exception e) {
 						}
 					}
