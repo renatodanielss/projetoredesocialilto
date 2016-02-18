@@ -22,17 +22,17 @@
 	mysession.set("id", adminpage.getId());
 	
 	//verifica resposta para advertiser/anunciantes
-	String pageResposta = "620";	//resposta update padrao colecionador, loja
+	String pageResposta = "/page.jsp?id=620";	//resposta update padrao colecionador, loja
 	Member membro = (Member) mysession.getSession().getAttribute("member");
 	if(membro != null && membro.getAccountType().equals("Advertiser")){
-		pageResposta = "1070";		//resposta update anunciante
+		pageResposta = "/page.jsp?id=1070";		//resposta update anunciante
 	}
 			
 	%>
 	<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
 	<jsp:forward page="/post.jsp?database=dbmembers">
 		<jsp:param value="<%=idRegisterUser%>" name="id"/>
-		<jsp:param value="/page.jsp?id=<%=pageResposta%>" name="redirect"/>
+		<jsp:param value="<%=pageResposta%>" name="redirect"/>
 	</jsp:forward>
 	<%
 	
