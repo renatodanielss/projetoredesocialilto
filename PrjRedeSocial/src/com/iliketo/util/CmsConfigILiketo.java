@@ -35,11 +35,13 @@ import HardCore.Text;
 import HardCore.UCbrowseWebsite;
 import HardCore.Website;
 
+import com.iliketo.control.AdvertiserController;
 import com.iliketo.control.VideoController;
 import com.iliketo.dao.MemberDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.exception.VideoILiketoException;
+import com.iliketo.model.ContentILiketo;
 import com.iliketo.model.Member;
 import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.model.annotation.FileILiketo;
@@ -646,37 +648,26 @@ public class CmsConfigILiketo {
 		HashMap mapModel = (HashMap) myrequest.getRequest().getAttribute("modelILiketo");
 		HashMap mapModelError = (HashMap) myrequest.getRequest().getAttribute("modelILiketoError");
 		
+		//Codigo para parse das listas de anuncios direcionados para os grupos
+		if(content.contains("${listDirectedAds}")){
+			StringBuilder resultHTML = AdvertiserController.getListDirectedAdsEntry(myrequest.getRequest());
+			content = content.replaceAll("\\$\\{listDirectedAds}", resultHTML.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
+		}
+		//Codigo para parse das listas de anuncios globais
+		if(content.contains("${listGlobalAds}")){
+			StringBuilder resultHTML = AdvertiserController.getListGlobalAdsEntry(myrequest.getRequest());
+			content = content.replaceAll("\\$\\{listGlobalAds}", resultHTML.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
+		}
+		//Codigo para parse das listas de eventos direcionados para os grupos
+		if(content.contains("${listDirectedEvents}")){
+			StringBuilder resultHTML = AdvertiserController.getListDirectedEventsEntry(myrequest.getRequest());
+			content = content.replaceAll("\\$\\{listDirectedEvents}", resultHTML.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
+		}
+		
 		if(mapModel != null && !mapModel.isEmpty()){
 			Iterator it = mapModel.keySet().iterator();
 			while(it.hasNext()){
 				String nameBean = "" + it.next();
-				
-				//codigo especial para condicao
-				if(content.contains("${condition:" + nameBean + "=")){ //${condition:key=value}}
-					while(content.contains("${condition:" + nameBean + "=")){
-						//log.info("\n\n" + content);
-						int begin = content.indexOf("${condition:");
-						int end = content.indexOf("}", begin);
-						if(begin >= 1 && end >= 1){
-							String expressao = content.substring(begin+12, end);	//ex: ${condition:key=value} >>> 'key=value'
-							log.info("***parseBindingModelBean = ${condition: <expressao> " +expressao + "***");
-							
-							String condicaoAntes = mapModel.get(nameBean).toString();
-							log.info("***parseBindingModelBean = ${condition: <condicao antes> " +condicaoAntes+ "***");
-							
-							String[] array = expressao.split("=");						
-							String condicaoDepois = condicaoAntes.replaceAll("@@@value@@@", array[1]);
-							
-							log.info("***parseBindingModelBean = ${condition: <condicao depois> " +condicaoDepois+ "***");								
-							content = content.replaceAll("\\$\\{condition:" + content.substring(begin+12, end+1), condicaoDepois);
-							log.info("sbst= " + content.substring(begin+12, end+1));
-							log.info("TESTE CONTENT AQUIIIIIIIIIIIIIIIIIIII\n\n" + content+"\n\n");
-							break;
-						}else if(begin >= 1){
-							break;
-						}
-					}
-				}
 				
 				if(content.contains("${" + nameBean  + "}")){ //${objeto}
 					content = content.replaceAll("\\$\\{" + nameBean + "}", mapModel.get(nameBean).toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
@@ -784,14 +775,29 @@ public class CmsConfigILiketo {
 			}
 		}
 		//se contem expressao '${'
-		while(content.contains("${")){
-			int begin = content.indexOf("${");
-			int end = content.indexOf("}", begin);
-			if(begin >= 1 && end >= 1){
-				//log.debug("substring expressao geral: " + content.substring(begin, end+1));
-				content = content.replaceAll("\\$\\{" + content.substring(begin+2, end+1), "");
-			}else if(begin >= 1){
-				break;
+		if(myrequest.getRequest().getAttribute("modelILiketo") != null){
+			while(content.contains("${")){
+				int begin = content.indexOf("${");
+				int end = content.indexOf("}", begin);
+				if(begin >= 1 && end >= 1){
+					//log.debug("substring expressao geral: " + content.substring(begin, end+1));
+					content = content.replaceAll("\\$\\{" + content.substring(begin+2, end+1), "");
+				}else if(begin >= 1){
+					break;
+				}
+			}
+		}else{
+			//clear expressao '${bean.atributo}'
+			while(content.contains("${")){
+				int begin = content.indexOf("${");
+				int end = content.indexOf("}", begin);
+				if(begin >= 1 && end >= 1){
+					if(content.substring(begin+2, end+1).contains(".")){
+						content = content.replaceAll("\\$\\{" + content.substring(begin+2, end+1), "");				
+					}
+				}else if(begin >= 1){
+					break;
+				}
 			}
 		}
 		return content;
@@ -883,6 +889,90 @@ public class CmsConfigILiketo {
 				} catch (SecurityException e) {
 					e.printStackTrace();
 				}
+			}
+		}
+		
+		return builder;
+	}
+	
+	/**
+	 * Metodo faz o parse do bean na view de uma list para um objeto por vez.
+	 * @param content (ListEntry), Objeto<ContentILiketo>
+	 * @return StringBuilder - resultado HTML
+	 */
+	public StringBuilder parseBindingModelBean(String content, ContentILiketo bean){
+		
+		StringBuilder builder = new StringBuilder();
+			
+		Object obj = bean;
+		if(!content.isEmpty()){
+			try{
+				for(Field atributo : obj.getClass().getDeclaredFields()){
+					//Expression Language jsp '${ }'
+					if(content.contains("${" + atributo.getName() + "}")){ //${atributo}
+						atributo.setAccessible(true);
+						Object value = atributo.get(obj);
+						if(value != null){
+							content = content.replaceAll("\\$\\{" + atributo.getName() + "}", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")); //caractere especial $
+						}else{
+							content = content.replaceAll("\\$\\{" + atributo.getName() + "}", "");
+						}
+					}else if(content.contains("${" + atributo.getName() + ".")){ //${objeto.atributo}							
+						atributo.setAccessible(true);
+						for (Field at : atributo.get(obj).getClass().getDeclaredFields()) {
+							if(content.contains("${" + atributo.getName() + "." + at.getName() + "}")){	//${objeto.atributo}
+								at.setAccessible(true);
+								Object value = at.get(atributo.get(obj));
+								if(value != null){
+									content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$")); //caractere especial $
+								}else{
+									content = content.replaceAll("\\$\\{" + atributo.getName() + "." + at.getName() + "}", "");
+								}
+							}									
+						}
+					}
+					//codigo especial do asbru '@@@'
+					ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
+					if(coluna != null && !coluna.name().equals("")){
+						if(content.contains("@@@" + coluna.name() + "@@@")){	//@@@colunadatabase@@@
+							atributo.setAccessible(true);
+							Object value = atributo.get(obj);
+							if(value != null){
+								content = content.replaceAll("@@@" + coluna.name() + "@@@", value.toString().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));	//caractere especial $
+							}else{
+								content = content.replaceAll("@@@" + coluna.name() + "@@@", "");
+							}
+						}
+					}
+				}
+				//atributos da superclasse ContentILiketo
+				Field f1 = obj.getClass().getSuperclass().getDeclaredField("dateCreated");
+				Field f2 = obj.getClass().getSuperclass().getDeclaredField("dateUpdated");
+				f1.setAccessible(true);
+				f2.setAccessible(true);
+				Object value1 =  f1.get(obj);
+				Object value2 =  f2.get(obj);
+				if(content.contains("@@@" + "data_created" + "@@@")){
+					content = content.replaceAll("@@@" + "data_created" + "@@@", (value1 == null ? "":value1.toString()));
+				}
+				if(content.contains("${" + f1.getName() + "}")){
+					content = content.replaceAll("\\$\\{" + f1.getName() + "}", (value1 == null ? "":value1.toString()));
+				}
+				if(content.contains("@@@" + "date_updated" + "@@@")){
+					content = content.replaceAll("@@@" + "date_updated" + "@@@", (value2 == null ? "":value2.toString()));
+				}
+				if(content.contains("${" + f2.getName() + "}")){
+					content = content.replaceAll("\\$\\{" + f2.getName() + "}", (value2 == null ? "":value2.toString()));
+				}					
+				builder.append(content);	//incrementa string com conteudo
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				e.printStackTrace();
 			}
 		}
 		

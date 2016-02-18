@@ -27,8 +27,10 @@ import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.ForumDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.InterestDAO;
+import com.iliketo.model.Announce;
 import com.iliketo.model.Category;
 import com.iliketo.model.Collection;
+import com.iliketo.model.Event;
 import com.iliketo.model.Forum;
 import com.iliketo.model.Interest;
 import com.iliketo.service.NotificationService;
@@ -649,6 +651,10 @@ public class CategoryController {
 				}else{
 					model.addAttribute("join", "join");		//nao participa, entrar
 				}
+				
+				//set request lista dos anuncios e eventos direcionados para este grupo
+				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
+				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));				
 				return "page.jsp?id=623";		//pagina grupo
 			}
 		}
@@ -672,6 +678,10 @@ public class CategoryController {
 			if(category != null){
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
+
+				//set request lista dos anuncios e eventos direcionados para este grupo
+				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
+				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));
 				return "page.jsp?id=686";	//pagina trade
 			}
 		}
@@ -695,6 +705,10 @@ public class CategoryController {
 			if(category != null){
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
+				
+				//set request lista dos anuncios e eventos direcionados para este grupo
+				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
+				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));
 				return "page.jsp?id=723";	//pagina Auction
 			}
 		}
@@ -718,6 +732,10 @@ public class CategoryController {
 			if(category != null){
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
+				
+				//set request lista dos anuncios e eventos direcionados para este grupo
+				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
+				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));
 				return "page.jsp?id=781";	//pagina Store
 			}
 		}
@@ -744,6 +762,10 @@ public class CategoryController {
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
 				model.addAttribute("forum", forum);
+				
+				//set request lista dos anuncios e eventos direcionados para este grupo
+				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
+				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));
 				return "page.jsp?id=675";	//pagina Forum
 			}
 		}
@@ -767,6 +789,10 @@ public class CategoryController {
 			if(category != null){
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
+				
+				//set request lista dos anuncios e eventos direcionados para este grupo
+				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
+				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));
 				return "page.jsp?id=867";	//pagina Collections
 			}
 		}
@@ -790,6 +816,10 @@ public class CategoryController {
 			if(category != null){
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
+				
+				//set request lista dos anuncios e eventos direcionados para este grupo
+				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
+				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));
 				return "page.jsp?id=653";	//pagina Events
 			}
 		}
@@ -813,6 +843,10 @@ public class CategoryController {
 			if(category != null){
 				ModelILiketo model = new ModelILiketo(request, response);
 				model.addAttribute("category", category);
+				
+				//set request lista dos anuncios e eventos direcionados para este grupo
+				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
+				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));
 				return "page.jsp?id=679";	//pagina Members
 			}
 		}
@@ -827,36 +861,111 @@ public class CategoryController {
 		
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		
 		InterestDAO interestDAO = new InterestDAO(db, request);
 		CollectionDAO collectionDAO = new CollectionDAO(db, request);
-		List<Interest> listaInteresse = interestDAO.listInterestByUser(myUserid);
-		List<Collection> listaColecao = collectionDAO.listCollectionByUser(myUserid);
+		List<Interest> listInterest = interestDAO.listInterestByUser(myUserid);
+		List<Collection> listCollection = collectionDAO.listCollectionByUser(myUserid);
 		
-		String condicaoCategorias = "";
-		if(listaColecao.isEmpty()){
-			condicaoCategorias = listaColecao.get(0).getIdCategory() + "=@@@value@@@";
-			for(int i = 1; i < listaColecao.size(); i++){
-				condicaoCategorias += "||" + listaColecao.get(i).getIdCategory() + "=@@@value@@@";
+		String condicao = "";
+		if(!listCollection.isEmpty()){
+			condicao += " t1.fk_category_id = '" +listCollection.get(0).getIdCategory()+ "' ";
+			for(int i = 1; i < listCollection.size(); i++){
+				condicao += " or t1.fk_category_id = '" +listCollection.get(i).getIdCategory()+ "' ";
 			}
 		}
-		if(listaInteresse.isEmpty()){
-			condicaoCategorias = listaInteresse.get(0).getIdCategory() + "=@@@value@@@";
-			for(int i = 1; i < listaInteresse.size(); i++){
-				condicaoCategorias += "||" + listaInteresse.get(i).getIdCategory() + "=@@@value@@@";
+		if(!listInterest.isEmpty()){
+			condicao += (condicao.equals("") ? "" : " or ") + " t1.fk_category_id = '" +listInterest.get(0).getIdCategory()+ "' ";
+			for(int i = 1; i < listInterest.size(); i++){
+				condicao += " or t1.fk_category_id = '" +listInterest.get(i).getIdCategory()+ "' ";
 			}
-		}		
-
-		condicaoCategorias = "41=@@@value@@@||21=@@@value@@@";
-		log.info("***condicaoCategorias para anuncios dos grupos: " + condicaoCategorias + "***");
-		//recuperar condicao no request da list entry para filtrar os anuncios das categorias que participa
-		if(!condicaoCategorias.equals("")){
-			ModelILiketo model = new ModelILiketo(request, response);
-			model.addAttribute("GRUPOS", condicaoCategorias);	
 		}
 		
-		return "/page.jsp?id=1015"; 	//pagina todos anuncios dos grupos que pariticipa
-	}	
-
+		//valida se existe algum grupo que o membro participa
+		if(!condicao.isEmpty()){
+			condicao = " (" + condicao + ") ";	//select todos anuncios que pertence aos grupos do membro
+		
+			String SQL = "select * from dbannounce t1 "
+					+ " where t1.status ilike 'For%' and " + condicao
+					+ " order by t1.featured desc, t1.date_updated desc limit 30;";		//ordem destaque yes e data updated
+			
+			String[][] alias = { {"dbannounce", "t1"} };
+			SQL = CS.transformSQLReal(SQL, alias);
+			
+			LinkedHashMap<String,HashMap<String,String>> records  = db.query_records(SQL);
+			ArrayList<Announce> listaAnuncios = new ArrayList<Announce>();
+			
+			String dbad = "dbannounce";
+			for(String rec : records.keySet()){
+				Announce anuncio = new Announce();
+				anuncio.setIdAnnounce(records.get(rec).get(CS.getCOL(db, dbad, "id_announce")));
+				anuncio.setIdItem(records.get(rec).get(CS.getCOL(db, dbad, "fk_item_id")));
+				anuncio.setIdCollection(records.get(rec).get(CS.getCOL(db, dbad, "fk_collection_id")));
+				anuncio.setIdCategory(records.get(rec).get(CS.getCOL(db, dbad, "fk_category_id")));
+				anuncio.setNameCategory(records.get(rec).get(CS.getCOL(db, dbad, "name_category")));
+				anuncio.setTitle(records.get(rec).get(CS.getCOL(db, dbad, "title")));
+				anuncio.setDescription(records.get(rec).get(CS.getCOL(db, dbad, "description")));
+				anuncio.setTypeAnnounce(records.get(rec).get(CS.getCOL(db, dbad, "type_announce")));
+				anuncio.setPriceFixed(records.get(rec).get(CS.getCOL(db, dbad, "price_fixed")));
+				anuncio.setPriceInitial(records.get(rec).get(CS.getCOL(db, dbad, "price_initial")));
+				anuncio.setDateInitial(records.get(rec).get(CS.getCOL(db, dbad, "date_initial")));
+				anuncio.setBidActual(records.get(rec).get(CS.getCOL(db, dbad, "bid_actual")));
+				anuncio.setLasting(records.get(rec).get(CS.getCOL(db, dbad, "lasting")));
+				anuncio.setTotalBids(records.get(rec).get(CS.getCOL(db, dbad, "total_bids")));
+				anuncio.setDateCreated(records.get(rec).get(CS.getCOL(db, dbad, "date_created")));
+				anuncio.setDateUpdated(records.get(rec).get(CS.getCOL(db, dbad, "date_updated")));
+				anuncio.setPathPhotoAd(records.get(rec).get(CS.getCOL(db, dbad, "path_photo_ad")));
+				anuncio.setOfferedPrice(records.get(rec).get(CS.getCOL(db, dbad, "offered_price")));
+				anuncio.setDetails(records.get(rec).get(CS.getCOL(db, dbad, "details")));
+				anuncio.setFeatured(records.get(rec).get(CS.getCOL(db, dbad, "featured")));
+				anuncio.setStatus(records.get(rec).get(CS.getCOL(db, dbad, "status")));
+				listaAnuncios.add(anuncio);
+			}
+			
+			if(!listaAnuncios.isEmpty()){
+				
+				//Cms config para pages
+				CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
+				String listEntrySell = cms.getPageListEntry("1016");				//list anuncio - all ads sell
+				String listEntryAuction = cms.getPageListEntry("1036");				//list anuncio - all ads auction
+				String listEntryExchange = cms.getPageListEntry("1037");			//list anuncio - all ads exchange
+				String listEntrySellEx = cms.getPageListEntry("1038");				//list anuncio - all ads sell/exchange
+				String listEntryPurchase = cms.getPageListEntry("1039");			//list anuncio - all ads purchase
+				
+				StringBuilder resultHTML = new StringBuilder("");
+				
+				for(Announce ad : listaAnuncios){
+					if(ad.getFeatured().equals("yes")){
+						ad.setFeatured("div_com_destaque");		//anuncio com destaque utiliza um class css diferente
+					}else{
+						ad.setFeatured("div_sem_destaque");		//class css anuncio sem destaque
+					}
+					//parse do objeto na lista de entrada que corresponde ao tipo de anuncio
+					if(ad.getTypeAnnounce().equals("Sell")){						
+						resultHTML.append(cms.parseBindingModelBean(listEntrySell, ad));
+					}else if(ad.getTypeAnnounce().equals("Auction")){
+						resultHTML.append(cms.parseBindingModelBean(listEntryAuction, ad));
+					}else if(ad.getTypeAnnounce().equals("Exchange")){
+						resultHTML.append(cms.parseBindingModelBean(listEntryExchange, ad));
+					}else if(ad.getTypeAnnounce().equals("Sell/Exchange")){
+						resultHTML.append(cms.parseBindingModelBean(listEntrySellEx, ad));
+					}else if(ad.getTypeAnnounce().equals("Purchase")){
+						resultHTML.append(cms.parseBindingModelBean(listEntryPurchase, ad));
+					}
+				}
+				
+				ModelILiketo model = new ModelILiketo(request, null);
+				model.addAttribute("listAllAdsGroups", resultHTML);
+				return "/page.jsp?id=1015"; 	//pagina todos anuncios dos grupos que pariticipa
+			}
+		}
+		
+		ModelILiketo model = new ModelILiketo(request, null);
+		model.addAttribute("listAllAdsGroups", "There are no ads of groups!");
+		return "/page.jsp?id=1015"; 			//pagina todos anuncios dos grupos que pariticipa
+	}
+	
+	
 }

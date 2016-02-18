@@ -908,7 +908,7 @@ try {
 		if ((mycontent == null) || (mycontent.length() == 0)) return "";
 		
 		//CODIGOS PARA BINDING DOS BEANS DE MODELO E MSG DE ERROS NA VIEW
-		if((mycontent.contains("${") || request.getRequest().getAttribute("modelILiketo") != null) && !request.getRequest().getRequestURI().contains("/webadmin/")){
+		if((mycontent.contains("${") || (request.getRequest().getAttribute("modelILiketo") != null && mycontent.contains("@@@"))) && !request.getRequest().getRequestURI().contains("/webadmin/")){
 			CmsConfigILiketo cmsIliketo = new CmsConfigILiketo(request.getRequest(), response.getResponse());
 			String binding = cmsIliketo.parseBindingModelBean(mycontent);
 			if(binding != null){	//verifica parse ok

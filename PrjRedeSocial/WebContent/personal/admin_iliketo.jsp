@@ -1,5 +1,5 @@
 <%@ include file="../webadmin.jsp" %><%@ include file="../config.personal.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.UCmaintainUsers" %><%@ page import="HardCore.Page" %><%@ page import="HardCore.User" %><%@ page import="HardCore.RequireUser" %>
-<%@ page import="com.iliketo.control.UpdateUserController" %><%@ page import="com.iliketo.dao.IliketoDAO"%><%
+<%@ page import="com.iliketo.control.UpdateUserController" import="com.iliketo.model.Member" %><%@ page import="com.iliketo.dao.IliketoDAO"%><%
 	
 	//***Executa e valida Registro iliketo**** 
 	String email = "";
@@ -55,11 +55,18 @@
 		Page adminpage = maintainContent.getPersonalAdmin(myuser, mypage, servletcontext, mysession, myrequest, myresponse, myconfig, db);
 		mysession.set("id", adminpage.getId());
 		
+		//verifica resposta para advertiser/anunciantes
+		String pageResposta = "620";	//resposta update padrao colecionador, loja
+		Member membro = (Member) mysession.getSession().getAttribute("member");
+		if(membro != null && membro.getAccountType().equals("Advertiser")){
+			pageResposta = "1070";		//resposta update anunciante
+		}
+		
 		%>
 		<!-- TAG para redirecionar para pagina post.jsp passando mais um parametro com o valor da pagina retorno realizado pelo Asbru -->
 		<jsp:forward page="/post.jsp?database=dbmembers">
 			<jsp:param value="<%=idRegisterUser%>" name="id"/>
-			<jsp:param value="/page.jsp?id=620" name="redirect"/>
+			<jsp:param value="/page.jsp?id=<%=pageResposta%>" name="redirect"/>
 		</jsp:forward>
 		<%
 }

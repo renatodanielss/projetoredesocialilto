@@ -27,10 +27,10 @@ public class Advertising extends ContentILiketo {
 	@ColumnILiketo(name = "status")			//status(Active, Expired)
 	private String status;		
 	
-	@ColumnILiketo(name = "title")
+	@ColumnILiketo(name = "title_ad")
 	private String title;
 	
-	@ColumnILiketo(name = "description")
+	@ColumnILiketo(name = "description_ad")
 	private String description;
 	
 	@ColumnILiketo(name = "name_category")
