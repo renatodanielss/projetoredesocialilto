@@ -726,7 +726,7 @@ public class NotificationService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		Calendar calendar = Calendar.getInstance();		
-		calendar.set(Calendar.DAY_OF_MONTH, -10);			//seta data 10 dias anterior
+		calendar.set(Calendar.DAY_OF_MONTH, -30);			//seta data 10 dias anterior
 		Date date = calendar.getTime();					
 		String dateDaysNotific = format.format(date);		//historico de notificacao a partir dos ultimos 10 dias
 		

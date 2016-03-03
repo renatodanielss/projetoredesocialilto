@@ -54,6 +54,7 @@ import com.iliketo.model.annotation.FileILiketo;
 public class CmsConfigILiketo {
 	
 	static final Logger log = Logger.getLogger(CmsConfigILiketo.class);
+	private final static long CURRENT_MILLIS_FILENAME = System.currentTimeMillis();
 	
 	private ServletContext servletcontext;
 	private String DOCUMENT_ROOT_UPLOAD;
@@ -98,6 +99,18 @@ public class CmsConfigILiketo {
 			DOCUMENT_ROOT_UPLOAD = DOCUMENT_ROOT;
 		}
 		
+	}
+	
+	/**
+	 * Metodo altera o nome do arquivo do input html para um nome que corresponde ao currentTimeMillis do sistema
+	 * Tempo em milisegundos para evitar caracteres latinos desconhecidos no upload de arquivos.
+	 * @param filename - nome atual do arquivo no request
+	 * @return String - novo filename, Ex: 1456349964902.jpg
+	 */
+	public static String getFilenameByCurrentTimeMillis(String filename){
+		String nomeArquivo = "" + CURRENT_MILLIS_FILENAME;
+		String ext = filename.substring(filename.lastIndexOf('.') + 1);	//extensao
+		return nomeArquivo + "." + ext;
 	}
 	
 	/**
@@ -191,8 +204,9 @@ public class CmsConfigILiketo {
 				        	}
 			        		InputStream stream = item.getInputStream();
 					        HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
-			            	mapMyFormInput.put("name", item.getFieldName());
-			            	mapMyFormInput.put("filename", item.getName());
+			            	mapMyFormInput.put("name", item.getFieldName());     	
+			            	mapMyFormInput.put("filename", getFilenameByCurrentTimeMillis(item.getName()));
+							
 			            	//valida upload para anunciantes
 			            	FileuploadILiketo filepostIliketo;
 			            	if(!isUploadAdvertiser){	
@@ -268,8 +282,6 @@ public class CmsConfigILiketo {
 				if(isMultipart){
 					FileItemFactory factory = new DiskFileItemFactory();
 			        ServletFileUpload upload = new ServletFileUpload(factory);
-			        request.setCharacterEncoding("ISO-8859-1");
-			        upload.setHeaderEncoding("ISO-8859-1");
 			        List<FileItem> list;
 			        Iterator items;
 			        if(fileItems == null){
@@ -298,19 +310,11 @@ public class CmsConfigILiketo {
 			            	InputStream stream = item.getInputStream();
 			            	HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
 			            	mapMyFormInput.put("name", item.getFieldName());
-			            	//charset
-			            	String charsetname = upload.getHeaderEncoding();
-			            	log.info("Cms upload.getHeaderEncoding()=" + charsetname);
-			            	log.info("Cms item.getName()=" + item.getName());
-			            	log.info("Cms nomeArquivo lido ISO-8859-1=" + new String(item.getName().getBytes(charsetname)));
-			            	String nomeArquivo = new String(item.getName().getBytes(charsetname), charsetname);
-			            	log.info("Cms nomeArquivo lido ISO-8859-1 e escrito ISO-8859-1=" + nomeArquivo);
+			            	mapMyFormInput.put("filename", getFilenameByCurrentTimeMillis(item.getName()));
 			            	
-			            	//mapMyFormInput.put("filename", item.getName());
-			            	mapMyFormInput.put("filename", nomeArquivo);
 					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
 					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
-					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	        
+					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);      
 
 					        for(Field atributo : objects[i].getClass().getDeclaredFields()) {
 								atributo.setAccessible(true);
@@ -788,12 +792,15 @@ public class CmsConfigILiketo {
 			}
 		}else{
 			//clear expressao '${bean.atributo}'
-			while(content.contains("${")){
+			byte loopDetected = 0;	//loopDetected de seguranca
+			while(content.contains("${") && loopDetected < 10){
 				int begin = content.indexOf("${");
 				int end = content.indexOf("}", begin);
 				if(begin >= 1 && end >= 1){
 					if(content.substring(begin+2, end+1).contains(".")){
 						content = content.replaceAll("\\$\\{" + content.substring(begin+2, end+1), "");				
+					}else{
+						loopDetected++;
 					}
 				}else if(begin >= 1){
 					break;

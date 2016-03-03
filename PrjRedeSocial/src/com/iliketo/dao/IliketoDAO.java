@@ -236,17 +236,22 @@ public class IliketoDAO {
 	public static boolean validateMemberInCategory(DB db, String idCategory, String myUserid){
 
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
-		String SQL1 = "select c.id_collection from dbcollection c where c.fk_user_id = "+myUserid+" and c.fk_category_id = " + idCategory;
-		String SQL2 = "select i.id_interest from dbinterest i where i.fk_user_id = "+myUserid+" and i.fk_category_id = " + idCategory;
-		
+		String SQL1 = "select c.id_collection from dbcollection c where c.fk_user_id = '"+myUserid+"' and c.fk_category_id = '" + idCategory+"'";
+		String SQL2 = "select i.id_interest from dbinterest i where i.fk_user_id = '"+myUserid+"' and i.fk_category_id = '" + idCategory+"'";
+		String SQL3 = "select h.id_hobby from dbhobby h where h.fk_user_id = '" +myUserid+ "' and h.fk_category_id = '" + idCategory+"'";
+
 		String[][] tableAlias1 = { {"dbcollection", "c"} };
 		SQL1 = CS.transformSQLReal(SQL1, tableAlias1);
 		String[][] tableAlias2 = { {"dbinterest", "i"} };
 		SQL2 = CS.transformSQLReal(SQL2, tableAlias2);	
+		String[][] tableAlias3 = { {"dbhobby", "h"} };
+		SQL3 = CS.transformSQLReal(SQL3, tableAlias3);
 		
 		HashMap<String,String> row1 = db.query_record(SQL1);
 		HashMap<String,String> row2 = db.query_record(SQL2);	
-		if (row1 != null || row2 != null) {
+		HashMap<String,String> row3  = db.query_record(SQL3);
+
+		if (row1 != null || row2 != null || row3 != null) {
 			return true;	//find true
 		}
 		

@@ -25,6 +25,7 @@ import HardCore.DB;
 import com.iliketo.dao.CategoryDAO;
 import com.iliketo.dao.CollectionDAO;
 import com.iliketo.dao.ForumDAO;
+import com.iliketo.dao.HobbyDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.InterestDAO;
 import com.iliketo.model.Announce;
@@ -125,17 +126,17 @@ public class CategoryController {
 					}
 					SQLCategory += " else 4 end as prioridade "
 					+ "from dbcategory t1 "
-					+ "where t1.name_category ilike '%" +name+ "%' ";
+					+ "where t1.hobby != 'yes' and (t1.name_category ilike '%" +name+ "%' ";
 					if(array.length >= 2){
 						SQLCategory += " or (t1.name_category ilike '" +array[0]+ "%' or t1.name_category ilike '% " +array[0]+ "%') ";
 						for(int i = 1; i < array.length; i++){
 							SQLCategory +=  "and (t1.name_category ilike '" +array[i]+ "%' or t1.name_category ilike '% " +array[i]+ "%') ";
 						}
 					}
-					SQLCategory +=  "order by prioridade, t1.name_category limit 5;";
+					SQLCategory +=  " ) order by prioridade, t1.name_category limit 5;";
 			String[][] aliasCat = { {"dbcategory", "t1"}, {"dbcollection", "t2"}, {"dbinterest", "t3"} };
 			SQLCategory = CS.transformSQLReal(SQLCategory, aliasCat);
-	
+			System.out.println("Search SQLCategory: " + SQLCategory);
 			LinkedHashMap<String,HashMap<String,String>> recordsCategory = db.query_records(SQLCategory);
 			ArrayList<Category> lista = new ArrayList<Category>();
 	
@@ -273,7 +274,7 @@ public class CategoryController {
 		
 		log.info(request.getRequestURL());
 		
-		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//BD
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);		//BD
 		String cat = request.getParameter("category").trim();		//nome categoria
 		
 		//valida se existe categoria
@@ -283,6 +284,7 @@ public class CategoryController {
 				CategoryDAO categoryDAO = new CategoryDAO(db, request);
 				Category category = new Category();
 				category.setNameCategory(cat);
+				category.setHobby("no");
 				String idCreated = categoryDAO.create(category);
 				
 				//cria novo forum da categoria/grupo
@@ -510,26 +512,35 @@ public class CategoryController {
 		return "redirect:/ilt/groupCategory/group?idCat=" + idCategory;
 	}
 	
-	
 	/**
-	 * Direciona para pagina criar nova categoria
+	 * Unjoin do membro no grupo
 	 */
-	@RequestMapping(value={"/category/new"})
-	private String pageCreateCategory(HttpServletRequest request, HttpServletResponse response){
+	@RequestMapping(value={"/groupCategory/unjoinHobby"})
+	private String unjoinHobby(HttpServletRequest request, HttpServletResponse response){
 		
+		log.info(request.getRequestURL());
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		CollectionDAO dao = new CollectionDAO(db, request);
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+		HobbyDAO dao = new HobbyDAO(db, request);
+		
 		String myUserid = (String) request.getSession().getAttribute("userid");
+		String idCategory = request.getParameter("idCat");
 		
-		String idCollection = request.getParameter("idCollection");
-		Collection colecao = (Collection) dao.readById(idCollection, Collection.class);
+		String SQL = "select h.id_hobby as id_hobby from dbhobby h where h.fk_user_id = '" +myUserid+ "' and h.fk_category_id = '" + idCategory+"'";
+		String[][] alias = { {"dbhobby", "h"} };
+		SQL = CS.transformSQLReal(SQL, alias);
+		HashMap<String,String> registro  = db.query_record(SQL);
 		
-		//valida colecao
-		if(colecao != null && colecao.getIdMember().equals(myUserid)){
-			return "/page.jsp?id=622&idCollection=" + idCollection;
-		}else{
-			return "/page.jsp?id=conteudoIndisponivel";	//conteudo indisponivel
+		//deleta o hobby do membro
+		if(registro != null){
+			String id = registro.get("id_hobby");
+			if(id != null && !id.isEmpty()){
+				dao.deleteHobby(id);
+			}
 		}
+		
+		//page join group of category
+		return "redirect:/ilt/groupCategory/group?idCat=" + idCategory;
 	}
 	
 	/**
@@ -637,7 +648,7 @@ public class CategoryController {
 		
 		if(idCat != null && !idCat.isEmpty()){
 			CategoryDAO dao = new CategoryDAO(db, request);
-			Category category = (Category) dao.readById(idCat, Category.class);			
+			Category category = (Category) dao.readById(idCat, Category.class);
 			//valida categoria
 			if(category != null){
 				ForumDAO forumDAO = new ForumDAO(db, request);
@@ -655,7 +666,13 @@ public class CategoryController {
 				//set request lista dos anuncios e eventos direcionados para este grupo
 				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
 				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));				
-				return "page.jsp?id=623";		//pagina grupo
+				
+				//verifica grupo colecoes/interesses e grupo de hobbies
+				if(category.getHobby().equalsIgnoreCase("yes")){
+					return "page.jsp?id=1088";		//pagina grupo categoria para hobbies
+				}else{					
+					return "page.jsp?id=623";		//pagina grupo categoria de colecao/interesse
+				}
 			}
 		}
 		return "/page.jsp?id=invalidPage"; 		//pagina invalida
@@ -847,7 +864,13 @@ public class CategoryController {
 				//set request lista dos anuncios e eventos direcionados para este grupo
 				request.setAttribute("listDirectedAds", AdvertiserController.getListDirectedAdsOneGroupEntry(idCat, request));				
 				request.setAttribute("listDirectedEvents", AdvertiserController.getListDirectedEventsOneGroupEntry(idCat, request));
-				return "page.jsp?id=679";	//pagina Members
+				
+				//verifica grupo colecoes/interesses e grupo de hobbies
+				if(category.getHobby().equalsIgnoreCase("yes")){
+					return "page.jsp?id=1089";	//pagina members hobbies
+				}else{					
+					return "page.jsp?id=679";	//pagina Members
+				}
 			}
 		}
 		return "/page.jsp?id=invalidPage"; 				//pagina invalida

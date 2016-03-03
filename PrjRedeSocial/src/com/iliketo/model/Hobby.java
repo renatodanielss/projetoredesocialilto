@@ -5,80 +5,75 @@ import com.iliketo.model.annotation.IdILiketo;
 
 /**
  * Classe de modelo
- * Contém os dados do forum
+ * Contém os dados de um hobby
  * Dados/modelos ILiketo
  * 
  * @author osvaldimar.costa
  *
  */
-public class Category extends ContentILiketo {
+public class Hobby extends ContentILiketo {
 
 	@IdILiketo
-	@ColumnILiketo(name = "id_category")
+	@ColumnILiketo(name = "id_hobby")
+	private String idHobby;
+	
+	@ColumnILiketo(name = "fk_category_id")
 	private String idCategory;
 	
 	@ColumnILiketo(name = "name_category")
 	private String nameCategory;
 	
-	@ColumnILiketo(name = "hobby")		//'no' ou 'yes'
-	private String hobby;
+	@ColumnILiketo(name = "fk_user_id")
+	private String idMember;
 	
-	@ColumnILiketo(name = "country")	//BR ou US ...
+	@ColumnILiketo(name = "country")
 	private String country;
 	
-	private String total;
+	public Hobby(){
+		
+	}
 	
-	public Category(){ }
-	
+
+	public String getIdHobby() {
+		return idHobby;
+	}
+
+
+	public void setIdHobby(String idHobby) {
+		this.idHobby = idHobby;
+	}
+
 
 	public String getIdCategory() {
 		return idCategory;
 	}
 
-
 	public void setIdCategory(String idCategory) {
 		this.idCategory = idCategory;
 	}
-
 
 	public String getNameCategory() {
 		return nameCategory;
 	}
 
-
 	public void setNameCategory(String nameCategory) {
 		this.nameCategory = nameCategory;
 	}
 
-
-	public String getTotal() {
-		return total;
+	public String getIdMember() {
+		return idMember;
 	}
 
-
-	public void setTotal(String total) {
-		this.total = total;
+	public void setIdMember(String idMember) {
+		this.idMember = idMember;
 	}
-
-
-	public String getHobby() {
-		return hobby;
-	}
-
-
-	public void setHobby(String hobby) {
-		this.hobby = hobby;
-	}
-
 
 	public String getCountry() {
 		return country;
 	}
 
-
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
 	
 }

@@ -43,6 +43,7 @@ public class ColumnsSingleton {
 	private HashMap<String,HashMap<String,String>> COL_DBMESSAGEINBOX;
 	private HashMap<String,HashMap<String,String>> COL_DBAUCTIONBID;
 	private HashMap<String,HashMap<String,String>> COL_DBADVERTISING;
+	private HashMap<String,HashMap<String,String>> COL_DBHOBBY;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
@@ -60,6 +61,7 @@ public class ColumnsSingleton {
 	private String DATA_DBMESSAGEINBOX;
 	private String DATA_DBAUCTIONBID;
 	private String DATA_DBADVERTISING;
+	private String DATA_DBHOBBY;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
@@ -147,6 +149,10 @@ public class ColumnsSingleton {
 		database.read(db, new Configuration(), "dbadvertising");	
 		DATA_DBADVERTISING = database.getTable();
 		COL_DBADVERTISING = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbhobby");	
+		DATA_DBHOBBY = database.getTable();
+		COL_DBHOBBY = database.namedcolumns;
 	}
 	
 	/**
@@ -210,6 +216,8 @@ public class ColumnsSingleton {
 			mapcolumns = COL_DBAUCTIONBID;
 		}else if(nameDatabase.equals("dbadvertising")){
 			mapcolumns = COL_DBADVERTISING;
+		}else if(nameDatabase.equals("dbhobby")){
+			mapcolumns = COL_DBHOBBY;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -270,6 +278,8 @@ public class ColumnsSingleton {
 			return DATA_DBAUCTIONBID;
 		}else if(nameDatabase.equals("dbadvertising")){
 			return DATA_DBADVERTISING;
+		}else if(nameDatabase.equals("dbhobby")){
+			return DATA_DBHOBBY;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -353,6 +363,9 @@ public class ColumnsSingleton {
 			}else if(table.equals("dbadvertising")){
 				mapcolumns = COL_DBADVERTISING;
 				tableReal = DATA_DBADVERTISING;
+			}else if(table.equals("dbhobby")){
+				mapcolumns = COL_DBHOBBY;
+				tableReal = DATA_DBHOBBY;
 			}
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){

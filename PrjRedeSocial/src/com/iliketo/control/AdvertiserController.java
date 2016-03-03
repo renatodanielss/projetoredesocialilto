@@ -372,10 +372,13 @@ public class AdvertiserController {
 	 */
 	public static StringBuilder getListDefaultEventsEntry(HttpServletRequest request){
 		
+		//linguagem
+		final String LING = request.getLocale().getLanguage();
+		
 		StringBuilder resultHTML = new StringBuilder("");		
 		Event evento = new Event();
 		evento.setIdEvent("");
-		evento.setNameEvent("There are no events to show!");
+		evento.setNameEvent(LING.equals("pt") ? "Não há eventos nesse grupo!" : "There are no events in this group!");
 		evento.setType("");
 		evento.setPathPhoto("image_default.png");
 		evento.setLocal("");
@@ -390,7 +393,9 @@ public class AdvertiserController {
 		model.addAttribute("evento", evento);
 		
 		//retorna uma lista com parse ok do objeto no request
-		resultHTML.append(cms.getPageBinding("1033"));		//list event - slide animate entry (There are no events)	
+		resultHTML.append(cms.getPageBinding("1033"));		//list event - slide animate entry (There are no events)
+		model.removeAttibute("evento");						//remove atributo do request
+		
 		return resultHTML;
 	}
 	
@@ -399,10 +404,13 @@ public class AdvertiserController {
 	 */
 	public static StringBuilder getListDefaultAdsEntry(HttpServletRequest request){
 		
-		StringBuilder resultHTML = new StringBuilder("");		
+		//linguagem
+		final String LING = request.getLocale().getLanguage();
+				
+		StringBuilder resultHTML = new StringBuilder("");
 		Advertising anuncio = new Advertising();
 		anuncio.setIdAdvertising("");
-		anuncio.setTitle("There are no ads to show!");
+		anuncio.setTitle(LING.equals("pt") ? "Não há anúncios nesse grupo!" : "There are no ads in this group!");
 		anuncio.setDescription("");
 		anuncio.setPathAd("image_default.png");
 		anuncio.setLinkAd("");
@@ -415,7 +423,9 @@ public class AdvertiserController {
 		model.addAttribute("advertising", anuncio);
 		
 		//retorna uma lista com parse ok do objeto no request
-		resultHTML.append(cms.getPageBinding("910"));		//list announce - slide animate entry		
+		resultHTML.append(cms.getPageBinding("910"));		//list announce - slide animate entry
+		model.removeAttibute("advertising");				//remove atributo do request
+		
 		return resultHTML;
 	}
 	
