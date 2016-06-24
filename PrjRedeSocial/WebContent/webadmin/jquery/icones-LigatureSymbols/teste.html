@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Example of Bootstrap 3 Icons</title>
+<link rel="stylesheet" href="boot.css" type="text/css">
+
+<style type="text/css">
+@font-face {
+    font-family: 'LigatureSymbols';
+    src: url('LigatureSymbols-2.11.eot');
+    src: url('LigatureSymbols-2.11.eot?#iefix') format('embedded-opentype'),
+         url('LigatureSymbols-2.11.woff') format('woff'),
+         url('LigatureSymbols-2.11.ttf') format('truetype'),
+         url('LigatureSymbols-2.11.svg#LigatureSymbols') format('svg');
+    src: url('LigatureSymbols-2.11.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.lsf, .lsf-icon:before {
+  font-family: 'LigatureSymbols';
+  -webkit-text-rendering: optimizeLegibility;
+  -moz-text-rendering: optimizeLegibility;
+  -ms-text-rendering: optimizeLegibility;
+  -o-text-rendering: optimizeLegibility;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -ms-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+.lsf-icon:before {
+  content:attr(title);
+  margin-right:0.3em;
+  font-size:130%;
+}
+
+.lsf-icon.amazon:before {
+  content: '\E007';
+}
+
+
+.lsf-icon.heart:before {
+  content: '\E06e';
+}
+.lsf-icon.heartempty:before {
+  content: '\E06f';
+}
+
+
+
+.icone-likes{
+  color:red; 
+  font-size:1em;
+}
+.botao-likes{
+}
+#total-likes{
+}
+</style>
+</head> 
+<body>
+<div class="bs-example">
+    <form>
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search</button>
+		<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-heart-empty"></span> Search</button>
+<button type="button" class="btn btn-info"><span class="lsf-icon heartempty icone-likes"> </span> Like</button>
+<br>
+
+
+<button class="botao-likes"><span class="glyphicon glyphicon-heart-empty icone-likes"> </span> Like <span id="total-likes">2500</span></button>
+
+<button class="botao-likes"><span class="lsf-icon heartempty icone-likes"> </span> Like 155</button>
+<button class="botao-likes"><span class="lsf-icon heart icone-likes"> </span> Like 155</button>
+   
+<a href="http://amazon.com/" class="lsf-icon amazon">Amazon</a>
+<br><br>
+<a href="mailto:mail@example.com" class="lsf-icon heart"></a>
+<br><br>
+
+<br><br>
+<br><br>
+</form>
+</div>
+</body>
+</html>           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                     		

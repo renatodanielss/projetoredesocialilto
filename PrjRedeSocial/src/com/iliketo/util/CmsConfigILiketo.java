@@ -1056,6 +1056,76 @@ public class CmsConfigILiketo {
 		return randomfilename;
 	}
 	
+	/**
+	 * metodo usado para validar de um request que foi solicitado pelo Spring 
+	 * scope request contem o atributo para indicar paginacao em pages usadas pelo Spring no diretorio WEB-INF/views, Asbru nao reconhece esse diretorio
+	 */
+	public static boolean validaPaginationILiketoo(HttpServletRequest request){
+		String uri = (String) request.getAttribute("PAGINATION_ILT");	//verifica se eh uma uri executada pelo Spring
+		if(uri != null)
+			return true;
+		return false;
+	}
+	/**
+	 * metodo usado para processar paginacao de um request que foi solicitado pelo Spring 
+	 * scope request contem o atributo para indicar paginacao em pages usadas pelo Spring no diretorio WEB-INF/views, Asbru nao reconhece esse diretorio
+	 */
+	public static String processaPaginationILiketoo(HttpServletRequest request, String nomePaginacao, String link){
+		if(!link.equals("")){
+			String uri = (String) request.getAttribute("PAGINATION_ILT");	//uri do Spring requisitada no primeiro request
+			
+			if(uri.contains("/ilt/collection/profile")){	//somente para paginas com o parametro chamado "id" ex: /ilt/collection/profile?id=123
+				int prim = uri.indexOf("?");
+				if(prim >= 1){
+					//retira parametro de paginacao anterior na url
+					String[] arrayQuery = uri.substring(prim+1, uri.length()).split("&");		//idCat=87&res=3 > [idCat=87, res=3]
+					String strQuery = "";
+					int idCont = 0;
+					for(String s : arrayQuery){
+						String[] param = s.split("=");	//[idCat, 87], [res, 3]
+						if(param[0] != null && !param[0].equals(nomePaginacao)){
+							if(param[0].equals("id")){	//permite ate 1 parametro com name igual id, o resto ignora
+								idCont++;
+								if(idCont <= 1){
+									strQuery += strQuery.equals("") ? s : "&"+s;
+								}
+							}else{
+								strQuery += strQuery.equals("") ? s : "&"+s;
+							}
+						}
+					}				
+					uri = uri.substring(0, prim) + "?" + strQuery + "&";
+				}else{
+					uri += "?";		//add caracter para concaternar parametros
+				}
+				String novaUri = "";
+				if(link.contains("?&")){
+					novaUri = link.replace("?&", uri);				//link contem os parametros de paginacao do Asbru
+				}else{
+					novaUri = link.replace("?", uri);				//link contem os parametros de paginacao do Asbru
+				}
+				System.out.println("***novaUri = " + novaUri);		//concatena primeira uri Spring + link com paginacao do Asbru
+				return novaUri;
+			}else{
+				int prim = uri.indexOf("?");
+				if(prim >= 1){
+					uri = uri.substring(0, prim) + "?";		//somente uri sem querys + '?'
+				}else{
+					uri += "?";			//nao contem querys, acrescenta '?'
+				}
+				String novaUri = "";
+				if(link.contains("?&")){
+					novaUri = link.replace("?&", uri);				//link contem os parametros de paginacao do Asbru
+				}else{
+					novaUri = link.replace("?", uri);				//link contem os parametros de paginacao do Asbru
+				}
+				System.out.println("***novaUri = " + novaUri);		//concatena primeira uri Spring + link com paginacao do Asbru
+				return novaUri;
+			}
+		}
+		return "";
+	}
+	
 	//getters and setters
 
 	public void setCmsAsbru(HttpServletRequest request){

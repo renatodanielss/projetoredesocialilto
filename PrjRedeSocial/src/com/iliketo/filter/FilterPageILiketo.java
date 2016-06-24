@@ -50,6 +50,13 @@ public class FilterPageILiketo implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;	
 		DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
 		
+		//armazena no scope request o atributo para indicar paginacao em pages usadas pelo Spring no diretorio WEB-INF/views
+		String uri = req.getRequestURI();
+		String query = req.getQueryString();
+		String pagination = uri + (query == null ? "" : "?" +query);
+		req.setAttribute("PAGINATION_ILT", pagination);
+		
+		
 		//include da jsp 'config.jsp' para inicializar configuracoes do Asbru
 		//include da jsp 'config.jsp' abre uma conexao com banco de dados e pendura no request		
 		if(db == null || db.isClosed()){
@@ -68,6 +75,13 @@ public class FilterPageILiketo implements Filter {
 				//remove username e id da sessao
 				mysession.remove("username");
 				mysession.remove("userid");
+				
+				//member null, session expired
+				if(myrequest.getRequestURI().contains("ajaxTotalNotifications")){
+					res.setStatus(401);
+					res.setContentType("text/html");
+					res.getWriter().write("Session expired");
+				}
 			}
 		}
 		

@@ -1,5 +1,5 @@
 <%@ include file="config.jsp" %>
-<%@ page import="HardCore.UCaccessAdministration" %>
+<%@ page import="HardCore.UCaccessAdministration" contentType="text/html; charset=UTF-8" %>
 <%@ page import="HardCore.MenuContent" %>
 <%@ page import="com.iliketo.util.*" %>
 <%@ page import="com.iliketo.model.*" %>
@@ -42,7 +42,7 @@
 <div style="width: 100%; text-align: center;">
 <div style="width: 50%; float: left;">
 	<div style="text-align: left;">
-		<h3>Criar categoria/grupo do Hobby4</h3>
+		<h3>Criar categoria/grupo do Hobby</h3>
 		<br>
 		<br>
 		<form method="post" action="/webadmin/hobby_create.jsp">
@@ -50,7 +50,7 @@
 			<input type="text" value="" name="name_category" required="true" size="40">
 			<br>
 			<br>
-			País*:<br>
+			PaÃ­s*:<br>
 			<select name="country" id="country" required="true">
 				<option value=""></option>
 				<option value="BR">Brasil - BR</option>
@@ -69,9 +69,9 @@
 </div>
 <div style="width: 50%; float: right;">
 	<div style="text-align: left;">
-		<h3>Lista de hobbies por país</h3>
+		<h3>Lista de hobbies por paÃ­s</h3>
 		<br><br>
-		País*:<br>
+		PaÃ­s*:<br>
 		<select name="country" id="country" style="width: 300px;" onchange="changeListaHobbies(this)">
 			<option value=""></option>
 			<option value="BR">Brasil - BR</option>

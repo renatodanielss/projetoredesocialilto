@@ -31,6 +31,7 @@ import com.iliketo.model.Announce;
 import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Item;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
@@ -114,9 +115,15 @@ public class AnnounceCollectorController {
 		return "page.jsp?id=664"; //page form edit your announce
 	}
 	
-	
 	@RequestMapping(value={"/registerAnnounce/collector/payment"})
 	public String announceCollectorPayment(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		return paymentDefault(request, response, false);	//pagamento normal sem promocao
+	}
+	@RequestMapping(value={"/registerAnnounce/collector/paymentPromotion"})
+	public String announceCollectorPromotion(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		return paymentDefault(request, response, true);		//pagamento com promocao
+	}
+	public String paymentDefault(HttpServletRequest request, HttpServletResponse response, boolean promocao) throws IOException{
 		
 		log.info(request.getRequestURL());
 		
@@ -125,9 +132,12 @@ public class AnnounceCollectorController {
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		CollectionDAO collectionDAO = new CollectionDAO(db, request);
 		HttpSession session = request.getSession();
+		String myUserid = (String) session.getAttribute("userid");
 				
 		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
+		announce.setIdMember(myUserid);
 		announce.setRating("0");
+		
 		
 		//Purchase
 		if(announce.getTypeAnnounce().equals("Purchase")){
@@ -169,7 +179,16 @@ public class AnnounceCollectorController {
 			}
 		}
 		
-		announce.setStatus("Pending pay");					//pendente pagamento
+		//TEM PROMOCAO PARA ESTE ANUNCIO
+		if(promocao){
+			if(announce.getTypeAnnounce().equals("Auction")){
+				announce.setStatus("For auction");
+			}else{
+				announce.setStatus("For sale");
+			}
+		}else{
+			announce.setStatus("Pending pay");			//pendente pagamento
+		}
 		
 		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
 		String idCreated;
@@ -181,14 +200,33 @@ public class AnnounceCollectorController {
 		}
 		announce.setId(idCreated);
 		announce.setIdAnnounce(idCreated);
-		log.info("Anuncio cadastrado com sucesso - Id: " + idCreated + " Status: Pendente pagamento!");
-				
+		
+		//PROMOCAO
+		if(promocao){
+			log.info("Anuncio cadastrado com sucesso - Id: " + idCreated + " Status: "+announce.getStatus());
+			//cria notificacao para o grupo da categoria
+			String idCategory = announce.getIdCategory();
+			if(idCategory != null && !idCategory.equals("")){							
+				NotificationService.createNotification(db, idCategory, "announce", announce.getIdAnnounce(), Str.INCLUDED, myUserid);
+				if(announce.getTypeAnnounce().equals("Auction")){
+					//notificacao aviso uma hora antes leilao
+					NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", announce.getIdAnnounce(), Str.AUCTION_HOUR, myUserid, announce.getDateInitial());
+				}
+			}
+		}else{
+			log.info("Anuncio cadastrado com sucesso - Id: " + idCreated + " Status: Pendente pagamento!");
+		}
 		
 		session.setAttribute("announce", announce);			//set anuncio na session
 		ModelILiketo model = new ModelILiketo(request, response);
 		model.addAttribute("announce", announce);
 		
-		return "page.jsp?id=897"; 							//page form payment
+		//PROMOCAO
+		if(promocao){
+			return "redirect:/ilt/ads?id=" + announce.getIdAnnounce(); 	//page do meu anuncio
+		}else{
+			return "page.jsp?id=897"; 	//page form payment
+		}
 	}
 
 	/*
@@ -379,6 +417,8 @@ public class AnnounceCollectorController {
 						jsonObj.put("totalBids", announce.getTotalBids());
 		    		}
 				} catch (ParseException e) {
+					log.info("Error ParseException URI: " + request.getRequestURI() +" - query: "+ request.getQueryString());
+					log.warn(e.getMessage());
 				}
 			}else{
 				jsonObj.put("resposta", "below");				//erro valor lance tem q ser maior q atual

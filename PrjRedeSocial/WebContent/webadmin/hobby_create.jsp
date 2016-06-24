@@ -1,5 +1,5 @@
 <%@ include file="config.jsp" %>
-<%@ page import="HardCore.UCaccessAdministration" %>
+<%@ page import="HardCore.UCaccessAdministration" contentType="text/html; charset=UTF-8" %>
 <%@ page import="HardCore.MenuContent" %>
 <%@ page import="com.iliketo.dao.*" %>
 <%@ page import="com.iliketo.model.*" %>
@@ -14,8 +14,9 @@
 	final Logger log = Logger.getLogger(request.getRequestURL().toString());
 	log.info(request.getRequestURL());
 	
-	String cat = request.getParameter("name_category").trim();		//nome categoria
+	String cat = new String(request.getParameter("name_category").trim().getBytes(), "utf-8").toString();	//nome categoria
 	String country = request.getParameter("country").trim();		//pais categoria/grupo do hobby
+	response.setContentType("utf-8");
 	
 	//valida se existe categoria
 	if(cat.length() >= 2){

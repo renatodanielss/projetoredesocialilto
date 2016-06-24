@@ -1,0 +1,672 @@
+/* GENERAL */
+
+BODY, P.regular {
+   background-color: #FFFFFF;
+   font-family: Verdana, Arial, Helvetica, sans-serif; 
+   color: #000000; 
+   font-style: normal;
+   font-size: 12px;
+   line-height: 18px; /*line spacing*/
+}
+
+ P, DIV, TD, A, MENU, LI, H5 {
+   font-size: 12px;   
+   font-family: Verdana, Arial, Helvetica, sans-serif; 
+}
+
+TABLE, TD {
+   font-size: 12px;
+}
+
+A, A:link,A:visited {
+   text-decoration: none;
+   color: #002060; 
+font-family: Ebrima;
+}
+
+A:hover,A:active {
+   text-decoration: underline;
+}
+
+H1, H2, H3, H4, H5, H6, P {
+   margin: 0px; 
+   margin-top: 0px; 
+   margin-bottom:0px;
+}
+
+H1, H2, H3, H4, H5, H6 {
+   font-weight: bold;
+}
+
+H2, H2 A, H2 A:link, H2 A:visited, H2 A:active {
+  /* color: #59980D; */
+ color: #000000;
+   line-height: 1.2em;
+   font-size: 130%;
+}
+
+H3, H3 A, H3 A:link, H3 A:visited, H3 A:active {
+  /* color: #59980D;*/
+ color: #000000;
+   line-height: 1.2em;
+   font-size: 110%;
+}
+
+H4 {
+   font-size: 16px;
+}
+
+H5, H5 A, H5 A:link, H5 A:visited, H5 A:active {
+   font-size: 110%;
+   margin-top: 5px; 
+    color: #000000;
+  /* color: #59980D; */
+   white-space: nowrap;
+}
+
+H5 A:hover {
+   color: #59980D; 
+   text-decoration: underline;
+} 
+
+/* Generic Emphasis for Text/Link */
+.emphasis, P.emphasis, A.emphasis:link, A.emphasis:visited, A.emphasis:active{
+   text-decoration: none; 
+   font-size: 14px; 
+    
+   color: #AA260E;
+   white-space: nowrap;
+}
+
+P.emphasis A:hover, A.emphasis:hover {
+   color: #FA7379;
+   white-space: nowrap;
+}
+
+HR {
+   text-align: center;
+}
+
+#breadcrumblinks A, #breadcrumblinks A:link {
+   color: #AA260E;
+}
+
+/* To create space between text and left aligned image.*/
+IMG.leftalignimg {
+   padding-right: 10px; 
+   padding-bottom: 10px;
+}
+
+/* Formatting of dates*/
+.datetext {
+   font-size: 10px; 
+   color:#888888;
+}
+
+/* Generic Box Heading */
+TD.boxheading P, TD.boxheading, P.boxheading {
+   border-style: solid; 
+   border-color: #B6B6B6; 
+   border-width: 1px 1px 1px; 
+   padding: 3px 10px; 
+   background: transparent url(/image.jsp?id=365) repeat scroll left top;
+   width: 125px;
+} 
+
+/* Generic Box */
+TABLE.box, DIV.box {
+   border: 1px solid #0d166d; 
+   width: 100%;
+   background-image: url(/image.jsp?id=546) ;
+  
+border-radius: 60px;
+}
+
+/* Generic Box Padding */
+TABLE.boxinner, DIV.boxinner {
+   padding-left: 5px;
+   padding-right: 5px;
+}
+
+/* Text to display demo logins.*/
+TD.demologininfo {
+   font-size: 10px; 
+}
+
+/* Buttons */
+.buttonbox {
+   color: #0e0564; 
+   font-weight: bold;
+}
+
+/* Box for logging into pages */
+TABLE.loginbox, TD.loginbox, DIV.loginbox {
+   margin:0 auto; 
+   width: 604px; 
+   border: 1px solid #5EA00D; 
+   padding-left: 15px;
+   padding-right: 15px;
+} /* Fixed width*/
+
+
+/* TEMPLATE ELEMENTS */
+
+TD.templatebackground {
+/*   background-color: #679A35;*/
+   background-image: url(/image.jsp?id=535);
+   background-repeat: no-repeat
+background-size:auto
+	
+
+}
+
+DIV.templatefooter {
+   display: none;
+}
+
+/* Template Footer */
+A.footer, A.footer:link, A.footer:visited, A.footer:active {
+   text-decoration: none; 
+   font-size: 9px; 
+   font-weight: bold; 
+   color:#AA260E;
+   line-height: 1em;
+   background-color: #FFFFFF;
+}
+
+A.footer:hover {
+   color: #FA7379;
+}
+
+/* Poll text */
+.polltext {
+   font-size: 10px;
+   line-height: 110%;
+}
+
+/* Language version links */
+.versionlink,P.versionlink A, A.versionlink:link, A.versionlink:visited, A.versionlink:active {
+   text-decoration: none; 
+   font-size: 9px; 
+   font-weight: bold; 
+   color: #AA260E;
+   line-height: 1em;
+}
+
+P.versionlink A:hover, A.versionlink:hover {
+   color: #FA7379;
+   white-space: nowrap;
+}
+
+/* Join Element Box */
+DIV.joinelementbox {
+   border: 1px solid #416121; 
+   width: 145px; 
+   background: #FFFFFF; 
+   padding: 0px;
+} /* No padding*/
+
+
+/* MAIN MENU */
+
+.navcontainer UL {
+   margin: 0;
+   padding: 0;
+   list-style-type: none;
+}
+
+.navcontainer UL LI A
+{
+   display: block;
+   font-family: Verdana, Arial, Helvetica, sans-serif; 
+   margin: 0 0 1px 0;
+   border-style: solid; 
+   border-color: #B6B6B6; 
+   border-width: 1px 1px 1px; 
+   padding: 3px 10px 3px 12px;
+   background: transparent url(/image.jsp?id=365) repeat scroll left top;
+   width: 123px;
+   text-decoration: none;
+   text-transform: uppercase;
+   font-weight: bold;
+   font-size: 12px;
+}
+
+.navcontainer UL LI A:visited
+{
+   text-decoration: none;
+   font-size: 12px;
+}
+
+.navcontainer UL UL LI A {
+   display: block;
+   border-style: solid; 
+   border-color: #B6B6B6; 
+   border-width: 1px 1px 1px; 
+   padding: 3px 10px 3px 12px; 
+   background: none;
+   width: 123px;
+   text-transform: uppercase;
+   font-weight: normal;
+   font-size:11px;
+}
+
+.navcontainer UL UL LI A:visited {
+   font-size: 11px;
+}
+
+.navcontainer UL UL UL LI A {
+   display: block;
+   border-style: solid; 
+   border-color: #B6B6B6; 
+   border-width: 1px 1px 1px; 
+   padding: 3px 10px 3px 25px; 
+   background: none;
+   width: 110px;
+   text-transform: none;
+   font-weight: normal;
+}
+
+.navcontainer UL LI A:hover, .navcontainer UL LI A:active {
+   border-color: #B6B6B6; 
+   background: #F2F2F2;
+   text-decoration: none;
+}
+
+.navcontainer UL UL LI A.menuselect, .navcontainer UL UL LI A.menuselect:hover {
+   background-image: url(/image.jsp?id=19);
+   background-repeat: no-repeat;
+   background-position: left top;
+}
+
+.navcontainer UL UL UL LI A.menuselect, .navcontainer UL UL UL LI A.menuselect:hover {
+   background-image: url(/image.jsp?id=405);
+   background-repeat: no-repeat;
+   background-position: left top;
+}
+
+
+/* TOOLBAR */
+
+DIV.toolbarmenu, A.toolbarmenu:link,A.toolbarmenu:visited,A.toolbarmenu:active {
+   display: block; 
+   color: #000000; 
+   font-size: 10px; 
+   font-weight: bold; 
+   white-space: nowrap; 
+   text-decoration: none; 
+   text-align: center; 
+   width: 100%;
+   padding-top: 3px;
+   padding-bottom: 3px;
+}
+
+A.toolbarmenu:hover, TD.menuitem:hover  {
+ color: #000000; 
+   background: #FFFFFF;
+font-family: Ebrima;
+
+
+ /* color: #003300; 
+   background: #EFF6E6;*/
+}
+
+TABLE.toolbarborder TD {
+   border: 0px solid #669933;
+   text-align:center;
+}
+
+TABLE.toolbarborder {
+   width: 100%;
+  /* border-collapse: collapse;*/
+}
+
+TABLE.toolbarborder TD TD {
+   border: 0px;
+} 
+
+
+/* SITEMAP */
+
+.sitemap UL {
+   list-style-type: none;
+   padding-bottom: 15px; 
+   padding-top: 5px;
+}
+
+.sitemap UL LI {
+   font-weight: bold; 
+   font-size: 14px;
+   padding-bottom: 10px;
+}
+
+.sitemap UL UL LI {
+   font-weight: normal;
+   padding-bottom: 3px;
+}
+
+.sitemap UL UL UL {
+   padding-bottom: 50px;
+}
+
+.sitemap UL UL UL LI {
+   font-weight: normal; 
+   font-size: 12px;
+}
+
+.sitemap UL UL UL UL {
+   padding-bottom: 3px;
+}
+
+
+/* SHOP */
+
+/* Box for shop intro*/
+TABLE.shopintrobox, TD.shopintrobox, DIV.shopintrobox {
+   border: 1px solid #B6B6B6; 
+   padding-left: 5px;
+   padding-right: 5px;
+} /* Fixed width*/
+
+/* Link Used for Listed Product */
+A.listedproductlink, A.listedproductlink:link {
+   font-size: 9px;
+   text-decoration: none;
+}
+
+/* Emphasis for Listed Product */
+A.listedproductemphasis:link, A.listedproductemphasis:visited, A.listedproductemphasis:active {
+   color: #3E6B52; 
+   font-size: 12px;
+   text-decoration: none;
+   font-weight: bold;
+}
+
+A.listedproductemphasis:hover {
+   color: #82B296;
+}
+
+
+/* SHOPPING CART ? CHECKOUT */
+
+/* Active Step in Shopping Cart */
+.shopcartactivestep {
+   color: #666666; 
+   font-size: 11px; 
+   line-height: 1.3em;
+   font-weight: bold;
+   text-decoration: none;
+}
+
+TABLE.producttable {
+   width: 100%;
+   border-collapse: collapse
+}
+
+TABLE.producttable TD {
+   width: 33%; 
+   border: 1px solid #B6B6B6;
+   padding: 15px;
+}
+
+TABLE.producttable TD TD {
+   height: auto; 
+   width: auto;
+   border: 0px none;
+   padding-right: 2px;
+}
+
+TABLE.productbox TD {
+   width: auto;
+   border: 0px none;
+   padding:15px;
+}
+
+TABLE.productbox TD TD {
+   width: auto;
+   border: 0px none;
+   padding: 2px;
+}
+
+
+/* SEARCH */
+
+A.searchresultlink, A.searchresultlink:visited {
+   text-decoration: none; 
+   font-weight: bold; 
+   color: #AA260E;
+}
+
+A.searchresultlink:hover {
+   color: #FA7379;
+   text-decoration: underline;
+}
+
+
+/* NEWS */
+
+/* News Element Box */
+TABLE.newselementbox, DIV.newselementbox {
+   width: 125px; 
+   padding: 3px 10px; 
+   border: 1px solid #B6B6B6;
+   border-top: 0px;
+} /* With no padding */
+
+.newslink, P.newslink A,P.newslink A:visited {
+   font-size: 10px; 
+   color: #3D0EAA; 
+   line-height: 1.2em; 
+   text-decoration: none;
+   font-weight: bold;
+}
+
+P.newslink A:hover {
+   color: #94A5F0;
+}
+
+A.readmorenewslink {
+   text-decoration: none; 
+   font-weight: bold; 
+   color: #AA260E;
+}
+
+A.readmorenewslink:hover {
+   color: #FA7379;
+   text-decoration: underline;
+}
+
+
+/* EVENTS CALENDAR */
+
+A.eventlink, A.eventlink:link, A.eventlink:visited {
+   text-decoration: none; 
+   color: #AA260E;
+}
+
+A.eventlink:hover, A.eventlink:active {
+   color: #FA7379;
+   text-decoration: underline;
+}
+.eventsummarytext {
+   font-size: 10px;
+}
+
+
+/* MEMBERS*/
+
+P.boxheading A.menuitem {
+   text-decoration: none;
+font-family: Ebrima;
+}
+
+
+/* FORUM */
+.forumentrybox {
+   border: 1px solid #5EA00D;
+   background:#EFF6E6;
+   padding: 5px;
+}
+
+
+/* GUESTBOOK */
+
+/* Information About Author of Guestbook Item */
+.guestbookauthoritem, P.guestbookauthoritem, A.guestbookauthoritem:link, A.guestbookauthoritem:visited, A.guestbookauthoritem:active {
+   color: #55910C; 
+   font-size: 9px;
+   text-decoration: none;
+   font-weight: bold;
+}
+
+P.guestbookauthoritem A:hover,A.guestbookauthoritem:hover {
+   color: #88E813;
+}
+
+/* RESERVATIONS */
+A.reservationid, A.reservationid:hover, A.reservationid:visited, A.reservationid:active {
+   color: #AA260E;
+   font-weight: bold;
+   text-decoration: underline;
+}
+
+
+
+@charset "UTF-8";
+
+.Accordion {
+
+	overflow: hidden;
+}
+
+/* This is the selector for the AccordionPanel container which houses the
+ * panel tab and a panel content area. It doesn't render visually, but we
+ * make sure that it has zero margin and padding.
+ *
+ * The name of the class ("AccordionPanel") used in this selector is not necessary
+ * to make the widget function. You can use any class name you want to style an
+ * accordion panel container.
+*/
+.AccordionPanel {
+	margin: 0px;
+	padding: 0px;
+}
+
+/* This is the selector for the AccordionPanelTab. This container houses
+ * the title for the panel. This is also the container that the user clicks
+ * on to open a specific panel.
+ *
+ * The name of the class ("AccordionPanelTab") used in this selector is not necessary
+ * to make the widget function. You can use any class name you want to style an
+ * accordion panel tab container.
+ *
+ * NOTE:
+ * This rule uses -moz-user-select and -khtml-user-select properties to prevent the
+ * user from selecting the text in the AccordionPanelTab. These are proprietary browser
+ * properties that only work in Mozilla based browsers (like FireFox) and KHTML based
+ * browsers (like Safari), so they will not pass W3C validation. If you want your documents to
+ * validate, and don't care if the user can select the text within an AccordionPanelTab,
+ * you can safely remove those properties without affecting the functionality of the widget.
+ */
+.AccordionPanelTab {
+
+	margin: 0px;
+	padding: 2px;
+	cursor: pointer;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	font-family: ebrima;
+	color: #006;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+/* This is the selector for a Panel's Content area. It's important to note that
+ * you should never put any padding on the panel's content area if you plan to
+ * use the Accordions panel animations. Placing a non-zero padding on the content
+ * area can cause the accordion to abruptly grow in height while the panels animate.
+ *
+ * Anyone who styles an Accordion *MUST* specify a height on the Accordion Panel
+ * Content container.
+ *
+ * The name of the class ("AccordionPanelContent") used in this selector is not necessary
+ * to make the widget function. You can use any class name you want to style an
+ * accordion panel content container.
+ */
+.AccordionPanelContent {
+	overflow: auto;
+	margin: 0px;
+	padding: 0px;
+	height: auto;
+	font-family: Ebrima;
+	font-size: 14px;
+	text-align: left;
+}
+
+/* This is an example of how to change the appearance of the panel tab that is
+ * currently open. The class "AccordionPanelOpen" is programatically added and removed
+ * from panels as the user clicks on the tabs within the Accordion.
+ */
+.AccordionPanelOpen .AccordionPanelTab {
+	font-family: ebrima;
+	color: #006;
+	font-weight: bold;
+	font-size: 16px;
+	
+}
+
+/* This is an example of how to change the appearance of the panel tab as the
+ * mouse hovers over it. The class "AccordionPanelTabHover" is programatically added
+ * and removed from panel tab containers as the mouse enters and exits the tab container.
+ */
+.AccordionPanelTabHover {
+	color: #000000;
+}
+.AccordionPanelOpen .AccordionPanelTabHover {
+	color: #000000;
+}
+
+/* This is an example of how to change the appearance of all the panel tabs when the
+ * Accordion has focus. The "AccordionFocused" class is programatically added and removed
+ * whenever the Accordion gains or loses keyboard focus.
+ */
+.AccordionFocused .AccordionPanelTab {
+
+}
+
+/* This is an example of how to change the appearance of the panel tab that is
+ * currently open when the Accordion has focus.
+ */
+.AccordionFocused .AccordionPanelOpen .AccordionPanelTab {
+
+}
+/* Rules for Printing */
+
+@media print {
+
+  .Accordion {
+  overflow: visible !important;
+  }
+  
+  .AccordionPanelContent {
+  display: block !important;
+  overflow: visible !important;
+  height: auto !important;
+  }
+}
+
+
+
+
+/* Layout do Forum*/
+
+
+
+
+caixaforum {
+   border-style: solid; 
+   border-color: #fff; 
+   border-width: 1px 1px 1px; 
+   padding: 3px 10px; 
+ 
+} 

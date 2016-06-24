@@ -61,7 +61,7 @@ public class ForumController {
 			ModelILiketo model = new ModelILiketo(request, response);
 			model.addAttribute("forum", forum);
 			model.addAttribute("topic", topico);
-			return "/page.jsp?id=628&topic=" + idTopic; 	//page comment topic
+			return "/page.jsp?id=628"; 						//page comment topic
 		}
 		
 		return "/page.jsp?id=invalidPage"; 					//pagina invalida
@@ -87,7 +87,7 @@ public class ForumController {
 			NotificationService.createNotification(db, idCategory, "topic", idCreate, Str.INCLUDED, myUserid);
 		}
 		
-		return "redirect:/ilt/group/forum/topic?idTop=" + idCreate + "&idForum=" + topic.getIdForum(); 	//redirect para page comment topic
+		return "redirect:/ilt/group/forum/topic?idTop=" + idCreate + "&idForum=" + topic.getIdForum()+"&idCat="+idCategory; 	//redirect para page comment topic
 		
 	}
 	
@@ -112,7 +112,7 @@ public class ForumController {
 			NotificationService.createNotification(db, idCategory, "comment", idCreate, Str.INCLUDED, myUserid);
 		}
 		
-		return "redirect:/ilt/group/forum/topic?idTop=" + comment.getIdTopic() + "&idForum=" + idForum; 	//redirect para page comment topic
+		return "redirect:/ilt/group/forum/topic?idTop=" + comment.getIdTopic() + "&idForum=" + idForum+"&idCat="+idCategory; 	//redirect para page comment topic
 		
 	}	
 	

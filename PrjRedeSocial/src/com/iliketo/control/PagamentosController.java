@@ -252,6 +252,9 @@ public class PagamentosController {
 							String idCreate = messageDAO.create(message);		//cria e envia mensagem						
 							//cria notificacao de envio de mensagem
 							NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
+							
+							//envia email para todos usuarios que participam do grupo/categoria(Colecionador, interessado, hobby) do novo anuncio que foi criado
+							EmailController.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, request);							
 							return;
 						}else{
 							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);

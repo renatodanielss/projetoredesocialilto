@@ -1272,29 +1272,57 @@ try {
 								if (regexFirst == null) regexFirst = Pattern.compile("@@@first:([a-zA-Z][a-zA-Z0-9\\w]*?):([^@]+@?[^@]+?)@@@", Pattern.CASE_INSENSITIVE);
 								Matcher m2 = regexFirst.matcher(mycode);
 								if (do_output && m2.find() && (output_cache.get("!@@@first:" + m2.group(1) + "@@@") != null)) {
-									output_cache.put(mycode, parse_output_list_first_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@first:" + m2.group(1) + "@@@")), request));
-									output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									//valida paginacao em uri executadas pelo Spring
+									if( CmsConfigILiketo.validaPaginationILiketoo(request.getRequest()) ){
+										String result = CmsConfigILiketo.processaPaginationILiketoo(request.getRequest(), m2.group(1), parse_output_list_first_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@first:" + m2.group(1) + "@@@")), request));
+										output_cache.put(mycode, result);		//put link com paginacao configurado com uri Spring + parametros Asbru
+										output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									}else{
+										output_cache.put(mycode, parse_output_list_first_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@first:" + m2.group(1) + "@@@")), request));
+										output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									}
 								}
 							} else if (myname.equals("previous")) {
 								if (regexPrevious == null) regexPrevious = Pattern.compile("@@@previous:([a-zA-Z][a-zA-Z0-9\\w]*?):([^@]+@?[^@]+?)@@@", Pattern.CASE_INSENSITIVE);
 								Matcher m2 = regexPrevious.matcher(mycode);
 								if (do_output && m2.find() && (output_cache.get("!@@@previous:" + m2.group(1) + "@@@") != null)) {
-									output_cache.put(mycode, parse_output_list_previous_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@previous:" + m2.group(1) + "@@@")), request));
-									output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									//valida paginacao em uri executadas pelo Spring
+									if( CmsConfigILiketo.validaPaginationILiketoo(request.getRequest()) ){
+										String result = CmsConfigILiketo.processaPaginationILiketoo(request.getRequest(), m2.group(1), parse_output_list_previous_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@previous:" + m2.group(1) + "@@@")), request));
+										output_cache.put(mycode, result);		//put link com paginacao configurado com uri Spring + parametros Asbru
+										output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									}else{
+										output_cache.put(mycode, parse_output_list_previous_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@previous:" + m2.group(1) + "@@@")), request));
+										output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									}
 								}
 							} else if (myname.equals("next")) {
 								if (regexNext == null) regexNext = Pattern.compile("@@@next:([a-zA-Z][a-zA-Z0-9\\w]*?):([^@]+@?[^@]+?)@@@", Pattern.CASE_INSENSITIVE);
 								Matcher m2 = regexNext.matcher(mycode);
 								if (do_output && m2.find() && (output_cache.get("!@@@next:" + m2.group(1) + "@@@") != null)) {
-									output_cache.put(mycode, parse_output_list_next_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@next:" + m2.group(1) + "@@@")), request));
-									output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									//valida paginacao em uri executadas pelo Spring
+									if( CmsConfigILiketo.validaPaginationILiketoo(request.getRequest()) ){
+										String result = CmsConfigILiketo.processaPaginationILiketoo(request.getRequest(), m2.group(1), parse_output_list_next_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@next:" + m2.group(1) + "@@@")), request));
+										output_cache.put(mycode, result);		//put link com paginacao configurado com uri Spring + parametros Asbru
+										output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									}else{
+										output_cache.put(mycode, parse_output_list_next_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@next:" + m2.group(1) + "@@@")), request));
+										output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									}
 								}
 							} else if (myname.equals("last")) {
 								if (regexLast == null) regexLast = Pattern.compile("@@@last:([a-zA-Z][a-zA-Z0-9\\w]*?):([^@]+@?[^@]+?)@@@", Pattern.CASE_INSENSITIVE);
 								Matcher m2 = regexLast.matcher(mycode);
 								if (do_output && m2.find() && (output_cache.get("!@@@last:" + m2.group(1) + "@@@") != null)) {
-									output_cache.put(mycode, parse_output_list_last_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@last:" + m2.group(1) + "@@@")), request));
-									output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									//valida paginacao em uri executadas pelo Spring
+									if( CmsConfigILiketo.validaPaginationILiketoo(request.getRequest()) ){
+										String result = CmsConfigILiketo.processaPaginationILiketoo(request.getRequest(), m2.group(1), parse_output_list_last_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@last:" + m2.group(1) + "@@@")), request));
+										output_cache.put(mycode, result);		//put link com paginacao configurado com uri Spring + parametros Asbru
+										output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									}else{
+										output_cache.put(mycode, parse_output_list_last_link(m2.group(1), m2.group(2), Common.intnumber(output_cache.get("!@@@last:" + m2.group(1) + "@@@")), request));
+										output_cache.put(mycode, parse_output_replace_sequential(server, request, response, session, script_name, query_string, session_mode, session_userid, session_username, session_usertype, session_usergroup, session_usertypes, session_usergroups, session_administrator, db, config, id, table, column, session_version, default_version, session_device, session_usersegments, session_usertests, session_currency, default_currency, default_shopcartsummary_page, default_shopcartsummary_entry, output_cache.get(mycode), output_cache, content_cache, page_cache, databases_cache, data_cache, order_cache, loopdetection+1));
+									}
 								}
 							} else if (myname.equals("paged")) {
 								if (regexPaged == null) regexPaged = Pattern.compile("@@@paged:([a-zA-Z][a-zA-Z0-9\\w]*?):([^@]+@?[^@]+?)@@@", Pattern.CASE_INSENSITIVE);
