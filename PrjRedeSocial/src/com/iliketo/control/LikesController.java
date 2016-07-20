@@ -85,29 +85,25 @@ public class LikesController {
 		
 		log.info(request.getRequestURL());
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//DB
-		LikesDAO dao = new LikesDAO(db, null);
-		
-		String tipoPost = request.getParameter("tipoPost");
-		String idPost = request.getParameter("idPost"); 
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		String myUserid = (String) request.getSession().getAttribute("userid");
+		LikesDAO dao = new LikesDAO(db, null);		
 		
-		Likes curtir = new Likes();
-		curtir.setPostType(tipoPost);
-		curtir.setIdPost(idPost);
+		Likes curtir = (Likes)cms.getObjectOfParameter(Likes.class);
 		curtir.setIdMember(myUserid);
-		
+				
 		String status = "";
 		//valida curtida
-		if (dao.jaCurtiu(tipoPost, idPost, myUserid)) {
+		if (dao.jaCurtiu(curtir.getPostType(), curtir.getIdPost(), myUserid)) {
 			//unlike
-			dao.excluirCurtir(tipoPost, idPost, myUserid);
+			dao.excluirCurtir(curtir.getPostType(), curtir.getIdPost(), myUserid);
 			status = "unlike";
 		}else{
 			//like
 			dao.curtir(curtir);
 			status = "like";			
 		}
-		String total = dao.getTotalCurtidas(tipoPost, idPost);
+		String total = dao.getTotalCurtidas(curtir.getPostType(), curtir.getIdPost());
 		
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("status", status);
