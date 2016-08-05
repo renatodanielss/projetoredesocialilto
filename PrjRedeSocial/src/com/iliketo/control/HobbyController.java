@@ -64,19 +64,14 @@ public class HobbyController {
 		//dao e cms
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
+		
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		
 		HobbyDAO hobbyDAO = new HobbyDAO(db, request);		
 		Hobby hobby = (Hobby) cms.getObjectOfParameter(Hobby.class);	//objeto com dados do form
 
-		String SQL = "select h.id_hobby from dbhobby h where h.fk_user_id = '" +myUserid+ "' and h.fk_category_id = '" + hobby.getIdCategory()+"'";
-		String[][] alias = { {"dbhobby", "h"} };
-		SQL = CS.transformSQLReal(SQL, alias);
-		HashMap<String,String> registro  = db.query_record(SQL);
-		
 		//valida se jah participa do grupo hobby
-		if(registro == null){			
+		if(hobbyDAO.usuarioJaPossuiHobby(hobby, myUserid)){			
 			hobbyDAO.create(hobby);											//add hobby
 			String idCat = hobby.getIdCategory();			
 			//return "redirect:/ilt/groupCategory/group?idCat=" + idCat;		//success group hobby

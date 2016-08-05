@@ -20,6 +20,7 @@ import HardCore.Databases;
 import HardCore.Fileupload;
 import HardCore.Text;
 
+import com.iliketo.aws.ILiketooBucketsBusinessAWS;
 import com.iliketo.control.VideoController;
 import com.iliketo.model.Member;
 import com.iliketo.model.annotation.ColumnILiketo;
@@ -296,23 +297,35 @@ public abstract class GenericDAO {
 	 */
 	protected void deleteFilePhysically(String nameFileDelete, String localFilePath){
 		
-		if(nameFileDelete != null && !nameFileDelete.equals("")){
-			String pathFileName = localFilePath + nameFileDelete;
-			try {
-				
-				Common.deleteFile(pathFileName);
-				log.info("Log - Delete File ok local: " + pathFileName);
-				
-			} catch (Exception e) {
-				log.error("Log - Error Delete File local: " + pathFileName);
-				e.printStackTrace();
+		Configuration myconfig = new Configuration();
+		if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
+			//"csrootpath" = VARIAVEL AMAZENADA NO ASBRU EM CONFIGURACOES > SYSTEM > WEBSITE > ABA MIDIA > "CAMPO BUCKET"
+			String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
+			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
+			if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)
+					|| DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PILOTO)){
+				if(nameFileDelete != null && !nameFileDelete.equals("")){
+					ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
+					aws.deletaArquivosDiretorioStorageAmazon(nameFileDelete, "upload");
+				}
+			}else{
+				//DELETA ARQUIVOS NO DIRETORIO SERVIDOR LOCAL DA APLICACAO
+				if(nameFileDelete != null && !nameFileDelete.equals("")){
+					String pathFileName = localFilePath + nameFileDelete;
+					try {				
+						Common.deleteFile(pathFileName);
+						log.info("Log - Delete File ok local: " + pathFileName);				
+					} catch (Exception e) {
+						log.error("Log - Error Delete File local: " + pathFileName);
+						e.printStackTrace();
+					}
+				} else {
+					log.error("Log - Delete File name: " +nameFileDelete+ " no exists!");
+				}		
+				//calcula e salva espaco usado de armazenamento
+				this.calculateTotalFilesMemberInBytes();
 			}
-		} else {
-			log.error("Log - Delete File name: " +nameFileDelete+ " no exists!");
 		}
-		
-		//calcula e salva espaco usado de armazenamento
-		this.calculateTotalFilesMemberInBytes();
 	}
 	
 	/**
@@ -322,23 +335,38 @@ public abstract class GenericDAO {
 	 */
 	protected void deleteListFilesPhysically(ArrayList<String> listNamesFileDelete, String localImagePath){
 		
-		for(String namePhoto : listNamesFileDelete){
-			if(namePhoto != null && !namePhoto.equals("")){
-				String pathFileName = localImagePath + namePhoto;
-				try {
-					
-					Common.deleteFile(pathFileName);
-					log.info("Log - Delete File Image OK local: " + pathFileName);
-					
-				} catch (Exception e) {
-					log.error("Log - Error Delete File Image local: " + pathFileName);
-					e.printStackTrace();
+		Configuration myconfig = new Configuration();
+		if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
+			//"csrootpath" = VARIAVEL AMAZENADA NO ASBRU EM CONFIGURACOES > SYSTEM > WEBSITE > ABA MIDIA > "CAMPO BUCKET"
+			String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
+			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
+			if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)
+					|| DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PILOTO)){
+				ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
+				for(String nameFile : listNamesFileDelete){
+					if(nameFile != null && !nameFile.equals("")){
+						aws.deletaArquivosDiretorioStorageAmazon(nameFile, "upload");
+					}
+				}				
+			}else{
+				//DELETA ARQUIVOS NO DIRETORIO SERVIDOR LOCAL DA APLICACAO
+				for(String namePhoto : listNamesFileDelete){
+					if(namePhoto != null && !namePhoto.equals("")){
+						String pathFileName = localImagePath + namePhoto;
+						try {					
+							Common.deleteFile(pathFileName);
+							log.info("Log - Delete File Image OK local: " + pathFileName);
+							
+						} catch (Exception e) {
+							log.error("Log - Error Delete File Image local: " + pathFileName);
+							e.printStackTrace();
+						}
+					} else {
+						log.error("Log - Delete File Image - name photo " +namePhoto+ " no exists BD!");
+					}
 				}
-			} else {
-				log.error("Log - Delete File Image - name photo " +namePhoto+ " no exists BD!");
 			}
 		}
-		
 	}
 	
 	/**

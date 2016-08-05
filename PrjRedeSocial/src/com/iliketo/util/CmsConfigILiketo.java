@@ -35,6 +35,7 @@ import HardCore.Text;
 import HardCore.UCbrowseWebsite;
 import HardCore.Website;
 
+import com.iliketo.aws.ILiketooBucketsBusinessAWS;
 import com.iliketo.control.AdvertiserController;
 import com.iliketo.control.VideoController;
 import com.iliketo.dao.MemberDAO;
@@ -173,6 +174,7 @@ public class CmsConfigILiketo {
 	 */
 	private Object processFileupload(Object object, String typeFile) throws StorageILiketoException, ImageILiketoException, VideoILiketoException{
 		
+		
 		HttpServletRequest request = myrequest.getRequest();
 		String myUserId = mysession.get("userid");
 		Member member = ((Member) memberDAO.readByColumn("id_member", myUserId, Member.class));
@@ -180,6 +182,10 @@ public class CmsConfigILiketo {
 		
 		//valida armazenamento disponivel
 		if(validateFreeSpaceStorage(member, uploadBytes)){
+			
+			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
+			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
+			
 			try{
 				boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 				if(isMultipart){
@@ -209,18 +215,32 @@ public class CmsConfigILiketo {
 							
 			            	//valida upload para anunciantes
 			            	FileuploadILiketo filepostIliketo;
-			            	if(!isUploadAdvertiser){	
-					        	filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
-					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
-					        }else{
-					        	filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+			            	String path_file_name = "";					        
+			            	if(!isUploadAdvertiser){
+			            		if(aws.IS_LOCAL_STORAGE_AMAZON){			            			
+			            			path_file_name = aws.uploadDeArquivosParaDiretorioStorageAmazon(mapMyFormInput.get("filename"), "upload", item);
+			                	}else{
+			                		filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+			                				myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
+			                		path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	
+			                	}
+			            	}else{
+			            		if(aws.IS_LOCAL_STORAGE_AMAZON){		            			
+			            			path_file_name = aws.uploadDeArquivosParaDiretorioStorageAmazon(mapMyFormInput.get("filename"), "advertiser", item);
+			                	}else{
+			                		filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
 						        		FOLDER_ADVERTISER, 32, stream, mapMyFormInput);
+			                		path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);
+			                	}
 					        }
-			            	String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);					        
 					        
 					        //verifica e valida duracao de video
 					        if(typeFile.equals("video")){
-					        	FileuploadILiketo.validateDurationVideo(mysession.get(Str.STORAGE), path_file_name);
+					        	if(aws.IS_LOCAL_STORAGE_AMAZON){
+					        		//aws.validateDurationVideo(mapMyFormInput.get("filename"), "upload");
+					        	}else{
+					        		FileuploadILiketo.validateDurationVideo(mysession.get(Str.STORAGE), path_file_name);
+					        	}
 					        }
 					        for(Field atributo : object.getClass().getDeclaredFields()){
 								atributo.setAccessible(true);
@@ -270,6 +290,7 @@ public class CmsConfigILiketo {
 	 */
 	private Object[] processFileuploads(Object[] objects, String typeFile) throws ImageILiketoException, VideoILiketoException, StorageILiketoException{
 		
+				
 		HttpServletRequest request = myrequest.getRequest();		
 		String myUserId = mysession.get("userid");
 		Member member = ((Member) memberDAO.readByColumn("id_member", myUserId, Member.class));
@@ -277,6 +298,10 @@ public class CmsConfigILiketo {
 		
 		//valida armazenamento disponivel
 		if(validateFreeSpaceStorage(member, uploadBytes)){
+			
+			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
+			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
+
 			try{
 				boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 				if(isMultipart){
@@ -312,10 +337,15 @@ public class CmsConfigILiketo {
 			            	mapMyFormInput.put("name", item.getFieldName());
 			            	mapMyFormInput.put("filename", getFilenameByCurrentTimeMillis(item.getName()));
 			            	
-					        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
-					        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
-					        String path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);      
-
+			            	String path_file_name = "";	
+			            	if(aws.IS_LOCAL_STORAGE_AMAZON){			            			
+		            			path_file_name = aws.uploadDeArquivosParaDiretorioStorageAmazon(mapMyFormInput.get("filename"), "upload", item);
+		                	}else{
+						        FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+						        		myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
+						        path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);      
+		                	}
+			            	
 					        for(Field atributo : objects[i].getClass().getDeclaredFields()) {
 								atributo.setAccessible(true);
 								FileILiketo file = atributo.getAnnotation(FileILiketo.class);

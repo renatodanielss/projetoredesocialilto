@@ -7,15 +7,18 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import HardCore.DB;
 
 import com.iliketo.dao.CommentDAO;
 import com.iliketo.dao.ForumDAO;
 import com.iliketo.dao.IliketoDAO;
+import com.iliketo.dao.MemberDAO;
 import com.iliketo.dao.TopicDAO;
 import com.iliketo.model.Comment;
 import com.iliketo.model.Forum;
+import com.iliketo.model.Member;
 import com.iliketo.model.Topic;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
@@ -37,6 +40,18 @@ public class ForumController {
 	public void errorResponse(Exception ex, HttpServletRequest req, HttpServletResponse res){
 		String pageError = "/page.jsp?id=902";
 		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
+	}
+	
+	@RequestMapping(value={"/group/forum/aceitarTermos"})
+	public String aceitarTermos(HttpServletRequest request, @RequestParam(required=true, value="idCat") String idCat) throws Exception{
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//DB
+		
+		Member membro = (Member)request.getSession().getAttribute("member");
+		membro.setRegrasForum("y");
+		new MemberDAO(db, null).update(membro, false);
+		request.getSession().setAttribute("member", membro);
+		
+		return "redirect:/ilt/groupCategory/forum?idCat=" + idCat;
 	}
 	
 	/**

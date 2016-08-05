@@ -19,9 +19,9 @@ public class LikesDAO extends GenericDAO{
 	//metodos CRUD declarados na classe pai GenericDAO
 	//outros metodos especificos do LikesDAO abaixo
 	
-	public void curtir(Likes curtir){
-		super.create(curtir);
-		log.info("LIKE - post_type: " +curtir.getPostType()+ " fk_post_id: " +curtir.getIdPost()+ " fk_user_id: " + curtir.getIdMember());
+	public String curtir(Likes curtir){
+		log.info("LIKE OK - post_type: " +curtir.getPostType()+ " fk_post_id: " +curtir.getIdPost()+ " fk_user_id: " + curtir.getIdMember());
+		return super.create(curtir);
 	}
 	
 	public void excluirCurtir(String tipoPost, String idPost, String myUserid) {		

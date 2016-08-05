@@ -20,6 +20,7 @@ import HardCore.Request;
 import com.coremedia.iso.IsoFile;
 import com.coremedia.iso.boxes.MovieBox;
 import com.coremedia.iso.boxes.MovieHeaderBox;
+import com.iliketo.aws.ILiketooBucketsBusinessAWS;
 import com.iliketo.control.VideoController;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.VideoILiketoException;
@@ -300,24 +301,27 @@ public class FileuploadILiketo {
 						} catch (Exception e) {
 						}
 					}
-					//file = new FileOutputStream(pathname + myfilename);
-		            File uploadedFile = new File(pathname + myfilename);
-		            byte[] bytes = new byte[2048];
-		            int read = 0;
-		            OutputStream outpuStream = new FileOutputStream(new File(uploadedFile.getAbsolutePath()));
-		            while ((read = stream.read(bytes)) != -1) {
-		                outpuStream.write(bytes, 0, read);
-		            }
-		            outpuStream.close();
-		            
+
 					if(myforminputname.equals(Str.FILE)){						
 						//add o parametro com o nome 'path_file_default', para armazenar o valor do nome da foto evento no banco de dados q terá o mesmo nome na coluna
 						addParameter(Str.PATH_FILE_DEFAULT, filename);
 						log.info("UPLOAD - file = " + filename);
 						log.info("path = " + pathname);
-					}
+					}					
+					//file = new FileOutputStream(pathname + myfilename);
+					
+			            File uploadedFile = new File(pathname + myfilename);
+			            byte[] bytes = new byte[2048];
+			            int read = 0;
+			            OutputStream outpuStream = new FileOutputStream(new File(uploadedFile.getAbsolutePath()));
+			            while ((read = stream.read(bytes)) != -1) {
+			                outpuStream.write(bytes, 0, read);
+			            }
+			            outpuStream.close();
+					
+		            
 				} catch (Exception e) {
-					file = null;
+					throw new Exception(e);
 				}
 			} else {
 				file = null;

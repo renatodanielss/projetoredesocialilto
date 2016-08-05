@@ -35,6 +35,7 @@ import com.iliketo.model.MessageInbox;
 import com.iliketo.model.Notification;
 import com.iliketo.model.Topic;
 import com.iliketo.model.Video;
+import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.Str;
@@ -332,9 +333,9 @@ public class NotificationService {
 			recordsMessages = db.query_records(SQL);
 			
 			//SQL para recuperar curtidas
-			SQL = "select t1.id as id, t1.title_post as title_post, t1.date_updated as date_updated, t1.nickname as nickname "
+			SQL = "select t1.id_like as id_like, t1.title_post as title_post, t1.date_updated as date_updated, t1.nickname as nickname "
 					+ "from dblikes as t1 "
-					+ "join dbgroupnotification as n on n.fk_content_id = t1.id "
+					+ "join dbgroupnotification as n on n.fk_content_id = t1.id_like "
 					+ "where t1.fk_owner_id = '"+myUserid+"' and n.content_type = 'curtir' and n.date_created > '"+lastSeenDate+"' and n.date_created <= '"+dateNow+"'";
 			
 			aliasSQL = new String[][] { {"dblikes", "t1"}, {"dbgroupnotification", "n"} };
@@ -540,7 +541,7 @@ public class NotificationService {
 			
 			//total de notificacoes
 			totalNews = recordsCollections.size() + recordsItems.size() + recordsVideos.size() + recordsEvent.size() + 
-					recordsAnnounce.size() + recordsTopic.size() + recordsComment.size() + recordsMessages.size();			
+					recordsAnnounce.size() + recordsTopic.size() + recordsComment.size() + recordsMessages.size() + recordsLikes.size();			
 		}		
 		
 		if(!isMobile){
@@ -568,7 +569,7 @@ public class NotificationService {
 			if(!recordsLikes.isEmpty()){
 				for(String rec : recordsLikes.keySet()){
 					Likes like = new Likes();
-					like.setId(recordsMessages.get(rec).get("id"));
+					like.setId(recordsMessages.get(rec).get("id_like"));
 					like.setTitlePost(recordsMessages.get(rec).get("title_post"));
 					like.setDateUpdated(recordsMessages.get(rec).get("date_updated"));
 					like.setNickname(recordsMessages.get(rec).get("nickname"));
@@ -713,8 +714,20 @@ public class NotificationService {
 						}
 						if(bean instanceof Likes){
 							Likes likes = (Likes) bean;
-							String msg = likes.getNickname() + 
-									(LING.equals("pt") ? " curtiu sua publicação \"" : " liked your post \"") + likes.getTitlePost() + "\".";
+							String msg = likes.getNickname();
+							switch (likes.getPostType().toCharArray()[0]){
+								case 'C' : msg = (LING.equals("pt") ? " curtiu sua coleção." : " has liked your collection.");
+										break;
+								case 'I' : msg = (LING.equals("pt") ? " curtiu seu item." : " has liked your item.");
+										break;
+								case 'V' : msg = (LING.equals("pt") ? " curtiu seu vídeo." : " has liked your video.");
+										break;
+								case 'E' : msg = (LING.equals("pt") ? " curtiu sua evento." : " has liked your event.");
+										break;
+								case 'M' : msg = (LING.equals("pt") ? " curtiu seu comentário." : " has liked your comment.");
+										break;
+							}
+							//(LING.equals("pt") ? " curtiu sua publicação \"" : " liked your post \"") + likes.getTitlePost() + "\".";
 							JSONObject json = new JSONObject();
 							json.put("msg", msg);
 							array.put(json);
@@ -802,9 +815,11 @@ public class NotificationService {
 		LinkedHashMap<String,HashMap<String,String>> recordsMessages = db.query_records(SQL);
 		
 		//SQL para recuperar curtidas
-		SQL = "select t1.id as id, t1.title_post as title_post, t1.date_updated as date_updated, t1.nickname as nickname "
-				+ "t1.path_photo_member from dblikes as t1 "
-				+ "join dbgroupnotification as n on n.fk_content_id = t1.id "
+		SQL = "select t1.id_like as id_like, t1.post_type as post_type, t1.fk_post_id as fk_post_id, t1.fk_owner_id as fk_owner_id, "
+				+ "t1.fk_user_id as fk_user_id, t1.nickname as nickname, "
+				+ "t1.title_post as title_post, t1.date_updated as date_updated, "				
+				+ "t1.path_photo as path_photo_member from dblikes as t1 "
+				+ "join dbgroupnotification as n on n.fk_content_id = t1.id_like "
 				+ "where t1.fk_owner_id = '"+myUserid+"' and n.content_type = 'curtir' and n.date_created > '"+dateDaysNotific+"' and n.date_created <= '"+dateNow+"'";
 		
 		aliasSQL = new String[][] { {"dblikes", "t1"}, {"dbgroupnotification", "n"} };
@@ -872,7 +887,7 @@ public class NotificationService {
 		StringBuffer div = new StringBuffer();		//div result html	
 		
 		//verifica se a lista possui configuracao de notificacao (colecao/interesse) em alguma categoria ou mensagens novas da caixa de entrada
-		if(!listConfigNotificationCategory.isEmpty() || !recordsMessages.isEmpty()){
+		if(!listConfigNotificationCategory.isEmpty() || !recordsMessages.isEmpty() || !recordsLikes.isEmpty()){
 			
 			ArrayList<ContentILiketo> listModelNotification = new ArrayList<ContentILiketo>();
 			LinkedHashMap<String,HashMap<String,String>> recordsCollections = new LinkedHashMap<String,HashMap<String,String>>();
@@ -1180,11 +1195,15 @@ public class NotificationService {
 			if(!recordsLikes.isEmpty()){
 				for(String rec : recordsLikes.keySet()){
 					Likes like = new Likes();
-					like.setId(recordsMessages.get(rec).get("id"));
-					like.setTitlePost(recordsMessages.get(rec).get("title_post"));
-					like.setDateUpdated(recordsMessages.get(rec).get("date_updated"));
-					like.setNickname(recordsMessages.get(rec).get("nickname"));
-					like.setPathPhoto(recordsMessages.get(rec).get("path_photo_member"));
+					like.setIdLike(recordsLikes.get(rec).get("id_like"));
+					like.setPostType(recordsLikes.get(rec).get("post_type"));
+					like.setIdPost(recordsLikes.get(rec).get("fk_post_id"));
+					like.setIdOwner(recordsLikes.get(rec).get("fk_owner_id"));
+					like.setIdMember(recordsLikes.get(rec).get("fk_user_id"));
+					like.setNickname(recordsLikes.get(rec).get("nickname"));
+					like.setTitlePost(recordsLikes.get(rec).get("title_post"));
+					like.setPathPhoto(recordsLikes.get(rec).get("path_photo_member"));
+					like.setDateUpdated(recordsLikes.get(rec).get("date_updated"));
 					listModelNotification.add(like);
 				}
 			}
@@ -1361,10 +1380,10 @@ public class NotificationService {
 						s = s.replaceAll("@@@redirect@@@", "/ilt/message/inbox/view?id=" + message.getIdMsg() + "&subject" + message.getSubject());	//link da publicacao
 						div.append(s);
 					}
+					//curtidas
 					if(bean instanceof Likes){
 						Likes likes = (Likes) bean;
-						String msg = likes.getNickname() + 
-								(LING.equals("pt") ? " curtiu sua publicação \"" : " liked your post \"") + likes.getTitlePost() + "\".";
+						String msg = likes.getNickname();								
 						String s = listEntryNotific;
 						s = s.replaceAll("@@@message@@@", msg);							//mensagem post
 						s = s.replaceAll("@@@pathPhoto@@@", likes.getPathPhoto());		//foto membro
@@ -1372,12 +1391,22 @@ public class NotificationService {
 						s = s.replaceAll("@@@dateUpdated@@@", likes.getDateUpdated());	//data publicacao
 						String link = "";
 						switch (likes.getPostType().toCharArray()[0]){
-							case 'C' : link = "/ilt/collection/profile?id=" + likes.getIdPost(); break;
-							case 'I' : link = ""; break;
-							case 'V' : link = ""; break;
-							case 'E' : link = ""; break;
+							case 'C' : link = "/ilt/collection/profile?id=" + likes.getIdPost(); 
+									msg = (LING.equals("pt") ? " curtiu sua coleção." : " has liked your collection.");
+									break;
+							case 'I' : link = "/ilt/item/view?id=" + likes.getIdPost(); 
+									msg = (LING.equals("pt") ? " curtiu seu item." : " has liked your item.");
+									break;
+							case 'V' : link = "/ilt/video/view?id=" + likes.getIdPost(); 
+									msg = (LING.equals("pt") ? " curtiu seu vídeo." : " has liked your video.");
+									break;
+							case 'E' : link = "/ilt/event/view?id=" + likes.getIdPost(); 
+									msg = (LING.equals("pt") ? " curtiu sua evento." : " has liked your event.");
+									break;
 							case 'M' : link = "/ilt/group/forum/topic?idTop=" + likes.getIdPost().split(",")[0] 
-									+ "&idForum=" + likes.getIdPost().split(",")[1]; break;	//ex: 123,123 (idtop,idforum)
+									+ "&idForum=" + likes.getIdPost().split(",")[1]; 
+									msg = (LING.equals("pt") ? " curtiu seu comentário." : " has liked your comment.");
+									break;	//ex: 123,123 (idtop,idforum)
 						}
 						s = s.replaceAll("@@@redirect@@@", link);	//link da publicacao
 						div.append(s);

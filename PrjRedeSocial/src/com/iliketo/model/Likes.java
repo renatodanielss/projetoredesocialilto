@@ -13,6 +13,10 @@ import com.iliketo.model.annotation.IdILiketo;
  */
 public class Likes extends ContentILiketo {
 	
+	@IdILiketo
+	@ColumnILiketo(name = "id_like") 
+	private String idLike;
+	
 	@ColumnILiketo(name = "post_type") //colecao c, item i, video v, event e, comentario m
 	private String postType;
 	
@@ -37,6 +41,16 @@ public class Likes extends ContentILiketo {
 	public Likes(){
 		
 	}
+
+	public String getIdLike() {
+		return idLike;
+	}
+
+	public void setIdLike(String idLike) {
+		this.idLike = idLike;
+	}
+
+
 
 	public String getPostType() {
 		return postType;

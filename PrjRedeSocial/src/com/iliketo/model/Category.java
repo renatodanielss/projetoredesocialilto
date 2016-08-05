@@ -23,8 +23,11 @@ public class Category extends ContentILiketo {
 	@ColumnILiketo(name = "hobby")		//'no' ou 'yes'
 	private String hobby;
 	
-	@ColumnILiketo(name = "country")	//BR ou US ...
-	private String country;
+	@ColumnILiketo(name = "idioma")	
+	private String idioma;
+	
+	@ColumnILiketo(name = "super_category")
+	private String superCategory;
 	
 	private String total;
 	
@@ -71,14 +74,24 @@ public class Category extends ContentILiketo {
 	}
 
 
-	public String getCountry() {
-		return country;
+	public String getIdioma() {
+		return idioma;
 	}
 
 
-	public void setCountry(String country) {
-		this.country = country;
+	public void setIdioma(String idioma) {
+		this.idioma = idioma;
 	}
 
+
+	public String getSuperCategory() {
+		return superCategory;
+	}
+
+
+	public void setSuperCategory(String superCategory) {
+		this.superCategory = superCategory;
+	}
+	
 	
 }

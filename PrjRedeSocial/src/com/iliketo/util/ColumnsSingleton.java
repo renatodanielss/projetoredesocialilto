@@ -392,8 +392,8 @@ public class ColumnsSingleton {
 					String column = "" + nameColums.next();		
 					
 					//verifica se possui a coluna no comando sql seguida do apelido da tabela.  
+					//System.out.println("***COLUMN = " +column+ "***");
 					if(SQL.contains(as + "." + column)){	//Ex: c1.name_collection, t1.title_item
-						
 						//valida nome da coluna fantasia se existe a col+id real no banco de dados
 						if(mapcolumns.get(column).get("id") != null && !mapcolumns.get(column).get("id").equals("")){
 							

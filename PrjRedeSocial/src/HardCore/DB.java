@@ -1601,9 +1601,8 @@ if (DEBUG) System.out.println("HardCore/DB.connectionDriverManager:"+context_fac
 					} else {
 						ps.setString(p++, "" + data.get(attribute));
 					}
-				}
-				ps.setString(p++, "" + value);
-				ps.executeUpdate();
+				}				//osvald casting, forcar cast de String para int quando a coluna for 'id'				if(id.equalsIgnoreCase("id")){
+					//tenta executar casting do valor id em String para Inteiro					ps.setInt(p++, Integer.parseInt(value));				}else{					ps.setString(p++, "" + value);				}								ps.executeUpdate();
 				ps.close();
 			} else {
 				error = "ERROR:DB:update:" + getWarnings() + " - " + SQL;
@@ -1613,7 +1612,7 @@ if (DEBUG) System.out.println("HardCore/DB.connectionDriverManager:"+context_fac
 		} catch (Exception e) {
 			error = "ERROR:DB:update:" + e + " " + getWarnings() + " - " + SQL;
 			errors += "<p>" + error + "</p>" + "\r\n";
-			if (DEBUG) System.out.println(error);
+			//osvald update			if (true) System.out.println(error);						System.out.println("*** ERRO EXCEPTION update ***");
 			if (ps != null) try { ps.close(); } catch (Exception ee) { ; }
 		} finally {
 		}
@@ -1631,14 +1630,13 @@ if (DEBUG) System.out.println("HardCore/DB.connectionDriverManager:"+context_fac
 			SQL = "update " + Common.SQL_clean(table) + " set " + SQLupdate + " where " + Common.SQL_clean(id) + "=?";
 			if (DEBUG) System.out.println("HardCore/DB.updateSet:"+SQL);
 			ps = prepareStatement(SQL);
-			int p = 1;
-			ps.setString(p++, "" + value);
+			int p = 1;			//osvald casting, forcar cast de String para int quando a coluna for 'id'			if(id.equalsIgnoreCase("id")){				//tenta executar casting do valor id em String para Inteiro				ps.setInt(p++, Integer.parseInt(value));			}else{				ps.setString(p++, "" + value);			}
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception e) {
 			error = "ERROR:DB:updateSet:" + e + " " + getWarnings() + " - " + SQL;
-			errors += "<p>" + error + "</p>" + "\r\n";
-			if (DEBUG) System.out.println(error);
+			errors += "<p>" + error + "</p>" + "\r\n";			//osvald updateSet
+			if (true) System.out.println(error);			System.out.println("*** ERRO EXCEPTION updateSet ***");
 			if (ps != null) try { ps.close(); } catch (Exception ee) { ; }
 		} finally {
 		}
@@ -1706,8 +1704,8 @@ if (DEBUG) System.out.println("HardCore/DB.connectionDriverManager:"+context_fac
 			}
 		} catch (Exception e) {
 			error = "ERROR:DB:updateWhere:" + e + " " + getWarnings() + " - " + SQL;
-			errors += "<p>" + error + "</p>" + "\r\n";
-			if (DEBUG) System.out.println(error);
+			errors += "<p>" + error + "</p>" + "\r\n";			//osvald updateWhere			
+			if (true) System.out.println(error);			System.out.println("*** ERRO EXCEPTION updateWhere ***");			
 			if (ps != null) try { ps.close(); } catch (Exception ee) { ; }
 		} finally {
 		}
@@ -1725,14 +1723,13 @@ if (DEBUG) System.out.println("HardCore/DB.connectionDriverManager:"+context_fac
 			SQL = "delete from " + Common.SQL_clean(table) + " where " + Common.SQL_clean(id) + "=?";
 			if (DEBUG) System.out.println("HardCore/DB.delete:"+SQL);
 			ps = prepareStatement(SQL);
-			int p = 1;
-			ps.setString(p++, "" + value);
+			int p = 1;			//osvald casting, forcar cast de String para int quando a coluna for 'id'			if(id.equalsIgnoreCase("id")){				//tenta executar casting do valor id em String para Inteiro				ps.setInt(p++, Integer.parseInt(value));			}else{				ps.setString(p++, "" + value);			}
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception e) {
 			error = "ERROR:DB:delete:" + e + " " + getWarnings() + " - " + SQL;
-			errors += "<p>" + error + "</p>" + "\r\n";
-			if (DEBUG) System.out.println(error);
+			errors += "<p>" + error + "</p>" + "\r\n";			//osvald delete
+			if (true) System.out.println(error);			System.out.println("*** DELETE ERROR EXCEPTION ***");			
 			if (ps != null) try { ps.close(); } catch (Exception ee) { ; }
 		} finally {
 		}

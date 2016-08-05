@@ -87,10 +87,15 @@ public class LikesController {
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	//DB
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		String myUserid = (String) request.getSession().getAttribute("userid");
-		LikesDAO dao = new LikesDAO(db, null);		
+		String nickname = (String)((Member) request.getSession().getAttribute("member")).getNickname();
+		String photo = (String)((Member) request.getSession().getAttribute("member")).getPathPhoto();
+		LikesDAO dao = new LikesDAO(db, null);
 		
 		Likes curtir = (Likes)cms.getObjectOfParameter(Likes.class);
 		curtir.setIdMember(myUserid);
+		curtir.setNickname(nickname);
+		curtir.setPathPhoto(photo);
+		//curtir.setIdOwner(idOwner);
 				
 		String status = "";
 		//valida curtida
@@ -100,8 +105,10 @@ public class LikesController {
 			status = "unlike";
 		}else{
 			//like
-			dao.curtir(curtir);
-			status = "like";			
+			String idCreated = dao.curtir(curtir);
+			status = "like";
+			//gerar notificacoes
+			NotificationService.createNotification(db, "", "curtir", idCreated, Str.INCLUDED, myUserid);
 		}
 		String total = dao.getTotalCurtidas(curtir.getPostType(), curtir.getIdPost());
 		

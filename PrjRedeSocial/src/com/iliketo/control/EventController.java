@@ -109,7 +109,7 @@ public class EventController {
 			NotificationService.createNotification(db, idCategory, "event", idCreate, Str.INCLUDED, myUserid);
 		}
 		
-		return "redirect:/ilt/event/view?id=" + event.getIdCategory();	//success event group
+		return "redirect:/ilt/event/view?id=" + idCreate;	//success event group
 	}
 	
 	

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 
+import com.iliketo.aws.ILiketooBucketsBusinessAWS;
 import com.iliketo.bean.AnnounceJB;
 import com.iliketo.util.CmsConfigILiketo;
 
@@ -913,6 +914,20 @@ try {
 			String binding = cmsIliketo.parseBindingModelBean(mycontent);
 			if(binding != null){	//verifica parse ok
 				mycontent = binding;
+			}
+		}
+		//CODIGO PARA MAPEAR URL DA AMAZON PARA RECUPERAR OS ARQUIVOS NO HTML
+		if(mycontent.contains("/upload/")){
+			Configuration myconfig = new Configuration();
+			if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
+				//"csrootpath" = VARIAVEL AMAZENADA NO ASBRU EM CONFIGURACOES > SYSTEM > WEBSITE > ABA MIDIA > "CAMPO BUCKET"
+				String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
+				//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
+				if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)){
+					mycontent = mycontent.replaceAll("/upload/", ILiketooBucketsBusinessAWS.LINK_BUCKET_PRODUCAO + "/upload/");
+				}else if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PILOTO)){
+					mycontent = mycontent.replaceAll("=\"/upload/", "=\"" + ILiketooBucketsBusinessAWS.LINK_BUCKET_PILOTO + "/upload/");
+				}
 			}
 		}
 		
