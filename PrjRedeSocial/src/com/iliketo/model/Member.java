@@ -95,6 +95,10 @@ public class Member extends ContentILiketo{
 	@ColumnILiketo(name = "path_photo_member")
 	private String pathPhoto;
 	
+	@FileILiketo
+	@ColumnILiketo(name = "photo_capa")
+	private String fotoDeCapa;
+	
 	@ColumnILiketo(name = "last_seen_date")
 	private String lastSeenDate;
 	
@@ -349,6 +353,14 @@ public class Member extends ContentILiketo{
 
 	public void setRegrasForum(String regrasForum) {
 		this.regrasForum = regrasForum;
+	}
+
+	public String getFotoDeCapa() {
+		return fotoDeCapa;
+	}
+
+	public void setFotoDeCapa(String fotoDeCapa) {
+		this.fotoDeCapa = fotoDeCapa;
 	}
 	
 }
