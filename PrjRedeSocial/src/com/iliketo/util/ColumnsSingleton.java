@@ -235,10 +235,16 @@ public class ColumnsSingleton {
 			}
 		}
 		if(mapcolumns != null){
-			if(nameColum.equals("id")){
-				return "id";
-			}else if(mapcolumns.get(nameColum).get("id") != null && !mapcolumns.get(nameColum).get("id").equals("")){					
-				return "col" + mapcolumns.get(nameColum).get("id"); //retorna col+id
+			try{
+				if(nameColum.equals("id")){
+					return "id";
+				}else if(mapcolumns.get(nameColum).get("id") != null && !mapcolumns.get(nameColum).get("id").equals("")){					
+					return "col" + mapcolumns.get(nameColum).get("id"); //retorna col+id
+				}
+			}catch(Exception e){				
+				log.error("Column error: " + mapcolumns.get(nameColum).get("id"));
+				log.error("nameColum: " + nameColum);
+				log.error("mapcolumns.get(nameColum): " + mapcolumns.get(nameColum));
 			}
 		}
 		

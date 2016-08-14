@@ -39,8 +39,7 @@ import com.iliketo.util.Str;
 public class HobbyController {
 	
 	private @Autowired HttpServletRequest request;
-	private @Autowired HttpServletResponse response;
-	private DB db = (DB) request.getAttribute(Str.CONNECTION_DB);	
+	//private @Autowired HttpServletResponse response;
 	static final Logger log = Logger.getLogger(HobbyController.class);
 	
 	/**
@@ -63,28 +62,27 @@ public class HobbyController {
 	
 	
 	@RequestMapping(value={"/hobby/createHobby"})
-	public String createHobby(@RequestParam(required=true, value="idCategory") String idCategory) throws Exception{
-		
+	public String createHobby(HttpServletResponse response) throws Exception{		
 		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		String myUserid = (String) request.getSession().getAttribute("userid");		
-		HobbyDAO hobbyDAO = new HobbyDAO(db, request);		
-		Hobby hobby = (Hobby) hobbyDAO.readById(idCategory, Hobby.class);	//objeto com dados do form
-
+		HobbyDAO hobbyDAO = new HobbyDAO(db, request);
+		Hobby hobby = (Hobby) cms.getObjectOfParameter(Hobby.class);
+		hobby.setIdMember(myUserid);
+		
 		//valida se jah participa do grupo hobby
-		if(hobby != null){
-			if(hobbyDAO.usuarioJaPossuiHobby(hobby, myUserid)){			
-				hobbyDAO.create(hobby);											//add hobby
-				String idCat = hobby.getIdCategory();			
-				//return "redirect:/ilt/groupCategory/group?idCat=" + idCat;		//success group hobby
-				return "redirect:/ilt/hobbyProfile/" + idCat;
-			}else{
-				//jah participa do hobby
-				ModelILiketo model = new ModelILiketo(request, response);
-				model.addMessageError("hobbyError", "You already add this hobby!<br>"); 	//msg erro
-				return model.redirectError("/ilt/hobby/add");								//page form add hobby
-			}
+		if(!hobbyDAO.usuarioJaPossuiHobby(hobby, myUserid)){			
+			hobbyDAO.create(hobby);											//add hobby
+			String idCat = hobby.getIdCategory();			
+			//return "redirect:/ilt/groupCategory/group?idCat=" + idCat;	//success group hobby
+			return "redirect:/ilt/hobbyProfile/photos/" + idCat;
+		}else{
+			//jah participa do hobby
+			ModelILiketo model = new ModelILiketo(request, response);
+			model.addMessageError("hobbyError", "You already add this hobby!<br>"); 	//msg erro
+			return model.redirectError("/ilt/hobby/add");								//page form add hobby
 		}
-		return "page.jsp?id=invalidPage";	//pagina invalida, nao achou a categoria do hobby
 	}
 	
 	@RequestMapping(value={"/hobby/myHobbies"})
@@ -97,7 +95,9 @@ public class HobbyController {
 	 * Metodo retorna array json com todas supercategorias de hobby
 	 */
 	@RequestMapping("/hobby/ajaxSuperCategoria")
-	public void superCategoria(@RequestParam(required=true, value="idioma") String idioma) throws JSONException, IOException{
+	public void superCategoria(@RequestParam(required=true, value="idioma") String idioma,
+			HttpServletResponse response) throws JSONException, IOException{
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		
 		String SQLCategory = "select t1.id_category as id_category, t1.super_category as super_category "
@@ -124,7 +124,9 @@ public class HobbyController {
 	 */
 	@RequestMapping("/hobby/ajaxSubCategoria")
 	public void subCategoria(@RequestParam(required=true, value="superCategoria") String superCategoria,
-			@RequestParam(required=true, value="idioma") String idioma) throws JSONException, IOException{
+			@RequestParam(required=true, value="idioma") String idioma,
+			HttpServletResponse response) throws JSONException, IOException{
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		
 		String SQLCategory = "select t1.id_category as id_category, t1.name_category as name_category from dbcategory t1"
@@ -148,9 +150,11 @@ public class HobbyController {
 	/**
 	 * Redireciona pagina para visualizar meu hobby ou terceiro
 	 */
-	@RequestMapping(value={"/profile/{abaTela}/{idHobby}"}, method=RequestMethod.GET)
-	public String perfilHobby(@PathVariable String abaTela, @PathVariable String idHobby){
+	@RequestMapping(value={"/hobbyProfile/{abaTela}/{idHobby}"}, method=RequestMethod.GET)
+	public String perfilHobby(@PathVariable String abaTela, @PathVariable String idHobby,
+			HttpServletResponse response){
 		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		ModelILiketo model = new ModelILiketo(request, response);
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		
@@ -160,17 +164,17 @@ public class HobbyController {
 		}
 		
 		//visualizar abas do perfil hobby (fotos, videos, anuncios)
-		if(abaTela.equals("hobbyPhotos") || abaTela.equals("hobbyVideos")
-				|| abaTela.equals("hobbyAds")){
+		if(abaTela.equals("photos") || abaTela.equals("videos")
+				|| abaTela.equals("ads")){
 			model.addAttribute("abaTela", abaTela);			
 			HobbyDAO dao = new HobbyDAO(db, request);
 			Hobby hobby = (Hobby) dao.readById(idHobby, Hobby.class);
 			if(hobby != null){
 				model.addAttribute("hobby", hobby);			
 				if(hobby.getIdMember().equals(myUserid)){
-					return "/page.jsp?id=xxxx";		//meu perfil hobby
+					return "/page.jsp?id=1107";		//meu perfil hobby
 				}else{
-					return "/page.jsp?id=xxxx";		//profile terceiro hobby
+					return "/page.jsp?id=1114";		//profile terceiro hobby
 				}
 			}
 		}
