@@ -925,8 +925,8 @@ try {
 				//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
 				if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)){
 					mycontent = mycontent.replaceAll("/upload/", ILiketooBucketsBusinessAWS.LINK_BUCKET_PRODUCAO + "/upload/");
-				}else if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PILOTO)){
-					mycontent = mycontent.replaceAll("=\"/upload/", "=\"" + ILiketooBucketsBusinessAWS.LINK_BUCKET_PILOTO + "/upload/");
+				}else if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_DEV)){
+					mycontent = mycontent.replaceAll("=\"/upload/", "=\"" + ILiketooBucketsBusinessAWS.LINK_BUCKET_DEV + "/upload/");
 				}
 			}
 		}

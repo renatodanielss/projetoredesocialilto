@@ -43,9 +43,9 @@ public class ILiketooBucketsBusinessAWS {
 	private final static String endpoint = "s3-us-west-2.amazonaws.com";
 	
 	public static final String LINK_BUCKET_PRODUCAO = "http://iliketoo.aws.midia" + "." + endpoint;
-	public static final String LINK_BUCKET_PILOTO = "http://iliketoo.aws.midia-piloto" + "." + endpoint;
+	public static final String LINK_BUCKET_DEV = "http://iliketoo.aws.midia-piloto" + "." + endpoint;
 	public static final String AWS_PRODUCAO = "AWS-producao";
-	public static final String AWS_PILOTO = "AWS-piloto";
+	public static final String AWS_DEV = "AWS-dev";
 	
 	public boolean IS_LOCAL_STORAGE_AMAZON = false;
 	private AmazonS3Client amazonS3client;	
@@ -58,7 +58,7 @@ public class ILiketooBucketsBusinessAWS {
 			//this.criarBucket();
 			//this.criarDiretorioNoBucket("upload");
 		}
-		if(localArmazenamento.equalsIgnoreCase(AWS_PILOTO)){
+		if(localArmazenamento.equalsIgnoreCase(AWS_DEV)){
 			bucketName = "iliketoo.aws.midia-piloto";
 			this.IS_LOCAL_STORAGE_AMAZON = true;
 			this.amazonS3client = obterCredenciaisCliente();
@@ -297,4 +297,13 @@ public class ILiketooBucketsBusinessAWS {
 			throw new VideoILiketoException("Video error duration");
 		}		
 	}
+
+	public AmazonS3Client getAmazonS3client() {
+		return amazonS3client;
+	}
+
+	public void setAmazonS3client(AmazonS3Client amazonS3client) {
+		this.amazonS3client = amazonS3client;
+	}
+	
 }

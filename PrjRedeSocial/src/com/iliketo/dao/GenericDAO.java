@@ -303,7 +303,7 @@ public abstract class GenericDAO {
 			String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
 			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
 			if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)
-					|| DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PILOTO)){
+					|| DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_DEV)){
 				if(nameFileDelete != null && !nameFileDelete.equals("")){
 					ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
 					aws.deletaArquivosDiretorioStorageAmazon(nameFileDelete, "upload");
@@ -341,7 +341,7 @@ public abstract class GenericDAO {
 			String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
 			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
 			if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)
-					|| DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PILOTO)){
+					|| DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_DEV)){
 				ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
 				for(String nameFile : listNamesFileDelete){
 					if(nameFile != null && !nameFile.equals("")){
