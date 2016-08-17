@@ -810,6 +810,25 @@ standard deployment descriptor.
       <url-pattern>/ilt/*</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+    	<servlet-name>Checkout</servlet-name>
+    	<servlet-class>com.paypal.CheckoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>Checkout</servlet-name>
+    	<url-pattern>/Checkout</url-pattern>
+  	</servlet-mapping>
+  	<servlet>
+    	<description></description>
+    	<display-name>Return</display-name>
+    	<servlet-name>Return</servlet-name>
+    	<servlet-class>com.paypal.ReturnServlet</servlet-class>
+  	</servlet>
+ 	<servlet-mapping>
+    	<servlet-name>Return</servlet-name>
+    	<url-pattern>/Return</url-pattern>
+  	</servlet-mapping>
+	
 	<context-param>
         <param-name>log4jConfigLocation</param-name>
         <param-value>/WEB-INF/resource/log4j.properties</param-value>
