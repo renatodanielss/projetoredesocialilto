@@ -44,9 +44,9 @@ public class AppAWS {
 				long antes = System.currentTimeMillis();
 				String newname = aws.uploadDeArquivosParaDiretorioStorageAmazon(filename, "upload", file);
 				long depois = System.currentTimeMillis();
-				log.info("Upload success file: " + newname +" - "+ file.length() + " bytes - tempo: " +((depois-antes) <= 0 ? "0 s" : (depois-antes)/1000L+" s"));
-				builder.append("Upload success file: " + filename +" - "+ file.length() + " bytes - tempo: " +((depois-antes) <= 0 ? "0 s" : (depois-antes)/1000L+" s<br>"));
 				contSend++;
+				log.info("CONT: "+contSend + " - Upload success file: " + newname +" - "+ file.length() + " bytes - tempo: " +((depois-antes) <= 0 ? "0 s" : (depois-antes)/1000L+" s"));
+				builder.append("Upload success file: " + filename +" - "+ file.length() + " bytes - tempo: " +((depois-antes) <= 0 ? "0 s" : (depois-antes)/1000L+" s<br>"));
 				tamanhoTotal += file.length()/1024;
 			}
 		}
