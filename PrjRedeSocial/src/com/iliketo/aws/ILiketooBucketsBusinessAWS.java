@@ -247,21 +247,22 @@ public class ILiketooBucketsBusinessAWS {
 	private String randomizeFilenameUniqueObjectAmazon(String keyFilename, String folderName){
 		int randomize = 32;
 		String extension = keyFilename.substring(keyFilename.lastIndexOf(".")+1);
-		String filename = keyFilename.substring(0, keyFilename.lastIndexOf("."));
+		//String filename = keyFilename.substring(0, keyFilename.lastIndexOf("."));
+		long nomeArquivoMillis = System.currentTimeMillis();
 		String novoFilename = null;
 		
 		String randomfilename = "";
 		for (int j=0; j<randomize; j++) {
 			randomfilename = "" + randomfilename + (char)('a' + Integer.parseInt(Common.numberformat("" + Math.random()*25, 0)));
 		}
-		novoFilename = filename + "_" + randomfilename +"."+ extension;
+		novoFilename = nomeArquivoMillis + "_" + randomfilename +"."+ extension;
 		
 		while (this.jaExisteObjetoNoDiretorioBucketAmazon(novoFilename, folderName)){
 			randomfilename = "";
 			for (int j=0; j<randomize; j++) {
 				randomfilename = "" + randomfilename + (char)('a' + Integer.parseInt(Common.numberformat("" + Math.random()*25, 0)));
 			}
-			novoFilename = filename + "_" + randomfilename +"."+ extension;
+			novoFilename = nomeArquivoMillis + "_" + randomfilename +"."+ extension;
 		}
 		log.info("AWS - randomizeFilenameUniqueObjectAmazon()... only novoFilename: " + novoFilename);
 		return novoFilename;

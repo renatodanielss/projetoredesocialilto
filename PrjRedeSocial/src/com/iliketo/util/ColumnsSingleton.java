@@ -45,6 +45,7 @@ public class ColumnsSingleton {
 	private HashMap<String,HashMap<String,String>> COL_DBADVERTISING;
 	private HashMap<String,HashMap<String,String>> COL_DBHOBBY;
 	private HashMap<String,HashMap<String,String>> COL_DBLIKES;
+	private HashMap<String,HashMap<String,String>> COL_DBHOBBYFOTO;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
@@ -64,6 +65,7 @@ public class ColumnsSingleton {
 	private String DATA_DBADVERTISING;
 	private String DATA_DBHOBBY;
 	private String DATA_DBLIKES;
+	private String DATA_DBHOBBYFOTO;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
@@ -159,6 +161,10 @@ public class ColumnsSingleton {
 		database.read(db, new Configuration(), "dblikes");	
 		DATA_DBLIKES = database.getTable();
 		COL_DBLIKES = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbhobbyfoto");	
+		DATA_DBHOBBYFOTO = database.getTable();
+		COL_DBHOBBYFOTO = database.namedcolumns;
 	}
 	
 	/**
@@ -226,6 +232,8 @@ public class ColumnsSingleton {
 			mapcolumns = COL_DBHOBBY;
 		}else if(nameDatabase.equals("dblikes")){
 			mapcolumns = COL_DBLIKES;
+		}else if(nameDatabase.equals("dbhobbyfoto")){
+			mapcolumns = COL_DBHOBBYFOTO;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -296,6 +304,8 @@ public class ColumnsSingleton {
 			return DATA_DBHOBBY;
 		}else if(nameDatabase.equals("dblikes")){
 			return DATA_DBLIKES;
+		}else if(nameDatabase.equals("dbhobbyfoto")){
+			return DATA_DBHOBBYFOTO;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -385,6 +395,9 @@ public class ColumnsSingleton {
 			}else if(table.equals("dblikes")){
 				mapcolumns = COL_DBLIKES;
 				tableReal = DATA_DBLIKES;
+			}else if(table.equals("dbhobbyfoto")){
+				mapcolumns = COL_DBHOBBYFOTO;
+				tableReal = DATA_DBHOBBYFOTO;
 			}
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){

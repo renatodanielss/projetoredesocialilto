@@ -1,6 +1,7 @@
 package com.iliketo.model;
 
 import com.iliketo.model.annotation.ColumnILiketo;
+import com.iliketo.model.annotation.FileILiketo;
 import com.iliketo.model.annotation.IdILiketo;
 
 /**
@@ -31,6 +32,10 @@ public class Hobby extends ContentILiketo {
 	
 	@ColumnILiketo(name = "idioma")
 	private String idiom;
+	
+	@FileILiketo
+	@ColumnILiketo(name = "photo_capa")
+	private String fotoDeCapa;
 
 	
 	//notificacoes
@@ -150,6 +155,14 @@ public class Hobby extends ContentILiketo {
 
 	public void setNotificComment(String notificComment) {
 		this.notificComment = notificComment;
+	}
+
+	public String getFotoDeCapa() {
+		return fotoDeCapa;
+	}
+
+	public void setFotoDeCapa(String fotoDeCapa) {
+		this.fotoDeCapa = fotoDeCapa;
 	}
 	
 }

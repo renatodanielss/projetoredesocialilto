@@ -152,5 +152,43 @@ public class PerfilMembroController {
 		request.getSession().setAttribute("member", original);
 		return "redirect:/ilt/profile/memberCollections/" + original.getIdMember();
 	}
+	
+	@RequestMapping(value={"/profile/member/removePhoto"})
+	public String removerFotoMembro(HttpServletResponse response) throws Exception{		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		MemberDAO membroDAO = new MemberDAO(db, request);
+		Member membro = new Member();		
+		Member original = (Member) request.getSession().getAttribute("member");
+		//remove foto do perfil
+		if(original.getGender().equalsIgnoreCase("M")){
+			membro.setPathPhoto("avatar_male.png");
+		}else{
+			membro.setPathPhoto("avatar_female.png");
+		}
+		membro.setId(original.getId());
+		membro.setIdMember(original.getIdMember());
+		membroDAO.update(membro, true);
+		original.setPathPhoto("");
+		request.getSession().setAttribute("member", original);
+		return "redirect:/ilt/profile/memberCollections/" + original.getIdMember();
+	}
+	
+	@RequestMapping(value={"/profile/member/removeCapa"})
+	public String removerFotoCapa(HttpServletResponse response) throws Exception{		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		MemberDAO membroDAO = new MemberDAO(db, request);
+		Member membro = new Member();		
+		Member original = (Member) request.getSession().getAttribute("member");
+		//remove foto de capa
+		membro.setId(original.getId());
+		membro.setIdMember(original.getIdMember());
+		membro.setFotoDeCapa("");
+		membroDAO.update(membro, true);	
+		original.setFotoDeCapa("");
+		request.getSession().setAttribute("member", original);
+		return "redirect:/ilt/profile/memberCollections/" + original.getIdMember();
+	}
 
 }

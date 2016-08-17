@@ -21,12 +21,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import HardCore.DB;
 
-import com.iliketo.dao.CategoryDAO;
 import com.iliketo.dao.HobbyDAO;
+import com.iliketo.dao.HobbyFotoDAO;
 import com.iliketo.dao.IliketoDAO;
 import com.iliketo.dao.MemberDAO;
+import com.iliketo.exception.ImageILiketoException;
+import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Hobby;
+import com.iliketo.model.HobbyFoto;
 import com.iliketo.model.Member;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.LogUtilsILiketoo;
@@ -180,4 +184,110 @@ public class HobbyController {
 		}
 		return "page.jsp?id=invalidPage";	//pagina invalida, nao achou hobby ou pagina perfil		
 	}
+	
+	/**
+	 * Adiciona ou altera a foto da capa
+	 */
+	@RequestMapping(value={"/hobbyProfile/addCapa/{idHobby}"})
+	public String adicionarFotoCapa(HttpServletResponse response, @PathVariable String idHobby) throws Exception{
+		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		HobbyDAO dao = new HobbyDAO(db, request);
+		Hobby hobby = new Hobby();
+		
+		ModelILiketo model = new ModelILiketo(request, response);
+		try {
+			cms.processFileuploadImage(hobby);
+		} catch (StorageILiketoException e) {
+			model.addAttribute("hobby", hobby);
+			model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
+			return model.redirectError("/ilt/hobbyProfile/photos/" + idHobby);			//page perfil
+		} catch (ImageILiketoException e) {
+			model.addAttribute("hobby", hobby);
+			model.addMessageError("imageFormat", "Upload only Image in jpg format."); 						//msg erro
+			return model.redirectError("/ilt/hobbyProfile/photos/" + idHobby);			//page perfil
+		}
+		//seta ids no hobby para atualizar
+		hobby.setId(idHobby);
+		hobby.setIdHobby(idHobby);
+		dao.update(hobby, true);
+		model.addAttribute("hobby", hobby);
+		return "redirect:/ilt/hobbyProfile/photos/" + idHobby;
+	}
+	
+	@RequestMapping(value={"/hobbyProfile/removeCapa/{idHobby}"})
+	public String removerFotoCapa(HttpServletResponse response, @PathVariable String idHobby) throws Exception{		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		HobbyDAO dao = new HobbyDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		Hobby hobby = (Hobby) dao.readById(idHobby, Hobby.class);
+		
+		//remove foto de capa
+		if(hobby != null && hobby.getIdMember().equals(myUserid)){
+			hobby.setFotoDeCapa("");
+			dao.update(hobby, true);
+			return "redirect:/ilt/hobbyProfile/photos/" + idHobby;
+		}else{
+			return "page.jsp?id=invalidPage";	//pagina invalida ou hobby nao pertence ao usuario na session
+		}
+	}
+	
+	//FOTOS DO HOBBY
+	@RequestMapping(value={"/hobbyProfile/photos/add/{idHobby}"})
+	public String addItems(@PathVariable String idHobby){
+		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		HobbyDAO dao = new HobbyDAO(db, request);
+		Hobby hobby = (Hobby) dao.readById(idHobby, Hobby.class);
+
+		//valida my hobby
+		if(hobby != null){
+			if(hobby.getIdMember().equals(myUserid)){
+				if(ModelILiketo.validateAndProcessError(request)){
+					//valida e mostra error na pagina
+					log.warn("Erro ao adicionar itens. Tela formulario add mais itens");
+				}
+				return "page.jsp?id=xxxx&idHobby=" + idHobby;	//pagina form adicionar fotos do hobby
+			}
+		}
+		return "page.jsp?id=invalidPage";	//pagina invalida, id do hobby nao pertence a esse usuario
+ 	}
+	
+	@RequestMapping(value={"/hobbyProfile/photos/create/{idHobby}"})
+	public String createItems(HttpServletResponse response, @PathVariable String idHobby) throws Exception{
+		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		HobbyFotoDAO dao = new HobbyFotoDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		Hobby h = (Hobby) new HobbyDAO(db, null).readById(idHobby, Hobby.class);
+		
+		//valida hobby do usuario na session
+		if(h != null && h.getIdMember().equals(myUserid)){
+			Object[] fotosHobby  = cms.getObjectsFileOfParameter(HobbyFoto.class);	//array objetos com os items
+			for(Object item : fotosHobby){
+				((HobbyFoto)item).setIdMember(myUserid);						//seta fk_user_id no item
+			}		
+			ModelILiketo model = new ModelILiketo(request, response);
+			try {
+				cms.processFileuploadImages(fotosHobby);							//salva arquivos			
+			} catch (StorageILiketoException e) {
+				model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB.");	//msg erro
+				return model.redirectError("/ilt/hobbyProfile/photos/add/" + idHobby);				//page form add more item
+			} catch (ImageILiketoException e) {
+				model.addMessageError("imageFormat", "Upload only Image in jpg format."); 													//msg erro
+				return model.redirectError("/ilt/hobbyProfile/photos/add/" + idHobby);				//page form add more item
+			}		
+			String[] idCreates = dao.creates(fotosHobby);			//cria foto do hobby		
+			return "redirect:/ilt/hobbyProfile/photos/" + idHobby;	//success
+		}
+		return "page.jsp?id=invalidPage";	//pagina invalida, id do hobby nao pertence a esse usuario		
+	}
+	
 }
