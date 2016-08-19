@@ -12,21 +12,18 @@ import com.iliketo.model.annotation.IdILiketo;
  * @author osvaldimar.costa
  *
  */
-public class HobbyFoto extends ContentILiketo {
+public class HobbyVideo extends ContentILiketo {
 
 	@IdILiketo
-	@ColumnILiketo(name = "id_foto")
-	private String idFoto;
-	
-	@ColumnILiketo(name = "titulo")
-	private String titulo;
+	@ColumnILiketo(name = "id_video")
+	private String idVideo;
 	
 	@ColumnILiketo(name = "descricao")
 	private String descricao;
 
 	@FileILiketo
-	@ColumnILiketo(name = "foto")
-	private String foto;
+	@ColumnILiketo(name = "pathVideo")
+	private String pathVideo;
 	
 	@ColumnILiketo(name = "fk_hobby_id")
 	private String idHobby;
@@ -34,24 +31,16 @@ public class HobbyFoto extends ContentILiketo {
 	@ColumnILiketo(name = "fk_user_id")
 	private String idMember;
 	
-	public HobbyFoto(){
+	public HobbyVideo(){
 		
 	}
 
-	public String getIdFoto() {
-		return idFoto;
+	public String getIdVideo() {
+		return idVideo;
 	}
 
-	public void setIdFoto(String idFoto) {
-		this.idFoto = idFoto;
-	}
-
-	public String getTitulo() {
-		return titulo;
-	}
-
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
+	public void setIdVideo(String idVideo) {
+		this.idVideo = idVideo;
 	}
 
 	public String getDescricao() {
@@ -62,12 +51,12 @@ public class HobbyFoto extends ContentILiketo {
 		this.descricao = descricao;
 	}
 
-	public String getFoto() {
-		return foto;
+	public String getPathVideo() {
+		return pathVideo;
 	}
 
-	public void setFoto(String foto) {
-		this.foto = foto;
+	public void setPathVideo(String pathVideo) {
+		this.pathVideo = pathVideo;
 	}
 
 	public String getIdHobby() {

@@ -42,10 +42,11 @@ public class AppAWS {
 			if(file.isFile()){
 				String filename = file.getName();
 				long antes = System.currentTimeMillis();
-				String newname = aws.uploadDeArquivosParaDiretorioStorageAmazon(filename, "upload", file);
+				//String newname = aws.uploadDeArquivosParaDiretorioStorageAmazon(filename, "upload", file);
+				aws.getAmazonS3client().putObject("iliketoo.aws.midia-piloto", "upload/" + filename, file);
 				long depois = System.currentTimeMillis();
 				contSend++;
-				log.info("CONT: "+contSend + " - Upload success file: " + newname +" - "+ file.length() + " bytes - tempo: " +((depois-antes) <= 0 ? "0 s" : (depois-antes)/1000L+" s"));
+				log.info("CONT: "+contSend + " - Upload success file: " + filename +" - "+ file.length() + " bytes - tempo: " +((depois-antes) <= 0 ? "0 s" : (depois-antes)/1000L+" s"));
 				builder.append("Upload success file: " + filename +" - "+ file.length() + " bytes - tempo: " +((depois-antes) <= 0 ? "0 s" : (depois-antes)/1000L+" s<br>"));
 				tamanhoTotal += file.length()/1024;
 			}

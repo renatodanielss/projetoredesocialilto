@@ -23,14 +23,13 @@ import HardCore.DB;
 
 import com.iliketo.dao.HobbyDAO;
 import com.iliketo.dao.HobbyFotoDAO;
-import com.iliketo.dao.IliketoDAO;
-import com.iliketo.dao.MemberDAO;
+import com.iliketo.dao.HobbyVideoDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
+import com.iliketo.exception.VideoILiketoException;
 import com.iliketo.model.Hobby;
 import com.iliketo.model.HobbyFoto;
-import com.iliketo.model.Member;
-import com.iliketo.service.NotificationService;
+import com.iliketo.model.HobbyVideo;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.LogUtilsILiketoo;
@@ -264,7 +263,6 @@ public class HobbyController {
 		log.info(request.getRequestURL());
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		HobbyFotoDAO dao = new HobbyFotoDAO(db, request);
 		String myUserid = (String) request.getSession().getAttribute("userid");
 		Hobby h = (Hobby) new HobbyDAO(db, null).readById(idHobby, Hobby.class);
 		
@@ -272,7 +270,8 @@ public class HobbyController {
 		if(h != null && h.getIdMember().equals(myUserid)){
 			Object[] fotosHobby  = cms.getObjectsFileOfParameter(HobbyFoto.class);	//array objetos com os items
 			for(Object item : fotosHobby){
-				((HobbyFoto)item).setIdMember(myUserid);						//seta fk_user_id no item
+				((HobbyFoto)item).setIdHobby(idHobby);								//seta fk_user_id no hobby
+				((HobbyFoto)item).setIdMember(myUserid);
 			}		
 			ModelILiketo model = new ModelILiketo(request, response);
 			try {
@@ -284,10 +283,40 @@ public class HobbyController {
 				model.addMessageError("imageFormat", "Upload only Image in jpg format."); 													//msg erro
 				return model.redirectError("/ilt/hobbyProfile/photos/add/" + idHobby);				//page form add more item
 			}		
-			String[] idCreates = dao.creates(fotosHobby);			//cria foto do hobby		
-			return "redirect:/ilt/hobbyProfile/photos/" + idHobby;	//success
+			new HobbyFotoDAO(db, null).creates(fotosHobby);							//cria foto do hobby		
+			return "redirect:/ilt/hobbyProfile/photos/" + idHobby;					//success
 		}
 		return "page.jsp?id=invalidPage";	//pagina invalida, id do hobby nao pertence a esse usuario		
+	}
+	
+	@RequestMapping(value={"/hobbyProfile/videos/create/{idHobby}"})
+	public String createVideo(HttpServletResponse response, @PathVariable String idHobby) throws Exception{
+		
+		log.info(request.getRequestURL());		
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		Hobby h = (Hobby) new HobbyDAO(db, null).readById(idHobby, Hobby.class);
+		
+		//valida hobby do usuario na session
+		if(h != null && h.getIdMember().equals(myUserid)){
+			ModelILiketo model = new ModelILiketo(request, response);
+			HobbyVideo video = (HobbyVideo) cms.getObjectOfParameter(HobbyVideo.class);	//objeto com dados do form
+			video.setIdHobby(idHobby);
+			video.setIdMember(myUserid);
+			try {
+				cms.processFileuploadVideo(video);			//salva arquivos			
+			} catch (StorageILiketoException e) {			
+				model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB."); //msg erro
+				return model.redirectError("/ilt/hobbyProfile/videos/" + idHobby);
+			} catch (VideoILiketoException e) {
+				model.addMessageError("videoFormat", "Video in MP4 format with duration until 2 minutes.");
+				return model.redirectError("/ilt/hobbyProfile/videos/" + idHobby);
+			}
+			new HobbyVideoDAO(db, null).create(video);				//cria video
+			return "redirect:/ilt/hobbyProfile/videos/" + idHobby;	//success
+		}
+		return "page.jsp?id=invalidPage";	//pagina invalida, id do hobby nao pertence a esse usuario
 	}
 	
 }

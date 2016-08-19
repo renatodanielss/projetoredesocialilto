@@ -46,6 +46,7 @@ public class ColumnsSingleton {
 	private HashMap<String,HashMap<String,String>> COL_DBHOBBY;
 	private HashMap<String,HashMap<String,String>> COL_DBLIKES;
 	private HashMap<String,HashMap<String,String>> COL_DBHOBBYFOTO;
+	private HashMap<String,HashMap<String,String>> COL_DBHOBBYVIDEO;
 	private String DATA_DBMEMBERS;
 	private String DATA_DBCOLLECTION;
 	private String DATA_DBCOLLECTIONITEM;
@@ -66,6 +67,7 @@ public class ColumnsSingleton {
 	private String DATA_DBHOBBY;
 	private String DATA_DBLIKES;
 	private String DATA_DBHOBBYFOTO;
+	private String DATA_DBHOBBYVIDEO;
 	
 	/**
 	 * Classe instanciada uma única vez, contendo seus dados na variavel estatica 'instance' usada em escopo de aplicação.
@@ -165,6 +167,10 @@ public class ColumnsSingleton {
 		database.read(db, new Configuration(), "dbhobbyfoto");	
 		DATA_DBHOBBYFOTO = database.getTable();
 		COL_DBHOBBYFOTO = database.namedcolumns;
+		
+		database.read(db, new Configuration(), "dbhobbyvideo");	
+		DATA_DBHOBBYVIDEO = database.getTable();
+		COL_DBHOBBYVIDEO = database.namedcolumns;
 	}
 	
 	/**
@@ -234,6 +240,8 @@ public class ColumnsSingleton {
 			mapcolumns = COL_DBLIKES;
 		}else if(nameDatabase.equals("dbhobbyfoto")){
 			mapcolumns = COL_DBHOBBYFOTO;
+		}else if(nameDatabase.equals("dbhobbyvideo")){
+			mapcolumns = COL_DBHOBBYVIDEO;
 		}else{
 			//tenta inicializar mapa das colunas novamente
 			initColumnsReal(db);
@@ -306,6 +314,8 @@ public class ColumnsSingleton {
 			return DATA_DBLIKES;
 		}else if(nameDatabase.equals("dbhobbyfoto")){
 			return DATA_DBHOBBYFOTO;
+		}else if(nameDatabase.equals("dbhobbyvideo")){
+			return DATA_DBHOBBYVIDEO;
 		}else{
 			//tenta inicializar ler a database novamente para recuperar a tabela real
 			initColumnsReal(db);
@@ -398,6 +408,9 @@ public class ColumnsSingleton {
 			}else if(table.equals("dbhobbyfoto")){
 				mapcolumns = COL_DBHOBBYFOTO;
 				tableReal = DATA_DBHOBBYFOTO;
+			}else if(table.equals("dbhobbyvideo")){
+				mapcolumns = COL_DBHOBBYVIDEO;
+				tableReal = DATA_DBHOBBYVIDEO;
 			}
 			//replace todos nomes da table para a tabela real no banco de dados
 			if(SQL.contains(table)){
