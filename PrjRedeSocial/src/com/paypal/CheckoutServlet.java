@@ -97,8 +97,8 @@ public class CheckoutServlet  extends HttpServlet {
         	} else {
         		//session.invalidate(); //linha comentada porque estava derrubando a sessão do usuário no momento de fazer o checkout
         		session = request.getSession();
-        		 nvp = paypal.callShortcutExpressCheckout (checkoutDetails, returnURL, cancelURL);
-        		 session.setAttribute("checkoutDetails", checkoutDetails);
+        		nvp = paypal.callShortcutExpressCheckout (checkoutDetails, returnURL, cancelURL);
+        		session.setAttribute("checkoutDetails", checkoutDetails);
         	}
 	        
 			String strAck = nvp.get("ACK").toString().toUpperCase();
@@ -130,19 +130,18 @@ public class CheckoutServlet  extends HttpServlet {
 	            
 	        }
         }
-}
+	}
 
-
-private Map<String,String> setRequestParams(HttpServletRequest request){
-	Map<String,String> requestMap = new HashMap<String,String>();
-	for (String key : request.getParameterMap().keySet()) {
-		requestMap.put(key, StringEscapeUtils.escapeHtml4(request.getParameterMap().get(key)[0]));
+	private Map<String,String> setRequestParams(HttpServletRequest request){
+		Map<String,String> requestMap = new HashMap<String,String>();
+		for (String key : request.getParameterMap().keySet()) {
+			requestMap.put(key, StringEscapeUtils.escapeHtml4(request.getParameterMap().get(key)[0]));
 		}
 	
-	return requestMap;
+		return requestMap;
+	}
 	
-}
-private boolean isSet(Object value){
-	return (value !=null && value.toString().length()!=0);
-}
+	private boolean isSet(Object value){
+		return (value !=null && value.toString().length()!=0);
+	}
 }
