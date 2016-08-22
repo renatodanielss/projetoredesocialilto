@@ -95,7 +95,7 @@ public class CheckoutServlet  extends HttpServlet {
 	        		nvp = paypal.callMarkExpressCheckout(checkoutDetails, returnURL, cancelURL);  
 	        		session.setAttribute("checkoutDetails", checkoutDetails);
         	} else {
-        		session.invalidate();
+        		//session.invalidate(); //linha comentada porque estava derrubando a sessão do usuário no momento de fazer o checkout
         		session = request.getSession();
         		 nvp = paypal.callShortcutExpressCheckout (checkoutDetails, returnURL, cancelURL);
         		 session.setAttribute("checkoutDetails", checkoutDetails);
