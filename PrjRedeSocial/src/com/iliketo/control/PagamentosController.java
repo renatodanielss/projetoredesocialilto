@@ -165,7 +165,7 @@ public class PagamentosController {
 		
 		//constantes		
 		final String Completed = "Completed";
-		final String EMAIL_PAYPAL_ILIKETOO = "contato.iliketo@gmail.com";
+		final String EMAIL_PAYPAL_ILIKETOO = "payment@iliketoo.com";
 		
 		String receiver_email= request.getParameter("receiver_email");
 		String invoice= request.getParameter("invoice");
