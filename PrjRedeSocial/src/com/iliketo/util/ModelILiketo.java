@@ -74,7 +74,11 @@ public class ModelILiketo{
 	 * @param object
 	 */
 	public void addAttribute(String name, Object object){
-		map.put(name, object);
+		if (object != null)
+			map.put(name, object);
+		else
+			map.put(name, "");
+		
 		request.setAttribute("modelILiketo", map);
 	}
 	

@@ -88,7 +88,7 @@ public class ReturnServlet extends HttpServlet {
     		        "<br>Error Severity Code: " + errorSeverityCode;
                 request.setAttribute("error", errorString);
             	RequestDispatcher dispatcher = request.getRequestDispatcher("error.jsp");
-            	session.invalidate();
+            	//session.invalidate();
             	if (dispatcher != null){
             		dispatcher.forward(request, response);
             	}
@@ -128,7 +128,7 @@ public class ReturnServlet extends HttpServlet {
 		    	result.putAll(results);
 		    	result.putAll(checkoutDetails);
 		    	request.setAttribute("ack", strAck);
-		    	session.invalidate();
+		    	//session.invalidate();
 	    	}else{
 	    		//Display a user friendly Error on the page using any of the following error information returned by PayPal
 	            String errorCode = results.get("L_ERRORCODE0").toString();
@@ -142,7 +142,7 @@ public class ReturnServlet extends HttpServlet {
 	    	        "<br>Error Severity Code: " + errorSeverityCode;
 	            request.setAttribute("error", errorString);
 	        	RequestDispatcher dispatcher = request.getRequestDispatcher("error.jsp");
-	        	session.invalidate();
+	        	//session.invalidate();
 	        	if (dispatcher != null){
 	        		dispatcher.forward(request, response);
 	        	}	        	

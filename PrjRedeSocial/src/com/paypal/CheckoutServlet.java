@@ -123,7 +123,7 @@ public class CheckoutServlet  extends HttpServlet {
 			        "<br>Error Severity Code: " + ErrorSeverityCode;
 	            request.setAttribute("error", errorString);
 	        	RequestDispatcher dispatcher = request.getRequestDispatcher("error.jsp");
-	        	session.invalidate();
+	        	//session.invalidate();
 	        	if (dispatcher != null){
 	        		dispatcher.forward(request, response);
 	        	}
