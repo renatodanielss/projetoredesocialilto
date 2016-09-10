@@ -1,6 +1,7 @@
 package com.iliketo.model;
 
 import com.iliketo.model.annotation.ColumnILiketo;
+import com.iliketo.model.annotation.FileILiketo;
 import com.iliketo.model.annotation.IdILiketo;
 
 /**
@@ -62,6 +63,7 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "fk_category_id")
 	private String idCategory;
 	
+	@FileILiketo
 	@ColumnILiketo(name = "path_photo_ad")	//somente nome da foto do item do colecionador
 	private String pathPhotoAd;
 	
@@ -91,6 +93,12 @@ public class Announce extends ContentILiketo {
 	
 	@ColumnILiketo(name = "payment_status")		//notas detalhes para troca
 	private String paymentStatus;
+	
+	@ColumnILiketo(name = "adHobby")		//y | n
+	private String adHobby;
+	
+	@ColumnILiketo(name = "fk_hobby_id")
+	private String idHobby;
 	
 	private Member member;
 	
@@ -365,6 +373,26 @@ public class Announce extends ContentILiketo {
 
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
+	}
+
+
+	public String getAdHobby() {
+		return adHobby;
+	}
+
+
+	public void setAdHobby(String adHobby) {
+		this.adHobby = adHobby;
+	}
+
+
+	public String getIdHobby() {
+		return idHobby;
+	}
+
+
+	public void setIdHobby(String idHobby) {
+		this.idHobby = idHobby;
 	}
 	
 	

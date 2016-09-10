@@ -76,10 +76,8 @@ public class HobbyController {
 		
 		//valida se jah participa do grupo hobby
 		if(!hobbyDAO.usuarioJaPossuiHobby(hobby, myUserid)){			
-			hobbyDAO.create(hobby);											//add hobby
-			String idCat = hobby.getIdCategory();			
-			//return "redirect:/ilt/groupCategory/group?idCat=" + idCat;	//success group hobby
-			return "redirect:/ilt/hobbyProfile/photos/" + idCat;
+			String idRegistro = hobbyDAO.create(hobby);											//add hobby
+			return "redirect:/ilt/hobbyProfile/photos/" + idRegistro;
 		}else{
 			//jah participa do hobby
 			ModelILiketo model = new ModelILiketo(request, response);
@@ -283,7 +281,7 @@ public class HobbyController {
 				model.addMessageError("imageFormat", "Upload only Image in jpg format."); 													//msg erro
 				return model.redirectError("/ilt/hobbyProfile/photos/add/" + idHobby);				//page form add more item
 			}		
-			new HobbyFotoDAO(db, null).creates(fotosHobby);							//cria foto do hobby		
+			new HobbyFotoDAO(db, request).creates(fotosHobby);							//cria foto do hobby		
 			return "redirect:/ilt/hobbyProfile/photos/" + idHobby;					//success
 		}
 		return "page.jsp?id=invalidPage";	//pagina invalida, id do hobby nao pertence a esse usuario		
@@ -292,7 +290,7 @@ public class HobbyController {
 	@RequestMapping(value={"/hobbyProfile/videos/create/{idHobby}"})
 	public String createVideo(HttpServletResponse response, @PathVariable String idHobby) throws Exception{
 		
-		log.info(request.getRequestURL());		
+		log.info(request.getRequestURL());
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
 		String myUserid = (String) request.getSession().getAttribute("userid");
@@ -313,10 +311,49 @@ public class HobbyController {
 				model.addMessageError("videoFormat", "Video in MP4 format with duration until 2 minutes.");
 				return model.redirectError("/ilt/hobbyProfile/videos/" + idHobby);
 			}
-			new HobbyVideoDAO(db, null).create(video);				//cria video
+			new HobbyVideoDAO(db, request).create(video);				//cria video
 			return "redirect:/ilt/hobbyProfile/videos/" + idHobby;	//success
 		}
 		return "page.jsp?id=invalidPage";	//pagina invalida, id do hobby nao pertence a esse usuario
 	}
 	
+	@RequestMapping(value={"/hobbyProfile/videos/update/{idHobby}/{idVideo}"})
+	public String salvarVideo(HttpServletResponse response, @PathVariable String idHobby, @PathVariable String idVideo) throws Exception{		
+		log.info(request.getRequestURL());
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		HobbyVideo video = (HobbyVideo) cms.getObjectOfParameter(HobbyVideo.class);	//objeto com dados do form
+		video.setId(idVideo);
+		video.setIdVideo(idVideo);
+		new HobbyVideoDAO(db, request).update(video, false);	//salva video
+		return "redirect:/ilt/hobbyProfile/videos/" + idHobby;	//success
+	}
+	
+	@RequestMapping(value={"/hobbyProfile/photos/update/{idHobby}/{idFoto}"})
+	public String salvarFoto(HttpServletResponse response, @PathVariable String idHobby, @PathVariable String idFoto) throws Exception{		
+		log.info(request.getRequestURL());
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		HobbyFoto foto = (HobbyFoto) cms.getObjectOfParameter(HobbyFoto.class);	//objeto com dados do form
+		foto.setId(idFoto);
+		foto.setIdFoto(idFoto);
+		new HobbyFotoDAO(db, request).update(foto, false);		//salva foto
+		return "redirect:/ilt/hobbyProfile/photos/" + idHobby;	//success
+	}
+	
+	@RequestMapping(value={"/hobbyProfile/videos/delete/{idHobby}/{idVideo}"})
+	public String excluirVideo(HttpServletResponse response, @PathVariable String idHobby, @PathVariable String idVideo) throws Exception{
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		new HobbyVideoDAO(db, request).deleteVideo(idVideo);
+		return "redirect:/ilt/hobbyProfile/videos/" + idHobby;
+	}
+	
+	@RequestMapping(value={"/hobbyProfile/photos/delete/{idHobby}/{idFoto}"})
+	public String excuirFoto(HttpServletResponse response, @PathVariable String idHobby, @PathVariable String idFoto) throws Exception{		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		new HobbyFotoDAO(db, request).deleteFoto(idFoto);
+		return "redirect:/ilt/hobbyProfile/photos/" + idHobby;
+	}
 }

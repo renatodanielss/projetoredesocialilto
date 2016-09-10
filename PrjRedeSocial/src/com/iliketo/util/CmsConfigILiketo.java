@@ -271,6 +271,77 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
+	 * Metodo muda o arquivo do diretorio temporario 'temp' para diretorio destino de producao 'upload'
+	 * @param nomeArquivo - nome do arquivo de imagem
+	 * @throws IOException - erro no processo de armazenamento da Amazon
+	 */
+	public void processFileuploadTemporarioParaProducaoAWS(String nomeArquivo) throws IOException{
+		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(null);
+		aws.mudarArquivosDeDiretoriosStorageAmazon(nomeArquivo, "temp", "upload");
+	}
+	
+	/**
+	 * Metodo faz upload de arquivos de imagens temporarias no diretorio 'temp' do bucket da Amazon e valida extensao da imagem.
+	 * @param objeto para passar o nome da imagem salva
+	 * @return objeto com nome da imagem salva
+	 * @throws ImageILiketoException
+	 */
+	public Object processFileuploadImagemTemporarioAWS(Object object) throws ImageILiketoException{
+		
+		HttpServletRequest request = myrequest.getRequest();
+		
+		//armazena arquivos temporarios no Storage AWS
+		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(null);
+		
+		try{
+			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+			if(isMultipart){
+				FileItemFactory factory = new DiskFileItemFactory();
+		        ServletFileUpload upload = new ServletFileUpload(factory);
+		        List<FileItem> list;
+		        Iterator items;
+		        if(fileItems == null){
+		        	list = upload.parseRequest(request);
+		        	items = list.iterator();
+		        	fileItems = list;
+		        }else{
+		        	items = fileItems.iterator();
+		        } 
+				while (items.hasNext()){
+			        FileItem item = (FileItem) items.next();
+			        if (!item.isFormField() && !item.getName().equals("")) {
+			        	FileuploadILiketo.validateExtensionImage(item.getName());	//valida extensao image
+			        	
+				        HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
+		            	mapMyFormInput.put("name", item.getFieldName());     	
+		            	mapMyFormInput.put("filename", getFilenameByCurrentTimeMillis(item.getName()));
+						
+		            	//valida upload para anunciantes
+		            	String path_file_name = "";	            			
+		            	path_file_name = aws.uploadDeArquivosParaDiretorioTemporarioStorageAmazon(mapMyFormInput.get("filename"), "temp", item);
+
+				        for(Field atributo : object.getClass().getDeclaredFields()){
+							atributo.setAccessible(true);
+							FileILiketo file = atributo.getAnnotation(FileILiketo.class);
+							if(file != null){
+								ColumnILiketo coluna = atributo.getAnnotation(ColumnILiketo.class);
+								if(coluna != null && !coluna.name().equals("")){
+									atributo.set(object, path_file_name);	//seta no objeto o valor do nome do arquivo gerado pelo sistema
+								}
+							}
+						}
+			        }
+				}
+			}
+		} catch (ImageILiketoException im) {
+			throw im;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return object;
+	}
+	
+	/**
 	 * Metodo faz upload de varias imagens que contenha no form varios <input type="file" name="file"> 
 	 * e seta o nome do arquivo gerado no atributo de cada objeto correspondente no vetor passado no parametro que tenha anotacao @FileILiketo
 	 * @param object

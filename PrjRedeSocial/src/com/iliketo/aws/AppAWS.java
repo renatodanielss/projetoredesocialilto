@@ -14,14 +14,14 @@ public class AppAWS {
 	public static void main(String[] args) {
 		
 		System.out.println("*** START APPLICATION CONNECT AWS AMAZON STORAGE ***");
-		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS("aws-dev");
+		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(ILiketooBucketsBusinessAWS.AWS_DEV);
 		//App.enviarArquivosParaAWS(aws);
 		//ObjectListing lista = aws.getAmazonS3client().listObjects("iliketoo.aws.midia-piloto");
 		//for (S3ObjectSummary objectSummary : lista.getObjectSummaries()) {
 			//System.out.println("key: " + objectSummary.getKey());
 	        //aws.getAmazonS3client().deleteObject("iliketoo.aws.midia-piloto", objectSummary.getKey());
 	    //}
-		//aws.criarDiretorioNoBucket("upload");
+		//aws.criarDiretorioNoBucket("temp");
 		//aws.jaExisteObjetoNoDiretorioBucketAmazon("1470264753719_yiyqfvgxdjfgygdlegvsbjwujedbsqsjjpg", "upload");
 		//aws.deletaArquivosDiretorioStorageAmazon("1470264753719_yiyqfvgxdjfgygdlegvsbjwujedbsqsjjpg", "upload");
 		//aws.jaExisteObjetoNoDiretorioBucketAmazon("1470264753719_yiyqfvgxdjfgygdlegvsbjwujedbsqsjjpg", "upload");

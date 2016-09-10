@@ -31,7 +31,11 @@ import com.coremedia.iso.boxes.MovieBox;
 import com.coremedia.iso.boxes.MovieHeaderBox;
 import com.iliketo.exception.VideoILiketoException;
 
-
+/**
+ * Classe com metodos de acesso ao servicos de Storage da Amazon S3
+ * @author OSVALDIMAR
+ *
+ */
 public class ILiketooBucketsBusinessAWS {
 
 	static final Logger log = Logger.getLogger(ILiketooBucketsBusinessAWS.class);
@@ -46,27 +50,42 @@ public class ILiketooBucketsBusinessAWS {
 	public static final String LINK_BUCKET_DEV = "http://iliketoo.aws.midia-piloto" + "." + endpoint;
 	public static final String AWS_PRODUCAO = "AWS-producao";
 	public static final String AWS_DEV = "AWS-dev";
+	public static final String AWS_TEMPORARIO = "temp";
 	
 	public boolean IS_LOCAL_STORAGE_AMAZON = false;
 	private AmazonS3Client amazonS3client;	
 	
+	/**
+	 * Metodo construtor recebe String armazenamento para setar local de Storage
+	 * @param localArmazenamento
+	 */
 	public ILiketooBucketsBusinessAWS(String localArmazenamento){
+		
+		//**Configurar local de armazenamento constante**
+		//localArmazenamento = AWS_PRODUCAO
+		//localArmazenamento = AWS_DEV
+		
+		if(localArmazenamento.equalsIgnoreCase(AWS_TEMPORARIO)){
+			bucketName = "iliketoo.aws.midia";
+			this.IS_LOCAL_STORAGE_AMAZON = true;
+			this.amazonS3client = obterCredenciaisCliente();
+		}
 		if(localArmazenamento.equalsIgnoreCase(AWS_PRODUCAO)){
 			bucketName = "iliketoo.aws.midia";
 			this.IS_LOCAL_STORAGE_AMAZON = true;
 			this.amazonS3client = obterCredenciaisCliente();
-			//this.criarBucket();
-			//this.criarDiretorioNoBucket("upload");
 		}
 		if(localArmazenamento.equalsIgnoreCase(AWS_DEV)){
 			bucketName = "iliketoo.aws.midia-piloto";
 			this.IS_LOCAL_STORAGE_AMAZON = true;
 			this.amazonS3client = obterCredenciaisCliente();
-			//this.criarBucket();
-			//this.criarDiretorioNoBucket("upload");
 		}
 	}
 	
+	/**
+	 * Metodo configura as politicas de seguranca para o bucket
+	 * @param myBucket
+	 */
 	public void setConfigBucketPolicy(String myBucket){
 		log.info("AWS - Metodo setConfigBucketPolicy() trying...");
 		String policyText = 
@@ -87,6 +106,9 @@ public class ILiketooBucketsBusinessAWS {
 		log.info("AWS - Set new config policy success bucket name: " + bucketName + " - config: " + policyText);
 	}
 	
+	/**
+	 * Metodo cria um bucket
+	 */
 	public void criarBucket(){
 		
 		log.info("AWS - Metodo criarBucket()");       
@@ -125,6 +147,10 @@ public class ILiketooBucketsBusinessAWS {
         }
     }
 	
+	/**
+	 * Metodo autentica a sessao client no ambiente Storage Amazon (credenciais, endpoint e regiao)
+	 * @return
+	 */
 	private static AmazonS3Client obterCredenciaisCliente(){
 		log.info("AWS - Metodo obterCredenciaisCliente()");
 		ClientConfiguration cc = new ClientConfiguration()
@@ -138,6 +164,14 @@ public class ILiketooBucketsBusinessAWS {
 		return amazonS3client;
 	}
 	
+	/**
+	 * Metodo faz upload de arquivos para o bucket no AWS
+	 * 
+	 * @param keyFilename
+	 * @param fileItem
+	 * @return String - nome do arquivo salvo
+	 * @throws IOException
+	 */
 	public String uploadDeArquivosParaStorageAmazon(String keyFilename, FileItem fileItem) throws IOException{
 		ObjectMetadata metadata = new ObjectMetadata();
 		InputStream input = fileItem.getInputStream();
@@ -152,6 +186,15 @@ public class ILiketooBucketsBusinessAWS {
 		return keyFilename;
 	}
 	
+	/**
+	 * Metodo faz upload de arquivos para um diretorio do bucket no AWS
+	 * 
+	 * @param keyFilename
+	 * @param folderName
+	 * @param fileItem
+	 * @return String - nome do arquivo salvo
+	 * @throws IOException
+	 */
 	public String uploadDeArquivosParaDiretorioStorageAmazon(String keyFilename, String folderName, FileItem fileItem) throws IOException{
 		ObjectMetadata metadata = new ObjectMetadata();
 		InputStream input = fileItem.getInputStream();
@@ -167,6 +210,62 @@ public class ILiketooBucketsBusinessAWS {
 		return keyFilename;
 	}
 	
+	/**
+	 * Metodo faz upload de arquivos para um diretorio temporario do bucket no AWS
+	 * 
+	 * @param keyFilename
+	 * @param folderName
+	 * @param fileItem
+	 * @return - String nome do arquivo salvo
+	 * @throws IOException
+	 */
+	public String uploadDeArquivosParaDiretorioTemporarioStorageAmazon(String keyFilename, String folderName, FileItem fileItem) throws IOException{
+		ObjectMetadata metadata = new ObjectMetadata();
+		InputStream input = fileItem.getInputStream();
+		metadata.setContentType(fileItem.getContentType());
+		metadata.setContentLength(fileItem.getSize());
+		
+		//nome do arquivo unico no bucket/diretorio
+		keyFilename = this.randomizeFilenameUniqueObjectAmazon(keyFilename, folderName);
+		String pathFile = folderName +"/"+ keyFilename;
+		log.info("AWS - Put object temporario in folder trying...");
+		this.amazonS3client.putObject(new PutObjectRequest(bucketName, pathFile, input, metadata));
+		log.info("AWS - Put object temporario in endpoint: " + endpoint + " - bucketname: " + bucketName + " - path/filename: " + pathFile);
+		return keyFilename;
+	}
+	
+	/**
+	 * Metodo muda um arquivo de um diretorio para outro do bucket no AWS
+	 * 
+	 * @param keyFilename
+	 * @param folderNameOrigem
+	 * @param destinoFolderName
+	 * @return - nome do arquivo
+	 * @throws IOException
+	 */
+	public String mudarArquivosDeDiretoriosStorageAmazon(String keyFilename, String folderNameOrigem, String destinoFolderName) throws IOException{
+		String sourceBucketName = bucketName;
+		String sourceKey = folderNameOrigem +"/"+ keyFilename;
+		String destinationBucketName = bucketName;
+		String destinationKey = destinoFolderName +"/"+ keyFilename;
+		
+		//copia arquivo de um diretorio de origem para outro diretorio de destino
+		log.info("AWS - Copy object in folder to other folder trying...");
+		this.amazonS3client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);		
+		log.info("AWS - Copy object in folder to other folder in endpoint: " + endpoint + " - bucketname: " + bucketName + " - path/filename: " + sourceKey
+				+ " / destinationBucketName: " + destinationBucketName + " - destinationKey: " + destinationKey);
+		
+		//deleta arquivo do diretorio antigo de origem
+		this.deletaArquivosDiretorioStorageAmazon(keyFilename, folderNameOrigem);
+		return keyFilename;
+	}
+	
+	/**
+	 * Metodo faz upload de arquivos para o bucket no AWS
+	 * @param keyFilename
+	 * @param file
+	 * @return String - nome do arquivo salvo
+	 */
 	public String uploadDeArquivosParaStorageAmazon(String keyFilename, File file){
 		log.info("AWS - Put object trying...");
 		//nome do arquivo unico no bucket/diretorio
@@ -176,6 +275,14 @@ public class ILiketooBucketsBusinessAWS {
 		return keyFilename;
 	}
 	
+	/**
+	 * Metodo faz upload de arquivos para um diretorio do bucket no AWS
+	 * 
+	 * @param keyFilename
+	 * @param folderName
+	 * @param file
+	 * @return String - nome do arquivo salvo
+	 */
 	public String uploadDeArquivosParaDiretorioStorageAmazon(String keyFilename, String folderName, File file){
 		log.info("AWS - Put object in folder trying...");
 		//nome do arquivo unico no bucket/diretorio
@@ -186,12 +293,23 @@ public class ILiketooBucketsBusinessAWS {
 		return keyFilename;
 	}
 	
+	/**
+	 * Metodo exclui um arquivo do bucket no AWS
+	 * 
+	 * @param keyFilename - nome do arquivo
+	 */
 	public void deletaArquivosStorageAmazon(String keyFilename){
 		log.info("AWS - Delete object trying...");
 		this.amazonS3client.deleteObject(bucketName, keyFilename);
 		log.info("AWS - Delete object success in endpoint: " + endpoint + " - bucketname: " + bucketName + " - keyFilename: " + keyFilename);
 	}
 	
+	/**
+	 * Metodo exclui um arquivo de um diretorio do bucket no AWS
+	 * 
+	 * @param keyFilename
+	 * @param folderName
+	 */
 	public void deletaArquivosDiretorioStorageAmazon(String keyFilename, String folderName){
 		log.info("AWS - Delete object in folder trying...");
 		String pathFile = folderName +"/"+ keyFilename;
@@ -199,6 +317,10 @@ public class ILiketooBucketsBusinessAWS {
 		log.info("AWS - Delete object success in endpoint: " + endpoint + " - bucketname: " + bucketName + " - path/filename: " + pathFile);
 	}
 	
+	/**
+	 * Metodo cria um diretorio no bucket
+	 * @param folderName - nome da pasta
+	 */
 	public void criarDiretorioNoBucket(String folderName) {
 		log.info("AWS - Create folder in bucket trying...");
 		String SUFFIX = "/";
@@ -210,6 +332,13 @@ public class ILiketooBucketsBusinessAWS {
 		log.info("AWS - Create folder success in endpoint: " + endpoint + " - bucketname: " + bucketName + " - folder: " + folderName);
 	}
 	
+	/**
+	 * Metodo retorna InputStream de um arquivo localizado no bucket AWS
+	 * 
+	 * @param keyFilename - nome do arquivo
+	 * @return
+	 * @throws IOException
+	 */
 	public InputStream getObjectNoBucketAmazon(String keyFilename) throws IOException{
 		log.info("AWS - getObject folder in bucket trying...");
 		S3Object object = this.amazonS3client.getObject(new GetObjectRequest(bucketName, keyFilename));
@@ -219,6 +348,14 @@ public class ILiketooBucketsBusinessAWS {
 		return objectData;
 	}
 	
+	/**
+	 * Metodo retorna InputStream de um arquivo localizado em um diretorio no bucket AWS
+	 *  
+	 * @param keyFilename - nome arquivo
+	 * @param folderName - pasta
+	 * @return
+	 * @throws IOException
+	 */
 	public InputStream getObjectNoDiretorioBucketAmazon(String keyFilename, String folderName) throws IOException{
 		log.info("AWS - getObject folder in bucket trying...");
 		String pathFile = folderName +"/"+ keyFilename;
@@ -229,6 +366,12 @@ public class ILiketooBucketsBusinessAWS {
 		return objectData;
 	}
 	
+	/**
+	 * Metodo verifica se existe um arquivo em um diretorio no bucket AWS
+	 * @param keyFilename - nome arquivo
+	 * @param folderName - pasta
+	 * @return true se existir
+	 */
 	public boolean jaExisteObjetoNoDiretorioBucketAmazon(String keyFilename, String folderName){
 		try {
 			if(folderName == null || folderName.isEmpty()){
@@ -244,6 +387,12 @@ public class ILiketooBucketsBusinessAWS {
 	    return true;
 	}
 
+	/**
+	 * Metodo responsavel por gerar um nome unico para um arquivo novo
+	 * @param keyFilename
+	 * @param folderName
+	 * @return nome do arquivo gerado, ex: 1470265800107_fewcmujppclspqrbmlyqydstixxmkaqr.jpg
+	 */
 	private String randomizeFilenameUniqueObjectAmazon(String keyFilename, String folderName){
 		int randomize = 32;
 		String extension = keyFilename.substring(keyFilename.lastIndexOf(".")+1);
@@ -268,6 +417,13 @@ public class ILiketooBucketsBusinessAWS {
 		return novoFilename;
 	}
 	
+	/**
+	 * Metodo responsavel por validar a duracao de um video
+	 * @param keyFilename
+	 * @param folderName
+	 * @return
+	 * @throws VideoILiketoException
+	 */
 	public boolean validateDurationVideo(String keyFilename, String folderName) throws VideoILiketoException {		
 		double result = 0;
 		try {			
@@ -299,10 +455,18 @@ public class ILiketooBucketsBusinessAWS {
 		}		
 	}
 
+	/**
+	 * get AmazonS3Client
+	 * @return
+	 */
 	public AmazonS3Client getAmazonS3client() {
 		return amazonS3client;
 	}
 
+	/**
+	 * set AmazonS3Client
+	 * @param amazonS3client
+	 */
 	public void setAmazonS3client(AmazonS3Client amazonS3client) {
 		this.amazonS3client = amazonS3client;
 	}

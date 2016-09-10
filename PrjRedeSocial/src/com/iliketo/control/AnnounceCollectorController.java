@@ -18,6 +18,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -26,10 +27,15 @@ import HardCore.DB;
 import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.AuctionBidDAO;
 import com.iliketo.dao.CollectionDAO;
+import com.iliketo.dao.HobbyDAO;
 import com.iliketo.dao.ItemDAO;
+import com.iliketo.exception.ImageILiketoException;
+import com.iliketo.exception.StorageILiketoException;
+import com.iliketo.exception.VideoILiketoException;
 import com.iliketo.model.Announce;
 import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
+import com.iliketo.model.Hobby;
 import com.iliketo.model.Item;
 import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
@@ -59,6 +65,26 @@ public class AnnounceCollectorController {
 		log.info(request.getRequestURL());
 				
 		return "page.jsp?id=754"; //page form Register Purchase
+	}
+	
+	@RequestMapping(value={"/registerAnnounce/hobby/{idHobby}/item"})
+	public String announceCollectorItemHobby(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable String idHobby){		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		Hobby h = (Hobby) new HobbyDAO(db, null).readById(idHobby, Hobby.class);
+		
+		ModelILiketo model = new ModelILiketo(request, response);
+		model.addAttribute("anuncioDeHobby", "sim");
+		model.addAttribute("nomeCategoria", h.getNameCategory());
+		model.addAttribute("idCategoria", h.getIdCategory());
+		model.addAttribute("hobby", h);
+		
+		if(ModelILiketo.validateAndProcessError(request)){
+			//valida e mostra error na pagina
+			log.warn("Erro ao adicionar foto do anuncio de hobby!");
+		}
+		return "page.jsp?id=658"; 	//page form edit your announce
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/collector/item"})
@@ -138,47 +164,59 @@ public class AnnounceCollectorController {
 		announce.setIdMember(myUserid);
 		announce.setRating("0");
 		
-		
-		//Purchase
-		if(announce.getTypeAnnounce().equals("Purchase")){
-			//announce.setPathPhotoAd(); //photo default registro de compra
+		if(announce.getAdHobby() != null && announce.getAdHobby().equalsIgnoreCase("y")){
+			//anuncio de hobby
+			ModelILiketo model = new ModelILiketo(request, response);			
+			try {
+				cms.processFileuploadImage(announce);			//salva arquivos
+			} catch (StorageILiketoException e) {
+				model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB."); //msg erro
+				return model.redirectError("/registerAnnounce/hobby/item");
+			} catch (ImageILiketoException e) {
+				model.addMessageError("imageFormat", "Upload only Image in jpg format.");
+				return model.redirectError("/registerAnnounce/hobby/item");
+			}
 		}else{
-			
-			//Sell, Auction, Exchange			
-			//pagamento para anuncio de item
-			Item item = (Item) session.getAttribute("item");
-			if(item != null){	//item
-				String idCollection = item.getIdCollection();
-				Collection col = (Collection) collectionDAO.readById(idCollection, Collection.class);				
-				//set dados do item no anuncio
-				announce.setIdItem(item.getIdItem());
-				announce.setTitle(item.getTitle());
-				announce.setDescription(item.getDescription());
-				announce.setPathPhotoAd(item.getPathPhoto());
-				announce.setIdCategory(col.getIdCategory());
-				announce.setNameCategory(col.getNameCategory());
+			//Purchase
+			if(announce.getTypeAnnounce().equals("Purchase")){
+				//announce.setPathPhotoAd(); //photo default registro de compra
+			}else{
+				
+				//Sell, Auction, Exchange			
+				//pagamento para anuncio de item
+				Item item = (Item) session.getAttribute("item");
+				if(item != null){	//item
+					String idCollection = item.getIdCollection();
+					Collection col = (Collection) collectionDAO.readById(idCollection, Collection.class);				
+					//set dados do item no anuncio
+					announce.setIdItem(item.getIdItem());
+					announce.setTitle(item.getTitle());
+					announce.setDescription(item.getDescription());
+					announce.setPathPhotoAd(item.getPathPhoto());
+					announce.setIdCategory(col.getIdCategory());
+					announce.setNameCategory(col.getNameCategory());
+				}
+				
+				//pagamento para anuncio de colecao
+				Collection collection = (Collection) session.getAttribute("collection");
+				if(collection != null){
+					//set dados da colecao no anuncio
+					announce.setIdCollection(collection.getIdCollection());
+					announce.setTitle(collection.getNameCollection());
+					announce.setDescription(collection.getDescription());
+					announce.setPathPhotoAd(collection.getPathPhoto());
+					announce.setIdCategory(collection.getIdCategory());
+					announce.setNameCategory(collection.getNameCategory());
+				}
 			}
 			
-			//pagamento para anuncio de colecao
-			Collection collection = (Collection) session.getAttribute("collection");
-			if(collection != null){
-				//set dados da colecao no anuncio
-				announce.setIdCollection(collection.getIdCollection());
-				announce.setTitle(collection.getNameCollection());
-				announce.setDescription(collection.getDescription());
-				announce.setPathPhotoAd(collection.getPathPhoto());
-				announce.setIdCategory(collection.getIdCategory());
-				announce.setNameCategory(collection.getNameCategory());
+			if(!announce.getTypeAnnounce().equals("Purchase")){
+				if(announce.getIdItem() == null || announce.getIdItem().equals("") || announce.getTitle() == null || announce.getTitle().equals("")){
+					log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do item para anunciar!");
+					return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
+				}
 			}
 		}
-		
-		if(!announce.getTypeAnnounce().equals("Purchase")){
-			if(announce.getIdItem() == null || announce.getIdItem().equals("") || announce.getTitle() == null || announce.getTitle().equals("")){
-				log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do item para anunciar!");
-				return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
-			}
-		}
-		
 		//TEM PROMOCAO PARA ESTE ANUNCIO
 		if(promocao){
 			if(announce.getTypeAnnounce().equals("Auction")){
@@ -228,52 +266,6 @@ public class AnnounceCollectorController {
 			return "page.jsp?id=897"; 	//page form payment
 		}
 	}
-
-	/*
-	@RequestMapping(value={"/registerAnnounce/collector/addAnnounce"})
-	public String announceCollectorAddAnnounce(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		
-		log.info(request.getRequestURL());
-		
-		//dao
-		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		AnnounceDAO announceDAO = new AnnounceDAO(db, request);		
-		HttpSession session = request.getSession();		
-		
-		Announce announce = (Announce) session.getAttribute("announce");	 	//recupera anuncio da sessao	
-		String idCreated = "";
-		
-		if(announce != null){
-			
-			announce.setStatus("Pending pay");						//pendente pagamento
-			idCreated = announceDAO.create(announce);				//salva anuncio no bd
-			
-			//remove atributos da sessao
-			session.removeAttribute("item");
-			session.removeAttribute("collection");
-			session.removeAttribute("announce");
-			log.info("Anuncio cadastrado com sucesso!");
-			
-			
-			//cria notificacao para o grupo da categoria
-			String idCategory = announce.getIdCategory();
-			if(idCategory != null && !idCategory.equals("")){
-				String myUserid = (String) request.getSession().getAttribute("userid");
-				NotificationService.createNotification(db, idCategory, "announce", idCreated, Str.INCLUDED, myUserid);
-				if(announce.getTypeAnnounce().equals("Auction")){
-					//notificacao aviso uma hora antes leilao
-					NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", idCreated, Str.AUCTION_HOUR, myUserid, announce.getDateInitial());
-				}
-			}
-			
-		}else{
-			log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do anuncio!");
-			return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
-		}			
-		
-		return "redirect:/ilt/ads?id=" + idCreated; 		//success - page anuncio criado
-	}
-	*/
 	
 	/**
 	 * Metodo redireciona para visualizar pagina do anuncio
@@ -320,7 +312,9 @@ public class AnnounceCollectorController {
 						pageVisualizarAnuncio = pageMeuAnuncioCompra;		//anuncio de compra
 					}else{
 						if(!announce.getIdItem().equals("")){
-							pageVisualizarAnuncio = pageMeuAnuncio;			//venda/troca para item
+							pageVisualizarAnuncio = pageMeuAnuncio;		//venda/troca para item
+						}else if(announce.getAdHobby().equalsIgnoreCase("y") || !announce.getIdHobby().isEmpty()){
+							pageVisualizarAnuncio = pageMeuAnuncio;		//anuncio venda e troca para hobby
 						}
 					}
 				//}
@@ -346,6 +340,8 @@ public class AnnounceCollectorController {
 						}else{
 							if(!announce.getIdItem().equals("")){
 								pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
+							}else if(announce.getAdHobby().equalsIgnoreCase("y") || !announce.getIdHobby().isEmpty()){
+								pageVisualizarAnuncio = pageAnuncioTerceiro;	//anuncio venda e troca para hobby
 							}
 						}
 					//}
@@ -597,15 +593,5 @@ public class AnnounceCollectorController {
 		return "/page.jsp?id=invalid";		//pagina conteudo indisponivel
 	}
 	
-	
-	/** ACESSO SOMENTE PARA PESSOAS AUTORIZADAS A MUDAR STATUS PENDENTE PAGAMENTO PARA OK*/
-	
-	@RequestMapping(value={"/announce/changeStatus/paymentOK"}, method = RequestMethod.POST)
-	public String changeStatusPendingPay(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		
-		
-		
-		return "";
-	}
 	
 }
