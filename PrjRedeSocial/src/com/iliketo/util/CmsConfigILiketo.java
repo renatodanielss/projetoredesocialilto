@@ -139,6 +139,34 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
+	 * Metodo atualiza o espaco de armazenamento do membro com o tamanho em bytes dos arquivos que esta no request
+	 */
+	public void atualizaEspacoArmazenamentoMembroInBytes(){
+		Member membro = ((Member) memberDAO.readByColumn("id_member", mysession.get("userid"), Member.class));
+		MemberDAO memberDAO = new MemberDAO((DB)myrequest.getRequest().getAttribute(Str.CONNECTION_DB), null);
+		memberDAO.saveUsedSpace(membro, this.getSizeFilesInBytes());
+		log.info("Membro: " + membro.getUsername() + " - Total: " + membro.getTotalSpace() + 
+				" - usado: " + membro.getUsedSpace() + " - Tipo: " + membro.getStorageType());
+	}
+	
+	/**
+	 * Metodo faz upload de uma imagem que contenha no form <input type="file" name="file"> 
+	 * e seta o nome do arquivo gerado no atributo do objeto passado no parametro que tenha anotacao @FileILiketo. 
+	 * Este metodo nao contabiliza a quantidade de KB da imagem de anuncio no espaco de armazenamento do usuario.
+	 * @param object
+	 * @return object
+	 * @throws StorageILiketoException
+	 * @throws ImageILiketoException 
+	 */
+	public Object processFileuploadImagemAnuncio(Object object) throws StorageILiketoException, ImageILiketoException{	
+		try {
+			return processFileupload(object, "image", false);				//upload de imagem
+		} catch (ImageILiketoException | VideoILiketoException e) {
+			throw new ImageILiketoException(e.getMessage());
+		}	
+	}
+	
+	/**
 	 * Metodo faz upload de uma imagem que contenha no form <input type="file" name="file"> 
 	 * e seta o nome do arquivo gerado no atributo do objeto passado no parametro que tenha anotacao @FileILiketo
 	 * @param object
@@ -148,7 +176,7 @@ public class CmsConfigILiketo {
 	 */
 	public Object processFileuploadImage(Object object) throws StorageILiketoException, ImageILiketoException{	
 		try {
-			return processFileupload(object, "image");				//upload de imagem
+			return processFileupload(object, "image", true);				//upload de imagem
 		} catch (ImageILiketoException | VideoILiketoException e) {
 			throw new ImageILiketoException(e.getMessage());
 		}	
@@ -164,7 +192,7 @@ public class CmsConfigILiketo {
 	 */
 	public Object processFileuploadVideo(Object object) throws StorageILiketoException, VideoILiketoException{	
 		try {
-			return processFileupload(object, "video");				//upload de video
+			return processFileupload(object, "video", true);				//upload de video
 		} catch (ImageILiketoException | VideoILiketoException e) {
 			throw new VideoILiketoException(e.getMessage());
 		}				
@@ -172,8 +200,8 @@ public class CmsConfigILiketo {
 	
 	/**Metodo privado faz upload, valida extensao, valida duracao video, valida e atualiza armazenamento.
 	 */
-	private Object processFileupload(Object object, String typeFile) throws StorageILiketoException, ImageILiketoException, VideoILiketoException{
-		
+	private Object processFileupload(Object object, String typeFile, boolean contabilizarArmazenamento) 
+			throws StorageILiketoException, ImageILiketoException, VideoILiketoException {		
 		
 		HttpServletRequest request = myrequest.getRequest();
 		String myUserId = mysession.get("userid");
@@ -181,7 +209,7 @@ public class CmsConfigILiketo {
 		long uploadBytes = getSizeFilesInBytes();
 		
 		//valida armazenamento disponivel
-		if(validateFreeSpaceStorage(member, uploadBytes)){
+		if(!contabilizarArmazenamento || validateFreeSpaceStorage(member, uploadBytes)){
 			
 			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
 			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
@@ -263,8 +291,11 @@ public class CmsConfigILiketo {
 				e.printStackTrace();
 			}
 			
+			if(contabilizarArmazenamento){
+				this.atualizaEspacoArmazenamentoMembroInBytes();
+			}			
 			return object;
-		
+			
 		}else{
 			throw new StorageILiketoException();
 		}
@@ -437,8 +468,8 @@ public class CmsConfigILiketo {
 				e.printStackTrace();
 			}
 			
+			this.atualizaEspacoArmazenamentoMembroInBytes();
 			return objects;
-			
 		}else{
 			throw new StorageILiketoException();
 		}
@@ -611,7 +642,7 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
-	 * M�todo retorna um objeto do tipo referenciado no parametro clazz 
+	 * Metodo retorna um objeto do tipo referenciado no parametro clazz 
 	 * Retorna objeto com os dados populados nos atributos. O "name" dos inputs do form tem que ser igual a "coluna" na database ou "nome do atributo" do objeto
 	 * @param clazz
 	 * @return
@@ -1332,7 +1363,13 @@ public class CmsConfigILiketo {
 	public String getDOCUMENT_ROOT_UPLOAD() {
 		return DOCUMENT_ROOT_UPLOAD;
 	}
-	
-	
+
+	public List<FileItem> getFileItems() {
+		return fileItems;
+	}
+
+	public void setFileItems(List<FileItem> fileItems) {
+		this.fileItems = fileItems;
+	}
 	
 }

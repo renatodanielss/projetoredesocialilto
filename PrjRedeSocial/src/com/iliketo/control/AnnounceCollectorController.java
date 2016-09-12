@@ -48,7 +48,8 @@ import com.iliketo.util.Str;
 public class AnnounceCollectorController {
 
 
-	static final Logger log = Logger.getLogger(AnnounceCollectorController.class);
+	static final Logger log = Logger.getLogger(AnnounceCollectorController.class);	
+	
 	
 	/**
 	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
@@ -60,10 +61,8 @@ public class AnnounceCollectorController {
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/collector/purchase"})
-	public String announceCollectorPurchase(HttpServletRequest request, HttpServletResponse response){
-		
-		log.info(request.getRequestURL());
-				
+	public String announceCollectorPurchase(HttpServletRequest request, HttpServletResponse response){		
+		log.info(request.getRequestURL());				
 		return "page.jsp?id=754"; //page form Register Purchase
 	}
 	
@@ -91,54 +90,41 @@ public class AnnounceCollectorController {
 	public String announceCollectorItem(HttpServletRequest request, HttpServletResponse response){
 		
 		log.info(request.getRequestURL());
-		
-		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		ItemDAO itemDAO = new ItemDAO(db, request);
 		
-		String id = request.getParameter("idItem");					//id item
-		Item item = (Item) itemDAO.readById(id, Item.class);		//ler item
+		String id = request.getParameter("idColecao");
+		Collection colecao = (Collection) new CollectionDAO(db, null).readById(id, Collection.class);
 		
-		HttpSession session = request.getSession();
-		//remove atributos da sessao
-		session.removeAttribute("item");
-		session.removeAttribute("collection");
-		session.removeAttribute("announce");
-		
-		session.setAttribute("item", item);							//set item da colecao na session
-		
-		//model view jsp para binding do bean
 		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("item", item);
-				
+		model.addAttribute("anuncioItemDeColecao", "sim");
+		model.addAttribute("colecao", colecao);
+		
+		if(ModelILiketo.validateAndProcessError(request)){
+			//valida e mostra error na pagina
+			log.warn("Erro ao adicionar foto do anuncio de item da colecao!");
+		}				
 		return "page.jsp?id=658"; //page form edit your announce
 	}
-	
-	@RequestMapping(value={"/registerAnnounce/collector/collection"})
-	public String announceCollectorCollection(HttpServletRequest request, HttpServletResponse response){
-		
+
+	@RequestMapping(value={"/simularCheckout"})
+	public String simularCheckout(HttpServletRequest request, HttpServletResponse response) throws IOException, StorageILiketoException, ImageILiketoException{
 		log.info(request.getRequestURL());
-		
-		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		CollectionDAO collectionDAO = new CollectionDAO(db, request);
 		
-		String id = request.getParameter("idCollection");									//id colecao
-		Collection collection = (Collection) collectionDAO.readById(id, Collection.class);	//ler colecao
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
+		Announce anuncio = (Announce) cms.getObjectOfParameter(Announce.class);
+		cms.processFileuploadImagemAnuncio(anuncio);		//upload arquivo
+		anuncio.setStatus("Pending pay");					//set pendente pagamento
+
+		AnnounceDAO dao = new AnnounceDAO(db, request);
+		String idRegistro = dao.create(anuncio);	//salva anuncio no bd
+
+		HttpSession sessao = request.getSession();
+		anuncio.setIdAnnounce(idRegistro);
+		sessao.setAttribute("anuncio", anuncio);	//set anuncio session		
 		
-		HttpSession session = request.getSession();
-		//remove atributos da sessao
-		session.removeAttribute("item");
-		session.removeAttribute("collection");
-		session.removeAttribute("announce");
-				
-		session.setAttribute("collection", collection);										//set colecao na session
-		
-		//model view jsp para binding do bean
-		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("collection", collection);
-				
-		return "page.jsp?id=664"; //page form edit your announce
+		log.info("Colecao: " + anuncio);
+		return "page.jsp?id=checkout";
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/collector/payment"})
