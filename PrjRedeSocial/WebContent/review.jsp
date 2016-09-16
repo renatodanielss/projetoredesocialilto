@@ -179,21 +179,6 @@ background-color: #0090d9;
 
 }
 
-
-#login1{
-	 border-style: solid;
-	 border-color:transparent; 
-	display:compact;
-	float:left;
-	weight:auto;
-	color:#fff;
-	font-size:1.2em;
-		letter-spacing:2px;
-font-family:ebrima;
-line-height:40px;
-font-weight:lighter;
-
-}
 #login2{
 	border-style: solid; 
 	weight:auto;
@@ -561,6 +546,22 @@ float: left; width:55%; }
 	clear: both;
 }
 
+.backbutton1 {
+	font-family: Ebrima;
+	font-size:14px;
+	color:#fff;
+	float: left;
+	height:35px !important;
+	width: 150px;
+	padding-left:2%;
+	padding-right: 2%;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	background-color: #0090d9;
+	font-weight: lighter;
+}
+
 -->
 </style>
 </head>
@@ -574,6 +575,8 @@ float: left; width:55%; }
   <img src="/image/logo6_transparent2.png" class="logo2"> </div>
  
     <!-- end .header --></div>
+    
+    <!-- if locale portuguese -->
     <% if (request.getLocale().toString().equals("pt_BR")){ %>
   <div class="content">
     <p>&nbsp;</p><br>
@@ -584,20 +587,22 @@ float: left; width:55%; }
 			<tbody id="first">
 				<tr><td><h4 style="margin-left: -16px;">Endereço de Cobrança</h4></td></tr>
 				<% HashMap result = (HashMap) request.getAttribute("result");  %>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTATE")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOZIP")%></td></tr>
-				<tr><td colspan="2">&nbsp;</td></tr>
+				<tr><td style="width: auto;">Nome: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
+				<tr><td style="width: auto;">Endereço: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
+				<tr><td style="width: auto;">Cidade: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
+				<tr><td style="width: auto;">Estado: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTATE")%></td></tr>
+				<tr><td style="width: auto;">País: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")%></td></tr>
+				<tr><td style="width: auto;">CEP: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOZIP")%></td></tr>
 				<tr><td colspan="2">&nbsp;</td></tr>
 				
-				<tr><td>Valor Total:</td><td id='amount'><%=result.get("PAYMENTREQUEST_0_AMT")%></td></tr>
-				<tr><td>Moeda:</td><td><%=result.get("CURRENCYCODE").equals("BRL")?"Real":""%></td></tr>
+				<tr><td style="width: auto;">Produto: </td><td><%=result.get("L_PAYMENTREQUEST_0_NAME0")%></td></tr>
+				<tr><td style="width: auto;">Descrição do Produto: </td><td><%=result.get("L_PAYMENTREQUEST_0_DESC0")%></td></tr>
+				<tr><td style="width: auto;">Valor Total: </td><td id='amount'><%=result.get("PAYMENTREQUEST_0_AMT")%></td></tr>
+				<tr><td style="width: auto;">Moeda: </td><td><%=result.get("CURRENCYCODE").equals("BRL")?"Real":""%></td></tr>
 				<tr><td>&nbsp;</td></tr>
 				<form action="Return?page=return" name="order_confirm" method="POST">
-					<tr><td><input id="submitbutton" type="Submit" name="confirm" alt="Check out with PayPal" class="btn btn-primary btn-large" value="Confirmar Compra"></td></tr>
+				<input name="PAYMENTREQUEST_0_SHIPPINGAMT" value="0.00" type="hidden"></input>
+					<tr><td><input id="submitbutton" type="Submit" name="confirm" alt="Check out with PayPal" class="backbutton1" value="Confirmar Compra"></td></tr>
 				</form>
 			</tbody>
 		</table>
@@ -605,6 +610,8 @@ float: left; width:55%; }
 	<br>
 	<div class="span3">
 	</div>
+	
+	<!-- if locale spanish -->
 	<% } else if (request.getLocale().toString().equals("es_ES")){%>
   <div class="content">
     <p>&nbsp;</p><br>
@@ -615,20 +622,22 @@ float: left; width:55%; }
 			<tbody id="first">
 				<tr><td><h4 style="margin-left: -16px;">Billing Address</h4></td></tr>
 				<% HashMap result = (HashMap) request.getAttribute("result");  %>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTATE")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOZIP")%></td></tr>
-				<tr><td colspan="2">&nbsp;</td></tr>
+				<tr><td style="width: auto;">Name: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
+				<tr><td style="width: auto;">Address: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
+				<tr><td style="width: auto;">City: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
+				<tr><td style="width: auto;">State: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTATE")%></td></tr>
+				<tr><td style="width: auto;">Country: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")%></td></tr>
+				<tr><td style="width: auto;">Zip Code: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOZIP")%></td></tr>
 				<tr><td colspan="2">&nbsp;</td></tr>
 				
-				<tr><td>Total Amount:</td><td id='amount'><%=result.get("PAYMENTREQUEST_0_AMT")%></td></tr>
-				<tr><td>Currency:</td><td><%=result.get("CURRENCYCODE").equals("EUR")?"Euro":""%></td></tr>
+				<tr><td style="width: auto;">Product: </td><td><%=result.get("L_PAYMENTREQUEST_0_NAME0")%></td></tr>
+				<tr><td style="width: auto;">Description: </td><td><%=result.get("L_PAYMENTREQUEST_0_DESC0")%></td></tr>
+				<tr><td style="width: auto;" >Total Amount: </td><td id='amount'><%=result.get("PAYMENTREQUEST_0_AMT")%></td></tr>
+				<tr><td style="width: auto;">Currency: </td><td><%=result.get("CURRENCYCODE").equals("EUR")?"Euro":""%></td></tr>
 				<tr><td>&nbsp;</td></tr>
 				<form action="Return?page=return" name="order_confirm" method="POST">
-					<tr><td><input id="submitbutton" type="Submit" name="confirm" alt="Check out with PayPal" class="btn btn-primary btn-large" value="Confirm Order"></td></tr>
+				<input name="PAYMENTREQUEST_0_SHIPPINGAMT" value="0.00" type="hidden"></input>
+					<tr><td><input id="submitbutton" type="Submit" name="confirm" alt="Check out with PayPal" class="backbutton1" value="Confirm Order"></td></tr>
 				</form>
 			</tbody>
 		</table>
@@ -636,6 +645,8 @@ float: left; width:55%; }
 	<br>
 	<div class="span3">
 	</div>	
+	
+	<!-- if locale english -->
 	<% } else { %>
   <div class="content">
     <p>&nbsp;</p><br>
@@ -646,20 +657,22 @@ float: left; width:55%; }
 			<tbody id="first">
 				<tr><td><h4 style="margin-left: -16px;">Billing Address</h4></td></tr>
 				<% HashMap result = (HashMap) request.getAttribute("result");  %>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTATE")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")%></td></tr>
-				<tr><td><%=result.get("PAYMENTREQUEST_0_SHIPTOZIP")%></td></tr>
-				<tr><td colspan="2">&nbsp;</td></tr>
+				<tr><td style="width: auto;">Name: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
+				<tr><td style="width: auto;">Address: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
+				<tr><td style="width: auto;">City: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
+				<tr><td style="width: auto;">State: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTATE")%></td></tr>
+				<tr><td style="width: auto;">Country: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")%></td></tr>
+				<tr><td style="width: auto;">Zip Code: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOZIP")%></td></tr>
 				<tr><td colspan="2">&nbsp;</td></tr>
 				
-				<tr><td>Total Amount:</td><td id='amount'><%=result.get("PAYMENTREQUEST_0_AMT")%></td></tr>
-				<tr><td>Currency:</td><td><%=result.get("CURRENCYCODE").equals("USD")?"Dollar":""%></td></tr>
+				<tr><td style="width: auto;">Product: </td><td><%=result.get("L_PAYMENTREQUEST_0_NAME0")%></td></tr>
+				<tr><td style="width: auto;">Description: </td><td><%=result.get("L_PAYMENTREQUEST_0_DESC0")%></td></tr>
+				<tr><td style="width: auto;">Total Amount: </td><td id='amount'><%=result.get("PAYMENTREQUEST_0_AMT")%></td></tr>
+				<tr><td style="width: auto;">Currency:</td><td><%=result.get("CURRENCYCODE").equals("USD")?"Dollar":""%></td></tr>
 				<tr><td>&nbsp;</td></tr>
 				<form action="Return?page=return" name="order_confirm" method="POST">
-					<tr><td><input id="submitbutton" type="Submit" name="confirm" alt="Check out with PayPal" class="btn btn-primary btn-large" value="Confirm Order"></td></tr>
+				<input name="PAYMENTREQUEST_0_SHIPPINGAMT" value="0.00" type="hidden"></input>
+					<tr><td><input id="submitbutton" type="Submit" name="confirm" alt="Check out with PayPal" class="backbutton1" value="Confirm Order"></td></tr>
 				</form>
 			</tbody>
 		</table>
