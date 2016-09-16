@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
@@ -149,7 +150,8 @@ public class CollectionController {
 				}
 			}
 			
-			return "redirect:/ilt/collection/registerCollection/addItems";				//page form add new items
+			//return "redirect:/ilt/collection/registerCollection/addItems";				//page form add new items passo antigo
+			return "redirect:/ilt/collection/registerCollection/pass2/"+collection.getIdCollection() ;	//page form add new items passo 2
 			
 		} catch (StorageILiketoException e) {
 			model.addAttribute("collection", collection);
@@ -163,6 +165,23 @@ public class CollectionController {
 		
 	}
 
+	@RequestMapping(value={"/collection/registerCollection/pass2/{idCol}"})
+	public String pass2(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable String idCol){
+		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		ModelILiketo model = new ModelILiketo(request, response);
+
+		Collection c = (Collection) new CollectionDAO(db, null).readById(idCol, Collection.class);
+		if(c != null){
+			model.addAttribute("collection", c);
+			return "page.jsp?id=1132";		//pagina passo 2
+		}
+		
+		return "page.jsp?id=invalid";	//pagina invalida
+	}
+	
 	@RequestMapping(value={"/collection/registerCollection/addItems"})
 	public String addNewItems(HttpServletRequest request, HttpServletResponse response){
 		
