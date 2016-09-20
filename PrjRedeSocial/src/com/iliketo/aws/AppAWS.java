@@ -14,7 +14,7 @@ public class AppAWS {
 	public static void main(String[] args) {
 		
 		System.out.println("*** START APPLICATION CONNECT AWS AMAZON STORAGE ***");
-		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(ILiketooBucketsBusinessAWS.AWS_DEV);
+		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(true, ILiketooBucketsBusinessAWS.AWS_DEV);
 		//App.enviarArquivosParaAWS(aws);
 		//ObjectListing lista = aws.getAmazonS3client().listObjects("iliketoo.aws.midia-piloto");
 		//for (S3ObjectSummary objectSummary : lista.getObjectSummaries()) {

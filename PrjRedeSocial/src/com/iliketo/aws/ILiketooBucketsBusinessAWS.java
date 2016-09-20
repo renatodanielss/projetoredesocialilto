@@ -59,17 +59,13 @@ public class ILiketooBucketsBusinessAWS {
 	 * Metodo construtor recebe String armazenamento para setar local de Storage
 	 * @param localArmazenamento
 	 */
-	public ILiketooBucketsBusinessAWS(String localArmazenamento){
+	public ILiketooBucketsBusinessAWS(){
 		
 		//**Configurar local de armazenamento constante**
-		//localArmazenamento = AWS_PRODUCAO
-		//localArmazenamento = AWS_DEV
-		
-		if(localArmazenamento.equalsIgnoreCase(AWS_TEMPORARIO)){
-			bucketName = "iliketoo.aws.midia";
-			this.IS_LOCAL_STORAGE_AMAZON = true;
-			this.amazonS3client = obterCredenciaisCliente();
-		}
+		//String localArmazenamento = AWS_PRODUCAO	//bucket de producao
+		//String localArmazenamento = AWS_DEV		//bucket desenvolvimento
+		String localArmazenamento = "local";		//servidor local
+
 		if(localArmazenamento.equalsIgnoreCase(AWS_PRODUCAO)){
 			bucketName = "iliketoo.aws.midia";
 			this.IS_LOCAL_STORAGE_AMAZON = true;
@@ -82,6 +78,24 @@ public class ILiketooBucketsBusinessAWS {
 		}
 	}
 	
+	/**
+	 * Construtor para teste e configuracoes da classe ILiketooBucketsBusinessAWS
+	 */
+	public ILiketooBucketsBusinessAWS(boolean teste, String local){		
+		if(teste){
+			if(local.equalsIgnoreCase(AWS_PRODUCAO)){
+				bucketName = "iliketoo.aws.midia";
+				this.IS_LOCAL_STORAGE_AMAZON = true;
+				this.amazonS3client = obterCredenciaisCliente();
+			}
+			if(local.equalsIgnoreCase(AWS_DEV)){
+				bucketName = "iliketoo.aws.midia-piloto";
+				this.IS_LOCAL_STORAGE_AMAZON = true;
+				this.amazonS3client = obterCredenciaisCliente();
+			}
+		}
+	}
+
 	/**
 	 * Metodo configura as politicas de seguranca para o bucket
 	 * @param myBucket
@@ -257,6 +271,30 @@ public class ILiketooBucketsBusinessAWS {
 		
 		//deleta arquivo do diretorio antigo de origem
 		this.deletaArquivosDiretorioStorageAmazon(keyFilename, folderNameOrigem);
+		return keyFilename;
+	}
+	
+	/**
+	 * Copiar arquivo no diretorio do bucket
+	 * @param keyFilename
+	 * @param folderNameOrigem
+	 * @param destinoFolderName
+	 * @return
+	 * @throws IOException
+	 */
+	public String copiarArquivosNosDiretoriosStorageAmazon(String keyFilename, String folderNameOrigem, String destinoFolderName) throws IOException{
+		log.info("AWS - Copy object in folder to other folder trying...");
+		String sourceBucketName = bucketName;
+		String sourceKey = folderNameOrigem +"/"+ keyFilename;
+		String destinationBucketName = bucketName;
+		
+		keyFilename = this.randomizeFilenameUniqueObjectAmazon(keyFilename, destinoFolderName);
+		String destinationKey = destinoFolderName +"/"+ keyFilename;
+		
+		//copia arquivo de um diretorio de origem para outro diretorio de destino
+		this.amazonS3client.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);		
+		log.info("AWS - Copy object in folder endpoint: " + endpoint + " - bucketname: " + bucketName + " - path/filename: " + sourceKey
+				+ " / destinationBucketName: " + destinationBucketName + " - destinationKey: " + destinationKey);
 		return keyFilename;
 	}
 	

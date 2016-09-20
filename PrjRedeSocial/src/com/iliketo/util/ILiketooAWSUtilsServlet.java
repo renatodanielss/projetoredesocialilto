@@ -34,7 +34,7 @@ public class ILiketooAWSUtilsServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log.info("Chamou Servlet - ILiketooAWSUtilsServlet.class");
-		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(ILiketooBucketsBusinessAWS.AWS_DEV);
+		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(true, ILiketooBucketsBusinessAWS.AWS_DEV);
 		String html = AppAWS.enviarArquivosParaAWS(aws);
 		ResponseILiketoo.respostaHtml(response, html);
 	}

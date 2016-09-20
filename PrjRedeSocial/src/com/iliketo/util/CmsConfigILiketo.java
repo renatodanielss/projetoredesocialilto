@@ -1,6 +1,7 @@
 package com.iliketo.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.catalina.Context;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
@@ -37,7 +39,6 @@ import HardCore.Website;
 
 import com.iliketo.aws.ILiketooBucketsBusinessAWS;
 import com.iliketo.control.AdvertiserController;
-import com.iliketo.control.VideoController;
 import com.iliketo.dao.MemberDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
@@ -150,6 +151,33 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
+	 * Metodo para copiar uma imagem. Utilizado para criar um anuncio que jah tem uma imagem salva do item e usar a mesma.
+	 * Este metodo nao contabiliza a quantidade de KB da imagem de anuncio no espaco de armazenamento do usuario.
+	 * @param object
+	 * @return object
+	 * @throws StorageILiketoException
+	 * @throws ImageILiketoException 
+	 * @throws IOException 
+	 */
+	public String processFileuploadCopiarImagemAnuncio(String nomeArquivo) throws StorageILiketoException, ImageILiketoException, IOException{	
+		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
+		HashMap<String,String> mapMyFormInput = new HashMap<String,String>();
+		String novoNomeArquivoCopiado = "";
+		if(aws.IS_LOCAL_STORAGE_AMAZON){			            			
+			novoNomeArquivoCopiado = aws.copiarArquivosNosDiretoriosStorageAmazon(nomeArquivo, "upload", "upload");
+		}else{
+			String localArmazenamento = (String)myrequest.getRequest().getSession().getAttribute(Str.STORAGE);
+			InputStream stream = new FileInputStream(localArmazenamento + nomeArquivo);
+			mapMyFormInput.put("name", Str.PATH_FILE_DEFAULT);
+			mapMyFormInput.put("filename", getFilenameByCurrentTimeMillis("default.jpg"));
+			FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)myrequest.getRequest().getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+					myconfig.get((DB)myrequest.getRequest().getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
+			novoNomeArquivoCopiado = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	
+		}
+		return novoNomeArquivoCopiado;
+	}
+	
+	/**
 	 * Metodo faz upload de uma imagem que contenha no form <input type="file" name="file"> 
 	 * e seta o nome do arquivo gerado no atributo do objeto passado no parametro que tenha anotacao @FileILiketo. 
 	 * Este metodo nao contabiliza a quantidade de KB da imagem de anuncio no espaco de armazenamento do usuario.
@@ -212,7 +240,7 @@ public class CmsConfigILiketo {
 		if(!contabilizarArmazenamento || validateFreeSpaceStorage(member, uploadBytes)){
 			
 			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
-			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
+			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
 			
 			try{
 				boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -307,7 +335,7 @@ public class CmsConfigILiketo {
 	 * @throws IOException - erro no processo de armazenamento da Amazon
 	 */
 	public void processFileuploadTemporarioParaProducaoAWS(String nomeArquivo) throws IOException{
-		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(null);
+		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
 		aws.mudarArquivosDeDiretoriosStorageAmazon(nomeArquivo, "temp", "upload");
 	}
 	
@@ -322,7 +350,7 @@ public class CmsConfigILiketo {
 		HttpServletRequest request = myrequest.getRequest();
 		
 		//armazena arquivos temporarios no Storage AWS
-		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(null);
+		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
 		
 		try{
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -402,7 +430,7 @@ public class CmsConfigILiketo {
 		if(validateFreeSpaceStorage(member, uploadBytes)){
 			
 			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
-			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
+			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
 
 			try{
 				boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -639,6 +667,41 @@ public class CmsConfigILiketo {
 		}
 		
 		return sizeTotal;
+	}
+	
+	/**
+	 * Metodo retorna um Map chave e valor dos campos inputs e parametros no request com enctype
+	 * @return Map
+	 */
+	public Map<String, String> recuperarDadosMultipartContent(){
+		Map<String, String> map = new HashMap<>();
+		if(ServletFileUpload.isMultipartContent(this.myrequest.getRequest())){
+			try{
+				FileItemFactory factory = new DiskFileItemFactory();
+		        ServletFileUpload upload = new ServletFileUpload(factory);
+		        List<FileItem> list;
+		        Iterator items;
+		        if(fileItems == null){
+		        	list = upload.parseRequest(this.myrequest.getRequest());
+		        	items = list.iterator();
+		        	fileItems = list;
+		        }else{
+		        	items = fileItems.iterator();
+		        }
+		        while (items.hasNext()){
+		        	FileItem item = (FileItem) items.next();
+		            if (item.isFormField()) {
+		            	String inputName = item.getFieldName();
+		            	String value = item.getString();
+		            	map.put(inputName, value);
+		            }
+		        }
+			}catch(FileUploadException e){
+				e.printStackTrace();
+			}
+			return map;
+		}
+		return null;
 	}
 	
 	/**

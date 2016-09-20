@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import oracle.jdbc.proxy.annotation.Methods;
-
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -31,7 +29,6 @@ import com.iliketo.dao.HobbyDAO;
 import com.iliketo.dao.ItemDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
-import com.iliketo.exception.VideoILiketoException;
 import com.iliketo.model.Announce;
 import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
@@ -86,45 +83,29 @@ public class AnnounceCollectorController {
 		return "page.jsp?id=658"; 	//page form edit your announce
 	}
 	
-	@RequestMapping(value={"/registerAnnounce/collector/item"})
-	public String announceCollectorItem(HttpServletRequest request, HttpServletResponse response){
+	@RequestMapping(value={"/registerAnnounce/collector/itemOfCollection/{idColecao}"})
+	public String announceCollectorItem(HttpServletRequest request, HttpServletResponse response, @PathVariable String idColecao){
 		
 		log.info(request.getRequestURL());
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		
-		String id = request.getParameter("idColecao");
-		Collection colecao = (Collection) new CollectionDAO(db, null).readById(id, Collection.class);
-		
+		Collection colecao = (Collection) new CollectionDAO(db, null).readById(idColecao, Collection.class);
 		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("anuncioItemDeColecao", "sim");
 		model.addAttribute("colecao", colecao);
+		
+		String idItem = (String)request.getParameter("idItem");
+		if(idItem != null && !idItem.isEmpty()){
+			Item item = (Item) new ItemDAO(db, null).readById(idItem, Item.class);
+			model.addAttribute("item", item);
+		}else{
+			model.addAttribute("anuncioItemDeColecao", "sim");
+		}
 		
 		if(ModelILiketo.validateAndProcessError(request)){
 			//valida e mostra error na pagina
 			log.warn("Erro ao adicionar foto do anuncio de item da colecao!");
 		}				
 		return "page.jsp?id=658"; //page form edit your announce
-	}
-
-	@RequestMapping(value={"/simularCheckout"})
-	public String simularCheckout(HttpServletRequest request, HttpServletResponse response) throws IOException, StorageILiketoException, ImageILiketoException{
-		log.info(request.getRequestURL());
-		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		
-		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		Announce anuncio = (Announce) cms.getObjectOfParameter(Announce.class);
-		cms.processFileuploadImagemAnuncio(anuncio);		//upload arquivo
-		anuncio.setStatus("Pending pay");					//set pendente pagamento
-
-		AnnounceDAO dao = new AnnounceDAO(db, request);
-		String idRegistro = dao.create(anuncio);	//salva anuncio no bd
-
-		HttpSession sessao = request.getSession();
-		anuncio.setIdAnnounce(idRegistro);
-		sessao.setAttribute("anuncio", anuncio);	//set anuncio session		
-		
-		log.info("Colecao: " + anuncio);
-		return "page.jsp?id=checkout";
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/collector/payment"})
@@ -297,10 +278,10 @@ public class AnnounceCollectorController {
 					}else if(announce.getTypeAnnounce().equals("Purchase")){
 						pageVisualizarAnuncio = pageMeuAnuncioCompra;		//anuncio de compra
 					}else{
-						if(!announce.getIdItem().equals("")){
-							pageVisualizarAnuncio = pageMeuAnuncio;		//venda/troca para item
-						}else if(announce.getAdHobby().equalsIgnoreCase("y") || !announce.getIdHobby().isEmpty()){
+						if(announce.getAdHobby().equalsIgnoreCase("y") || !announce.getIdHobby().isEmpty()){
 							pageVisualizarAnuncio = pageMeuAnuncio;		//anuncio venda e troca para hobby
+						}else{
+							pageVisualizarAnuncio = pageMeuAnuncio;		//venda/troca para item
 						}
 					}
 				//}
@@ -324,10 +305,10 @@ public class AnnounceCollectorController {
 						}else if(announce.getTypeAnnounce().equals("Purchase")){
 							pageVisualizarAnuncio = pageAnuncioCompraTerceiro;	//anuncio de compra
 						}else{
-							if(!announce.getIdItem().equals("")){
-								pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
-							}else if(announce.getAdHobby().equalsIgnoreCase("y") || !announce.getIdHobby().isEmpty()){
+							if(announce.getAdHobby().equalsIgnoreCase("y") || !announce.getIdHobby().isEmpty()){
 								pageVisualizarAnuncio = pageAnuncioTerceiro;	//anuncio venda e troca para hobby
+							}else{
+								pageVisualizarAnuncio = pageAnuncioTerceiro;	//venda/troca para item
 							}
 						}
 					//}

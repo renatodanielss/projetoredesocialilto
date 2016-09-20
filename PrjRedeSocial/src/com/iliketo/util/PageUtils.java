@@ -1,13 +1,11 @@
 package com.iliketo.util;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,11 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.iliketo.control.HobbyController;
-import com.iliketo.dao.GenericDAO;
-import com.iliketo.model.Collection;
-import com.iliketo.util.ModelILiketo;
-
-import HardCore.DB;
 
 @Controller
 public class PageUtils {

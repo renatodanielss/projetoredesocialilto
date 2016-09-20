@@ -19,10 +19,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.log4j.Logger;
+
+import HardCore.DB;
+
+import com.iliketo.dao.AnnounceDAO;
+import com.iliketo.exception.ImageILiketoException;
+import com.iliketo.exception.StorageILiketoException;
+import com.iliketo.model.Announce;
+import com.iliketo.util.CmsConfigILiketo;
+import com.iliketo.util.ModelILiketo;
+import com.iliketo.util.Str;
 
 public class CheckoutServlet  extends HttpServlet {
 
+	static final Logger log = Logger.getLogger(CheckoutServlet.class);
+	private CmsConfigILiketo cmsUtilsIliketoo;
+	
     /**
 	 * 
 	 */
@@ -31,6 +46,10 @@ public class CheckoutServlet  extends HttpServlet {
 	public void doPost(HttpServletRequest request,
                       HttpServletResponse response)
         throws ServletException, IOException {
+		
+		/** classe para auxiliar nos parametros do request*/
+		cmsUtilsIliketoo = new CmsConfigILiketo(request, response);
+		
 		HttpSession session = request.getSession();
         PayPal paypal = new PayPal();
         /*
@@ -96,6 +115,10 @@ public class CheckoutServlet  extends HttpServlet {
 	        		session.setAttribute("checkoutDetails", checkoutDetails);
         	} else {
         		//session.invalidate(); //linha comentada porque estava derrubando a sessão do usuário no momento de fazer o checkout
+        		
+        		/** Valida checkout para Anuncios */
+				this.validaCheckoutParaAnuncio();
+				
         		session = request.getSession();
         		nvp = paypal.callShortcutExpressCheckout (checkoutDetails, returnURL, cancelURL);
         		session.setAttribute("checkoutDetails", checkoutDetails);
@@ -133,15 +156,81 @@ public class CheckoutServlet  extends HttpServlet {
 	}
 
 	private Map<String,String> setRequestParams(HttpServletRequest request){
-		Map<String,String> requestMap = new HashMap<String,String>();
-		for (String key : request.getParameterMap().keySet()) {
-			requestMap.put(key, StringEscapeUtils.escapeHtml4(request.getParameterMap().get(key)[0]));
+		Map<String, String> requestMap = new HashMap<String, String>();
+
+		/** Verifica se request eh MultipartContent enctype. Chama metodo para extrair e recuperar os dados no parametro */
+		if(ServletFileUpload.isMultipartContent(request)){
+			requestMap = cmsUtilsIliketoo.recuperarDadosMultipartContent();
+		}else{
+			for (String key : request.getParameterMap().keySet()) {
+				requestMap.put(key, StringEscapeUtils.escapeHtml4(request
+						.getParameterMap().get(key)[0]));
+			}
 		}
-	
+		
 		return requestMap;
 	}
 	
 	private boolean isSet(Object value){
 		return (value !=null && value.toString().length()!=0);
 	}
+	
+	/**
+	 * Metodo valida se eh um checkout de anuncios, salva no bd e faz upload da imagem
+	 */
+	private void validaCheckoutParaAnuncio() {
+
+		HttpServletRequest req = cmsUtilsIliketoo.getMyrequest().getRequest();
+		HttpServletResponse res = cmsUtilsIliketoo.getMyresponse().getResponse();
+		ModelILiketo model = new ModelILiketo(req, res);
+		String idDaColecao = "";
+		
+		try {
+			if(req.getRequestURI().contains("CheckoutAd")){
+				
+				//operacao de checkout para criar novo anuncio e fazer upload da imagem
+				DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
+				Announce anuncio = (Announce) cmsUtilsIliketoo.getObjectOfParameter(Announce.class);
+				idDaColecao = anuncio.getIdCollection();
+				
+				if(anuncio.getIdItem() != null && !anuncio.getIdItem().isEmpty()){
+					//anuncio do item que foi adicionado na colecao - copia imagem do item existente
+					String imagemItem = cmsUtilsIliketoo.processFileuploadCopiarImagemAnuncio(anuncio.getPathPhotoAd());
+					anuncio.setPathPhotoAd(imagemItem);
+				}else{
+					//anuncio de um item que nao foi adicionado na colecao - salva nova imagem
+					cmsUtilsIliketoo.processFileuploadImagemAnuncio(anuncio);
+				}
+				anuncio.setStatus("Pending pay");
+	
+				AnnounceDAO dao = new AnnounceDAO(db, req);
+				String idRegistro = dao.create(anuncio);
+				anuncio = (Announce)dao.readById(idRegistro, Announce.class);
+				
+				req.getSession().setAttribute("anuncioCheckout", anuncio);
+				log.info("Servlet Paypal Novo Checkout para anuncio - Anuncio salvo como Pendente pagamento... id=" + idRegistro);
+				
+			}else if(req.getRequestURI().contains("CheckoutContinueAd")){
+				
+				//operacao de checkout para continuar um anuncio pendente com pagamento	nao concluido		
+				DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
+				AnnounceDAO dao = new AnnounceDAO(db, req);
+
+				String idAnuncio = req.getParameter("id_announce");
+				Announce anuncio = (Announce) dao.readById(idAnuncio, Announce.class);
+				
+				req.getSession().setAttribute("anuncioCheckout", anuncio);	
+				log.info("Servlet Paypal Continuar Checkout do anuncio - Anuncio salvo como Pendente pagamento... id="+idAnuncio);
+			}
+			
+		} catch (StorageILiketoException e) {
+			e.printStackTrace();
+		} catch (ImageILiketoException e) {
+			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
+			model.redirectError("/ilt/registerAnnounce/collector/itemOfCollection/" + idDaColecao);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

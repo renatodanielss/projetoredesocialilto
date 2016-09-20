@@ -300,12 +300,11 @@ public abstract class GenericDAO {
 		Configuration myconfig = new Configuration();
 		if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
 			//"csrootpath" = VARIAVEL AMAZENADA NO ASBRU EM CONFIGURACOES > SYSTEM > WEBSITE > ABA MIDIA > "CAMPO BUCKET"
-			String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
+			
 			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
-			if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)
-					|| DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_DEV)){
+			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
+			if(aws.IS_LOCAL_STORAGE_AMAZON){
 				if(nameFileDelete != null && !nameFileDelete.equals("")){
-					ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
 					aws.deletaArquivosDiretorioStorageAmazon(nameFileDelete, "upload");
 				}
 			}else{
@@ -338,11 +337,10 @@ public abstract class GenericDAO {
 		Configuration myconfig = new Configuration();
 		if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
 			//"csrootpath" = VARIAVEL AMAZENADA NO ASBRU EM CONFIGURACOES > SYSTEM > WEBSITE > ABA MIDIA > "CAMPO BUCKET"
-			String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
+
 			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
-			if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)
-					|| DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_DEV)){
-				ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(DOCUMENT_ROOT_UPLOAD);
+			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
+			if(aws.IS_LOCAL_STORAGE_AMAZON){
 				for(String nameFile : listNamesFileDelete){
 					if(nameFile != null && !nameFile.equals("")){
 						aws.deletaArquivosDiretorioStorageAmazon(nameFile, "upload");

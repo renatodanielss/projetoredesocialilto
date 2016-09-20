@@ -1,8 +1,8 @@
 <%@ include file="webadmin.jsp" %>
 <%@ page import="com.iliketo.dao.GenericDAO" %>
 <%@ page import="java.util.HashMap"%>
-<%@ page import="com.iliketo.dao.MemberDAO" %>
-<%@ page import="com.iliketo.model.Member" %>
+<%@ page import="com.iliketo.dao.*" %>
+<%@ page import="com.iliketo.model.*" %>
 <%@ page import="org.apache.log4j.Logger" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -480,6 +480,26 @@ float: left; width:55%; }
  
     <!-- end .header --></div>
 
+<%
+	//CONSTANTES PAYMENT STATUS
+	final String CANCELED_REVERSAL = "Canceled_Reversal";
+	final String COMPLETED = "Completed";
+	final String DECLINED = "Declined";
+	final String EXPIRED = "Expired";
+	final String FILED = "Filed";
+	final String IN_PROGRESS = "In-Progress";
+	final String PARTIALLY_REFUNDED = "Partially_Refunded";
+	final String PENDING = "Pending";
+	final String PROCESSED = "Processed";
+	final String REFUNDED = "Refunded";
+	final String REVERSED = "Reversed";
+	final String VOIDED = "Voided";
+	
+	//variaveis para validar checkout do produto
+	boolean validarCheckoutProdutoStorage = false;
+	boolean validarCheckoutProdutoAnuncio = false;
+%>
+
 <% if (request.getLocale().toString().equals("pt_BR")){ %>
   <div class="content">
     <p>&nbsp;</p><br>
@@ -500,15 +520,13 @@ float: left; width:55%; }
 	log.info(request.getRequestURL());
 
 %>
-
 			<span class="span4">
     		</span>
     		<span class="span5">
     			<div class="hero-unit">
     		<!-- Display the Transaction Details-->
     			<h4> <%=result.get("credit_card_first_name")%>
-    				<%=result.get("credit_card_last_name")%>, Obrigado por sua compra </h4>
-    			
+    				<%=result.get("credit_card_last_name")%>, Obrigado por sua compra </h4>    			
     			<h4> Detalhes do Pagamento: </h4>
     			<p><%=result.get("L_PAYMENTREQUEST_FIRSTNAME")%> <%=result.get("L_PAYMENTREQUEST_LASTNAME")%></p>
 				<p><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></p>
@@ -523,40 +541,17 @@ float: left; width:55%; }
     			<p>Status do Pagamento: <%=result.get("PAYMENTINFO_0_PAYMENTSTATUS")%> </p>
     			<p>ID da Transação: <%=result.get("TRANSACTIONID")%> </p>
     			<!--  <p>Payment Type: <%=result.get("PAYMENTINFO_0_PAYMENTTYPE")%> </p>  -->
-    			<h3> Clique <a href='/'>aqui </a> para retornar à página inicial</h3>
-    		
+    			<h3> Clique <a href='/'>aqui </a> para retornar à página inicial</h3>    		
     			</div>
     		</span>
     		<span class="span3">
-    		</span>
-    		<% 
-    		MemberDAO memberDao = new MemberDAO(db, request);
-    		Member member = new Member();
-    		member = (Member) memberDao.readByColumn("username", mysession.get("username"), Member.class);
-    		
-    		log.info("Antes do if:");
-    		log.info("mysession.get(username): " + mysession.get("username"));
-    		log.info("Username:" + member.getUsername());
-    		log.info("Protocolo: " + request.getProtocol());
-    		
-    		if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
-    			member.setTotalSpace("1073741824");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
-    			member.setTotalSpace("10737418240");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
-    			member.setTotalSpace("0");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		
-    		memberDao.update(member, false);
-    		
+    		</span>    		
+    		<%    		
+	    		if("Storage".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto storage
+	    			validarCheckoutProdutoStorage = true;
+	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
+	    			validarCheckoutProdutoAnuncio = true;
+	    		}
     		%>
     		
 <% } else if((request.getAttribute("ack").equals("SUCCESS") || request.getAttribute("ack").equals("SUCCESSWITHWARNING") ) ) { 
@@ -568,8 +563,7 @@ float: left; width:55%; }
     			<div class="hero-unit">
     		<!-- Display the Transaction Details-->
     			<h4> <%=result.get("FIRSTNAME")%>
-    				<%=result.get("LASTNAME")%>, Obrigado por sua compra </h4>
-    			
+    				<%=result.get("LASTNAME")%>, Obrigado por sua compra </h4>    			
     			<h4> Detalhes do Pagamento: </h4>
     			<p><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></p>
 				<p><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></p>
@@ -584,43 +578,17 @@ float: left; width:55%; }
     			<p>Status do Pagamento: <%=result.get("PAYMENTINFO_0_PAYMENTSTATUS")%> </p>
     			<p>ID da Transação : <%=result.get("PAYMENTINFO_0_TRANSACTIONID")%> </p>
     			<!--  <p>Payment Type: <%=result.get("PAYMENTINFO_0_PAYMENTTYPE")%> </p>  -->
-    			<h3> Clique <a href="/">aqui </a> para retonar à página inicial</h3>
-    		
+    			<h3> Clique <a href="/">aqui </a> para retonar à página inicial</h3>    		
     			</div>
     		</span>
     		<span class="span3">
-    		</span>
-    		
+    		</span>    		
     		<% 
-    		final Logger log = Logger.getLogger("return.jsp");
-    		
-    		MemberDAO memberDao = new MemberDAO(db, request);
-    		Member member = new Member();
-    		member = (Member) memberDao.readByColumn("username", mysession.get("username"), Member.class);
-    		
-    		log.info("Antes do if:");
-    		log.info("mysession.get(username): " + mysession.get("username"));
-    		log.info("Username:" + member.getUsername());
-    		log.info("Protocolo: " + request.getProtocol());
-    		
-    		if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
-    			member.setTotalSpace("1073741824");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
-    			member.setTotalSpace("10737418240");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
-    			member.setTotalSpace("0");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		
-    		memberDao.update(member, false);
-    		
+	    		if("Storage".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto storage
+	    			validarCheckoutProdutoStorage = true;
+	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
+	    			validarCheckoutProdutoAnuncio = true;
+	    		} 		
     		%>
 
 <% } else { 
@@ -664,15 +632,13 @@ float: left; width:55%; }
 	log.info(request.getRequestURL());
 
 %>
-
 			<span class="span4">
     		</span>
     		<span class="span5">
     			<div class="hero-unit">
     		<!-- Display the Transaction Details-->
     			<h4> <%=result.get("credit_card_first_name")%>
-    				<%=result.get("credit_card_last_name")%>, Thank you for your Order </h4>
-    			
+    				<%=result.get("credit_card_last_name")%>, Thank you for your Order </h4>    			
     			<h4> Billing Details: </h4>
     			<p><%=result.get("L_PAYMENTREQUEST_FIRSTNAME")%> <%=result.get("L_PAYMENTREQUEST_LASTNAME")%></p>
 				<p><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></p>
@@ -687,39 +653,17 @@ float: left; width:55%; }
     			<p>Payment Status: <%=result.get("PAYMENTINFO_0_PAYMENTSTATUS")%> </p>
     			<p>Transaction ID: <%=result.get("TRANSACTIONID")%> </p>
     			<!--  <p>Payment Type: <%=result.get("PAYMENTINFO_0_PAYMENTTYPE")%> </p>  -->
-    			<h3> Click <a href='/'>here </a> to return to Home Page</h3>
-    		
+    			<h3> Click <a href='/'>here </a> to return to Home Page</h3>    		
     			</div>
     		</span>
     		<span class="span3">
     		</span>
     		<% 
-    		MemberDAO memberDao = new MemberDAO(db, request);
-    		Member member = new Member();
-    		member = (Member) memberDao.readByColumn("username", mysession.get("username"), Member.class);
-    		
-    		log.info("Antes do if:");
-    		log.info("mysession.get(username): " + mysession.get("username"));
-    		log.info("Username:" + member.getUsername());
-    		
-    		if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
-    			member.setTotalSpace("1073741824");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
-    			member.setTotalSpace("10737418240");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
-    			member.setTotalSpace("0");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		
-    		memberDao.update(member, false);
-    		
+	    		if("Storage".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto storage
+	    			validarCheckoutProdutoStorage = true;
+	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
+	    			validarCheckoutProdutoAnuncio = true;
+	    		}  		
     		%>
     		
 <% } else if((request.getAttribute("ack").equals("SUCCESS") || request.getAttribute("ack").equals("SUCCESSWITHWARNING") ) ) { 
@@ -731,8 +675,7 @@ float: left; width:55%; }
     			<div class="hero-unit">
     		<!-- Display the Transaction Details-->
     			<h4> <%=result.get("FIRSTNAME")%>
-    				<%=result.get("LASTNAME")%> , Thank you for your Order </h4>
-    			
+    				<%=result.get("LASTNAME")%> , Thank you for your Order </h4>    			
     			<h4> Billing Details: </h4>
     			<p><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></p>
 				<p><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></p>
@@ -747,42 +690,17 @@ float: left; width:55%; }
     			<p>Payment Status: <%=result.get("PAYMENTINFO_0_PAYMENTSTATUS")%> </p>
     			<p>Transaction ID: <%=result.get("PAYMENTINFO_0_TRANSACTIONID")%> </p>
     			<!--  <p>Payment Type: <%=result.get("PAYMENTINFO_0_PAYMENTTYPE")%> </p>  -->
-    			<h3> Click <a href="/">here </a> to return to Home Page</h3>
-    		
+    			<h3> Click <a href="/">here </a> to return to Home Page</h3>    		
     			</div>
     		</span>
     		<span class="span3">
-    		</span>
-    		
+    		</span>    		
     		<% 
-    		final Logger log = Logger.getLogger("return.jsp");
-    		
-    		MemberDAO memberDao = new MemberDAO(db, request);
-    		Member member = new Member();
-    		member = (Member) memberDao.readByColumn("username", mysession.get("username"), Member.class);
-    		
-    		log.info("Antes do if:");
-    		log.info("mysession.get(username): " + mysession.get("username"));
-    		log.info("Username:" + member.getUsername());
-    		
-    		if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
-    			member.setTotalSpace("1073741824");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
-    			member.setTotalSpace("10737418240");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
-    			member.setTotalSpace("0");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		
-    		memberDao.update(member, false);
-    		
+	    		if("Storage".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto storage
+	    			validarCheckoutProdutoStorage = true;
+	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
+	    			validarCheckoutProdutoAnuncio = true;
+	    		}
     		%>
 
 <% } else { 
@@ -826,7 +744,6 @@ float: left; width:55%; }
 	log.info(request.getRequestURL());
 
 %>
-
 			<span class="span4">
     		</span>
     		<span class="span5">
@@ -849,39 +766,17 @@ float: left; width:55%; }
     			<p>Payment Status: <%=result.get("PAYMENTINFO_0_PAYMENTSTATUS")%> </p>
     			<p>Transaction ID: <%=result.get("TRANSACTIONID")%> </p>
     			<!--  <p>Payment Type: <%=result.get("PAYMENTINFO_0_PAYMENTTYPE")%> </p>  -->
-    			<h3> Click <a href='/'>here </a> to return to Home Page</h3>
-    		
+    			<h3> Click <a href='/'>here </a> to return to Home Page</h3>    		
     			</div>
     		</span>
     		<span class="span3">
     		</span>
     		<% 
-    		MemberDAO memberDao = new MemberDAO(db, request);
-    		Member member = new Member();
-    		member = (Member) memberDao.readByColumn("username", mysession.get("username"), Member.class);
-    		
-    		log.info("Antes do if:");
-    		log.info("mysession.get(username): " + mysession.get("username"));
-    		log.info("Username:" + member.getUsername());
-    		
-    		if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
-    			member.setTotalSpace("1073741824");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
-    			member.setTotalSpace("10737418240");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
-    			member.setTotalSpace("0");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		
-    		memberDao.update(member, false);
-    		
+	    		if("Storage".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto storage
+	    			validarCheckoutProdutoStorage = true;
+	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
+	    			validarCheckoutProdutoAnuncio = true;
+	    		}
     		%>
     		
 <% } else if((request.getAttribute("ack").equals("SUCCESS") || request.getAttribute("ack").equals("SUCCESSWITHWARNING") ) ) { 
@@ -909,42 +804,17 @@ float: left; width:55%; }
     			<p>Payment Status: <%=result.get("PAYMENTINFO_0_PAYMENTSTATUS")%> </p>
     			<p>Transaction ID: <%=result.get("PAYMENTINFO_0_TRANSACTIONID")%> </p>
     			<!--  <p>Payment Type: <%=result.get("PAYMENTINFO_0_PAYMENTTYPE")%> </p>  -->
-    			<h3> Click <a href="/">here </a> to return to Home Page</h3>
-    		
+    			<h3> Click <a href="/">here </a> to return to Home Page</h3>    		
     			</div>
     		</span>
     		<span class="span3">
-    		</span>
-    		
+    		</span>    		
     		<% 
-    		final Logger log = Logger.getLogger("return.jsp");
-    		
-    		MemberDAO memberDao = new MemberDAO(db, request);
-    		Member member = new Member();
-    		member = (Member) memberDao.readByColumn("username", mysession.get("username"), Member.class);
-    		
-    		log.info("Antes do if:");
-    		log.info("mysession.get(username): " + mysession.get("username"));
-    		log.info("Username:" + member.getUsername());
-    		
-    		if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
-    			member.setTotalSpace("1073741824");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
-    			member.setTotalSpace("10737418240");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
-    			member.setTotalSpace("0");
-    			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-    			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-    		}
-    		
-    		memberDao.update(member, false);
-    		
+	    		if("Storage".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto storage
+	    			validarCheckoutProdutoStorage = true;
+	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
+	    			validarCheckoutProdutoAnuncio = true;
+	    		}
     		%>
 
 <% } else { 
@@ -969,6 +839,65 @@ float: left; width:55%; }
 	<div class="span3">
 	</div>
 <% } %>
+
+
+<!-- VALIDA TIPO DE PRODUTO(Ad, Storage, Featured) DO CHECKOUT, VALIDA O PAYMENT_STATUS E ATUALIZA INFORMACOES NO BD -->
+<%
+	final Logger log = Logger.getLogger("return.jsp");   	
+    					
+    if(validarCheckoutProdutoStorage){
+    	HashMap<String,String> result = (HashMap<String,String>) request.getAttribute("result");
+    	MemberDAO memberDao = new MemberDAO(db, request);
+		Member member = new Member();
+		member = (Member) memberDao.readByColumn("username", mysession.get("username"), Member.class);
+		
+		log.info("Antes do if:");
+		log.info("mysession.get(username): " + mysession.get("username"));
+		log.info("Username:" + member.getUsername());
+		
+		if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
+			member.setTotalSpace("1073741824");
+			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+		}
+		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
+			member.setTotalSpace("10737418240");
+			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+		}
+		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
+			member.setTotalSpace("0");
+			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+		}
+		
+		memberDao.update(member, false);
+    }else if (validarCheckoutProdutoAnuncio){
+		HashMap<String,String> result = (HashMap<String,String>) request.getAttribute("result");
+	   	if(result != null){
+	   		String nomeProduto = result.get("L_PAYMENTREQUEST_0_NAME0");
+	   		String paymentStatus = result.get("PAYMENTINFO_0_PAYMENTSTATUS");
+			if("Anuncio".equals(nomeProduto)){
+				//Produto anuncio
+				log.info("Comprovante operacao pagamento Pay Pal - Produto Anúncio");
+				log.info("Comprovante operacao pagamento Pay Pal - PAYMENTINFO_0_PAYMENTSTATUS: " + paymentStatus);
+				Announce anuncio = (Announce)session.getAttribute("anuncioCheckout");
+				if(anuncio != null){
+					anuncio.setPaymentStatus(paymentStatus);
+					if(paymentStatus.equals(COMPLETED)){
+						anuncio.setStatus("For sale");
+					}			
+					//salva anuncio bd
+					AnnounceDAO anuncioDAO = new AnnounceDAO(db, request);
+					anuncioDAO.update(anuncio, false);
+					session.removeAttribute("anuncioCheckout");
+					log.info("Comprovante operacao pagamento Pay Pal - Anuncio atualizado id: " + anuncio.getIdAnnounce());
+				}
+			}
+	   	}
+   	}
+%>
+
 
 </div><!-- end .container -->
   <div id="rodape" align="center" style="font-family: Ebrima; font-size: 12px;">Copyright © 2015-2016 I Like Too! All rights reserved. </div></body></html>
