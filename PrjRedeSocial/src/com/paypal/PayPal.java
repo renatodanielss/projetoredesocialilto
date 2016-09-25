@@ -164,6 +164,15 @@ public Map<String, String> callShortcutExpressCheckout( Map<String,String> check
 	nvpstr.append( "&LOGOIMG="+ checkoutDetails.get("LOGOIMG"));
 
 	
+	if(isSet(checkoutDetails.get("NOSHIPPING")))
+	nvpstr.append( "&NOSHIPPING="+ checkoutDetails.get("NOSHIPPING"));
+	
+	if(isSet(checkoutDetails.get("PAYMENTREQUEST_0_INVNUM")))
+	nvpstr.append( "&PAYMENTREQUEST_0_INVNUM="+ checkoutDetails.get("PAYMENTREQUEST_0_INVNUM"));
+	
+	if(isSet(checkoutDetails.get("PAYMENTREQUEST_0_CUSTOM")))
+	nvpstr.append( "&PAYMENTREQUEST_0_CUSTOM="+ checkoutDetails.get("PAYMENTREQUEST_0_CUSTOM"));
+	
 	/*
     Make the call to PayPal to get the Express Checkout token
     If the API call succeeded, then redirect the buyer to PayPal
@@ -264,6 +273,16 @@ public HashMap<String, String> callMarkExpressCheckout(Map<String,String> checko
 
 			if(isSet(checkoutDetails.get("LOGOIMG")))
 			nvpstr.append("&LOGOIMG="+ checkoutDetails.get("LOGOIMG"));
+			
+			
+			if(isSet(checkoutDetails.get("NOSHIPPING")))
+				nvpstr.append( "&NOSHIPPING="+ checkoutDetails.get("NOSHIPPING"));
+				
+			if(isSet(checkoutDetails.get("PAYMENTREQUEST_0_INVNUM")))
+			nvpstr.append( "&PAYMENTREQUEST_0_INVNUM="+ checkoutDetails.get("PAYMENTREQUEST_0_INVNUM"));
+			
+			if(isSet(checkoutDetails.get("PAYMENTREQUEST_0_CUSTOM")))
+			nvpstr.append( "&PAYMENTREQUEST_0_CUSTOM="+ checkoutDetails.get("PAYMENTREQUEST_0_CUSTOM"));
 			
 		
 			nvpstr.append("&ADDROVERRIDE=1");
@@ -400,6 +419,15 @@ public HashMap confirmPayment(Map<String,String>checkoutDetails, String serverNa
 	nvpstr.append( "&PAYMENTREQUEST_0_INSURANCEAMT=").append(encode(checkoutDetails.get("PAYMENTREQUEST_0_INSURANCEAMT").toString()));
 	
 	
+	if(isSet(checkoutDetails.get("NOSHIPPING")))
+	nvpstr.append( "&NOSHIPPING="+ checkoutDetails.get("NOSHIPPING"));
+	
+	if(isSet(checkoutDetails.get("PAYMENTREQUEST_0_INVNUM")))
+	nvpstr.append( "&PAYMENTREQUEST_0_INVNUM="+ checkoutDetails.get("PAYMENTREQUEST_0_INVNUM"));
+	
+	if(isSet(checkoutDetails.get("PAYMENTREQUEST_0_CUSTOM")))
+	nvpstr.append( "&PAYMENTREQUEST_0_CUSTOM="+ checkoutDetails.get("PAYMENTREQUEST_0_CUSTOM"));
+		
 	 /*
 	    Make the call to PayPal to finalize payment
 	    If an error occurred, show the resulting errors

@@ -167,12 +167,13 @@ public class CmsConfigILiketo {
 			novoNomeArquivoCopiado = aws.copiarArquivosNosDiretoriosStorageAmazon(nomeArquivo, "upload", "upload");
 		}else{
 			String localArmazenamento = (String)myrequest.getRequest().getSession().getAttribute(Str.STORAGE);
-			InputStream stream = new FileInputStream(localArmazenamento + nomeArquivo);
-			mapMyFormInput.put("name", Str.PATH_FILE_DEFAULT);
+			File file = new File(localArmazenamento + nomeArquivo);
+			InputStream stream = new FileInputStream(file);
+			mapMyFormInput.put("name", Str.FILE);
 			mapMyFormInput.put("filename", getFilenameByCurrentTimeMillis("default.jpg"));
 			FileuploadILiketo filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)myrequest.getRequest().getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
 					myconfig.get((DB)myrequest.getRequest().getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
-			novoNomeArquivoCopiado = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	
+			novoNomeArquivoCopiado = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);
 		}
 		return novoNomeArquivoCopiado;
 	}
@@ -988,7 +989,7 @@ public class CmsConfigILiketo {
 		}else{
 			//clear expressao '${bean.atributo}'
 			byte loopDetected = 0;	//loopDetected de seguranca
-			while(content.contains("${") && loopDetected < 10){
+			while(content.contains("${") && loopDetected < 30){
 				int begin = content.indexOf("${");
 				int end = content.indexOf("}", begin);
 				if(begin >= 1 && end >= 1){
