@@ -26,9 +26,11 @@ import org.apache.log4j.Logger;
 import HardCore.DB;
 
 import com.iliketo.dao.AnnounceDAO;
+import com.iliketo.dao.EventDAO;
 import com.iliketo.exception.ImageILiketoException;
 import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Announce;
+import com.iliketo.model.Event;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -116,8 +118,10 @@ public class CheckoutServlet  extends HttpServlet {
         	} else {
         		//session.invalidate(); //linha comentada porque estava derrubando a sessão do usuário no momento de fazer o checkout
         		
-        		/** Valida checkout para Anuncios */
+        		/** Valida checkout para Anuncios, destaques e eventos */
 				this.validaCheckoutParaAnuncio();
+				this.validaCheckoutParaEvento();
+				this.validaCheckoutDestaqueDoAnuncio();
 				
         		session = request.getSession();
         		nvp = paypal.callShortcutExpressCheckout (checkoutDetails, returnURL, cancelURL);
@@ -176,6 +180,45 @@ public class CheckoutServlet  extends HttpServlet {
 	}
 	
 	/**
+	 * Metodo valida se eh um checkout para anuncios de evento, salva no bd e faz upload da imagem do evento.
+	 */
+	private void validaCheckoutParaEvento(){
+		HttpServletRequest req = cmsUtilsIliketoo.getMyrequest().getRequest();
+		HttpServletResponse res = cmsUtilsIliketoo.getMyresponse().getResponse();
+		ModelILiketo model = new ModelILiketo(req, res);	
+		try {
+			if(req.getRequestURI().contains("CheckoutEvent")){				
+				//operacao de checkout para criar novo anuncio de um evento e fazer upload da imagem
+				DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
+				Event evento = (Event) cmsUtilsIliketoo.getObjectOfParameter(Event.class);
+				cmsUtilsIliketoo.processFileuploadImagemAnuncio(evento);
+	
+				EventDAO dao = new EventDAO(db, req);
+				String idRegistro = dao.create(evento);
+				evento.setIdEvent(idRegistro);
+				evento.setId(idRegistro);
+				
+				req.getSession().setAttribute("eventoCheckout", evento);
+				log.info("Servlet Paypal Novo Checkout para Anuncio de Evento - Anuncio salvo como Pendente pagamento... id evento=" + idRegistro);
+				
+			}else if(req.getRequestURI().contains("CheckoutContinueEvent")){				
+				//operacao de checkout para continuar um anuncio de evento pendente com pagamento nao concluido		
+				DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
+				String idEvento = req.getParameter("id_event");
+				Event evento = (Event) new EventDAO(db, req).readById(idEvento, Event.class);
+				req.getSession().setAttribute("eventoCheckout", evento);	
+				log.info("Servlet Paypal Continuar Checkout para Anuncio de Evento - Anuncio salvo como Pendente pagamento... id evento=" + idEvento);
+			}
+			
+		} catch (StorageILiketoException e) {
+			e.printStackTrace();
+		} catch (ImageILiketoException e) {
+			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
+			model.redirectError("/ilt/event/newEvent");
+		}
+	}
+	
+	/**
 	 * Metodo valida se eh um checkout de anuncios, salva no bd e faz upload da imagem
 	 */
 	private void validaCheckoutParaAnuncio() {
@@ -230,6 +273,27 @@ public class CheckoutServlet  extends HttpServlet {
 			model.redirectError("/ilt/registerAnnounce/collector/itemOfCollection/" + idDaColecao);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Metodo valida se eh um checkout para comprar destaques de anuncios.
+	 */
+	private void validaCheckoutDestaqueDoAnuncio() {
+		HttpServletRequest req = cmsUtilsIliketoo.getMyrequest().getRequest();
+		if(req.getRequestURI().contains("CheckoutFeatured")){
+			//operacao de checkout para comprar destaque de anuncios
+			DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
+			String idAnuncio = req.getParameter("id_announce");
+			if(idAnuncio != null && !idAnuncio.isEmpty()){
+				Announce anuncio = (Announce) new AnnounceDAO(db, req).readById(idAnuncio, Announce.class);
+				if(anuncio != null){
+					req.getSession().setAttribute("anuncioDestaqueCheckout", anuncio);
+					log.info("Servlet Paypal Novo Checkout para anuncio - Processo de compra de destaque do anuncio... idAnuncio=" + idAnuncio);
+				}else{
+					log.info("Servlet Paypal Novo Checkout para destaque de anuncios - registro do anuncio nao encontrado no bd... idAnuncio=" + idAnuncio);
+				}
+			}
 		}
 	}
 	

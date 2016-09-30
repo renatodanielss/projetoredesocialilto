@@ -94,6 +94,9 @@ public class Announce extends ContentILiketo {
 	@ColumnILiketo(name = "payment_status")		//notas detalhes para troca
 	private String paymentStatus;
 	
+	@ColumnILiketo(name = "payment_status_destaque")
+	private String paymentStatusDestaque;
+	
 	@ColumnILiketo(name = "adHobby")		//y | n
 	private String adHobby;
 	
@@ -394,6 +397,15 @@ public class Announce extends ContentILiketo {
 	public void setIdHobby(String idHobby) {
 		this.idHobby = idHobby;
 	}
-	
+
+
+	public String getPaymentStatusDestaque() {
+		return paymentStatusDestaque;
+	}
+
+
+	public void setPaymentStatusDestaque(String paymentStatusDestaque) {
+		this.paymentStatusDestaque = paymentStatusDestaque;
+	}
 	
 }

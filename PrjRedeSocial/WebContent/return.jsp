@@ -498,6 +498,8 @@ float: left; width:55%; }
 	//variaveis para validar checkout do produto
 	boolean validarCheckoutProdutoStorage = false;
 	boolean validarCheckoutProdutoAnuncio = false;
+	boolean validarCheckoutProdutoEvento = false;
+	boolean validarCheckoutProdutoDestaque = false;
 %>
 
 <% if (request.getLocale().toString().equals("pt_BR")){ %>
@@ -551,6 +553,10 @@ float: left; width:55%; }
 	    			validarCheckoutProdutoStorage = true;
 	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
 	    			validarCheckoutProdutoAnuncio = true;
+	    		}else if("Event".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto evento
+	    			validarCheckoutProdutoEvento = true;
+	    		}else if("Featured".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto destaque do anuncio
+	    			validarCheckoutProdutoDestaque = true;
 	    		}
     		%>
     		
@@ -588,7 +594,11 @@ float: left; width:55%; }
 	    			validarCheckoutProdutoStorage = true;
 	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
 	    			validarCheckoutProdutoAnuncio = true;
-	    		} 		
+	    		}else if("Event".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto evento
+	    			validarCheckoutProdutoEvento = true;
+	    		}else if("Featured".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto destaque do anuncio
+	    			validarCheckoutProdutoDestaque = true;
+	    		}
     		%>
 
 <% } else { 
@@ -663,7 +673,11 @@ float: left; width:55%; }
 	    			validarCheckoutProdutoStorage = true;
 	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
 	    			validarCheckoutProdutoAnuncio = true;
-	    		}  		
+	    		}else if("Event".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto evento
+	    			validarCheckoutProdutoEvento = true;
+	    		}else if("Featured".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto destaque do anuncio
+	    			validarCheckoutProdutoDestaque = true;
+	    		}
     		%>
     		
 <% } else if((request.getAttribute("ack").equals("SUCCESS") || request.getAttribute("ack").equals("SUCCESSWITHWARNING") ) ) { 
@@ -700,6 +714,10 @@ float: left; width:55%; }
 	    			validarCheckoutProdutoStorage = true;
 	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
 	    			validarCheckoutProdutoAnuncio = true;
+	    		}else if("Event".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto evento
+	    			validarCheckoutProdutoEvento = true;
+	    		}else if("Featured".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto destaque do anuncio
+	    			validarCheckoutProdutoDestaque = true;
 	    		}
     		%>
 
@@ -776,6 +794,10 @@ float: left; width:55%; }
 	    			validarCheckoutProdutoStorage = true;
 	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
 	    			validarCheckoutProdutoAnuncio = true;
+	    		}else if("Event".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto evento
+	    			validarCheckoutProdutoEvento = true;
+	    		}else if("Featured".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto destaque do anuncio
+	    			validarCheckoutProdutoDestaque = true;
 	    		}
     		%>
     		
@@ -814,6 +836,10 @@ float: left; width:55%; }
 	    			validarCheckoutProdutoStorage = true;
 	    		}else if("Ad".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){	//valida produto anuncio
 	    			validarCheckoutProdutoAnuncio = true;
+	    		}else if("Event".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto evento
+	    			validarCheckoutProdutoEvento = true;
+	    		}else if("Featured".equals(result.get("PAYMENTREQUEST_0_CUSTOM"))){//valida produto destaque do anuncio
+	    			validarCheckoutProdutoDestaque = true;
 	    		}
     		%>
 
@@ -883,24 +909,52 @@ float: left; width:55%; }
     }else if (validarCheckoutProdutoAnuncio){
 		HashMap<String,String> result = (HashMap<String,String>) request.getAttribute("result");
 	   	if(result != null){
-	   		String nomeProduto = result.get("L_PAYMENTREQUEST_0_NAME0");
 	   		String paymentStatus = result.get("PAYMENTINFO_0_PAYMENTSTATUS");
-			if("Anuncio".equals(nomeProduto)){
-				//Produto anuncio
-				log.info("Comprovante operacao pagamento Pay Pal - Produto Anúncio");
-				log.info("Comprovante operacao pagamento Pay Pal - PAYMENTINFO_0_PAYMENTSTATUS: " + paymentStatus);
-				Announce anuncio = (Announce)session.getAttribute("anuncioCheckout");
-				if(anuncio != null){
-					anuncio.setPaymentStatus(paymentStatus);
-					if(paymentStatus.equals(COMPLETED)){
-						anuncio.setStatus("For sale");
-					}			
-					//salva anuncio bd
-					AnnounceDAO anuncioDAO = new AnnounceDAO(db, request);
-					anuncioDAO.update(anuncio, false);
-					session.removeAttribute("anuncioCheckout");
-					log.info("Comprovante operacao pagamento Pay Pal - Anuncio atualizado id: " + anuncio.getIdAnnounce());
-				}
+			log.info("Comprovante operacao pagamento Pay Pal - Produto Anuncio");
+			log.info("Comprovante operacao pagamento Pay Pal - PAYMENTINFO_0_PAYMENTSTATUS: " + paymentStatus);
+			log.info("Comprovante operacao pagamento Pay Pal - NOSHIPPING: " + result.get("NOSHIPPING"));
+			Announce anuncio = (Announce)session.getAttribute("anuncioCheckout");
+			if(anuncio != null){
+				anuncio.setPaymentStatus(paymentStatus);
+				if(paymentStatus.equals(COMPLETED)){
+					anuncio.setStatus("For sale");
+				}			
+				AnnounceDAO anuncioDAO = new AnnounceDAO(db, request);
+				anuncioDAO.update(anuncio, false);
+				session.removeAttribute("anuncioCheckout");
+				log.info("Comprovante operacao pagamento Pay Pal - Anuncio atualizado id: " + anuncio.getIdAnnounce());
+			}
+	   	}
+   	}else if (validarCheckoutProdutoEvento){
+		HashMap<String,String> result = (HashMap<String,String>) request.getAttribute("result");
+	   	if(result != null){
+	   		String paymentStatus = result.get("PAYMENTINFO_0_PAYMENTSTATUS");
+			log.info("Comprovante operacao pagamento Pay Pal - Produto Anuncio de Evento");
+			log.info("Comprovante operacao pagamento Pay Pal - PAYMENTINFO_0_PAYMENTSTATUS: " + paymentStatus);
+			Event evento = (Event)session.getAttribute("eventoCheckout");
+			if(evento != null){
+				evento.setPaymentStatus(paymentStatus);
+				EventDAO eventoDAO = new EventDAO(db, request);
+				eventoDAO.update(evento, false);
+				session.removeAttribute("eventoCheckout");
+				log.info("Comprovante operacao pagamento Pay Pal - Produto Anuncio de Evento atualizado id: " + evento.getIdEvent());
+			}
+	   	}
+   	}else if(validarCheckoutProdutoDestaque){
+   		HashMap<String,String> result = (HashMap<String,String>) request.getAttribute("result");
+	   	if(result != null){
+	   		String paymentStatus = result.get("PAYMENTINFO_0_PAYMENTSTATUS");
+			log.info("Comprovante operacao pagamento Pay Pal - Produto Destaque de Anuncio");
+			log.info("Comprovante operacao pagamento Pay Pal - PAYMENTINFO_0_PAYMENTSTATUS: " + paymentStatus);
+			Announce anuncio = (Announce)session.getAttribute("anuncioDestaqueCheckout");
+			if(anuncio != null){
+				anuncio.setPaymentStatusDestaque(paymentStatus);
+				if(paymentStatus.equals(COMPLETED)){
+					anuncio.setFeatured("yes");
+				}	
+				new AnnounceDAO(db, request).update(anuncio, false);
+				session.removeAttribute("anuncioDestaqueCheckout");
+				log.info("Comprovante operacao pagamento Pay Pal - Compra de Destaque de Anuncio atualizado id: " + anuncio.getIdAnnounce());
 			}
 	   	}
    	}

@@ -55,6 +55,9 @@ public class Event extends ContentILiketo {
 	@ColumnILiketo(name = "email")
 	private String email;
 	
+	@ColumnILiketo(name = "payment_status")
+	private String paymentStatus;
+	
 	private Member member;
 	
 	public Event(){
@@ -172,6 +175,13 @@ public class Event extends ContentILiketo {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+		
 }
