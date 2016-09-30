@@ -2,10 +2,8 @@ package com.iliketo.control;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -16,10 +14,6 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,18 +23,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import HardCore.DB;
 
 import com.iliketo.dao.AnnounceDAO;
-import com.iliketo.dao.CollectionDAO;
-import com.iliketo.dao.IliketoDAO;
+import com.iliketo.dao.MemberDAO;
 import com.iliketo.dao.MessageInboxDAO;
-import com.iliketo.dao.VideoDAO;
-import com.iliketo.exception.StorageILiketoException;
-import com.iliketo.exception.VideoILiketoException;
 import com.iliketo.model.Announce;
-import com.iliketo.model.Collection;
+import com.iliketo.model.Member;
 import com.iliketo.model.MessageInbox;
-import com.iliketo.model.Video;
 import com.iliketo.service.NotificationService;
-import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
@@ -165,11 +153,13 @@ public class PagamentosController {
 		
 		//constantes		
 		final String Completed = "Completed";
-		final String EMAIL_PAYPAL_ILIKETOO = "payment@iliketoo.com";
+		//final String EMAIL_PAYPAL_ILIKETOO = "payment@iliketoo.com";
+		final String EMAIL_PAYPAL_ILIKETOO = "contato.iliketo-facilitator@gmail.com";
 		
 		String receiver_email= request.getParameter("receiver_email");
 		String invoice= request.getParameter("invoice");
 		String payment_status= request.getParameter("payment_status");
+		String item_name= request.getParameter("item_name");
 		String custom= request.getParameter("custom");
 		
 		log.info("Notificacao IPN - Parametros recebidos do Paypal");
@@ -290,25 +280,48 @@ public class PagamentosController {
 						}
 					}else if(custom.equals("Storage")){
 						//atualiza conta premium para o membro
-						String myUserid = invoice;
-						ColumnsSingleton CS = ColumnsSingleton.getInstance(db);			
-						String tabela = CS.getDATA(db, "dbmembers");							//retorna tabela real
-						String coluna = CS.getCOL(db, "dbmembers", "storage_type");				//retorna coluna real
-						String comparar = CS.getCOL(db, "dbmembers", "id_member");				//retorna coluna real
-						HashMap<String, String> mapData = new HashMap<String, String>();
-						mapData.put(coluna, "Premium Account - unlimited");						//coluna e valor
-						db.updateWhere(tabela, comparar + "='" + myUserid + "'", mapData);	//update tabela anuncio
-						log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, ARMAZENAMENTO ATUALIZADO - ID MEMBRO=" + invoice);
+
+						MemberDAO memberDao = new MemberDAO(db, request);
+						Member member = new Member();
+						member = (Member) memberDao.readByColumn("id_member", request.getParameter("invoice"), Member.class);
+						
+						if(member != null){
+							if (payment_status.equals("Completed")){
+								log.info("Antes do if:");
+								log.info("Username:" + member.getUsername());
+								
+								if (item_name.equals("Conta Prata - 1 GB")){
+									member.setTotalSpace("1073741824");
+									member.setStorageType(item_name);
+									log.info("Entrou " + item_name);
+								}
+								else if (item_name.equals("Conta Ouro - 10 GB")){
+									member.setTotalSpace("10737418240");
+									member.setStorageType(item_name);
+									log.info("Entrou " + item_name);
+								}
+								else if (item_name.equals("Conta Platina - Ilimitada")){
+									member.setTotalSpace("0");
+									member.setStorageType(item_name);
+									log.info("Entrou " + item_name);
+								}
+							}
+							member.setPaymentStatus(payment_status);
+							log.info("Setar paymentStatus: " + payment_status);
+							
+							memberDao.update(member, false);
+							log.info("Notificacao IPN (update) - PAGAMENTO CONCLUIDO COM SUCESSO, ARMAZENAMENTO ATUALIZADO - ID MEMBRO=" + invoice);
+						}
 						
 						//cria notificacao e uma mensagem automatica do sistema para informar o usuario que o pagamento foi concluido						
 						MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
 						MessageInbox message = new MessageInbox();
 						message.setIdAnnounce("");							//id anuncio, nao aplicavel
-						message.setSubject("Premium Account - unlimited");	//assunto
-						message.setReceiverIdMember(myUserid);				//id destinatario
+						message.setSubject(member.getStorageType());	//assunto
+						message.setReceiverIdMember(member.getIdMember());				//id destinatario
 						message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
 						message.setWasRead("n");							//nao lida
-						message.setMessage("Completed_Storage");			//tipo mensagem automatica, status Completed pagamento
+						message.setMessage(member.getPaymentStatus());			//tipo mensagem automatica, status Completed pagamento
 						message.setContentType("item");						//conteudo
 						message.setIdContent("");							//id item
 						message.setFkMsgId("0");							//sem id resposta
@@ -316,7 +329,7 @@ public class PagamentosController {
 						message.setReceiverHidden("n");						//nao oculta						
 						String idCreate = messageDAO.create(message);		//cria e envia mensagem						
 						//cria notificacao de envio de mensagem
-						NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);						
+						NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, member.getIdMember());						
 						return;
 					}
 				}else{

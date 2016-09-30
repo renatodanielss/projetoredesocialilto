@@ -111,6 +111,9 @@ public class Member extends ContentILiketo{
 	@ColumnILiketo(name = "regras_forum")
 	private String regrasForum;
 	
+	@ColumnILiketo(name = "paymentStatus")
+	private String paymentStatus;
+	
 	public Member(){
 		
 	}
@@ -362,5 +365,12 @@ public class Member extends ContentILiketo{
 	public void setFotoDeCapa(String fotoDeCapa) {
 		this.fotoDeCapa = fotoDeCapa;
 	}
-	
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
 }

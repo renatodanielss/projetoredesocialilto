@@ -851,27 +851,35 @@ float: left; width:55%; }
 		Member member = new Member();
 		member = (Member) memberDao.readByColumn("username", mysession.get("username"), Member.class);
 		
-		log.info("Antes do if:");
-		log.info("mysession.get(username): " + mysession.get("username"));
-		log.info("Username:" + member.getUsername());
-		
-		if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
-			member.setTotalSpace("1073741824");
-			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+		log.info("Consultar Membro na base :" + member.toString() + " e " + member.getNickname());
+		if(member != null){
+			if(member.getPaymentStatus().equals("Completed")){
+				log.info("Antes do if:");
+				log.info("mysession.get(username): " + mysession.get("username"));
+				log.info("Username:" + member.getUsername());
+				
+				if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
+					member.setTotalSpace("1073741824");
+					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+				}
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
+					member.setTotalSpace("10737418240");
+					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+				}
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
+					member.setTotalSpace("0");
+					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+				}
+			}
+			member.setPaymentStatus(result.get("PAYMENTINFO_0_PAYMENTSTATUS"));
+			log.info("Setar paymentStatus: " + result.get("PAYMENTINFO_0_PAYMENTSTATUS"));
+			
+			memberDao.update(member, false);
+			log.info("Update Concluído");
 		}
-		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
-			member.setTotalSpace("10737418240");
-			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-		}
-		else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
-			member.setTotalSpace("0");
-			member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
-			log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
-		}
-		
-		memberDao.update(member, false);
     }else if (validarCheckoutProdutoAnuncio){
 		HashMap<String,String> result = (HashMap<String,String>) request.getAttribute("result");
 	   	if(result != null){
