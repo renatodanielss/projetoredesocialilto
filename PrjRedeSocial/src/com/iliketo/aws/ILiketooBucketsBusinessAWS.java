@@ -5,6 +5,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
@@ -51,6 +56,7 @@ public class ILiketooBucketsBusinessAWS {
 	public static final String AWS_PRODUCAO = "AWS-producao";
 	public static final String AWS_DEV = "AWS-dev";
 	public static final String AWS_TEMPORARIO = "temp";
+	public static final String LOCAL = "local";
 	
 	public boolean IS_LOCAL_STORAGE_AMAZON = false;
 	private AmazonS3Client amazonS3client;	
@@ -64,7 +70,8 @@ public class ILiketooBucketsBusinessAWS {
 		//**Configurar local de armazenamento constante**
 		//String localArmazenamento = AWS_PRODUCAO	//bucket de producao
 		//String localArmazenamento = AWS_DEV		//bucket desenvolvimento
-		String localArmazenamento = "local";		//servidor local
+		//String localArmazenamento = "local";		//servidor local
+		String localArmazenamento = getLocalDeArmazenamento();
 
 		if(localArmazenamento.equalsIgnoreCase(AWS_PRODUCAO)){
 			bucketName = "iliketoo.aws.midia";
@@ -76,6 +83,28 @@ public class ILiketooBucketsBusinessAWS {
 			this.IS_LOCAL_STORAGE_AMAZON = true;
 			this.amazonS3client = obterCredenciaisCliente();
 		}
+	}
+	
+	/**
+	 * Metodo ler arquivo properties de configuracoes para verificar o local do armazenamento.
+	 */
+	private String getLocalDeArmazenamento(){
+		try {
+			Properties prop = new Properties();
+			String filename = "config/config_iliketoo.properties";
+			InputStream input = this.getClass().getClassLoader().getResourceAsStream(filename);  
+			if(input==null){
+		        log.error("Arquivo properties de configuracoes nao encontrado: " + filename);
+			    return null;
+			}
+			prop.load(input);
+			String localArmazenamento = prop.getProperty("LOCAL_STORAGE");
+			log.error("Local do armazenamento configurado: " + localArmazenamento);
+			return localArmazenamento;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**

@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -973,7 +974,33 @@ public class CmsConfigILiketo {
 			}else if(begin >= 1){
 				content = content.replaceAll("\\$\\{error:", "");
 			}
+		}		
+		//se contem expressao ${MSG:algumamensagem}
+		if(content.contains("${MSG:")){
+			try {
+				Properties prop = new Properties();
+				String filename = "config/msgs.properties";
+				InputStream input = this.getClass().getClassLoader().getResourceAsStream(filename);  
+				if(input==null){
+			        log.error("Arquivo properties de configuracoes nao encontrado: " + filename);
+				}else{
+					prop.load(input);
+					while(content.contains("${MSG:")){
+						int begin = content.indexOf("${MSG:");
+						int end = content.indexOf("}", begin);
+						if(begin >= 1 && end >= 1){
+							String mensagemProperties = prop.getProperty(content.substring(begin+6, end));
+							content = content.replaceAll("\\$\\{MSG:" + content.substring(begin+6, end+1), mensagemProperties);
+						}else if(begin >= 1){
+							content = content.replaceAll("\\$\\{MSG:", "");
+						}
+					}
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
+				
 		//se contem expressao '${'
 		if(myrequest.getRequest().getAttribute("modelILiketo") != null){
 			while(content.contains("${")){

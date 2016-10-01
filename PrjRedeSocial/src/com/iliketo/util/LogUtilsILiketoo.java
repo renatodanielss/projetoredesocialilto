@@ -13,8 +13,12 @@ public class LogUtilsILiketoo {
 	public LogUtilsILiketoo(){		
 	}
 	
+	public static void printURLSolicitada(HttpServletRequest req, Logger log){
+		log.info("URLSolicitada: "+req.getRequestURL()+"?"+req.getQueryString());
+	}
+	
 	public static String getUsername(HttpServletRequest req){
-		String username = (String) req.getAttribute("username");
+		String username = (String) req.getSession().getAttribute("username");
 		return " [user: " + username + "]";
 	}
 	
