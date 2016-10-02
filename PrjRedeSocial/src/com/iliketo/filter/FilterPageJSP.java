@@ -12,8 +12,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import HardCore.Request;
 import HardCore.RequireUser;
 import HardCore.Response;
