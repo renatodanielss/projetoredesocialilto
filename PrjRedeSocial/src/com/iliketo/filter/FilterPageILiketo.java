@@ -70,18 +70,15 @@ public class FilterPageILiketo implements Filter {
 		//valida member
 		if(req.getSession().getAttribute("member") == null){
 			if((myrequest.getParameter("timeline") != null && !myrequest.getParameter("timeline").equals("")) || myrequest.getRequestURI().contains("ajax")){
-				//solicitacoes ajax faz nada
+				if(myrequest.getRequestURI().contains("ajaxTotalNotifications")){
+					res.setStatus(401);
+					res.setContentType("text/html");
+					res.getWriter().write("Session expired");	//member null, session expired
+				}
 			}else{
 				//remove username e id da sessao
 				mysession.remove("username");
 				mysession.remove("userid");
-				
-				//member null, session expired
-				if(myrequest.getRequestURI().contains("ajaxTotalNotifications")){
-					res.setStatus(401);
-					res.setContentType("text/html");
-					res.getWriter().write("Session expired");
-				}
 			}
 		}
 		
