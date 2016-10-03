@@ -124,7 +124,7 @@ public class ReturnServlet extends HttpServlet {
     	/*
     	* Calls the DoExpressCheckoutPayment API call
     	*/
-       	String page="return.jsp";
+       	String page="/return.jsp";
     	if (isSet(request.getParameter("page")) && request.getParameter("page").equals("return")){  
 	    	// FIXME - The method 'request.getServerName()' must be sanitized before being used.
 			HashMap results = pp.confirmPayment (checkoutDetails,request.getServerName() );
@@ -154,9 +154,9 @@ public class ReturnServlet extends HttpServlet {
 	        	}	        	
 	        	return;
 	    	}
-	        page="return.jsp";
+	        page="/return.jsp";
     	}else{
-    		page="review.jsp";
+    		page="/review.jsp";
     	}
     	request.setAttribute("result", result);
 
