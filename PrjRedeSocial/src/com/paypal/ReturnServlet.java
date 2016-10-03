@@ -12,9 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 
 public class ReturnServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	static final Logger log = Logger.getLogger(CheckoutServlet.class);
 	   
     
     public ReturnServlet() {
@@ -27,6 +31,8 @@ public class ReturnServlet extends HttpServlet {
     	HttpSession session = request.getSession(true);
     	//String finalPaymentAmount = (String)session.getAttribute("Payment_Amount");
 
+    	
+    	log.info("doGet Início: " + request.toString() + " e " + response.toString());
     	if (isSet(request.getParameter("PayerID")))
     		session.setAttribute("payer_id", request.getParameter("PayerID"));
     	String token = "";
@@ -38,7 +44,7 @@ public class ReturnServlet extends HttpServlet {
     	}
 
     	// Check to see if the Request object contains a variable named 'token'	
-    	PayPal pp = new PayPal();   	
+    	PayPal pp = new PayPal(request);   	
     	Map<String, String> result = new HashMap<String, String>();
     	// If the Request object contains the variable 'token' then it means that the user is coming from PayPal site.	
     	if (isSet(token))
@@ -159,6 +165,8 @@ public class ReturnServlet extends HttpServlet {
     	if (dispatcher != null){
     		dispatcher.forward(request, response);
     	}
+    	
+    	log.info("doGet Fim: " + request.toString() + " e " + response.toString());
     }
 	
    
@@ -166,7 +174,9 @@ public class ReturnServlet extends HttpServlet {
    
     public void doPost(HttpServletRequest request, HttpServletResponse response)
     		throws ServletException, IOException {
+    			log.info("doPost Início: " + request.toString() + " e " + response.toString());
     			doGet(request, response);
+    			log.info("doPost Fim: " + request.toString() + " e " + response.toString());
     		}
     
 	private Map<String,String> setRequestParams(HttpServletRequest request){

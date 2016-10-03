@@ -53,7 +53,7 @@ public class CheckoutServlet  extends HttpServlet {
 		cmsUtilsIliketoo = new CmsConfigILiketo(request, response);
 		
 		HttpSession session = request.getSession();
-        PayPal paypal = new PayPal();
+        PayPal paypal = new PayPal(cmsUtilsIliketoo.getMyrequest().getRequest());
         /*
         '------------------------------------
         ' The returnURL is the location where buyers return to when a
@@ -61,10 +61,13 @@ public class CheckoutServlet  extends HttpServlet {
         '------------------------------------
         */
         
-        String returnURL = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/Return?page=review";
-        if(paypal.getUserActionFlag().equals("true"))
-        	returnURL = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/Return?page=return";
-       
+        String returnURL = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/ilt/Return?page=review";
+        log.info("returnURL review: " + returnURL);
+        
+        if(paypal.getUserActionFlag().equals("true")){
+        	returnURL = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/ilt/Return?page=return";
+        	log.info("returnURL return: " + returnURL);
+        }
         /*
         '------------------------------------
         ' The cancelURL is the location buyers are sent to when they hit the

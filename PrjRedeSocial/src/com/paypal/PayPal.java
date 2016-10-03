@@ -15,7 +15,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import HardCore.DB;
+
+import com.iliketo.dao.MemberDAO;
+import com.iliketo.model.Member;
+import com.iliketo.util.Str;
 
 public class PayPal  {
 
@@ -30,55 +39,79 @@ public class PayPal  {
     private String sellerEmail;
     private String environment; 
 
-	public PayPal() {
-	Properties prop = new Properties();
-	InputStream input = null;
-	try {
-	String filename = "config/config.properties";
+	public PayPal(HttpServletRequest req) {
+		final Logger log = Logger.getLogger("return.jsp");
+		log.info("Request: " + req);
+		
+		DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
+		MemberDAO memberDao = new MemberDAO(db, req);
+		Member member = new Member();
+		
+		log.info("DB: " + db);
+		
+		log.info("User ID: " + req.getSession().getAttribute("userid").toString());
+		
+		member = (Member) memberDao.readByColumn("id_member", req.getSession().getAttribute("userid").toString(), Member.class);
+		
+		Properties prop = new Properties();
+		InputStream input = null;
+		try {
+			String filename = "";
+			
+			log.info("Member: " + member);
+			log.info("CountryCode: " + member.getCountryCode());
+			
+			if (member != null){
+				if (member.getCountry().equals("Brazil")){
+					filename = "config/config.properties";
+				} else {
+					filename = "config/config_us.properties";
+				}
+			}
+		
+			input = this.getClass().getClassLoader().getResourceAsStream(filename);  
+			if(input==null){
+				System.out.println("Sorry, unable to find "+filename);
+				return;
+			}
+
+			//load a properties file from class path, inside static method
+			prop.load(input);
+			//get the property value from config.properties file
+			this.setUserActionFlag(prop.getProperty("USERACTION_FLAG"));
+			String strSandbox = "";
+			environment = "production";
+			if(prop.getProperty("SANDBOX_FLAG").equals("true")){
+				strSandbox="_SANDBOX";
+				environment = "sandbox";
+			}
+	      //ButtonSource Tracker Code
+	        gvBNCode	= prop.getProperty("SBN_CODE");	
+	        sellerEmail = prop.getProperty("PP_SELLER_EMAIL");
+	        gvAPIUserName	= prop.getProperty("PP_USER"+strSandbox);
+	        this.setGvAPIUserName(gvAPIUserName);
+	        gvAPIPassword	= prop.getProperty("PP_PASSWORD"+strSandbox);
+	        gvAPISignature = prop.getProperty("PP_SIGNATURE"+strSandbox);
 	
-	input = this.getClass().getClassLoader().getResourceAsStream(filename);  
-	if(input==null){
-            System.out.println("Sorry, unable to find "+filename);
-	    return;
-	}
-
-	//load a properties file from class path, inside static method
-		prop.load(input);
-		//get the property value from config.properties file
-		 this.setUserActionFlag(prop.getProperty("USERACTION_FLAG"));
-        String strSandbox = "";
-        environment = "production";
-        if(prop.getProperty("SANDBOX_FLAG").equals("true")){
-        	strSandbox="_SANDBOX";
-        	environment = "sandbox";
-        }
-      //ButtonSource Tracker Code
-        gvBNCode	= prop.getProperty("SBN_CODE");	
-        sellerEmail = prop.getProperty("PP_SELLER_EMAIL");
-        gvAPIUserName	= prop.getProperty("PP_USER"+strSandbox);
-        this.setGvAPIUserName(gvAPIUserName);
-        gvAPIPassword	= prop.getProperty("PP_PASSWORD"+strSandbox);
-        gvAPISignature = prop.getProperty("PP_SIGNATURE"+strSandbox);
-
-        gvAPIEndpoint = prop.getProperty("PP_NVP_ENDPOINT"+strSandbox);
-        paypalUrl = prop.getProperty("PP_CHECKOUT_URL"+strSandbox);
-
-        gvVersion	= prop.getProperty("API_VERSION");
-        java.lang.System.setProperty("https.protocols", prop.getProperty("SSL_VERSION_TO_USE"));
+	        gvAPIEndpoint = prop.getProperty("PP_NVP_ENDPOINT"+strSandbox);
+	        paypalUrl = prop.getProperty("PP_CHECKOUT_URL"+strSandbox);
+	
+	        gvVersion	= prop.getProperty("API_VERSION");
+	        java.lang.System.setProperty("https.protocols", prop.getProperty("SSL_VERSION_TO_USE"));
         
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}finally{
-    	if(input!=null){
-    		try {
-			input.close();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-    	}
-    }
-}
+		}finally{
+	    	if(input!=null){
+	    		try {
+				input.close();
+	    		} catch (IOException e) {
+	    			e.printStackTrace();
+	    		}
+	    	}
+	    }
+	}
 
     
     
