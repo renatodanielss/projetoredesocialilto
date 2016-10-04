@@ -161,6 +161,7 @@ public class PagamentosController {
 		String payment_status= request.getParameter("payment_status");
 		String item_name= request.getParameter("item_name");
 		String custom= request.getParameter("custom");
+		String item_number = request.getParameter("item_number");
 		
 		log.info("Notificacao IPN - Parametros recebidos do Paypal");
 		String parametros = "";
