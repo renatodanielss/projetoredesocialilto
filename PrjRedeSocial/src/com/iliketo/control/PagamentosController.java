@@ -199,7 +199,7 @@ public class PagamentosController {
 			
 			//regras de negocio
 			log.info("Notificacao IPN - payment_status: " + payment_status);						
-			if(invoice != null && !invoice.isEmpty() && custom != null && !custom.isEmpty()){
+			if(item_number != null && !item_number.isEmpty() && custom != null && !custom.isEmpty()){
 				if(payment_status.equals(Completed)){
 					//transacao ok, o pagamento foi depositado						
 					AnnounceDAO dao = new AnnounceDAO(db, null);
@@ -284,7 +284,7 @@ public class PagamentosController {
 
 						MemberDAO memberDao = new MemberDAO(db, request);
 						Member member = new Member();
-						member = (Member) memberDao.readByColumn("id_member", request.getParameter("invoice"), Member.class);
+						member = (Member) memberDao.readByColumn("id_member", item_number, Member.class);
 						
 						if(member != null){
 							if (payment_status.equals("Completed")){
@@ -311,7 +311,7 @@ public class PagamentosController {
 							log.info("Setar paymentStatus: " + payment_status);
 							
 							memberDao.update(member, false);
-							log.info("Notificacao IPN (update) - PAGAMENTO CONCLUIDO COM SUCESSO, ARMAZENAMENTO ATUALIZADO - ID MEMBRO=" + invoice);
+							log.info("Notificacao IPN (update) - PAGAMENTO CONCLUIDO COM SUCESSO, ARMAZENAMENTO ATUALIZADO - ID MEMBRO=" + item_number);
 						}
 						
 						//cria notificacao e uma mensagem automatica do sistema para informar o usuario que o pagamento foi concluido						
