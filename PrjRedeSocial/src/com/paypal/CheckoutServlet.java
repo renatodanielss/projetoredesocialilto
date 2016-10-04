@@ -122,8 +122,8 @@ public class CheckoutServlet  extends HttpServlet {
         		//session.invalidate(); //linha comentada porque estava derrubando a sessão do usuário no momento de fazer o checkout
         		
         		/** Valida checkout para Anuncios, destaques e eventos */
-				this.validaCheckoutParaAnuncio();
-				this.validaCheckoutParaEvento();
+				this.validaCheckoutParaAnuncio(checkoutDetails);
+				this.validaCheckoutParaEvento(checkoutDetails);
 				this.validaCheckoutDestaqueDoAnuncio();
 				
         		session = request.getSession();
@@ -151,6 +151,7 @@ public class CheckoutServlet  extends HttpServlet {
 			        "<br>Short Error Message: " + ErrorShortMsg +
 			        "<br>Error Code: " + ErrorCode +
 			        "<br>Error Severity Code: " + ErrorSeverityCode;
+	            log.error("Erro na classe CheckoutServlet: " + errorString);
 	            request.setAttribute("error", errorString);
 	        	RequestDispatcher dispatcher = request.getRequestDispatcher("error.jsp");
 	        	//session.invalidate();
@@ -185,7 +186,7 @@ public class CheckoutServlet  extends HttpServlet {
 	/**
 	 * Metodo valida se eh um checkout para anuncios de evento, salva no bd e faz upload da imagem do evento.
 	 */
-	private void validaCheckoutParaEvento(){
+	private void validaCheckoutParaEvento(Map<String, String> checkoutDetails){
 		HttpServletRequest req = cmsUtilsIliketoo.getMyrequest().getRequest();
 		HttpServletResponse res = cmsUtilsIliketoo.getMyresponse().getResponse();
 		ModelILiketo model = new ModelILiketo(req, res);	
@@ -200,6 +201,7 @@ public class CheckoutServlet  extends HttpServlet {
 				String idRegistro = dao.create(evento);
 				evento.setIdEvent(idRegistro);
 				evento.setId(idRegistro);
+				checkoutDetails.put("L_PAYMENTREQUEST_0_NUMBER0", idRegistro);	//put no map o id do novo registro do evento
 				
 				req.getSession().setAttribute("eventoCheckout", evento);
 				log.info("Servlet Paypal Novo Checkout para Anuncio de Evento - Anuncio salvo como Pendente pagamento... id evento=" + idRegistro);
@@ -224,7 +226,7 @@ public class CheckoutServlet  extends HttpServlet {
 	/**
 	 * Metodo valida se eh um checkout de anuncios, salva no bd e faz upload da imagem
 	 */
-	private void validaCheckoutParaAnuncio() {
+	private void validaCheckoutParaAnuncio(Map<String, String> checkoutDetails) {
 
 		HttpServletRequest req = cmsUtilsIliketoo.getMyrequest().getRequest();
 		HttpServletResponse res = cmsUtilsIliketoo.getMyresponse().getResponse();
@@ -251,7 +253,9 @@ public class CheckoutServlet  extends HttpServlet {
 	
 				AnnounceDAO dao = new AnnounceDAO(db, req);
 				String idRegistro = dao.create(anuncio);
-				anuncio = (Announce)dao.readById(idRegistro, Announce.class);
+				anuncio.setIdCollection(idRegistro);
+				anuncio.setId(idRegistro);
+				checkoutDetails.put("L_PAYMENTREQUEST_0_NUMBER0", idRegistro);	//put no map o id do novo registro do anuncio
 				
 				req.getSession().setAttribute("anuncioCheckout", anuncio);
 				log.info("Servlet Paypal Novo Checkout para anuncio - Anuncio salvo como Pendente pagamento... id=" + idRegistro);

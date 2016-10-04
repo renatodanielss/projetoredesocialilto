@@ -21,7 +21,7 @@ import HardCore.Text;
 /**
  * Servlet Filter implementation class FilterPageJSP
  */
-@WebFilter(filterName="FilterPageJSP", urlPatterns={ "/page.jsp", "/home.jsp", "/index.jsp", "/" })
+@WebFilter(filterName="FilterPageJSP", urlPatterns={ "/home.jsp", "/index.jsp", "/" })
 public class FilterPageJSP implements Filter {
 
     /**
