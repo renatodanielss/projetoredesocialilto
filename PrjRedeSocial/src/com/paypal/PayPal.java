@@ -59,7 +59,7 @@ public class PayPal  {
 			String filename = "";
 			
 			log.info("Member: " + member);
-			log.info("CountryCode: " + member.getCountryCode());
+			log.info("Country: " + member.getCountry());
 			
 			if (member != null){
 				if (member.getCountry().equals("Brazil")){

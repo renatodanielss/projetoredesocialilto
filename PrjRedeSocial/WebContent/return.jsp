@@ -879,7 +879,7 @@ float: left; width:55%; }
 		
 		log.info("Consultar Membro na base :" + member.toString() + " e " + member.getNickname());
 		if(member != null){
-			if(member.getPaymentStatus().equals("Completed")){
+			if(result.get("PAYMENTINFO_0_PAYMENTSTATUS").equals("Completed")){
 				log.info("Antes do if:");
 				log.info("mysession.get(username): " + mysession.get("username"));
 				log.info("Username:" + member.getUsername());
