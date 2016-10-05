@@ -1,5 +1,5 @@
 <%@ include file="../webadmin.jsp" %><%@ include file="../config.personal.jsp" %><%@ page import="HardCore.UCmaintainContent" %><%@ page import="HardCore.UCmaintainUsers" %><%@ page import="HardCore.Page" %><%@ page import="HardCore.User" %><%@ page import="HardCore.RequireUser" %>
-<%@ page import="com.iliketo.control.UpdateUserController" import="com.iliketo.model.Member" %><%@ page import="com.iliketo.dao.IliketoDAO"%><%
+<%@ page import="com.iliketo.control.UpdateUserController" import="com.iliketo.model.Member" %><%@ page import="com.iliketo.dao.*"%><%
 	
 	//***Executa e valida Registro iliketo**** 
 	String email = "";
@@ -38,7 +38,11 @@
 		
 	}else{
 		
-		String idRegisterUser = IliketoDAO.getValueOfDatabase(db, "id", "dbmembers", "id_member", mysession.get("userid"));
+		Member member = (Member) session.getAttribute("member");
+		String idRegisterUser = "";
+		if(member != null){
+			idRegisterUser = member.getId();
+		}
 		mytext = new Text(myrequest);
 	
 		mysession.set("mode", "");
