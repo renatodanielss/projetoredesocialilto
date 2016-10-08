@@ -144,11 +144,20 @@ public class CmsConfigILiketo {
 	 * Metodo atualiza o espaco de armazenamento do membro com o tamanho em bytes dos arquivos que esta no request
 	 */
 	public void atualizaEspacoArmazenamentoMembroInBytes(){
-		Member membro = ((Member) memberDAO.readByColumn("id_member", mysession.get("userid"), Member.class));
-		MemberDAO memberDAO = new MemberDAO((DB)myrequest.getRequest().getAttribute(Str.CONNECTION_DB), null);
-		memberDAO.saveUsedSpace(membro, this.getSizeFilesInBytes());
-		log.info("Membro: " + membro.getUsername() + " - Total: " + membro.getTotalSpace() + 
-				" - usado: " + membro.getUsedSpace() + " - Tipo: " + membro.getStorageType());
+		//salva total de espaço usado do membro
+		String myUserid = this.mysession.get("userid");
+		Member member = ((Member) this.memberDAO.readByColumn("id_member", myUserid, Member.class));
+		
+		long sizeBytesTotalArquivosSalvos = this.getSizeFilesInBytes();
+		this.memberDAO.saveUsedSpace(member, Long.valueOf(member.getUsedSpace()) + sizeBytesTotalArquivosSalvos);
+		this.myrequest.getRequest().getSession().setAttribute("member", member);	//atualiza objeto na session
+		
+		log.info("\nTotal size files: " 
+				+ sizeBytesTotalArquivosSalvos + " bytes / " + (sizeBytesTotalArquivosSalvos > 0 ? sizeBytesTotalArquivosSalvos/1024 : 0) + " KB / " 
+				+ (sizeBytesTotalArquivosSalvos > 0 ? (sizeBytesTotalArquivosSalvos/1024)/1024 : 0) + " MB"
+				+ "\nUsername: " + member.getUsername() + " - id: " + myUserid
+				+ "\nTotal storage: " + member.getTotalSpace() + " / usado: " + member.getUsedSpace() 
+				+ " / Tipo: " + member.getStorageType());
 	}
 	
 	/**
@@ -275,14 +284,16 @@ public class CmsConfigILiketo {
 			            	FileuploadILiketo filepostIliketo;
 			            	String path_file_name = "";					        
 			            	if(!isUploadAdvertiser){
-			            		if(aws.IS_LOCAL_STORAGE_AMAZON){			            			
-			            			path_file_name = aws.uploadDeArquivosParaDiretorioStorageAmazon(mapMyFormInput.get("filename"), "upload", item);
-			                	}else{
-			                		filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
-			                				myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
-			                		path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	
-			                	}
-			            	}else{
+			            		if(!typeFile.equals("video")){
+				            		if(aws.IS_LOCAL_STORAGE_AMAZON){			            			
+				            			path_file_name = aws.uploadDeArquivosParaDiretorioStorageAmazon(mapMyFormInput.get("filename"), "upload", item);
+				                	}else{
+				                		filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+				                				myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLuploadpath"), 32, stream, mapMyFormInput);
+				                		path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);	
+				                	}
+			            		}
+			            	}else{			            		
 			            		if(aws.IS_LOCAL_STORAGE_AMAZON){		            			
 			            			path_file_name = aws.uploadDeArquivosParaDiretorioStorageAmazon(mapMyFormInput.get("filename"), "advertiser", item);
 			                	}else{
@@ -291,15 +302,25 @@ public class CmsConfigILiketo {
 			                		path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);
 			                	}
 					        }
-					        
+			            	
 					        //verifica e valida duracao de video
 					        if(typeFile.equals("video")){
+					        	filepostIliketo = new FileuploadILiketo(myrequest, DOCUMENT_ROOT_UPLOAD + myconfig.get((DB)request.getAttribute(Str.CONNECTION_DB), "URLrootpath"), 
+						        		FOLDER_ADVERTISER, 32, stream, mapMyFormInput);
+			                	path_file_name = filepostIliketo.getParameter(Str.PATH_FILE_DEFAULT);
 					        	if(aws.IS_LOCAL_STORAGE_AMAZON){
-					        		//aws.validateDurationVideo(mapMyFormInput.get("filename"), "upload");
+					        		//Storage amazon, primeiro valida duracao > upload na amazon > exclui video temporario
+					        		if(FileuploadILiketo.validateDurationVideo(mysession.get(Str.STORAGE), path_file_name)){
+					        			path_file_name = aws.uploadDeArquivosParaDiretorioStorageAmazon(mapMyFormInput.get("filename"), "upload", item);
+					    				Common.deleteFile(mysession.get(Str.STORAGE) + path_file_name);
+					    				log.warn("Exclui video temporario no server local para analise de duracao do video: " + mysession.get(Str.STORAGE) + path_file_name);
+					        		}
 					        	}else{
+					        		//Storage local server aplication
 					        		FileuploadILiketo.validateDurationVideo(mysession.get(Str.STORAGE), path_file_name);
 					        	}
 					        }
+					        
 					        for(Field atributo : object.getClass().getDeclaredFields()){
 								atributo.setAccessible(true);
 								FileILiketo file = atributo.getAnnotation(FileILiketo.class);
@@ -584,10 +605,11 @@ public class CmsConfigILiketo {
 	}
 	
 	/**
-	 * Mï¿½todo retorna o tamanho total de arquivos em bytes que o usuario da sessao possui.
+	 * Metodo retorna o tamanho total de arquivos em bytes que o usuario da sessao possui.
 	 * @param request
 	 * @return
 	 */
+	@Deprecated
 	public long getTotalTodosArquivosUserInBytes(HttpServletRequest request){
 		//obs 512 MB > 524288 KB > 536870912 bytes
 		long sizeTotal = 0;

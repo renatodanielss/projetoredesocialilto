@@ -64,7 +64,7 @@ public class Data {
 	public HashMap<String,String> readWhereILiketo(DB db, String database, String col, String id) {
 		if (db == null) return null;
 		if ((id != null) && (! id.equals(""))) {
-			String SQL = "select * from " + Common.SQL_clean(database) + " where " + col + " = " + Common.integer(id);
+			String SQL = "select * from " + Common.SQL_clean(database) + " where " + col + " = '"+id+"'";
 			HashMap<String,String> row = db.query_record(SQL);
 			if (row != null) {
 				getRecord(db, row);

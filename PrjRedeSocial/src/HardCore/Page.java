@@ -916,18 +916,15 @@ try {
 				mycontent = binding;
 			}
 		}
-		//CODIGO PARA MAPEAR URL DA AMAZON PARA RECUPERAR OS ARQUIVOS NO HTML
+		//CODIGO PARA MAPEAR URL DA AMAZON PARA RECUPERAR OS ENDERECOS DE ARQUIVOS DE UPLOAD NO HTML
 		if(mycontent.contains("/upload/")){
-			Configuration myconfig = new Configuration();
-			if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
-				//"csrootpath" = VARIAVEL AMAZENADA NO ASBRU EM CONFIGURACOES > SYSTEM > WEBSITE > ABA MIDIA > "CAMPO BUCKET"
-				String DOCUMENT_ROOT_UPLOAD = myconfig.get("csrootpath");
-				//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
-				if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)){
-					mycontent = mycontent.replaceAll("/upload/", ILiketooBucketsBusinessAWS.LINK_BUCKET_PRODUCAO + "/upload/");
-				}else if(DOCUMENT_ROOT_UPLOAD.equalsIgnoreCase(ILiketooBucketsBusinessAWS.AWS_DEV)){
-					mycontent = mycontent.replaceAll("=\"/upload/", "=\"" + ILiketooBucketsBusinessAWS.LINK_BUCKET_DEV + "/upload/");
-				}
+			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
+			if(ILiketooBucketsBusinessAWS.getLocalDeArmazenamento().equals(ILiketooBucketsBusinessAWS.AWS_PRODUCAO)){
+				mycontent = mycontent.replaceAll("'/upload/", "'"+ILiketooBucketsBusinessAWS.LINK_BUCKET_PRODUCAO + "/upload/");
+				mycontent = mycontent.replaceAll("\"/upload/", "\""+ILiketooBucketsBusinessAWS.LINK_BUCKET_PRODUCAO + "/upload/");
+			}else if(ILiketooBucketsBusinessAWS.getLocalDeArmazenamento().equals(ILiketooBucketsBusinessAWS.AWS_DEV)){
+				mycontent = mycontent.replaceAll("'/upload/", "'"+ILiketooBucketsBusinessAWS.LINK_BUCKET_DEV_2 + "/upload/");
+				mycontent = mycontent.replaceAll("\"/upload/", "\""+ILiketooBucketsBusinessAWS.LINK_BUCKET_DEV_2 + "/upload/");
 			}
 		}
 		

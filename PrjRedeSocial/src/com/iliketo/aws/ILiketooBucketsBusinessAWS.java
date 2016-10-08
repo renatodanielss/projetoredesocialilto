@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.util.Properties;
 
 import javax.servlet.Filter;
@@ -51,8 +52,12 @@ public class ILiketooBucketsBusinessAWS {
 	private final static String secret_access_key = "AA5ezX5dU8uRH8ELzTH945DvEhDPRd9R/TB+QGVH";
 	private final static String endpoint = "s3-us-west-2.amazonaws.com";
 	
-	public static final String LINK_BUCKET_PRODUCAO = "http://iliketoo.aws.midia" + "." + endpoint;
-	public static final String LINK_BUCKET_DEV = "http://iliketoo.aws.midia-piloto" + "." + endpoint;
+	public static final String LINK_BUCKET_PRODUCAO = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia";
+	public static final String LINK_BUCKET_DEV = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia-piloto";
+	
+	public static final String LINK_BUCKET_PRODUCAO_2 = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia";
+	public static final String LINK_BUCKET_DEV_2 = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia-piloto";
+	
 	public static final String AWS_PRODUCAO = "AWS-producao";
 	public static final String AWS_DEV = "AWS-dev";
 	public static final String AWS_TEMPORARIO = "temp";
@@ -65,11 +70,10 @@ public class ILiketooBucketsBusinessAWS {
 	 * Metodo construtor recebe String armazenamento para setar local de Storage
 	 * @param localArmazenamento
 	 */
-	public ILiketooBucketsBusinessAWS(){
-		
+	public ILiketooBucketsBusinessAWS(){		
 		//**Configurar local de armazenamento constante**
-		//String localArmazenamento = AWS_PRODUCAO	//bucket de producao
-		//String localArmazenamento = AWS_DEV		//bucket desenvolvimento
+		//String localArmazenamento = AWS_PRODUCAO	//producao
+		//String localArmazenamento = AWS_DEV		//desenvolvimento
 		//String localArmazenamento = "local";		//servidor local
 		String localArmazenamento = getLocalDeArmazenamento();
 
@@ -88,19 +92,17 @@ public class ILiketooBucketsBusinessAWS {
 	/**
 	 * Metodo ler arquivo properties de configuracoes para verificar o local do armazenamento.
 	 */
-	private String getLocalDeArmazenamento(){
+	public static String getLocalDeArmazenamento(){
 		try {
 			Properties prop = new Properties();
 			String filename = "config/config_iliketoo.properties";
-			InputStream input = this.getClass().getClassLoader().getResourceAsStream(filename);  
+			InputStream input = ILiketooBucketsBusinessAWS.class.getClassLoader().getResourceAsStream(filename);  
 			if(input==null){
 		        log.error("Arquivo properties de configuracoes nao encontrado: " + filename);
 			    return null;
 			}
 			prop.load(input);
-			String localArmazenamento = prop.getProperty("LOCAL_STORAGE");
-			log.error("Local do armazenamento configurado: " + localArmazenamento);
-			return localArmazenamento;
+			return prop.getProperty("LOCAL_STORAGE");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -364,11 +366,15 @@ public class ILiketooBucketsBusinessAWS {
 	 * Metodo exclui um arquivo do bucket no AWS
 	 * 
 	 * @param keyFilename - nome do arquivo
+	 * @throws IOException 
 	 */
-	public void deletaArquivosStorageAmazon(String keyFilename){
+	public long deletaArquivosStorageAmazon(String keyFilename) throws IOException{
 		log.info("AWS - Delete object trying...");
+		S3Object object = this.amazonS3client.getObject(new GetObjectRequest(bucketName, keyFilename));
+		long size = object.getObjectMetadata().getContentLength();
 		this.amazonS3client.deleteObject(bucketName, keyFilename);
-		log.info("AWS - Delete object success in endpoint: " + endpoint + " - bucketname: " + bucketName + " - keyFilename: " + keyFilename);
+		log.info("AWS - Delete object success in endpoint: " + endpoint + " - bucketname: " + bucketName + " - keyFilename: " + keyFilename + " - size: "+size);
+		return size;
 	}
 	
 	/**
@@ -376,12 +382,16 @@ public class ILiketooBucketsBusinessAWS {
 	 * 
 	 * @param keyFilename
 	 * @param folderName
+	 * @throws IOException 
 	 */
-	public void deletaArquivosDiretorioStorageAmazon(String keyFilename, String folderName){
+	public long deletaArquivosDiretorioStorageAmazon(String keyFilename, String folderName) throws IOException{
 		log.info("AWS - Delete object in folder trying...");
 		String pathFile = folderName +"/"+ keyFilename;
+		S3Object object = this.amazonS3client.getObject(new GetObjectRequest(bucketName, pathFile));
+		long size = object.getObjectMetadata().getContentLength();
 		this.amazonS3client.deleteObject(bucketName, pathFile);
-		log.info("AWS - Delete object success in endpoint: " + endpoint + " - bucketname: " + bucketName + " - path/filename: " + pathFile);
+		log.info("AWS - Delete object success in endpoint: " + endpoint + " - bucketname: " + bucketName + " - path/filename: " + pathFile + " - size: "+size);
+		return size;
 	}
 	
 	/**
@@ -426,7 +436,7 @@ public class ILiketooBucketsBusinessAWS {
 	public InputStream getObjectNoDiretorioBucketAmazon(String keyFilename, String folderName) throws IOException{
 		log.info("AWS - getObject folder in bucket trying...");
 		String pathFile = folderName +"/"+ keyFilename;
-		S3Object object = this.amazonS3client.getObject(new GetObjectRequest(bucketName, keyFilename));
+		S3Object object = this.amazonS3client.getObject(new GetObjectRequest(bucketName, pathFile));
 		InputStream objectData = object.getObjectContent();
 		objectData.close();
 		log.info("AWS - getObject folder success in endpoint: " + endpoint + " - bucketname: " + bucketName + " - path/filename: " + pathFile);

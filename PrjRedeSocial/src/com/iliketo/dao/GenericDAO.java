@@ -1,6 +1,7 @@
 package com.iliketo.dao;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ import HardCore.Fileupload;
 import HardCore.Text;
 
 import com.iliketo.aws.ILiketooBucketsBusinessAWS;
-import com.iliketo.control.VideoController;
 import com.iliketo.model.Member;
 import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.model.annotation.FileILiketo;
@@ -114,14 +114,6 @@ public abstract class GenericDAO {
 		data.update(db, "data" + database.getId(), database.columns);
 		
 		if(idRegister != null && !idRegister.equals("") && !idRegister.equals("null")){
-			//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
-			for(Field atributo : object.getClass().getDeclaredFields()) {
-				atributo.setAccessible(true);
-				FileILiketo f = atributo.getAnnotation(FileILiketo.class);	//valida annotation @FileILiketo
-				if(f != null){
-					this.calculateTotalFilesMemberInBytes();
-				}
-			}
 			return idRegister;
 		}
 		return null;
@@ -135,7 +127,6 @@ public abstract class GenericDAO {
 	 */
 	public String[] creates(Object[] arrayObjects) {
 		String nameIdPrimaryKey = "";
-		boolean containsFiles = false;
 		String[] idCreates = new String[arrayObjects.length];
 		
 		for(int i= 0; i < arrayObjects.length; i++){
@@ -198,9 +189,6 @@ public abstract class GenericDAO {
 			
 			idCreates[i] = idRegister;
 		}
-		
-		//calcula e salva espaco usado de armazenamento para objeto q contem arquivos
-		this.calculateTotalFilesMemberInBytes();
 		return idCreates;		//retorna array de id criado dos objetos
 	}
 	
@@ -305,7 +293,12 @@ public abstract class GenericDAO {
 			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
 			if(aws.IS_LOCAL_STORAGE_AMAZON){
 				if(nameFileDelete != null && !nameFileDelete.equals("")){
-					aws.deletaArquivosDiretorioStorageAmazon(nameFileDelete, "upload");
+					try {
+						long sizeExcluidos = aws.deletaArquivosDiretorioStorageAmazon(nameFileDelete, "upload");
+						this.atualizarArmazenamentoMembroArquivosExcluidos(sizeExcluidos);
+					} catch (IOException e) {
+						log.error(e);
+					}
 				}
 			}else{
 				//DELETA ARQUIVOS NO DIRETORIO SERVIDOR LOCAL DA APLICACAO
@@ -321,7 +314,7 @@ public abstract class GenericDAO {
 				} else {
 					log.error("Log - Delete File name: " +nameFileDelete+ " no exists!");
 				}		
-				//calcula e salva espaco usado de armazenamento
+				//calcula e salva espaco usado de armazenamento local server
 				this.calculateTotalFilesMemberInBytes();
 			}
 		}
@@ -337,15 +330,20 @@ public abstract class GenericDAO {
 		Configuration myconfig = new Configuration();
 		if(myconfig.get(db, "csrootpath") != null && !myconfig.get(db, "csrootpath").equals("")){
 			//"csrootpath" = VARIAVEL AMAZENADA NO ASBRU EM CONFIGURACOES > SYSTEM > WEBSITE > ABA MIDIA > "CAMPO BUCKET"
-
 			//verifica qual tipo de armazenamento sendo usado (Storage Amazon ou Diretorio servidor de aplicacao)
 			ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS();
 			if(aws.IS_LOCAL_STORAGE_AMAZON){
-				for(String nameFile : listNamesFileDelete){
-					if(nameFile != null && !nameFile.equals("")){
-						aws.deletaArquivosDiretorioStorageAmazon(nameFile, "upload");
+				try {
+					for(String nameFile : listNamesFileDelete){
+						long sizeExcluidos = 0;
+						if(nameFile != null && !nameFile.equals("")){
+							sizeExcluidos += aws.deletaArquivosDiretorioStorageAmazon(nameFile, "upload");
+						}
+						this.atualizarArmazenamentoMembroArquivosExcluidos(sizeExcluidos);
 					}
-				}				
+				} catch (IOException e) {
+					log.error(e);
+				}
 			}else{
 				//DELETA ARQUIVOS NO DIRETORIO SERVIDOR LOCAL DA APLICACAO
 				for(String namePhoto : listNamesFileDelete){
@@ -363,6 +361,8 @@ public abstract class GenericDAO {
 						log.error("Log - Delete File Image - name photo " +namePhoto+ " no exists BD!");
 					}
 				}
+				//calcula e salva espaco usado de armazenamento local server
+				this.calculateTotalFilesMemberInBytes();
 			}
 		}
 	}
@@ -499,11 +499,49 @@ public abstract class GenericDAO {
 		return request;
 	}
 
-
+	/**
+	 * Metodo responsavel por atualizar o espaco de armazenamento usado do membro
+	 * @param sizeBytesTotalArquivosSalvos - total em bytes dos arquivos salvos
+	 */
+	private void atualizarArmazenamentoMembroArquivosSalvos(long sizeBytesTotalArquivosSalvos){
+		//salva total de espaço usado do membro
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		MemberDAO memberDAO = new MemberDAO(db, null);
+		Member member = ((Member) memberDAO.readByColumn("id_member", myUserid, Member.class));	
+		memberDAO.saveUsedSpace(member, Long.valueOf(member.getUsedSpace()) + sizeBytesTotalArquivosSalvos);
+		request.getSession().setAttribute("member", member);	//atualiza objeto na session
+		
+		log.info("\nTotal size files:\n" 
+				+ sizeBytesTotalArquivosSalvos + " bytes\n" + (sizeBytesTotalArquivosSalvos > 0 ? sizeBytesTotalArquivosSalvos/1024 : 0) + " KB\n" 
+				+ (sizeBytesTotalArquivosSalvos > 0 ? (sizeBytesTotalArquivosSalvos/1024)/1024 : 0) + " MB"
+				+ "\nUsername: " + (String) request.getSession().getAttribute("username") 
+				+ " - id: " + myUserid + "\n");		
+	}
+	/**
+	 * Metodo responsavel por atualizar o espaco de armazenamento usado do membro
+	 * @param sizeBytesTotalArquivosExcluidos - total em bytes dos arquivos excluidos
+	 */
+	private void atualizarArmazenamentoMembroArquivosExcluidos(long sizeBytesTotalArquivosExcluidos){
+		//salva total de espaço usado do membro
+		String myUserid = (String) request.getSession().getAttribute("userid");
+		MemberDAO memberDAO = new MemberDAO(db, null);
+		Member member = ((Member) memberDAO.readByColumn("id_member", myUserid, Member.class));	
+		memberDAO.saveUsedSpace(member, Long.valueOf(member.getUsedSpace()) - sizeBytesTotalArquivosExcluidos);
+		request.getSession().setAttribute("member", member);	//atualiza objeto na session
+		
+		log.info("\nTotal size files:\n" 
+				+ sizeBytesTotalArquivosExcluidos + " bytes\n" + (sizeBytesTotalArquivosExcluidos > 0 ? sizeBytesTotalArquivosExcluidos/1024 : 0) + " KB\n" 
+				+ (sizeBytesTotalArquivosExcluidos > 0 ? (sizeBytesTotalArquivosExcluidos/1024)/1024 : 0) + " MB"
+				+ "\nUsername: " + (String) request.getSession().getAttribute("username") 
+				+ " - id: " + myUserid + "\n");		
+	}
+	
 	/**
 	 * Metodo calcula e salva o espaco de armazenamento usado de todos arquivos do membro na database dbmembers. 
+	 * @Deprecated - metodo depreciado, utilizado somente para armazenamento local no server.
 	 * @return
 	 */
+	@Deprecated
 	public long calculateTotalFilesMemberInBytes(){
 		//obs 512 MB > 524288 KB > 536870912 bytes
 		long sizeTotal = 0;

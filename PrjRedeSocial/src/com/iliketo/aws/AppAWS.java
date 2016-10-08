@@ -16,11 +16,11 @@ public class AppAWS {
 		System.out.println("*** START APPLICATION CONNECT AWS AMAZON STORAGE ***");
 		ILiketooBucketsBusinessAWS aws = new ILiketooBucketsBusinessAWS(true, ILiketooBucketsBusinessAWS.AWS_DEV);
 		//App.enviarArquivosParaAWS(aws);
-		//ObjectListing lista = aws.getAmazonS3client().listObjects("iliketoo.aws.midia-piloto");
-		//for (S3ObjectSummary objectSummary : lista.getObjectSummaries()) {
-			//System.out.println("key: " + objectSummary.getKey());
-	        //aws.getAmazonS3client().deleteObject("iliketoo.aws.midia-piloto", objectSummary.getKey());
-	    //}
+		ObjectListing lista = aws.getAmazonS3client().listObjects("iliketoo.aws.midia-piloto");
+		for (S3ObjectSummary objectSummary : lista.getObjectSummaries()) {
+			System.out.println("key: " + objectSummary.getKey());
+	        aws.getAmazonS3client().deleteObject("iliketoo.aws.midia-piloto", objectSummary.getKey());
+	    }
 		//aws.criarDiretorioNoBucket("temp");
 		//aws.jaExisteObjetoNoDiretorioBucketAmazon("1470264753719_yiyqfvgxdjfgygdlegvsbjwujedbsqsjjpg", "upload");
 		//aws.deletaArquivosDiretorioStorageAmazon("1470264753719_yiyqfvgxdjfgygdlegvsbjwujedbsqsjjpg", "upload");
@@ -30,7 +30,7 @@ public class AppAWS {
 	}
 	
 	public static String enviarArquivosParaAWS(ILiketooBucketsBusinessAWS aws){
-		File diretorioLinux = new File("/home/i_like_too/i_like_too_media/upload"); //home/i_like_too/i_like_too_media/upload
+		File diretorioLinux = new File("D:\\asbru\\teste"); //home/i_like_too/i_like_too_media/upload
 		File[] listaArquivos = diretorioLinux.listFiles();
 		int contSend = 0;
 		int notSend = 0;
@@ -43,7 +43,7 @@ public class AppAWS {
 				String filename = file.getName();
 				long antes = System.currentTimeMillis();
 				//String newname = aws.uploadDeArquivosParaDiretorioStorageAmazon(filename, "upload", file);
-				aws.getAmazonS3client().putObject("iliketoo.aws.midia-piloto", "upload/" + filename, file);
+				aws.getAmazonS3client().putObject("iliketoo.aws.midia-piloto", filename, file);
 				long depois = System.currentTimeMillis();
 				contSend++;
 				log.info("CONT: "+contSend + " - Upload success file: " + filename +" - "+ file.length() + " bytes - tempo: " +((depois-antes) <= 0 ? "0 s" : (depois-antes)/1000L+" s"));

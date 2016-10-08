@@ -278,7 +278,8 @@ public class IliketoDAO {
 		
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		
-		String SQL = "SELECT COUNT(t1." +valueCount+ ") as total FROM " + nameDatabase + " as t1 WHERE t1." + nameColumn +"="+ value;
+		String SQL = "SELECT COUNT(t1." +valueCount+ ") as total FROM " + nameDatabase 
+				+ " as t1 WHERE t1." + nameColumn +"='"+ value+"'";
 		String[][] tableAlias = { {nameDatabase, "t1" } };
 		SQL = CS.transformSQLReal(SQL, tableAlias);
 		

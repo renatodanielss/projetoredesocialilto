@@ -84,11 +84,6 @@ public class CollectionDAO extends GenericDAO{
 			
 		String localImagePath = (String) super.getRequest().getSession().getAttribute(Str.STORAGE);			//local da pasta das imagens armazenadas
 		super.deleteListFilesPhysically(listNamesPhotoDelete, localImagePath); //metodo deleta uma lista de arquivos fisicamente
-		
-		
-		//calcula e salva espaco usado de armazenamento
-		this.calculateTotalFilesMemberInBytes();
-		
 	}
 	
 	
