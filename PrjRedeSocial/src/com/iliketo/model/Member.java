@@ -114,6 +114,9 @@ public class Member extends ContentILiketo{
 	@ColumnILiketo(name = "paymentStatus")
 	private String paymentStatus;
 	
+	@ColumnILiketo(name = "PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")
+	private String PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE;
+	
 	public Member(){
 		
 	}
@@ -372,5 +375,14 @@ public class Member extends ContentILiketo{
 
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
+	}
+
+	public String getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE() {
+		return PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE;
+	}
+
+	public void setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(
+			String pAYMENTREQUEST_0_SHIPTOCOUNTRYCODE) {
+		PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE = pAYMENTREQUEST_0_SHIPTOCOUNTRYCODE;
 	}
 }

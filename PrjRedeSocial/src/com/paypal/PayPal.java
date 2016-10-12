@@ -62,10 +62,19 @@ public class PayPal  {
 			log.info("Country: " + member.getCountry());
 			
 			if (member != null){
-				if (member.getCountry().equals("Brazil")){
-					filename = "config/config.properties";
-				} else {
-					filename = "config/config_us.properties";
+				if (member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("")){
+					if (member.getCountry().equals("Brazil")){
+						filename = "config/config.properties";
+					} else {
+						filename = "config/config_us.properties";
+					}
+				}
+				else{
+					if (member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")){
+						filename = "config/config.properties";
+					} else {
+						filename = "config/config_us.properties";
+					}
 				}
 			}
 		

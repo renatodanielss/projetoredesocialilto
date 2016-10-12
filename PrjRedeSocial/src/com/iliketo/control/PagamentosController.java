@@ -151,10 +151,23 @@ public class PagamentosController {
 		
 		log.info(request.getRequestURL());
 		
+		String address_country = request.getParameter("address_country");
+		
 		//constantes		
 		final String Completed = "Completed";
-		//final String EMAIL_PAYPAL_ILIKETOO = "payment@iliketoo.com";
-		final String EMAIL_PAYPAL_ILIKETOO = "contato.iliketo-facilitator@gmail.com";
+		
+		final String EMAIL_PAYPAL_ILIKETOO;
+ 
+		 /* if (address_country.equals("Brazil"))
+		 * 	EMAIL_PAYPAL_ILIKETOO = ""payment@iliketoo.com";";
+		 * else
+		 * 	EMAIL_PAYPAL_ILIKETOO = "payment.us@iliketoo.com";
+		 */
+		
+		if (address_country.equals("Brazil"))
+			EMAIL_PAYPAL_ILIKETOO = "contato.iliketo-facilitator@gmail.com";
+		else
+			EMAIL_PAYPAL_ILIKETOO = "payment.us-facilitator@iliketoo.com";
 		
 		String receiver_email= request.getParameter("receiver_email");
 		String invoice= request.getParameter("invoice");
@@ -399,7 +412,7 @@ public class PagamentosController {
 					}
 				}			
 			}else{
-				log.info("Notificacao IPN - invoice(id anuncio) ou custom(tipo conteudo) invalido!");
+				log.info("Notificacao IPN - item_number(id anuncio) ou custom(tipo conteudo) invalido!");
 			}			
 		}else{
 			log.info("Notificacao IPN - Descartada, email vendedor invalido: " + receiver_email);

@@ -1,3 +1,8 @@
+<%@ include file="webadmin.jsp" %>
+<%@ page import="com.iliketo.dao.MemberDAO" %>
+<%@ page import="com.iliketo.model.Member" %>
+<%@ page import="com.iliketo.dao.GenericDAO" %>
+<%@ page import="org.apache.log4j.Logger" %>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Locale"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -568,7 +573,61 @@ float: left; width:55%; }
 </head>
 
 <body  >  
-  
+<%
+	Map<String, String> countries = new HashMap<>();
+	for (String iso : Locale.getISOCountries()) {
+    	Locale l = new Locale("", iso);
+    	countries.put(l.getDisplayCountry(), iso);
+	}
+
+	HashMap result = (HashMap) request.getAttribute("result");
+	
+	MemberDAO memberDao = new MemberDAO(db, request);
+	Member member = new Member();
+	member = (Member) memberDao.readByColumn("id_member", result.get("L_PAYMENTREQUEST_0_NUMBER0").toString(), Member.class);
+
+	final Logger log = Logger.getLogger("review.jsp");
+	log.info("Member Country: " + member.getCountry());
+	log.info("Paypal Country: " + result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString());
+	log.info("Member Country ISO Code: " + countries.get(member.getCountry()));
+	log.info("Paypal Country = Member Country ISO Code? " + countries.get(member.getCountry()) + " = " + result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString());
+	
+	Locale l = new Locale("", result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString());
+	
+	if (member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("")){
+		log.info("Payment Country to Update Vazio: " + l.getDisplayCountry());
+		member.setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(l.getDisplayCountry());
+		memberDao.update(member, false);
+		if (!result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").equals(countries.get(member.getCountry()))){
+			if (member.getCountry().equals("Brazil")){
+				//redirect United States
+				request.getRequestDispatcher("/page.jsp?id=1149&paymentRedirect=1").forward(request, response);
+			} else if (result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").equals("BR")){
+				//redirect Brazil
+				request.getRequestDispatcher("/page.jsp?id=1149&paymentRedirect=1").forward(request, response);
+			}
+		}
+	}
+	else if (!result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").equals(countries.get(member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE()))){
+		if (result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").equals("BR")){
+			// redirect Brazil
+			log.info("Payment Country to Update Não Vazio: " + l.getDisplayCountry());
+			
+			member.setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(l.getDisplayCountry());
+			memberDao.update(member, false);
+			request.getRequestDispatcher("/page.jsp?id=1149&paymentRedirect=1").forward(request, response);
+		}
+		else if (member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")){
+			//redirect United States
+			log.info("Payment Country to Update Não Vazio: " + l.getDisplayCountry());
+			
+			member.setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(l.getDisplayCountry());
+			memberDao.update(member, false);
+			request.getRequestDispatcher("/page.jsp?id=1149&paymentRedirect=1").forward(request, response);
+		}
+	}
+%>
+
 <div id="header2"> </div>
 <div class="container">
   <div style="background-color:transparent;" class="header">
@@ -587,7 +646,7 @@ float: left; width:55%; }
 		<table id="secondbox" border="0" cellpading="0" cellspacing="0">
 			<tbody id="first">
 				<tr><td><h4 style="margin-left: -16px;">Endereço de Cobrança</h4></td></tr>
-				<% HashMap result = (HashMap) request.getAttribute("result");  %>
+				<% //HashMap result = (HashMap) request.getAttribute("result");  %>
 				<tr><td style="width: auto;">Nome: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
 				<tr><td style="width: auto;">Endereço: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
 				<tr><td style="width: auto;">Cidade: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
@@ -622,7 +681,7 @@ float: left; width:55%; }
 		<table id="secondbox" border="0" cellpading="0" cellspacing="0">
 			<tbody id="first">
 				<tr><td><h4 style="margin-left: -16px;">Billing Address</h4></td></tr>
-				<% HashMap result = (HashMap) request.getAttribute("result");  %>
+				<% //HashMap result = (HashMap) request.getAttribute("result");  %>
 				<tr><td style="width: auto;">Name: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
 				<tr><td style="width: auto;">Address: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
 				<tr><td style="width: auto;">City: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
@@ -657,7 +716,7 @@ float: left; width:55%; }
 		<table id="secondbox" border="0" cellpading="0" cellspacing="0">
 			<tbody id="first">
 				<tr><td><h4 style="margin-left: -16px;">Billing Address</h4></td></tr>
-				<% HashMap result = (HashMap) request.getAttribute("result");  %>
+				<% //HashMap result = (HashMap) request.getAttribute("result");  %>
 				<tr><td style="width: auto;">Name: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTONAME")%></td></tr>
 				<tr><td style="width: auto;">Address: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOSTREET")%></td></tr>
 				<tr><td style="width: auto;">City: </td><td><%=result.get("PAYMENTREQUEST_0_SHIPTOCITY")%></td></tr>
@@ -684,4 +743,6 @@ float: left; width:55%; }
 	<% } %>
 				
 </div><!-- end .container -->
-  <div id="rodape" align="center" style="font-family: Ebrima; font-size: 12px;">Copyright © 2015-2016 I Like Too! All rights reserved. </div></body></html>
+  <div id="rodape" align="center" style="font-family: Ebrima; font-size: 12px;">Copyright © 2015-2016 I Like Too! All rights reserved. </div>
+  </body>
+</html>
