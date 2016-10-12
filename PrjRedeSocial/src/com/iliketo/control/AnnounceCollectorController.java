@@ -83,28 +83,38 @@ public class AnnounceCollectorController {
 		return "page.jsp?id=658"; 	//page form edit your announce
 	}
 	
-	@RequestMapping(value={"/registerAnnounce/collector/itemOfCollection/{idColecao}"})
-	public String announceCollectorItem(HttpServletRequest request, HttpServletResponse response, @PathVariable String idColecao){
+	@RequestMapping(value={"/registerAnnounce/collector/itemOfCollection/{idItem}"})
+	public String announceCollectorItem(HttpServletRequest request, HttpServletResponse response, @PathVariable String idItem){
 		
 		log.info(request.getRequestURL());
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
-		
-		Collection colecao = (Collection) new CollectionDAO(db, null).readById(idColecao, Collection.class);
 		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("colecao", colecao);
 		
-		String idItem = (String)request.getParameter("idItem");
-		if(idItem != null && !idItem.isEmpty()){
-			Item item = (Item) new ItemDAO(db, null).readById(idItem, Item.class);
+		Item item = (Item) new ItemDAO(db, null).readById(idItem, Item.class);
+		if(item != null){
 			model.addAttribute("item", item);
-		}else{
-			model.addAttribute("anuncioItemDeColecao", "sim");
+			model.addAttribute("anuncioItemDeColecao", "sim");			
+			Collection colecao = (Collection) new CollectionDAO(db, null).readById(item.getIdCollection(), Collection.class);
+			model.addAttribute("colecao", colecao);
 		}
 		
 		if(ModelILiketo.validateAndProcessError(request)){
 			//valida e mostra error na pagina
 			log.warn("Erro ao adicionar foto do anuncio de item da colecao!");
-		}				
+		}
+		return "page.jsp?id=658"; //page form edit your announce
+	}
+	
+	@RequestMapping(value={"/registerAnnounce/collector/particularItem"})
+	public String announceParticularItem(HttpServletRequest request, HttpServletResponse response){
+		log.info(request.getRequestURL());
+		ModelILiketo model = new ModelILiketo(request, response);
+		model.addAttribute("itemParticular", "sim");
+		
+		if(ModelILiketo.validateAndProcessError(request)){
+			//valida e mostra error na pagina
+			log.warn("Erro ao adicionar foto do anuncio de item da colecao!");
+		}
 		return "page.jsp?id=658"; //page form edit your announce
 	}
 	
