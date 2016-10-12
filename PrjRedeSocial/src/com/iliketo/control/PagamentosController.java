@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import HardCore.DB;
 
+import com.iliketo.control.EmailController.tipoEmail;
 import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.MemberDAO;
 import com.iliketo.dao.MessageInboxDAO;
@@ -258,7 +259,8 @@ public class PagamentosController {
 							NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
 							
 							//envia email para todos usuarios que participam do grupo/categoria(Colecionador, interessado, hobby) do novo anuncio que foi criado
-							EmailController.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, request);							
+							EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+							email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, request);							
 							return;
 						}else{
 							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);

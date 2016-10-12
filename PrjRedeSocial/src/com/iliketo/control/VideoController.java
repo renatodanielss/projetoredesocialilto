@@ -177,15 +177,12 @@ public class VideoController {
 	public String deleteVideo(HttpServletRequest request, HttpServletResponse response){
 		
 		log.info(request.getRequestURL());
-		
-		//dao
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		VideoDAO videoDAO = new VideoDAO(db, request);
-		
 		String id = request.getParameter("id");
-		videoDAO.deleteVideo(id);				//delete video
-		
-		return "redirect:/page.jsp?id=48";		//success
+		Video video = (Video) videoDAO.readById(id, Video.class);
+		videoDAO.deleteVideo(id);				//delete video		
+		return "redirect:/ilt/collection/profile?id=" + video.getIdCollection();
 	}
 
 }

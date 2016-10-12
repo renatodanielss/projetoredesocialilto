@@ -1,11 +1,13 @@
 package com.iliketo.control;
 
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,11 +38,37 @@ import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
 
-@Controller
 public class EmailController {
 	
-	
 	static final Logger log = Logger.getLogger(EmailController.class);
+	
+	public enum tipoEmail { 
+		EMAIL_STORAGE("SENHA_STORAGE"), EMAIL_ANUNCIO("SENHA_ANUNCIO"), EMAIL_DENUNCIA("SENHA_DENUNCIA");		
+		public final String valor;		
+		tipoEmail(String valo){
+			valor = valo;
+		}
+	}
+	
+	private String email;
+	private String senha;
+	
+	public EmailController(tipoEmail tipo){
+		try {
+			Properties prop = new Properties();
+			String filename = "config/msgs.properties";
+			InputStream input = this.getClass().getClassLoader().getResourceAsStream(filename);  
+			if(input==null){
+		        log.error("Arquivo properties de configuracoes nao encontrado: " + filename);
+			}else{
+				prop.load(input);
+				this.email = prop.getProperty(tipo.toString());
+				this.senha = prop.getProperty(tipo.valor);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Método intercepta erros de Exception, salva no log e direciona para pagina de erro.
@@ -146,7 +174,7 @@ public class EmailController {
 		}
 	}
 	
-	public static void enviaEmailNovoAnuncioColecionadorLoja(Announce anuncio, String idCategory, String myUserid, DB db, HttpServletRequest request){
+	public void enviaEmailNovoAnuncioColecionadorLoja(Announce anuncio, String idCategory, String myUserid, DB db, HttpServletRequest request){
 
 		//coleta todos usuarios que participam do grupo/categoria do anuncio criado
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);			
@@ -203,7 +231,7 @@ public class EmailController {
 			
 			//envia emails
 			log.info("ENVIA EMAILS PARA OS MEMBROS DA CATEGORIA: " + idCategory);
-			sendEmailDefault(lista, assunto, htmlConteudo, msgTexto, msgConteudo);
+			//sendEmailDefault(lista, assunto, htmlConteudo, msgTexto, msgConteudo);
 			
 		}else{
 			log.info("NAO ENVIOU EMAILS, LISTA MEMBROS VAZIA DA CATEGORIA: " + idCategory);
@@ -211,10 +239,8 @@ public class EmailController {
 	}
 	
 	
-	private static void sendEmailDefault(ArrayList<Member> listaEmails, String assunto, String htmlConteudo, String msgTexto, String msgConteudo){
+	private void sendEmailDefault(ArrayList<Member> listaEmails, String assunto, String htmlConteudo, String msgTexto, String msgConteudo){
 		
-		String usuario = "contato.iliketo@gmail.com";
-		String senha = "hdgfHTn6446NdjFD89ds";
 		try {
 			
 			for(Member membro : listaEmails){
@@ -223,11 +249,11 @@ public class EmailController {
 				/** Parâmetros de conexão com servidor Gmail */
 				HtmlEmail email = new HtmlEmail(); 
 				email.setHostName("smtp.gmail.com"); 		//servidor SMTP para envio do e-mail
-				email.setFrom("contato.iliketo@gmail.com", "I Like Too"); 	// remetente				
+				email.setFrom(this.email, "I Like Too"); 	// remetente				
 				//email.setAuthentication(usuario, senha);
 				//email.setSmtpPort(587);
 				email.setSmtpPort(465);  
-		        email.setAuthenticator(new DefaultAuthenticator(usuario, senha));  
+		        email.setAuthenticator(new DefaultAuthenticator(this.email, this.senha));  
 		        email.setSSLOnConnect(true);	        
 				email.setSSL(true);
 				email.setTLS(true);			
