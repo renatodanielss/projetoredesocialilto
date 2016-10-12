@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
+import org.apache.log4j.Logger;
+
 import com.iliketo.dao.MemberDAO;
 import com.iliketo.model.Member;
 
@@ -498,11 +500,15 @@ public class Login {
 		
 		
 		//Login ok - seta dados do membro da tabela dbmembers na sessao
-		MemberDAO dao = new MemberDAO(db, null);
-		Member member = (Member) dao.readByColumn("id_member", myuser.getId(), Member.class);
-		mysession.getSession().setAttribute("member", member);
-		System.out.println("Set member in session id: " + member.getIdMember() + " - username: "+ myuser.getUsername());
-
+		final Logger log = Logger.getLogger(Login.class);
+		try{
+			MemberDAO dao = new MemberDAO(db, null);
+			Member member = (Member) dao.readByColumn("id_member", myuser.getId(), Member.class);
+			mysession.getSession().setAttribute("member", member);
+			log.info("Set member in session id: " + member.getIdMember() + " - username: "+ myuser.getUsername());
+		}catch(Exception e){
+			log.info("Um erro ocorreu. Set member in session\n" + e);
+		}
 		
 		String myusertypes = myuser.getUsertype();
 		Iterator usertypes = myuser.usertypes(db).keySet().iterator();
