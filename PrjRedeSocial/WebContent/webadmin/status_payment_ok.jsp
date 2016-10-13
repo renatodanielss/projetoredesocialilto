@@ -20,6 +20,8 @@
 	String idBuyer = request.getParameter("idBuyer");
 	String votos = request.getParameter("votos");
 	String destaque = request.getParameter("destaque");
+	String pay1 = request.getParameter("pay1");
+	String pay2 = request.getParameter("pay2");
 	
 	AnnounceDAO announceDAO = new AnnounceDAO(db, request);
 	Announce anuncio = new Announce();
@@ -28,6 +30,8 @@
 	anuncio.setIdBuyer(idBuyer);
 	anuncio.setRating(votos);
 	anuncio.setFeatured(destaque);
+	anuncio.setPaymentStatus(pay1);
+	anuncio.setPaymentStatusDestaque(pay2);
 	announceDAO.update(anuncio, false);
 	log.info("ID: " + idAnnounce + " Status: " + status + " - alterado com sucesso!");
 	response.sendRedirect("/webadmin/status_payment_ads_iliketoo.jsp");

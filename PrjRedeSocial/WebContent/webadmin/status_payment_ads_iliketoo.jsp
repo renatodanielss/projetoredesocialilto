@@ -19,7 +19,8 @@
 	
 	String SQL = "select t1.id_announce as id_announce, t1.title as title, t1.date_created as date_created, t1.date_updated as date_updated, "
 				+"t1.type_announce as type_announce, t1.price_fixed as price_fixed, t1.bid_actual as bid_actual, t1.buyer_user_id as buyer_user_id, "
-				+"t1.status as status, t1.fk_user_id as fk_user_id, t1.rating as rating, t1.featured as featured "
+				+"t1.status as status, t1.fk_user_id as fk_user_id, t1.rating as rating, t1.featured as featured, "
+				+"t1.payment_status as payment_status, t1.payment_status_destaque as payment_status_destaque "
 				+ "from dbannounce as t1 order by t1.date_updated desc;";				
 	String[][] aliasSQL = { {"dbannounce", "t1"} };
 	SQL = CS.transformSQLReal(SQL, aliasSQL);
@@ -41,6 +42,8 @@
 		anuncio.setStatus(records.get(rec).get("status"));
 		anuncio.setIdBuyer(records.get(rec).get("buyer_user_id"));
 		anuncio.setFeatured(records.get(rec).get("featured"));
+		anuncio.setPaymentStatus(records.get(rec).get("payment_status"));
+		anuncio.setPaymentStatusDestaque(records.get(rec).get("payment_status_destaque"));
 		lista.add(anuncio);
 	}
 	
@@ -67,9 +70,11 @@
 		<td>Tipo</td>
 		<td>Status atual</td>
 		<td>Novo status</td>
+		<td>Payment status</td>
 		<td>Comprador</td>
 		<td>Votos</td>
 		<td>Destaque</td>
+		<td>Payment status Destaque</td>
 	</tr>
 	<%for(int i=0; i < lista.size(); i++){ %>
 	<tr>
@@ -91,6 +96,9 @@
 			<option value="Sold">Sold</option>
 		</select>
 		</td>
+		<td>
+			<input type="text" value="<%=lista.get(i).getPaymentStatus()%>" id="paymentStatus<%=i%>" size="8">
+		</td>
 		<%
 		int voto = 0;
 		try{
@@ -109,8 +117,13 @@
 		</select>
 		</td>
 		<td>
+			<input type="text" value="<%=lista.get(i).getPaymentStatusDestaque()%>" id="paymentStatusDestaque<%=i%>" size="8">
+		</td>
+		<td>
 			<input type="button" value="Atualizar" onclick="changeStatus('<%=lista.get(i).getIdAnnounce()%>', 'status<%=i%>', 'comprador<%=i%>', 
-																			'votos<%=i%>', 'destaque<%=i%>')">
+																			'votos<%=i%>', 'destaque<%=i%>',
+																			'paymentStatus<%=i%>',
+																			'paymentStatusDestaque<%=i%>')">
 		</td>
 	</tr>
 	<%} %>
@@ -120,14 +133,17 @@
 </body>
 <script type="text/javascript">
 
-function changeStatus(id, status_id, comprador_id, votos, destaque_id){
+function changeStatus(id, status_id, comprador_id, votos, destaque_id, paymentStatus, paymentStatusDestaque){
 	var e = document.getElementById(status_id);
 	var status = e.options[e.selectedIndex].value;
 	var buyer = document.getElementById(comprador_id).value;
 	var votos = document.getElementById(votos).value;
 	var destaque = document.getElementById(destaque_id).value;
+	var pay1 = document.getElementById(paymentStatus).value;
+	var pay2 = document.getElementById(paymentStatusDestaque).value;
 	if(status != ""){
-	  	var url = '/webadmin/status_payment_ok.jsp?idAnnounce=' +id+ '&status=' + status + "&idBuyer=" + buyer + "&votos=" + votos + "&destaque=" + destaque;
+	  	var url = '/webadmin/status_payment_ok.jsp?idAnnounce=' +id+ '&status=' + status 
+	  			+ "&idBuyer=" + buyer + "&votos=" + votos + "&destaque=" + destaque + "&pay1="+pay1+ "&pay2="+pay2;
 	  	window.location.href = url;
 	}else{
 		alert("Favor preencher o status!");
