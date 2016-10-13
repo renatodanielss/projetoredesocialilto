@@ -83,7 +83,7 @@ public class AnnounceCollectorController {
 		return "page.jsp?id=658"; 	//page form edit your announce
 	}
 	
-	@RequestMapping(value={"/registerAnnounce/collector/itemOfCollection/{idItem}"})
+	@RequestMapping(value={"/registerAnnounce/collector/{idItem}/itemOfCollection"})
 	public String announceCollectorItem(HttpServletRequest request, HttpServletResponse response, @PathVariable String idItem){
 		
 		log.info(request.getRequestURL());

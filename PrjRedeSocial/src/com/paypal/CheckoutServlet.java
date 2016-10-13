@@ -77,6 +77,8 @@ public class CheckoutServlet  extends HttpServlet {
         String cancelURL = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/cancel.jsp";
 		Map<String,String> checkoutDetails = new HashMap<String, String>() ;
 		checkoutDetails=setRequestParams(request);
+		this.printLogDetalhesParametrosEnviados(checkoutDetails);	//metodo printa no log todos parametros enviados
+		
         //Redirect to check out page for check out mark
         if(!isSet(request.getParameter("Confirm")) && isSet(request.getParameter("checkout"))){
         	session.setAttribute("checkoutDetails", checkoutDetails);
@@ -181,6 +183,12 @@ public class CheckoutServlet  extends HttpServlet {
 	
 	private boolean isSet(Object value){
 		return (value !=null && value.toString().length()!=0);
+	}
+	
+	/**metodo print os parametros enviados do form no log*/
+	private void printLogDetalhesParametrosEnviados(Map<String, String> checkoutDetails){
+		log.info("PARAMETROS ENVIADOS PARA CLASSE CheckoutServlet.java - checkoutDetails");
+		checkoutDetails.forEach((param, valor) -> log.info(param+"="+valor));
 	}
 	
 	/**

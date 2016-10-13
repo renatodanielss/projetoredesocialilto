@@ -584,7 +584,7 @@ float: left; width:55%; }
 	
 	MemberDAO memberDao = new MemberDAO(db, request);
 	Member member = new Member();
-	member = (Member) memberDao.readByColumn("id_member", result.get("L_PAYMENTREQUEST_0_NUMBER0").toString(), Member.class);
+	member = (Member) memberDao.readByColumn("id_member", request.getSession().getAttribute("userid").toString(), Member.class);
 
 	final Logger log = Logger.getLogger("review.jsp");
 	log.info("Member Country: " + member.getCountry());

@@ -258,9 +258,9 @@ public class ColumnsSingleton {
 					return "col" + mapcolumns.get(nameColum).get("id"); //retorna col+id
 				}
 			}catch(Exception e){				
-				log.error("Column error: " + mapcolumns.get(nameColum).get("id"));
 				log.error("nameColum: " + nameColum);
 				log.error("mapcolumns.get(nameColum): " + mapcolumns.get(nameColum));
+				log.error("Column error: " + mapcolumns.get(nameColum).get("id"));
 			}
 		}
 		

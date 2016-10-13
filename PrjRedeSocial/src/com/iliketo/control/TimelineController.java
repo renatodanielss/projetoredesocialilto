@@ -84,7 +84,7 @@ public class TimelineController {
 				 + "from dbcollection c1 join dbmembers m on c1.fk_user_id = m.id_member "
 				 + "where exists (select c2.fk_category_id from dbcollection c2 where c1.fk_category_id = c2.fk_category_id and c2.fk_user_id ='" +myUserid+ "' "
 				+ "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and c1.fk_category_id = it.fk_category_id)) "
-				+ "order by c1.date_updated desc limit 2 offset '" +mapOffset.get("offsetCol")+ "';";
+				+ "order by c1.date_updated desc limit 3 offset '" +mapOffset.get("offsetCol")+ "';";
 		
 		System.out.println("SQLCollection Comum: " + SQLCollection);		
 		String[][] aliasCollection = { {"dbmembers", "m"}, {"dbcollection", "c1"}, {"dbcollection", "c2"}, {"dbinterest", "it"} };		
@@ -99,7 +99,7 @@ public class TimelineController {
 				  + "where exists (select c1.id_collection from dbcollection c1 "
 				+ "where exists (select c2.fk_category_id from dbcollection c2 where c1.fk_category_id = c2.fk_category_id and c2.fk_user_id = '" +myUserid+ "' "
 				+ "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and c1.fk_category_id = it.fk_category_id)) and i.fk_collection_id = c1.id_collection) "
-				+ "order by i.date_updated desc limit 2 offset '" +mapOffset.get("offsetItem")+ "';";
+				+ "order by i.date_updated desc limit 4 offset '" +mapOffset.get("offsetItem")+ "';";
 		
 		System.out.println("\nSQLItem Comum: " + SQLItem);
 		String[][] aliasItem = { {"dbcollectionitem", "i"}, {"dbmembers", "m"}, {"dbcollection", "c1"}, {"dbcollection", "c2"}, {"dbinterest", "it"} };
@@ -144,9 +144,9 @@ public class TimelineController {
 			  + "e.date_event as date_event, e.hour_event as hour_event, e.type_event as type_event, e.local_event as local_event, "
 			  + "e.date_created as date_created, e.date_updated as date_updated, m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 			  + "from dbevent e join dbmembers m on e.fk_user_id = m.id_member "
-			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and e.fk_category_id = c1.fk_category_id "
-			  + "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and e.fk_category_id = it.fk_category_id)) "
-			  + "order by e.date_updated desc limit 2 offset '" +mapOffset.get("offsetEvent")+ "';";
+			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and e.fk_category_id = c1.fk_category_id and e.payment_status ilike 'Completed' "
+			  + "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and e.fk_category_id = it.fk_category_id and e.payment_status ilike 'Completed')) "
+			  + "order by e.date_updated desc limit 3 offset '" +mapOffset.get("offsetEvent")+ "';";
 		
 		System.out.println("\nSQLEvent Comum: " + SQLEvent);
 		String[][] aliasEvent = { {"dbevent", "e"}, {"dbmembers", "m"}, {"dbcollection", "c1"}, {"dbinterest", "it"} };
@@ -161,9 +161,9 @@ public class TimelineController {
 			  + "ad.date_created as date_created, ad.date_updated as date_updated, ad.path_photo_ad as path_photo_ad, ad.offered_price as offered_price, ad.details as details, "
 			  + "m.id_member as id_member, m.nickname as nickname, m.path_photo_member as path_photo_member "
 			  + "from dbannounce ad join dbmembers as m on ad.fk_user_id = m.id_member "
-			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id and ad.status ilike 'For%' "
-			  + "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and ad.fk_category_id = it.fk_category_id and ad.status ilike 'For%')) "
-			  + "order by ad.date_updated desc limit 2 offset '" +mapOffset.get("offsetAd")+ "';";
+			  + "where exists (select c1.id_collection from dbcollection c1 where c1.fk_user_id = '" +myUserid+ "' and ad.fk_category_id = c1.fk_category_id and ad.payment_status ilike 'Completed' "
+			  + "union all (select it.id_interest from dbinterest it where it.fk_user_id ='" +myUserid+ "' and ad.fk_category_id = it.fk_category_id and ad.payment_status ilike 'Completed')) "
+			  + "order by ad.date_updated desc limit 3 offset '" +mapOffset.get("offsetAd")+ "';";
 		
 		System.out.println("\nSQLAnnounce Comum: " + SQLAnnounce);
 		String[][] aliasAnnounce = { {"dbannounce", "ad"}, {"dbmembers", "m"}, {"dbcollection", "c1"}, {"dbinterest", "it"} };
@@ -398,83 +398,5 @@ public class TimelineController {
 		
 	}
 	
-	
-	//método só para testes e organização da nova coluna fk_user_id da dbcollectionitem
-		private void organizeFk_user_idItem(DB db){
-			
-			//recupera todos itens
-			String[][] tableAlias = { {"dbcollectionitem", "i"}, {"dbcollection", "c"}  };
-			
-			String SQLItem= "select i.id_item, c.fk_user_id, c.id_collection from dbcollectionitem i "
-					+ "join dbcollection c on i.fk_collection_id = c.id_collection";
-			
-			ColumnsSingleton cs = ColumnsSingleton.getInstance(db);
-			SQLItem = cs.transformSQLReal(SQLItem, tableAlias);
-			System.out.println("\n\nOrganize fk_user_id do item sql: " + SQLItem +"\n");
-			
-			LinkedHashMap<String,HashMap<String,String>> records = db.query_records(SQLItem);
-
-			//seta fk_user_id no item
-			for(String rec : records.keySet()){			
-				
-				HashMap<String,String> mydata = new HashMap<String,String>();
-				
-				String idItem = records.get(rec).get(cs.getCOL(db, "dbcollectionitem", "id_item"));//value da coluna do item
-				String idCollection = records.get(rec).get(cs.getCOL(db, "dbcollection", "id_collection"));//value da coluna da coleçao
-				String value = records.get(rec).get(cs.getCOL(db, "dbcollection", "fk_user_id"));//value da coluna da coleção
-				
-				String tableItem = cs.getDATA(db, "dbcollectionitem");
-				String colId_item  = cs.getCOL(db, "dbcollectionitem", "id_item");
-				String colFk_user_id = cs.getCOL(db, "dbcollectionitem", "fk_user_id");		
-				mydata.put(colFk_user_id, value);
-				
-				System.out.println("Update " + tableItem + " id_item: " + idItem + " fk_user_id: " 
-										+ value + " pertence id_collection: " + idCollection);
-				
-				db.update(tableItem, colId_item, idItem, mydata);//update na data+id usando o id da tabela
-				
-			}
-			System.out.println("\n\n");		
-			
-		}
-	
-	//método só para testes e organização da nova coluna fk_user_id da dbcollectionvideo
-	private void organizeFk_user_idVideo(DB db){
-		
-		//recupera todos itens
-		String[][] tableAlias = { {"dbcollectionvideo", "v"}, {"dbcollection", "c"}  };
-		
-		String SQLVideo = "select v.id_video, c.fk_user_id, c.id_collection from dbcollectionvideo v "
-				+ "join dbcollection c on v.fk_collection_id = c.id_collection";
-		
-		ColumnsSingleton cs = ColumnsSingleton.getInstance(db);
-		SQLVideo = cs.transformSQLReal(SQLVideo, tableAlias);
-		System.out.println("\n\nOrganize fk_user_id do video sql: " + SQLVideo +"\n");
-		
-		LinkedHashMap<String,HashMap<String,String>> records = db.query_records(SQLVideo);
-
-		//seta fk_user_id no video
-		for(String rec : records.keySet()){			
-			
-			HashMap<String,String> mydata = new HashMap<String,String>();
-			
-			String idVideo = records.get(rec).get(cs.getCOL(db, "dbcollectionvideo", "id_video"));//value da coluna do video
-			String idCollection = records.get(rec).get(cs.getCOL(db, "dbcollection", "id_collection"));//value da coluna da coleçao
-			String value = records.get(rec).get(cs.getCOL(db, "dbcollection", "fk_user_id"));//value da coluna da coleção
-			
-			String tableVideo = cs.getDATA(db, "dbcollectionvideo");
-			String colId_video  = cs.getCOL(db, "dbcollectionvideo", "id_video");
-			String colFk_user_id = cs.getCOL(db, "dbcollectionvideo", "fk_user_id");		
-			mydata.put(colFk_user_id, value);
-			
-			System.out.println("Update " + tableVideo + " id_video: " + idVideo + " fk_user_id: " 
-									+ value + " pertence id_collection: " + idCollection);
-			
-			db.update(tableVideo, colId_video, idVideo, mydata);//update na data+id usando o id da tabela
-			
-		}
-		System.out.println("\n\n");		
-		
-	}
 	
 }
