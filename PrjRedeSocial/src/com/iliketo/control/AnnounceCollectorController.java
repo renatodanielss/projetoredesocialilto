@@ -59,8 +59,10 @@ public class AnnounceCollectorController {
 	
 	@RequestMapping(value={"/registerAnnounce/collector/purchase"})
 	public String announceCollectorPurchase(HttpServletRequest request, HttpServletResponse response){		
-		log.info(request.getRequestURL());				
-		return "page.jsp?id=754"; //page form Register Purchase
+		log.info(request.getRequestURL());	
+		ModelILiketo model = new ModelILiketo(request, response);
+		model.addAttribute("anuncioDeCompra", "sim");
+		return "page.jsp?id=658"; //page form Register Purchase
 	}
 	
 	@RequestMapping(value={"/registerAnnounce/hobby/{idHobby}/item"})

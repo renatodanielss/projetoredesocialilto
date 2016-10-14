@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +25,12 @@ import HardCore.DB;
 
 import com.iliketo.control.EmailController.tipoEmail;
 import com.iliketo.dao.AnnounceDAO;
+import com.iliketo.dao.EventDAO;
 import com.iliketo.dao.MemberDAO;
-import com.iliketo.dao.MessageInboxDAO;
 import com.iliketo.model.Announce;
+import com.iliketo.model.Event;
 import com.iliketo.model.Member;
-import com.iliketo.model.MessageInbox;
 import com.iliketo.service.NotificationService;
-import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
@@ -39,7 +39,7 @@ import com.iliketo.util.Str;
 @Controller
 public class PagamentosController {
 	
-	
+	@Autowired HttpServletRequest httpRequest;
 	static final Logger log = Logger.getLogger(PagamentosController.class);
 	
 	/**
@@ -215,201 +215,64 @@ public class PagamentosController {
 			log.info("Notificacao IPN - payment_status: " + payment_status);						
 			if(item_number != null && !item_number.isEmpty() && custom != null && !custom.isEmpty()){
 				if(payment_status.equals(Completed)){
-					//transacao ok, o pagamento foi depositado						
-					AnnounceDAO dao = new AnnounceDAO(db, null);
+					log.info("Notificacao IPN - Pagamento foi aprovado - PAYMENT_STATUS="+payment_status + " - CUSTOM="+custom + " - ITEM_NUMBER="+item_number);
+					//transacao ok, o pagamento foi aprovado e completado
 					if(custom.equals("Ad")){
-						Announce anuncio = (Announce) dao.readById(invoice, Announce.class);
-						if(anuncio != null){
-							if(anuncio.getTypeAnnounce().equals("Auction")){
-								anuncio.setStatus("For auction");
-							}else{
-								anuncio.setStatus("For sale");
-							}
-							anuncio.setPaymentStatus(payment_status);	//status pagamento do anuncio
-							dao.update(anuncio, false);
-							log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, STATUS ANUNCIO ATUALIZADO - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + anuncio.getIdMember());
-							
-							//cria notificacao para o grupo da categoria
-							String myUserid = anuncio.getIdMember();
-							String idCategory = anuncio.getIdCategory();
-							if(idCategory != null && !idCategory.equals("")){							
-								NotificationService.createNotification(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.INCLUDED, myUserid);
-								if(anuncio.getTypeAnnounce().equals("Auction")){
-									//notificacao aviso uma hora antes leilao
-									NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.AUCTION_HOUR, myUserid, anuncio.getDateInitial());
-								}
-							}
-							
-							//cria notificacao e uma mensagem automatica do sistema para informar o usuario que o pagamento foi concluido
-							MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
-							MessageInbox message = new MessageInbox();
-							message.setIdAnnounce(anuncio.getIdAnnounce());		//id anuncio
-							message.setSubject(anuncio.getTitle());				//assunto
-							message.setReceiverIdMember(myUserid);				//id destinatario
-							message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
-							message.setWasRead("n");							//nao lida
-							message.setMessage("Completed_Ad");					//tipo mensagem automatica, status Completed pagamento
-							message.setContentType("item");						//conteudo
-							message.setIdContent(anuncio.getIdItem());			//id item
-							message.setFkMsgId("0");							//sem id resposta
-							message.setSenderHidden("n");						//nao oculta
-							message.setReceiverHidden("n");						//nao oculta						
-							String idCreate = messageDAO.create(message);		//cria e envia mensagem						
-							//cria notificacao de envio de mensagem
-							NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
-							
-							//envia email para todos usuarios que participam do grupo/categoria(Colecionador, interessado, hobby) do novo anuncio que foi criado
-							EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
-							email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, request);							
-							return;
-						}else{
-							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);
-						}	
+						this.processaMensagemCompleted_IPNAnuncio(db, payment_status, item_number);
 					}else if(custom.equals("Featured")){
-						Announce anuncio = (Announce) dao.readById(invoice, Announce.class);
-						if(anuncio != null){
-							anuncio.setFeatured("yes");
-							dao.update(anuncio, false);
-							log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, DESTAQUE ANUNCIO ATUALIZADO - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + anuncio.getIdMember());
-							
-							String myUserid = anuncio.getIdMember();
-							//cria notificacao e uma mensagem automatica do sistema para informar o usuario que o pagamento foi concluido
-							MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
-							MessageInbox message = new MessageInbox();
-							message.setIdAnnounce(anuncio.getIdAnnounce());		//id anuncio
-							message.setSubject(anuncio.getTitle());				//assunto
-							message.setReceiverIdMember(myUserid);				//id destinatario
-							message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
-							message.setWasRead("n");							//nao lida
-							message.setMessage("Completed_Featured");			//tipo mensagem automatica, status Completed pagamento
-							message.setContentType("item");						//conteudo
-							message.setIdContent(anuncio.getIdItem());			//id item
-							message.setFkMsgId("0");							//sem id resposta
-							message.setSenderHidden("n");						//nao oculta
-							message.setReceiverHidden("n");						//nao oculta						
-							String idCreate = messageDAO.create(message);		//cria e envia mensagem						
-							//cria notificacao de envio de mensagem
-							NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
-							return;
-						}else{
-							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);
-						}
+						this.processaMensagemCompleted_IPNDestaque(db, payment_status, item_number);
+					}else if(custom.equals("Event")){
+						this.processaMensagemCompleted_IPNEvento(db, payment_status, item_number);
 					}else if(custom.equals("Storage")){
-						//atualiza conta premium para o membro
-
-						MemberDAO memberDao = new MemberDAO(db, request);
-						Member member = new Member();
-						member = (Member) memberDao.readByColumn("id_member", item_number, Member.class);
-						
-						if(member != null){
-							if (payment_status.equals("Completed")){
-								log.info("Antes do if:");
-								log.info("Username:" + member.getUsername());
-								
-								if (item_name.equals("Conta Prata - 1 GB")){
-									member.setTotalSpace("1073741824");
-									member.setStorageType(item_name);
-									log.info("Entrou " + item_name);
-								}
-								else if (item_name.equals("Conta Ouro - 10 GB")){
-									member.setTotalSpace("10737418240");
-									member.setStorageType(item_name);
-									log.info("Entrou " + item_name);
-								}
-								else if (item_name.equals("Conta Platina - Ilimitada")){
-									member.setTotalSpace("0");
-									member.setStorageType(item_name);
-									log.info("Entrou " + item_name);
-								}
-							}
-							member.setPaymentStatus(payment_status);
-							log.info("Setar paymentStatus: " + payment_status);
-							
-							memberDao.update(member, false);
-							log.info("Notificacao IPN (update) - PAGAMENTO CONCLUIDO COM SUCESSO, ARMAZENAMENTO ATUALIZADO - ID MEMBRO=" + item_number);
-						}
-						
-						//cria notificacao e uma mensagem automatica do sistema para informar o usuario que o pagamento foi concluido						
-						MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
-						MessageInbox message = new MessageInbox();
-						message.setIdAnnounce("");							//id anuncio, nao aplicavel
-						message.setSubject(member.getStorageType());	//assunto
-						message.setReceiverIdMember(member.getIdMember());				//id destinatario
-						message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
-						message.setWasRead("n");							//nao lida
-						message.setMessage(member.getPaymentStatus());			//tipo mensagem automatica, status Completed pagamento
-						message.setContentType("item");						//conteudo
-						message.setIdContent("");							//id item
-						message.setFkMsgId("0");							//sem id resposta
-						message.setSenderHidden("n");						//nao oculta
-						message.setReceiverHidden("n");						//nao oculta						
-						String idCreate = messageDAO.create(message);		//cria e envia mensagem						
-						//cria notificacao de envio de mensagem
-						NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, member.getIdMember());						
-						return;
+						this.processaMensagemCompleted_IPNStorage(db, payment_status, item_number, item_name);
 					}
+					
 				}else{
-					//1-Canceled_Reversal, 2-Completed, 3-Denied, 4-Expired, 5-Failed, 6-Pending, 7-Refunded, 8-Reversed, 9-Processed, 10-Voided
-					if(custom.equals("Ad") || custom.equals("Featured")){
+					//Outros status IPN >>> 1-Canceled_Reversal, 2-Completed, 3-Denied, 4-Expired, 5-Failed, 6-Pending, 7-Refunded, 8-Reversed, 9-Processed, 10-Voided
+					log.info("Notificacao IPN - Pagamento ainda nao foi aprovado - PAYMENT_STATUS="+payment_status + " - CUSTOM="+custom + " - ITEM_NUMBER="+item_number + " - ITEM_NAME="+item_name);
+					
+					if(custom.equals("Ad")){
 						AnnounceDAO dao = new AnnounceDAO(db, null);
-						Announce anuncio = (Announce) dao.readById(invoice, Announce.class);
+						Announce anuncio = (Announce) dao.readById(item_number, Announce.class);
 						if(anuncio != null){
-							String myUserid = anuncio.getIdMember();
-							//cria notificacao e uma mensagem automatica do sistema para informar o usuario qual status do pagamento
-							MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
-							MessageInbox message = new MessageInbox();
-							message.setIdAnnounce(anuncio.getIdAnnounce());		//id anuncio
-							message.setSubject(anuncio.getTitle());				//assunto
-							message.setReceiverIdMember(myUserid);				//id destinatario
-							message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
-							message.setWasRead("n");							//nao lida
-							if(custom.equals("Ad")){
-								message.setMessage(payment_status + "_Ad");			//tipo mensagem automatica, status Completed pagamento
-								log.info("Notificacao IPN - Pagamento anuncio nao foi concluido - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + myUserid);
-								//atualiza status pagamento do anuncio
-								ColumnsSingleton CS = ColumnsSingleton.getInstance(db);			
-								String tabela = CS.getDATA(db, "dbannounce");					//retorna tabela real
-								String coluna = CS.getCOL(db, "dbannounce", "payment_status");	//retorna coluna real
-								HashMap<String, String> mapData = new HashMap<String, String>();
-								mapData.put(coluna, payment_status);							//coluna e valor
-								db.updateWhere(tabela, "id=" + anuncio.getId(), mapData);		//update tabela anuncio
-							}else{
-								message.setMessage(payment_status + "_Featured");	//tipo mensagem automatica, status Completed pagamento
-								log.info("Notificacao IPN - Pagamento destaque nao foi concluido - ID ANUNCIO=" + invoice+" - ID MEMBRO=" + myUserid);
-							}
-							message.setContentType("item");						//conteudo
-							message.setIdContent(anuncio.getIdItem());			//id item
-							message.setFkMsgId("0");							//sem id resposta
-							message.setSenderHidden("n");						//nao oculta
-							message.setReceiverHidden("n");						//nao oculta						
-							String idCreate = messageDAO.create(message);		//cria e envia mensagem						
-							//cria notificacao de envio de mensagem
-							NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);
-							return;
+							anuncio.setPaymentStatus(payment_status);
+							//enviar email sobre andamento status do pagamento			
 						}else{
-							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + invoice);
+							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + item_number);
 						}
+						return;
+					}else if(custom.equals("Featured")){
+						AnnounceDAO dao = new AnnounceDAO(db, null);
+						Announce anuncio = (Announce) dao.readById(item_number, Announce.class);
+						if(anuncio != null){
+							anuncio.setPaymentStatusDestaque(payment_status);
+							dao.update(anuncio, false);
+							//enviar email sobre andamento status do pagamento					
+						}else{
+							log.info("Notificacao IPN - Nao achou anuncio para destaque no banco de dados, id=" + item_number);
+						}
+						return;
+					}else if(custom.equals("Event")){
+						EventDAO dao = new EventDAO(db, null);
+						Event evento = (Event) dao.readById(item_number, Event.class);
+						if(evento != null){
+							evento.setPaymentStatus(payment_status);
+							dao.update(evento, false);
+							//enviar email sobre andamento status do pagamento						
+						}else{
+							log.info("Notificacao IPN - Nao achou evento no banco de dados, id=" + item_number);
+						}
+						return;
 					}else if(custom.equals("Storage")){
-						log.info("Notificacao IPN - Pagamento armazenamento nao foi concluido - ID MEMBRO=" + invoice);
-						
-						//cria notificacao e uma mensagem automatica do sistema para informar o usuario qual status do pagamento
-						String myUserid = invoice;
-						MessageInboxDAO messageDAO = new MessageInboxDAO(db, request);						
-						MessageInbox message = new MessageInbox();
-						message.setIdAnnounce("");							//id anuncio, nao aplicavel
-						message.setSubject("Premium Account - unlimited");	//assunto
-						message.setReceiverIdMember(myUserid);				//id destinatario
-						message.setSenderIdMember("0");						//sender id "0" corresponde ao admin do sistema I Like Too
-						message.setWasRead("n");							//nao lida
-						message.setMessage(payment_status + "_Storage");	//tipo mensagem automatica, status Completed pagamento
-						message.setContentType("item");						//conteudo
-						message.setIdContent("");							//id item
-						message.setFkMsgId("0");							//sem id resposta
-						message.setSenderHidden("n");						//nao oculta
-						message.setReceiverHidden("n");						//nao oculta						
-						String idCreate = messageDAO.create(message);		//cria e envia mensagem						
-						//cria notificacao de envio de mensagem
-						NotificationService.createNotification(db, "", "message", idCreate, Str.INCLUDED, myUserid);						
+						MemberDAO dao = new MemberDAO(db, null);
+						Member member = (Member) dao.readByColumn("id_member", item_number, Member.class);
+						if(member != null){
+							member.setPaymentStatus(payment_status);
+							dao.update(member, false);
+							//enviar email sobre andamento status do pagamento			
+						}else{
+							log.info("Notificacao IPN - Nao achou membro no banco de dados, id=" + item_number);
+						}
 						return;
 					}
 				}			
@@ -421,6 +284,113 @@ public class PagamentosController {
 		}
 	}
 	
+	/**
+	 * Metodo trata mensagem IPN status Completed para "Storage"
+	 */
+	private void processaMensagemCompleted_IPNStorage(DB db, String payment_status, String item_number, String item_name){
+		MemberDAO memberDao = new MemberDAO(db, null);
+		Member member = new Member();
+		member = (Member) memberDao.readByColumn("id_member", item_number, Member.class);
+		
+		if(member != null){
+			if (payment_status.equals("Completed")){
+				log.info("Antes do if:");
+				log.info("Username:" + member.getUsername());
+				
+				if (item_name.equals("Conta Prata - 1 GB")){
+					member.setTotalSpace("1073741824");
+					member.setStorageType(item_name);
+					log.info("Entrou " + item_name);
+				}
+				else if (item_name.equals("Conta Ouro - 10 GB")){
+					member.setTotalSpace("10737418240");
+					member.setStorageType(item_name);
+					log.info("Entrou " + item_name);
+				}
+				else if (item_name.equals("Conta Platina - Ilimitada")){
+					member.setTotalSpace("0");
+					member.setStorageType(item_name);
+					log.info("Entrou " + item_name);
+				}
+			}
+			member.setPaymentStatus(payment_status);
+			log.info("Setar paymentStatus: " + payment_status);
+			
+			memberDao.update(member, false);
+			log.info("Notificacao IPN (update) - PAGAMENTO CONCLUIDO COM SUCESSO, ARMAZENAMENTO ATUALIZADO - ID MEMBRO=" + item_number);
+			//enviar email sobre status do pagamento completo aqui
+			
+		}else{
+			log.info("Notificacao IPN - Nao achou membro no banco de dados, id=" + item_number);
+		}					
+	}
+	
+	/**
+	 * Metodo trata mensagem IPN status Completed para "Anuncio"
+	 */
+	private void processaMensagemCompleted_IPNAnuncio(DB db, String payment_status, String item_number){
+		AnnounceDAO dao = new AnnounceDAO(db, null);
+		Announce anuncio = (Announce) dao.readById(item_number, Announce.class);
+		if(anuncio != null){
+			anuncio.setStatus("For sale");
+			anuncio.setPaymentStatus(payment_status);
+			dao.update(anuncio, false);
+			log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, STATUS ANUNCIO ATUALIZADO - ID ANUNCIO=" + item_number+" - ID MEMBRO=" + anuncio.getIdMember());
+			
+			//cria notificacao para o grupo da categoria
+			String myUserid = anuncio.getIdMember();
+			String idCategory = anuncio.getIdCategory();
+			if(idCategory != null && !idCategory.equals("")){							
+				NotificationService.createNotification(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.INCLUDED, myUserid);
+			}
+			//enviar email sobre status do pagamento completo aqui
+			
+			//envia email para todos usuarios que participam do grupo/categoria(Colecionador, interessado, hobby) do novo anuncio que foi criado
+			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+			email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, this.httpRequest);							
+		}else{
+			log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + item_number);
+		}
+	}
+	
+	/**
+	 * Metodo trata mensagem IPN status Completed para "Destaque"
+	 */
+	private void processaMensagemCompleted_IPNDestaque(DB db, String payment_status, String item_number){
+		AnnounceDAO dao = new AnnounceDAO(db, null);
+		Announce anuncio = (Announce) dao.readById(item_number, Announce.class);
+		if(anuncio != null){
+			anuncio.setFeatured("yes");
+			dao.update(anuncio, false);
+			log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, DESTAQUE ANUNCIO ATUALIZADO - ID ANUNCIO=" + item_number+" - ID MEMBRO=" + anuncio.getIdMember());
+			//enviar email sobre status do pagamento completo
+			
+		}else{
+			log.info("Notificacao IPN - Nao achou anuncio para destaque no banco de dados, id=" + item_number);
+		}
+	}	
+	
+	/**
+	 * Metodo trata mensagem IPN status Completed para "Evento"
+	 */
+	private void processaMensagemCompleted_IPNEvento(DB db, String payment_status, String item_number){
+		EventDAO dao = new EventDAO(db, null);
+		Event evento = (Event) dao.readById(item_number, Event.class);
+		if(evento != null){
+			evento.setPaymentStatus(payment_status);
+			dao.update(evento, false);
+			log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, ANUNCIO DE EVENTO ATUALIZADO - ID EVENTO=" + item_number+" - ID MEMBRO=" +evento.getIdMember());
+			//enviar email sobre status do pagamento completo
+			
+		}else{
+			log.info("Notificacao IPN - Nao achou evento no banco de dados, id=" + item_number);
+		}
+	}
+	
+	
+	/**
+	 * Metodo responsavel por verificar e validar mensagem IPN enviada pelo PayPal
+	 */
 	private boolean verificaNotificacaoIPNValida(HttpServletRequest request){
 		
 		//constantes

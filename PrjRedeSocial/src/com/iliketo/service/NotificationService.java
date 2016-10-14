@@ -1385,29 +1385,29 @@ public class NotificationService {
 						Likes likes = (Likes) bean;
 						String msg = likes.getNickname();								
 						String s = listEntryNotific;
-						s = s.replaceAll("@@@message@@@", msg);							//mensagem post
 						s = s.replaceAll("@@@pathPhoto@@@", likes.getPathPhoto());		//foto membro
 						s = s.replaceAll("@@@nickname@@@", likes.getNickname());		//nickname
 						s = s.replaceAll("@@@dateUpdated@@@", likes.getDateUpdated());	//data publicacao
 						String link = "";
 						switch (likes.getPostType().toCharArray()[0]){
 							case 'C' : link = "/ilt/collection/profile?id=" + likes.getIdPost(); 
-									msg = (LING.equals("pt") ? " curtiu sua coleção." : " has liked your collection.");
+									msg += (LING.equals("pt") ? " curtiu sua coleção." : " has liked your collection.");
 									break;
 							case 'I' : link = "/ilt/item/view?id=" + likes.getIdPost(); 
-									msg = (LING.equals("pt") ? " curtiu seu item." : " has liked your item.");
+									msg += (LING.equals("pt") ? " curtiu seu item." : " has liked your item.");
 									break;
 							case 'V' : link = "/ilt/video/view?id=" + likes.getIdPost(); 
-									msg = (LING.equals("pt") ? " curtiu seu vídeo." : " has liked your video.");
+									msg += (LING.equals("pt") ? " curtiu seu vídeo." : " has liked your video.");
 									break;
 							case 'E' : link = "/ilt/event/view?id=" + likes.getIdPost(); 
-									msg = (LING.equals("pt") ? " curtiu sua evento." : " has liked your event.");
+									msg += (LING.equals("pt") ? " curtiu seu evento." : " has liked your event.");
 									break;
 							case 'M' : link = "/ilt/group/forum/topic?idTop=" + likes.getIdPost().split(",")[0] 
 									+ "&idForum=" + likes.getIdPost().split(",")[1]; 
-									msg = (LING.equals("pt") ? " curtiu seu comentário." : " has liked your comment.");
+									msg += (LING.equals("pt") ? " curtiu seu comentário." : " has liked your comment.");
 									break;	//ex: 123,123 (idtop,idforum)
 						}
+						s = s.replaceAll("@@@message@@@", msg);							//mensagem post
 						s = s.replaceAll("@@@redirect@@@", link);	//link da publicacao
 						div.append(s);
 					}
