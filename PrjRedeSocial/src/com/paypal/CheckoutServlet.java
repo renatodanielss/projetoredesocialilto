@@ -224,7 +224,7 @@ public class CheckoutServlet  extends HttpServlet {
 			}
 			
 		} catch (StorageILiketoException e) {
-			e.printStackTrace();
+			log.error(e);
 		} catch (ImageILiketoException e) {
 			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
 			model.redirectError("/ilt/event/newEvent");
@@ -239,15 +239,12 @@ public class CheckoutServlet  extends HttpServlet {
 		HttpServletRequest req = cmsUtilsIliketoo.getMyrequest().getRequest();
 		HttpServletResponse res = cmsUtilsIliketoo.getMyresponse().getResponse();
 		ModelILiketo model = new ModelILiketo(req, res);
-		String idDaColecao = "";
-		
+		Announce anuncio = (Announce) cmsUtilsIliketoo.getObjectOfParameter(Announce.class);
 		try {
 			if(req.getRequestURI().contains("CheckoutAd")){
 				
 				//operacao de checkout para criar novo anuncio e fazer upload da imagem
 				DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
-				Announce anuncio = (Announce) cmsUtilsIliketoo.getObjectOfParameter(Announce.class);
-				idDaColecao = anuncio.getIdCollection();
 				
 				if(!anuncio.getTypeAnnounce().equals("Purchase")){
 					if(anuncio.getIdItem() != null && !anuncio.getIdItem().isEmpty()){
@@ -278,19 +275,28 @@ public class CheckoutServlet  extends HttpServlet {
 				AnnounceDAO dao = new AnnounceDAO(db, req);
 
 				String idAnuncio = req.getParameter("id_announce");
-				Announce anuncio = (Announce) dao.readById(idAnuncio, Announce.class);
+				Announce anuncioContinuar = (Announce) dao.readById(idAnuncio, Announce.class);
 				
-				req.getSession().setAttribute("anuncioCheckout", anuncio);	
+				req.getSession().setAttribute("anuncioCheckout", anuncioContinuar);	
 				log.info("Servlet Paypal Continuar Checkout do anuncio - Anuncio salvo como Pendente pagamento... id="+idAnuncio);
 			}
 			
 		} catch (StorageILiketoException e) {
-			e.printStackTrace();
+			log.error(e);
 		} catch (ImageILiketoException e) {
 			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
-			model.redirectError("/ilt/registerAnnounce/collector/itemOfCollection/" + idDaColecao);
+			//trata pagina retorno
+			if(req.getRequestURI().contains("particularItem")){				
+				model.redirectError("/ilt/registerAnnounce/collector/particularItem");
+			}else if(req.getRequestURI().contains("itemOfCollection")){
+				model.redirectError("/ilt/registerAnnounce/collector/" +anuncio.getIdItem()+ "/itemOfCollection");
+			}else if(req.getRequestURI().contains("purchase")){
+				model.redirectError("/ilt/registerAnnounce/collector/purchase");
+			}else if(req.getRequestURI().contains("hobbby")){
+				model.redirectError("/ilt/registerAnnounce/hobby/" +anuncio.getIdHobby()+ "/item");
+			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 	

@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import HardCore.DB;
 
+import com.iliketo.control.EmailController.tipoEmail;
 import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.AuctionBidDAO;
 import com.iliketo.dao.CollectionDAO;
@@ -34,7 +34,6 @@ import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Hobby;
 import com.iliketo.model.Item;
-import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
@@ -119,131 +118,53 @@ public class AnnounceCollectorController {
 		}
 		return "page.jsp?id=658"; //page form edit your announce
 	}
-	
-	@RequestMapping(value={"/registerAnnounce/collector/payment"})
-	public String announceCollectorPayment(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		return paymentDefault(request, response, false);	//pagamento normal sem promocao
-	}
+
 	@RequestMapping(value={"/registerAnnounce/collector/paymentPromotion"})
-	public String announceCollectorPromotion(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		return paymentDefault(request, response, true);		//pagamento com promocao
-	}
-	public String paymentDefault(HttpServletRequest request, HttpServletResponse response, boolean promocao) throws IOException{
+	public String announceCollectorPromotion(HttpServletRequest request, HttpServletResponse response) throws IOException, StorageILiketoException{
 		
-		log.info(request.getRequestURL());
-		
-		//dao e cms
+		log.info(request.getRequestURL());		
+		//TEM PROMOCAO PARA ESTE ANUNCIO
 		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, response);
-		CollectionDAO collectionDAO = new CollectionDAO(db, request);
-		HttpSession session = request.getSession();
-		String myUserid = (String) session.getAttribute("userid");
-				
-		Announce announce = (Announce) cms.getObjectOfParameter(Announce.class); 	//popula um objeto com dados do form
-		announce.setIdMember(myUserid);
-		announce.setRating("0");
-		
-		if(announce.getAdHobby() != null && announce.getAdHobby().equalsIgnoreCase("y")){
-			//anuncio de hobby
-			ModelILiketo model = new ModelILiketo(request, response);			
-			try {
-				cms.processFileuploadImage(announce);			//salva arquivos
-			} catch (StorageILiketoException e) {
-				model.addMessageError("freeSpace", "You do not have enough free space, needed " +cms.getSizeFilesInBytes()/1024+ " KB."); //msg erro
-				return model.redirectError("/registerAnnounce/hobby/item");
-			} catch (ImageILiketoException e) {
-				model.addMessageError("imageFormat", "Upload only Image in jpg format.");
-				return model.redirectError("/registerAnnounce/hobby/item");
-			}
-		}else{
-			//Purchase
-			if(announce.getTypeAnnounce().equals("Purchase")){
-				//announce.setPathPhotoAd(); //photo default registro de compra
-			}else{
-				
-				//Sell, Auction, Exchange			
-				//pagamento para anuncio de item
-				Item item = (Item) session.getAttribute("item");
-				if(item != null){	//item
-					String idCollection = item.getIdCollection();
-					Collection col = (Collection) collectionDAO.readById(idCollection, Collection.class);				
-					//set dados do item no anuncio
-					announce.setIdItem(item.getIdItem());
-					announce.setTitle(item.getTitle());
-					announce.setDescription(item.getDescription());
-					announce.setPathPhotoAd(item.getPathPhoto());
-					announce.setIdCategory(col.getIdCategory());
-					announce.setNameCategory(col.getNameCategory());
-				}
-				
-				//pagamento para anuncio de colecao
-				Collection collection = (Collection) session.getAttribute("collection");
-				if(collection != null){
-					//set dados da colecao no anuncio
-					announce.setIdCollection(collection.getIdCollection());
-					announce.setTitle(collection.getNameCollection());
-					announce.setDescription(collection.getDescription());
-					announce.setPathPhotoAd(collection.getPathPhoto());
-					announce.setIdCategory(collection.getIdCategory());
-					announce.setNameCategory(collection.getNameCategory());
-				}
-			}
-			
-			if(!announce.getTypeAnnounce().equals("Purchase")){
-				if(announce.getIdItem() == null || announce.getIdItem().equals("") || announce.getTitle() == null || announce.getTitle().equals("")){
-					log.warn("Erro de acesso a pagina negado ou conteudo indisponivel, nao existe dados do item para anunciar!");
-					return "page.jsp?id=accessdinied"; 		//acesso nao permitido, conteudo indisponivel
-				}
-			}
-		}
-		//TEM PROMOCAO PARA ESTE ANUNCIO
-		if(promocao){
-			if(announce.getTypeAnnounce().equals("Auction")){
-				announce.setStatus("For auction");
-			}else{
-				announce.setStatus("For sale");
-			}
-		}else{
-			announce.setStatus("Pending pay");			//pendente pagamento
-		}
-		
-		AnnounceDAO announceDAO = new AnnounceDAO(db, request);
-		String idCreated;
-		if(session.getAttribute("announce") == null){
-			idCreated = announceDAO.create(announce);	//salva novo anuncio no bd
-		}else{
-			announceDAO.update(announce, false);		//salva edicao do anuncio no bd
-			idCreated = announce.getIdAnnounce();
-		}
-		announce.setId(idCreated);
-		announce.setIdAnnounce(idCreated);
-		
-		//PROMOCAO
-		if(promocao){
-			log.info("Anuncio cadastrado com sucesso - Id: " + idCreated + " Status: "+announce.getStatus());
-			//cria notificacao para o grupo da categoria
-			String idCategory = announce.getIdCategory();
-			if(idCategory != null && !idCategory.equals("")){							
-				NotificationService.createNotification(db, idCategory, "announce", announce.getIdAnnounce(), Str.INCLUDED, myUserid);
-				if(announce.getTypeAnnounce().equals("Auction")){
-					//notificacao aviso uma hora antes leilao
-					NotificationService.createNotificationAuctionOneHour(db, idCategory, "announce", announce.getIdAnnounce(), Str.AUCTION_HOUR, myUserid, announce.getDateInitial());
-				}
-			}
-		}else{
-			log.info("Anuncio cadastrado com sucesso - Id: " + idCreated + " Status: Pendente pagamento!");
-		}
-		
-		session.setAttribute("announce", announce);			//set anuncio na session
 		ModelILiketo model = new ModelILiketo(request, response);
-		model.addAttribute("announce", announce);
-		
-		//PROMOCAO
-		if(promocao){
-			return "redirect:/ilt/ads?id=" + announce.getIdAnnounce(); 	//page do meu anuncio
-		}else{
-			return "page.jsp?id=897"; 	//page form payment
+		Announce anuncio = (Announce) cms.getObjectOfParameter(Announce.class);
+		try{
+			if(!anuncio.getTypeAnnounce().equals("Purchase")){
+				if(anuncio.getIdItem() != null && !anuncio.getIdItem().isEmpty()){
+					//anuncio do item que foi adicionado na colecao - copia imagem do item existente
+					String imagemItem = cms.processFileuploadCopiarImagemAnuncio(anuncio.getPathPhotoAd());
+					anuncio.setPathPhotoAd(imagemItem);
+				}else{
+					//anuncio de um item que nao foi adicionado na colecao - salva nova imagem
+					cms.processFileuploadImagemAnuncio(anuncio);
+				}
+			}
+		} catch (StorageILiketoException e) {
+			throw e;
+		} catch (ImageILiketoException e) {
+			model.addMessageError("imageFormat", "Upload only Image in jpg format.");
+			//trata pagina retorno
+			if(request.getRequestURI().contains("particularItem")){				
+				model.redirectError("/ilt/registerAnnounce/collector/particularItem");
+			}else if(request.getRequestURI().contains("itemOfCollection")){
+				model.redirectError("/ilt/registerAnnounce/collector/" +anuncio.getIdItem()+ "/itemOfCollection");
+			}else if(request.getRequestURI().contains("purchase")){
+				model.redirectError("/ilt/registerAnnounce/collector/purchase");
+			}else if(request.getRequestURI().contains("hobbby")){
+				model.redirectError("/ilt/registerAnnounce/hobby/" +anuncio.getIdHobby()+ "/item");
+			}
+		} catch (IOException e) {
+			throw e;
 		}
+		anuncio.setStatus("For sale");
+		anuncio.setFeatured("no");
+		anuncio.setPaymentStatus("Completed");
+		AnnounceDAO dao = new AnnounceDAO(db, request);
+		String idRegistro = dao.create(anuncio);
+		
+		log.info("Anuncio de Promocao cadastrado com sucesso - Id: " + idRegistro + " Tipo: "+anuncio.getTypeAnnounce());
+		model.addAttribute("announce", anuncio);		
+		return "redirect:/ilt/ads?id=" + idRegistro; 	//page do meu anuncio
 	}
 	
 	/**
@@ -572,5 +493,18 @@ public class AnnounceCollectorController {
 		return "/page.jsp?id=invalid";		//pagina conteudo indisponivel
 	}
 	
-	
+
+	@RequestMapping(value={"/testeEnviaEmailAnuncioCategorias"})
+	public void testeEnviaEmailAnuncioCategorias(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		AnnounceDAO dao = new AnnounceDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+				
+		String id = request.getParameter("id");
+		Announce anuncio = (Announce) dao.readById(id, Announce.class);
+		EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+		email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, anuncio.getIdCategory(), myUserid, db, request);
+	}
 }
