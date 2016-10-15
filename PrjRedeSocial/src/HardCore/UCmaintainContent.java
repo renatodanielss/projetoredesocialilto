@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspWriter;
 
+import org.apache.log4j.Logger;
+
+import com.iliketo.control.EmailController;
 import com.iliketo.util.CmsConfigILiketo;
 
 public class UCmaintainContent {
@@ -2065,13 +2068,19 @@ public class UCmaintainContent {
 								handleNotification(subject, body, server, mypage, null, filepost, myrequest, myresponse, mysession, myconfig, db);
 							}
 						}*/
+						
+						final Logger log = Logger.getLogger(UCmaintainContent.class);
+						
 						//Abaixo sistema Asbru realiza o processo de confirma��o de registro do usu�rio
 						if ((! myconfig.get(db, "default_register_confirmation_page").equals("")) || ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_register_confirmation_page").equals("")))) {
 							Page confirmation = new Page(text);
 							if ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_login").equals(""))) {
-								confirmation.public_read(server, myrequest, myresponse, mysession, myrequest.getServletPath(), myrequest.getQueryString(), mysession.get("mode"), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_register_confirmation_page"), mysession.get("version"), myconfig.get(db, "default_version"), mysession.get("device"), mysession.get("usersegments"), mysession.get("usertests"), mysession.get("template"), "", myconfig.get(db, "default_template"), mysession.get("stylesheet"), "", myconfig.get(db, "default_stylesheet"), mysession.get("currency"), myconfig.get(db, "default_currency"), myconfig.get(db, "default_shopcartsummary_page"), myconfig.get(db, "default_shopcartsummary_entry"));
+								//confirmation.public_read(server, myrequest, myresponse, mysession, myrequest.getServletPath(), myrequest.getQueryString(), mysession.get("mode"), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_register_confirmation_page"), mysession.get("version"), myconfig.get(db, "default_version"), mysession.get("device"), mysession.get("usersegments"), mysession.get("usertests"), mysession.get("template"), "", myconfig.get(db, "default_template"), mysession.get("stylesheet"), "", myconfig.get(db, "default_stylesheet"), mysession.get("currency"), myconfig.get(db, "default_currency"), myconfig.get(db, "default_shopcartsummary_page"), myconfig.get(db, "default_shopcartsummary_entry"));
+								confirmation.public_read(server, myrequest, myresponse, mysession, myrequest.getServletPath(), myrequest.getQueryString(), mysession.get("mode"), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myconfig.get(db, "default_register_confirmation_page"), mysession.get("version"), myconfig.get(db, "default_version"), mysession.get("device"), mysession.get("usersegments"), mysession.get("usertests"), mysession.get("template"), "", myconfig.get(db, "default_template"), mysession.get("stylesheet"), "", myconfig.get(db, "default_stylesheet"), mysession.get("currency"), myconfig.get(db, "default_currency"), myconfig.get(db, "default_shopcartsummary_page"), myconfig.get(db, "default_shopcartsummary_entry"));
+								log.info("Entrou no IF");
 							} else {
 								confirmation.public_read(server, myrequest, myresponse, mysession, myrequest.getServletPath(), myrequest.getQueryString(), mysession.get("mode"), mysession.get("administrator"), mysession.get("userid"), mysession.get("username"), mysession.get("usertype"), mysession.get("usergroup"), mysession.get("usertypes"), mysession.get("usergroups"), db, myconfig, myconfig.get(db, "default_register_confirmation_page"), mysession.get("version"), myconfig.get(db, "default_version"), mysession.get("device"), mysession.get("usersegments"), mysession.get("usertests"), mysession.get("template"), "", myconfig.get(db, "default_template"), mysession.get("stylesheet"), "", myconfig.get(db, "default_stylesheet"), mysession.get("currency"), myconfig.get(db, "default_currency"), myconfig.get(db, "default_shopcartsummary_page"), myconfig.get(db, "default_shopcartsummary_entry"));
+								log.info("Entrou no Else");
 							}
 							String body = confirmation.getBody();
 							body = body.replaceAll("@@@name@@@", user.getName().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
@@ -2111,6 +2120,26 @@ public class UCmaintainContent {
 							}
 							HashMap<String,String> requestForm = Email.getForm(myrequest);
 							Email.send_email(text, requestForm, confirmation.getTitle(), confirmation.getBody(), "", from, email, cc, bcc, stylesheet, style, myrequest.getServerName(), server, mysession, myrequest, myresponse, myconfig, db);
+							
+							//log aqui
+							log.info("text: " + text.toString());
+							log.info("requestForm: " + requestForm.toString());
+							log.info("confirmation.getTitle(): " + confirmation.getTitle());
+							log.info("confirmation.getBody(): " + confirmation.getBody());
+							log.info("from: " + from);
+							log.info("email: " + email);
+							log.info("cc: " + cc);
+							log.info("bcc: " + bcc);
+							log.info("stylesheet: " + stylesheet);
+							log.info("style: " + style);
+							log.info("myrequest.getServerName(): " + myrequest.getServerName());
+							log.info("server: " + server.toString());
+							log.info("mysession: " + mysession.toString());
+							log.info("myrequest: " + myrequest.toString());
+							log.info("myresponse: " + myresponse.toString());
+							log.info("myconfig: " + myconfig.toString());
+							log.info("db: " + db.toString());
+							
 						}
 
 						if ((! myconfig.get(db, "default_register_notification_page").equals("")) || ((mywebsite.exists(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"))) && (! mywebsite.get(myrequest, db, myrequest.getServerName(), myrequest.getHeader("Accept-Language"), "default_register_notification_page").equals("")))) {

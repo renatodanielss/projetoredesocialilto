@@ -1,4 +1,6 @@
 <%@ include file="webadmin.jsp" %>
+<%@ page import="com.iliketo.control.EmailController.tipoEmail" %>
+<%@ page import="com.iliketo.control.EmailController" %>
 <%@ page import="com.iliketo.dao.GenericDAO" %>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="com.iliketo.dao.*" %>
@@ -905,6 +907,9 @@ float: left; width:55%; }
 			
 			memberDao.update(member, false);
 			log.info("Update Concluído");
+			
+			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+			email.enviaEmailPagamentoStorage(member, result, request.getLocale().toString(), request);
 		}
     }else if (validarCheckoutProdutoAnuncio){
 		HashMap<String,String> result = (HashMap<String,String>) request.getAttribute("result");

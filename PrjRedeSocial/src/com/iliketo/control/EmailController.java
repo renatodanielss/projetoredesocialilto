@@ -1,40 +1,29 @@
 package com.iliketo.control;
 
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
-import HardCore.html;
 
 import com.iliketo.dao.AnnounceDAO;
-import com.iliketo.dao.HobbyDAO;
-import com.iliketo.dao.IliketoDAO;
 import com.iliketo.model.Announce;
-import com.iliketo.model.Collection;
-import com.iliketo.model.Hobby;
 import com.iliketo.model.Member;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.LogUtilsILiketoo;
-import com.iliketo.util.ModelILiketo;
 import com.iliketo.util.Str;
 
 
@@ -56,7 +45,7 @@ public class EmailController {
 	public EmailController(tipoEmail tipo){
 		try {
 			Properties prop = new Properties();
-			String filename = "config/msgs.properties";
+			String filename = "config/config_iliketoo.properties";
 			InputStream input = this.getClass().getClassLoader().getResourceAsStream(filename);  
 			if(input==null){
 		        log.error("Arquivo properties de configuracoes nao encontrado: " + filename);
@@ -231,13 +220,41 @@ public class EmailController {
 			
 			//envia emails
 			log.info("ENVIA EMAILS PARA OS MEMBROS DA CATEGORIA: " + idCategory);
-			//sendEmailDefault(lista, assunto, htmlConteudo, msgTexto, msgConteudo);
+			sendEmailDefault(lista, assunto, htmlConteudo, msgTexto, msgConteudo);
 			
 		}else{
 			log.info("NAO ENVIOU EMAILS, LISTA MEMBROS VAZIA DA CATEGORIA: " + idCategory);
 		}	
 	}
 	
+	public void enviaEmailPagamentoStorage(Member member, HashMap<String, String> paymentInfo, String language, HttpServletRequest request){
+		HashMap<String, String> subjectLanguage = new HashMap<String, String>();
+		subjectLanguage.put("pt_BR", "Email de Compra de Armazenamento");
+		subjectLanguage.put("en_US", "Buy Storage Email");
+		
+		HashMap<String, String> msgTextoLanguage = new HashMap<String, String>();
+		msgTextoLanguage.put("pt_BR", "I LIKE TOO TEM BOAS NOVA PARA VOCÊ!");
+		msgTextoLanguage.put("en_US", "I LIKE TOO HAVE GOOD NEWS FOR YOU!");
+		
+		String assunto = subjectLanguage.get(language);
+		String htmlConteudo = "";
+		String msgTexto = msgTextoLanguage.get(language);
+		String msgConteudo = null;
+		
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
+		String emailPaymentStoragePage = cms.getPageListEntry("1158"); //mudar página
+		htmlConteudo = cms.parseBindingModelBean(emailPaymentStoragePage, member).toString();
+		
+		htmlConteudo = htmlConteudo.replaceAll("@@@nickname@@@", member.getNickname());
+		htmlConteudo = htmlConteudo.replaceAll("@@@product@@@", paymentInfo.get("L_PAYMENTREQUEST_0_NAME0"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@productDescription@@@", paymentInfo.get("L_PAYMENTREQUEST_0_DESC0"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@amount@@@", paymentInfo.get("PAYMENTINFO_0_AMT"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@currency@@@", paymentInfo.get("PAYMENTINFO_0_CURRENCYCODE"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@paymentStatus@@@", paymentInfo.get("PAYMENTINFO_0_PAYMENTSTATUS"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@transactionId@@@", paymentInfo.get("PAYMENTINFO_0_TRANSACTIONID"));
+		
+		sendEmail(member, assunto, htmlConteudo, msgTexto, msgConteudo);
+	}
 	
 	private void sendEmailDefault(ArrayList<Member> listaEmails, String assunto, String htmlConteudo, String msgTexto, String msgConteudo){
 		
@@ -275,5 +292,37 @@ public class EmailController {
 		}		
 	}
 
-	
+	private void sendEmail(Member emailTo, String assunto, String htmlConteudo, String msgTexto, String msgConteudo){
+		
+		try {
+			
+			log.info("Email [assunto: " +assunto+ " ] tentando... enviar para: " + emailTo.getEmail());
+			
+			/** Parâmetros de conexão com servidor Gmail */
+			HtmlEmail email = new HtmlEmail(); 
+			email.setHostName("smtp.gmail.com"); 		//servidor SMTP para envio do e-mail
+			email.setFrom(this.email, "I Like Too"); 	// remetente				
+			//email.setAuthentication(usuario, senha);
+			//email.setSmtpPort(587);
+			email.setSmtpPort(465);  
+	        email.setAuthenticator(new DefaultAuthenticator(this.email, this.senha));  
+	        email.setSSLOnConnect(true);	        
+			email.setSSL(true);
+			email.setTLS(true);
+			
+			//destinatário
+			email.addTo(emailTo.getEmail(), emailTo.getNickname());
+			email.setSubject(assunto);
+			String htmlResponse = htmlConteudo.replaceAll("nickname", emailTo.getNickname());	//define usuario ex: Hello alguem
+			email.setHtmlMsg(htmlResponse); //mensagem para o formato HTML				
+			email.setTextMsg(msgTexto);		//mensagem alternativa caso  não suporte HTML				
+			//email.setMsg(msgConteudo); 	//conteudo do e-mail
+
+			email.send();
+			log.info("Email [assunto: " +assunto+ " ] enviado ok para: " + emailTo.getEmail());
+			
+		} catch (EmailException e) {
+			e.printStackTrace();
+		}		
+	}
 }
