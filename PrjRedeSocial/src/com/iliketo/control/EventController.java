@@ -100,15 +100,7 @@ public class EventController {
 			return model.redirectError("/ilt/event/newEvent");			//page form create event
 		}
 		
-		String idCreate = eventDAO.create(event);						//cria evento
-		
-		//cria notificacao para o grupo da categoria
-		String idCategory = event.getIdCategory();
-		if(idCategory != null && !idCategory.equals("")){
-			String myUserid = (String) request.getSession().getAttribute("userid");
-			NotificationService.createNotification(db, idCategory, "event", idCreate, Str.INCLUDED, myUserid);
-		}
-		
+		String idCreate = eventDAO.create(event);			//cria evento		
 		return "redirect:/ilt/event/view?id=" + idCreate;	//success event group
 	}
 	
