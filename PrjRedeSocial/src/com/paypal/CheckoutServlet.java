@@ -249,15 +249,18 @@ public class CheckoutServlet  extends HttpServlet {
 				Announce anuncio = (Announce) cmsUtilsIliketoo.getObjectOfParameter(Announce.class);
 				idDaColecao = anuncio.getIdCollection();
 				
-				if(anuncio.getIdItem() != null && !anuncio.getIdItem().isEmpty()){
-					//anuncio do item que foi adicionado na colecao - copia imagem do item existente
-					String imagemItem = cmsUtilsIliketoo.processFileuploadCopiarImagemAnuncio(anuncio.getPathPhotoAd());
-					anuncio.setPathPhotoAd(imagemItem);
-				}else{
-					//anuncio de um item que nao foi adicionado na colecao - salva nova imagem
-					cmsUtilsIliketoo.processFileuploadImagemAnuncio(anuncio);
+				if(!anuncio.getTypeAnnounce().equals("Purchase")){
+					if(anuncio.getIdItem() != null && !anuncio.getIdItem().isEmpty()){
+						//anuncio do item que foi adicionado na colecao - copia imagem do item existente
+						String imagemItem = cmsUtilsIliketoo.processFileuploadCopiarImagemAnuncio(anuncio.getPathPhotoAd());
+						anuncio.setPathPhotoAd(imagemItem);
+					}else{
+						//anuncio de um item que nao foi adicionado na colecao - salva nova imagem
+						cmsUtilsIliketoo.processFileuploadImagemAnuncio(anuncio);
+					}
 				}
 				anuncio.setStatus("Pending pay");
+				anuncio.setFeatured("no");
 	
 				AnnounceDAO dao = new AnnounceDAO(db, req);
 				String idRegistro = dao.create(anuncio);
