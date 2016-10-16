@@ -318,7 +318,15 @@ public class PagamentosController {
 			
 			memberDao.update(member, false);
 			log.info("Notificacao IPN (update) - PAGAMENTO CONCLUIDO COM SUCESSO, ARMAZENAMENTO ATUALIZADO - ID MEMBRO=" + item_number);
+			
+			HashMap<String, String> result = new HashMap<String, String>();
+			result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
+			result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
+			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+			
 			//enviar email sobre status do pagamento completo aqui
+			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+			email.enviaEmailPagamentoStorage(member, result, httpRequest.getLocale().toString(), httpRequest, false);
 			
 		}else{
 			log.info("Notificacao IPN - Nao achou membro no banco de dados, id=" + item_number);

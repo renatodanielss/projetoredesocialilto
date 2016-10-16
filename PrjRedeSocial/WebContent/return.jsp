@@ -909,7 +909,7 @@ float: left; width:55%; }
 			log.info("Update Concluído");
 			
 			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
-			email.enviaEmailPagamentoStorage(member, result, request.getLocale().toString(), request);
+			email.enviaEmailPagamentoStorage(member, result, request.getLocale().toString(), request, true);
 		}
     }else if (validarCheckoutProdutoAnuncio){
 		HashMap<String,String> result = (HashMap<String,String>) request.getAttribute("result");

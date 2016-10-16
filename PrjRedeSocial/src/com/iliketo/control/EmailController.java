@@ -227,7 +227,7 @@ public class EmailController {
 		}	
 	}
 	
-	public void enviaEmailPagamentoStorage(Member member, HashMap<String, String> paymentInfo, String language, HttpServletRequest request){
+	public void enviaEmailPagamentoStorage(Member member, HashMap<String, String> paymentInfo, String language, HttpServletRequest request, boolean returnPage){
 		HashMap<String, String> subjectLanguage = new HashMap<String, String>();
 		subjectLanguage.put("pt_BR", "Email de Compra de Armazenamento");
 		subjectLanguage.put("en_US", "Buy Storage Email");
@@ -242,7 +242,13 @@ public class EmailController {
 		String msgConteudo = null;
 		
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
-		String emailPaymentStoragePage = cms.getPageListEntry("1158"); //mudar página
+		
+		String emailPaymentStoragePage;
+		if (returnPage)
+			emailPaymentStoragePage = cms.getPageListEntry("1158");
+		else
+			emailPaymentStoragePage = cms.getPageListEntry("1160");
+		
 		htmlConteudo = cms.parseBindingModelBean(emailPaymentStoragePage, member).toString();
 		
 		htmlConteudo = htmlConteudo.replaceAll("@@@nickname@@@", member.getNickname());
