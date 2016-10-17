@@ -388,6 +388,12 @@ public class PagamentosController {
 			evento.setPaymentStatus(payment_status);
 			dao.update(evento, false);
 			log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, ANUNCIO DE EVENTO ATUALIZADO - ID EVENTO=" + item_number+" - ID MEMBRO=" +evento.getIdMember());
+			
+			//cria notificacao para o grupo da categoria
+			String idCategory = evento.getIdCategory();
+			if(idCategory != null && !idCategory.equals("")){
+				NotificationService.createNotification(db, idCategory, "event", item_number, Str.INCLUDED, evento.getIdMember());
+			}
 			//enviar email sobre status do pagamento completo
 			
 		}else{

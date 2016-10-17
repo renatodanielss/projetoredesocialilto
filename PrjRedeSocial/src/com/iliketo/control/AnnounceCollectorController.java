@@ -186,12 +186,12 @@ public class AnnounceCollectorController {
 		//identificar paginas de anuncios do membro
 		String pageMeuLeilao = "page.jsp?id=705";				//pagina meu anuncio leilao para item
 		String pageMeuAnuncio = "page.jsp?id=729";				//pagina meu anuncio venda/troca para item		
-		String pageMeuAnuncioCompra = "page.jsp?id=882";		//pagina meu anuncio de compra
+		String pageMeuAnuncioCompra = "page.jsp?id=729";		//pagina meu anuncio de compra
 		//String pageMeuAnuncioLoja = "page.jsp?id=862";			//pagina meu anuncio de loja
 		
 		String pageLeilaoTerceiro = "page.jsp?id=706";			//pagina terceiro anuncio leilao para item
 		String pageAnuncioTerceiro = "page.jsp?id=728";			//pagina terceiro venda/troca para item
-		String pageAnuncioCompraTerceiro = "page.jsp?id=881";	//pagina terceiro anuncio de compra
+		String pageAnuncioCompraTerceiro = "page.jsp?id=728";	//pagina terceiro anuncio de compra
 		//String pageAnuncioLoja = "page.jsp?id=861";				//pagina terceiro anuncio de loja
 		
 		String pageVisualizarAnuncio = "";						//pagina para redirecionar

@@ -68,107 +68,12 @@ public class EmailController {
 		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
 	}
 
-	@RequestMapping(value={"/teste/sendEmail"})
-	public void testeSendEmail(HttpServletRequest req, HttpServletResponse res){
-		
-		String id = req.getParameter("id");
-		
-		if(id != null && !id.isEmpty()){
-			DB db = (DB) req.getAttribute(Str.CONNECTION_DB);
-			AnnounceDAO dao = new AnnounceDAO(db, null);
-			Announce anuncio = (Announce) dao.readById(id, Announce.class);
-			
-			//dados email
-			//<img src=\"cid:"+cid+"\">
-			String assunto = "Good news for you - " + anuncio.getTitle();
-			String htmlConteudo = "";
-			String msgTexto = "I LIKE TOO HAVE GOOD NEWS FOR YOU!";
-			String msgConteudo = null;
-			//htmlConteudo = "<html><body>The apache logo <br><br> link image direto <br>yahoo, gmail, hotmail embed  <br><br> <img src=\"http://www.apache.org/images/asf_logo_wide.gif\"> </body></html>";			
-			//String [] user = {"osvaldimar1@hotmail.com", "osvaldimar1@gmail.com", "osvaldimar1@yahoo.com.br"};
-			
-			ArrayList<Member> lista = new ArrayList<Member>();
-			if(req.getParameter("emails") != null){
-				String emails = req.getParameter("emails");
-				if(emails.equals("me")){
-					Member m1 = new Member();
-					m1.setIdMember("1");	
-					m1.setEmail("osvaldimar1@hotmail.com");	
-					m1.setNickname("osvaldo 1");
-					Member m2 = new Member();	
-					m2.setIdMember("2");	
-					m2.setEmail("osvaldimar1@gmail.com");	
-					m2.setNickname("osvaldo 2");
-					lista.add(m1);
-					lista.add(m2);
-				}else if(emails.equals("socios")){
-					Member m1 = new Member();	
-					m1.setIdMember("1");	
-					m1.setEmail("osvaldimar1@gmail.com");	
-					m1.setNickname("teste 1");	
-					Member m2 = new Member();	
-					m2.setIdMember("2");	
-					m2.setEmail("lfsuplicy@gmail.com");	
-					m2.setNickname("teste 2");			
-					Member m3 = new Member();	
-					m3.setIdMember("3");	
-					m3.setEmail("vtiezzi@hotmail.com");	
-					m3.setNickname("teste 3");			
-					Member m4 = new Member();	
-					m4.setIdMember("4");		
-					m4.setEmail("Renatodanielss@gmail.com");	
-					m4.setNickname("teste 4");			
-					Member m5 = new Member();	
-					m5.setIdMember("5");		
-					m5.setEmail("may.silva.nascimento@gmail.com");	
-					m5.setNickname("teste 5");		
-					lista.add(m1);
-					lista.add(m2);
-					lista.add(m3);
-					lista.add(m4);
-					lista.add(m5);
-				}else{			
-					Member m1 = new Member();
-					m1.setIdMember("1");
-					m1.setEmail(emails);
-					m1.setNickname("teste 1");
-					lista.add(m1);
-				}
-			}
-			
-			if(!lista.isEmpty()){			
-				CmsConfigILiketo cms = new CmsConfigILiketo(req, null);
-				String listEntry = cms.getPageListEntry("1092");
-				htmlConteudo = cms.parseBindingModelBean(listEntry, anuncio).toString();
-				//verifica tipo anuncio
-				if(anuncio.getTypeAnnounce().contains("Sell")){
-					htmlConteudo = htmlConteudo.replaceAll("@@@info1@@@", "Price: $".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-					htmlConteudo = htmlConteudo.replaceAll("@@@info2@@@", anuncio.getPriceFixed());
-				}else if(anuncio.getTypeAnnounce().equals("Exchange")){
-					htmlConteudo = htmlConteudo.replaceAll("@@@info1@@@", "Details: ".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-					htmlConteudo = htmlConteudo.replaceAll("@@@info2@@@", anuncio.getDetails().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				}else if(anuncio.getTypeAnnounce().equals("Auction")){
-					htmlConteudo = htmlConteudo.replaceAll("@@@info1@@@", "Price initial: $".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-					htmlConteudo = htmlConteudo.replaceAll("@@@info2@@@", anuncio.getPriceInitial());
-				}else if(anuncio.getTypeAnnounce().equals("Purchase")){
-					htmlConteudo = htmlConteudo.replaceAll("@@@info1@@@", "Offered price: $".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-					htmlConteudo = htmlConteudo.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
-				}
-				//envia emails
-				log.info("ENVIA EMAILS PARA OS MEMBROS DA CATEGORIA: " + "testando...");
-				sendEmailDefault(lista, assunto, htmlConteudo, msgTexto, msgConteudo);
-			}else{
-				log.info("NAO ENVIOU EMAILS, LISTA MEMBROS VAZIA DA CATEGORIA: " + "testando...");
-			}
-		}
-	}
-	
 	public void enviaEmailNovoAnuncioColecionadorLoja(Announce anuncio, String idCategory, String myUserid, DB db, HttpServletRequest request){
 
 		//coleta todos usuarios que participam do grupo/categoria do anuncio criado
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);			
 		String SQL = 
-				"select t1.id_member as id_member, t1.nickname as nickname, t1.email as email "
+				"select t1.id_member as id_member, t1.nickname as nickname, t1.email as email, t1.country as country "
 				+ "from dbmembers as t1 "
 				+ "where exists (select t2.fk_user_id from dbcollection t2 where t1.id_member != '" +myUserid+ "' and t1.id_member = t2.fk_user_id and t2.fk_category_id = '" +idCategory+ "') "
 				+ "or exists (select t3.fk_user_id from dbinterest t3 where t1.id_member != '" +myUserid+ "' and t1.id_member = t3.fk_user_id and t3.fk_category_id = '" +idCategory+ "') "
@@ -177,7 +82,7 @@ public class EmailController {
 				
 		String[][] aliasSQL = { {"dbmembers", "t1"}, {"dbcollection", "t2"}, {"dbinterest", "t3"}, {"dbhobby", "t4"} };
 		SQL = CS.transformSQLReal(SQL, aliasSQL);
-		log.info("SQL emails: " + SQL);
+		//log.info("SQL emails: " + SQL);
 		LinkedHashMap<String,HashMap<String,String>> registros = db.query_records(SQL);
 		
 		//lista de usuarios para enviar email
@@ -187,41 +92,51 @@ public class EmailController {
 			m.setIdMember(registros.get(rec).get("id_member"));				
 			m.setNickname(registros.get(rec).get("nickname"));
 			m.setEmail(registros.get(rec).get("email"));
+			m.setCountry(registros.get(rec).get("country"));
 			log.info("Membro: " + m.getNickname() + "- email: " + m.getEmail());
 			lista.add(m);
 		}
 		
 		//dados email
 		//<img src=\"cid:"+cid+"\">
-		String assunto = "Good news for you - " + anuncio.getTitle();
-		String htmlConteudo = "";
-		String msgTexto = "I LIKE TOO HAVE GOOD NEWS FOR YOU!";
+		String assuntoPT = "Boas notícias para você - " + anuncio.getTitle();
+		String assuntoEN = "Good news for you - " + anuncio.getTitle();
+		String htmlConteudoPT = "";
+		String htmlConteudoEN = "";
+		String msgTextoPT = "I LIKE TOO HAVE GOOD NEWS FOR YOU!";
+		String msgTextoEN = "I LIKE TOO TEM NOVAS NOTÍCIAS PARA VOCÊ!";
 		String msgConteudo = null;
 		
 		if(!lista.isEmpty()){
 			CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
-			String listEntry = cms.getPageListEntry("1092");
-			htmlConteudo = cms.parseBindingModelBean(listEntry, anuncio).toString();
+			String listEntryPT = cms.getPageListEntry("1092");
+			String listEntryEN = cms.getPageListEntry("1092");
+			htmlConteudoPT = cms.parseBindingModelBean(listEntryPT, anuncio).toString();
+			htmlConteudoEN = cms.parseBindingModelBean(listEntryEN, anuncio).toString();
 			
 			//verifica tipo anuncio
 			if(anuncio.getTypeAnnounce().contains("Sell")){
-				htmlConteudo = htmlConteudo.replaceAll("@@@info1@@@", "Price: $".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudo = htmlConteudo.replaceAll("@@@info2@@@", anuncio.getPriceFixed());
+				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Preço: R$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getPriceFixed());
+				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Price: US$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getPriceFixed());
+				
 			}else if(anuncio.getTypeAnnounce().equals("Exchange")){
-				htmlConteudo = htmlConteudo.replaceAll("@@@info1@@@", "Details: ".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudo = htmlConteudo.replaceAll("@@@info2@@@", anuncio.getDetails().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-			}else if(anuncio.getTypeAnnounce().equals("Auction")){
-				htmlConteudo = htmlConteudo.replaceAll("@@@info1@@@", "Price initial: $".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudo = htmlConteudo.replaceAll("@@@info2@@@", anuncio.getPriceInitial());
+				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Detalhes: ".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getDetails().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Details: ".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getDetails().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				
 			}else if(anuncio.getTypeAnnounce().equals("Purchase")){
-				htmlConteudo = htmlConteudo.replaceAll("@@@info1@@@", "Offered price: $".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudo = htmlConteudo.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
+				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Preço oferecido: R$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
+				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Offered price: US$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
 			}
 			
 			//envia emails
-			log.info("ENVIA EMAILS PARA OS MEMBROS DA CATEGORIA: " + idCategory);
-			sendEmailDefault(lista, assunto, htmlConteudo, msgTexto, msgConteudo);
-			
+			log.info("ENVIA EMAILS PARA OS MEMBROS DA CATEGORIA: " + idCategory + " - Total de membros na categoria: " + lista.size());
+			sendEmailDefault(lista, assuntoPT, assuntoEN, htmlConteudoPT, htmlConteudoEN, msgTextoPT, msgTextoEN, msgConteudo);			
 		}else{
 			log.info("NAO ENVIOU EMAILS, LISTA MEMBROS VAZIA DA CATEGORIA: " + idCategory);
 		}	
@@ -262,11 +177,14 @@ public class EmailController {
 		sendEmail(member, assunto, htmlConteudo, msgTexto, msgConteudo);
 	}
 	
-	private void sendEmailDefault(ArrayList<Member> listaEmails, String assunto, String htmlConteudo, String msgTexto, String msgConteudo){
-		
-		try {
-			
+	private void sendEmailDefault(ArrayList<Member> listaEmails, String assuntoPT, String assuntoEN, 
+			String htmlConteudoPT, String htmlConteudoEN, String msgTextoPT, String msgTextoEN, String msgConteudo){		
+		try {			
 			for(Member membro : listaEmails){
+				String assunto = "Brazil".equals(membro.getCountry()) ? assuntoPT : assuntoEN;
+				String htmlConteudo = "Brazil".equals(membro.getCountry()) ? htmlConteudoPT : htmlConteudoEN;
+				String msgTexto = "Brazil".equals(membro.getCountry()) ? msgTextoPT : msgTextoEN;
+				
 				log.info("Email [assunto: " +assunto+ " ] tentando... enviar para: " + membro.getEmail());
 				
 				/** Parâmetros de conexão com servidor Gmail */
