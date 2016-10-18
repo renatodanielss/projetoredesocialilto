@@ -3,9 +3,11 @@ package com.iliketo.control;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,6 +36,7 @@ import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
 import com.iliketo.model.Hobby;
 import com.iliketo.model.Item;
+import com.iliketo.service.NotificationService;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.ModelILiketo;
@@ -120,7 +123,7 @@ public class AnnounceCollectorController {
 	}
 
 	@RequestMapping(value={"/registerAnnounce/collector/paymentPromotion"})
-	public String announceCollectorPromotion(HttpServletRequest request, HttpServletResponse response) throws IOException, StorageILiketoException{
+	public void announceCollectorPromotion(HttpServletRequest request, HttpServletResponse response) throws IOException, StorageILiketoException, ServletException{
 		
 		log.info(request.getRequestURL());		
 		//TEM PROMOCAO PARA ESTE ANUNCIO
@@ -161,10 +164,30 @@ public class AnnounceCollectorController {
 		anuncio.setPaymentStatus("Completed");
 		AnnounceDAO dao = new AnnounceDAO(db, request);
 		String idRegistro = dao.create(anuncio);
+		anuncio.setIdAnnounce(idRegistro);
 		
 		log.info("Anuncio de Promocao cadastrado com sucesso - Id: " + idRegistro + " Tipo: "+anuncio.getTypeAnnounce());
-		model.addAttribute("announce", anuncio);		
-		return "redirect:/ilt/ads?id=" + idRegistro; 	//page do meu anuncio
+		HashMap<String, String> mapPages = new HashMap<>();
+		mapPages.put("1162", cms.getPageListEntry("1162"));
+		mapPages.put("1092", cms.getPageListEntry("1092"));
+		
+		//cria notificacao e envio de emails em background
+		Thread run = new Thread(new Runnable(){
+			@Override
+			public void run() {
+				String myUserid = anuncio.getIdMember();
+				String idCategory = anuncio.getIdCategory();
+				if(idCategory != null && !idCategory.equals("")){					
+					NotificationService.createNotification(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.INCLUDED, anuncio.getIdMember());
+				}
+				EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+				email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, request, mapPages);
+			}
+		});
+		run.start();
+		
+		//retorna pagina visualizar meu anuncio
+		response.sendRedirect("/ilt/ads?id=" + idRegistro);		
 	}
 	
 	/**
@@ -505,6 +528,6 @@ public class AnnounceCollectorController {
 		String id = request.getParameter("id");
 		Announce anuncio = (Announce) dao.readById(id, Announce.class);
 		EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
-		email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, anuncio.getIdCategory(), myUserid, db, request);
+		email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, anuncio.getIdCategory(), myUserid, db, request, null);
 	}
 }

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,17 +15,15 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import HardCore.DB;
 
-import com.iliketo.dao.AnnounceDAO;
+import com.iliketo.dao.MemberDAO;
 import com.iliketo.model.Announce;
 import com.iliketo.model.Member;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.LogUtilsILiketoo;
-import com.iliketo.util.Str;
 
 
 public class EmailController {
@@ -68,7 +67,8 @@ public class EmailController {
 		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
 	}
 
-	public void enviaEmailNovoAnuncioColecionadorLoja(Announce anuncio, String idCategory, String myUserid, DB db, HttpServletRequest request){
+	public void enviaEmailNovoAnuncioColecionadorLoja(Announce anuncio, String idCategory, String myUserid, 
+			DB db, HttpServletRequest request, Map<String, String> mapPages){
 
 		//coleta todos usuarios que participam do grupo/categoria do anuncio criado
 		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);			
@@ -82,7 +82,7 @@ public class EmailController {
 				
 		String[][] aliasSQL = { {"dbmembers", "t1"}, {"dbcollection", "t2"}, {"dbinterest", "t3"}, {"dbhobby", "t4"} };
 		SQL = CS.transformSQLReal(SQL, aliasSQL);
-		//log.info("SQL emails: " + SQL);
+		log.info("SQL emails: " + SQL);
 		LinkedHashMap<String,HashMap<String,String>> registros = db.query_records(SQL);
 		
 		//lista de usuarios para enviar email
@@ -103,14 +103,26 @@ public class EmailController {
 		String assuntoEN = "Good news for you - " + anuncio.getTitle();
 		String htmlConteudoPT = "";
 		String htmlConteudoEN = "";
-		String msgTextoPT = "I LIKE TOO HAVE GOOD NEWS FOR YOU!";
-		String msgTextoEN = "I LIKE TOO TEM NOVAS NOTÍCIAS PARA VOCÊ!";
+		String msgTextoEN = "I LIKE TOO HAVE GOOD NEWS FOR YOU!";
+		String msgTextoPT = "I LIKE TOO TEM NOVAS NOTÍCIAS PARA VOCÊ!";
 		String msgConteudo = null;
+		//valida vendedor do anuncio
+		Member vendedorDoAnuncio = (Member) new MemberDAO(db, null).readByColumn("id_member", myUserid, Member.class);
+		if(vendedorDoAnuncio == null){
+			return;
+		}
 		
 		if(!lista.isEmpty()){
 			CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
-			String listEntryPT = cms.getPageListEntry("1092");
-			String listEntryEN = cms.getPageListEntry("1092");
+			String listEntryPT;
+			String listEntryEN;
+			if(mapPages != null){
+				listEntryPT = mapPages.get("1162");
+				listEntryEN = mapPages.get("1092");
+			}else{
+				listEntryPT = cms.getPageListEntry("1162");
+				listEntryEN = cms.getPageListEntry("1092");
+			}
 			htmlConteudoPT = cms.parseBindingModelBean(listEntryPT, anuncio).toString();
 			htmlConteudoEN = cms.parseBindingModelBean(listEntryEN, anuncio).toString();
 			
@@ -133,6 +145,12 @@ public class EmailController {
 				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Offered price: US$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
 				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
 			}
+			
+			//informacoes generica do vendedor do anuncio
+			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info3@@@", vendedorDoAnuncio.getNickname());
+			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info4@@@", vendedorDoAnuncio.getEmail());
+			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info3@@@", vendedorDoAnuncio.getNickname());
+			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info4@@@", vendedorDoAnuncio.getEmail());
 			
 			//envia emails
 			log.info("ENVIA EMAILS PARA OS MEMBROS DA CATEGORIA: " + idCategory + " - Total de membros na categoria: " + lista.size());
@@ -203,6 +221,7 @@ public class EmailController {
 				email.addTo(membro.getEmail(), membro.getNickname());
 				email.setSubject(assunto);
 				String htmlResponse = htmlConteudo.replaceAll("nickname", membro.getNickname());	//define usuario ex: Hello alguem
+				//log.info("htmlResponse Email = " + htmlResponse);
 				email.setHtmlMsg(htmlResponse); //mensagem para o formato HTML				
 				email.setTextMsg(msgTexto);		//mensagem alternativa caso  não suporte HTML				
 				//email.setMsg(msgConteudo); 	//conteudo do e-mail

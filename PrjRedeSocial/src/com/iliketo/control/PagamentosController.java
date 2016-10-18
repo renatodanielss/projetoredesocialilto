@@ -355,7 +355,7 @@ public class PagamentosController {
 			
 			//envia email para todos usuarios que participam do grupo/categoria(Colecionador, interessado, hobby) do novo anuncio que foi criado
 			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
-			email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, this.httpRequest);							
+			email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, this.httpRequest, null);							
 		}else{
 			log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + item_number);
 		}
