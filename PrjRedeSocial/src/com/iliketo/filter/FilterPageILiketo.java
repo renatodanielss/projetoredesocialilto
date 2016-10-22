@@ -12,6 +12,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import HardCore.DB;
 import HardCore.Request;
 import HardCore.RequireUser;
@@ -19,6 +21,7 @@ import HardCore.Response;
 import HardCore.Session;
 import HardCore.Text;
 
+import com.iliketo.util.LogUtilsILiketoo;
 import com.iliketo.util.Str;
 
 /**
@@ -27,6 +30,8 @@ import com.iliketo.util.Str;
 @WebFilter(filterName="FilterPageILiketo", urlPatterns={ "/ilt/*" })
 public class FilterPageILiketo implements Filter {
 
+	static final Logger log = Logger.getLogger(FilterPageILiketo.class);
+	
     /**
      * Default constructor. 
      */
@@ -86,7 +91,13 @@ public class FilterPageILiketo implements Filter {
 		
 		if(accesspermission && !(req.getSession().getAttribute("member") == null)){
 			//valida acesso login - permissao ok
-			chain.doFilter(request, response);
+			try{
+				chain.doFilter(request, response);
+			}catch(Exception e){
+				log.error("CAUSA ERRO: " + e.getCause());
+				log.error("MENSAGEM ERRO: " + e.getMessage());
+				log.error("LINHA ERRO: " + LogUtilsILiketoo.stackTrace(e.getStackTrace()));
+			}
 		}
 		
 		if(req.getRequestURL().toString().contains("/ilt/pagamentos/notificacaoIPN")){

@@ -49,6 +49,8 @@ public class CheckoutServlet  extends HttpServlet {
                       HttpServletResponse response)
         throws ServletException, IOException {
 		
+		log.info("Entrou na classe CheckoutServlet.java - " + request.getRequestURI());
+		
 		/** classe para auxiliar nos parametros do request*/
 		cmsUtilsIliketoo = new CmsConfigILiketo(request, response);
 		
@@ -261,7 +263,7 @@ public class CheckoutServlet  extends HttpServlet {
 	
 				AnnounceDAO dao = new AnnounceDAO(db, req);
 				String idRegistro = dao.create(anuncio);
-				anuncio.setIdCollection(idRegistro);
+				anuncio.setIdAnnounce(idRegistro);
 				anuncio.setId(idRegistro);
 				checkoutDetails.put("L_PAYMENTREQUEST_0_NUMBER0", idRegistro);	//put no map o id do novo registro do anuncio
 				

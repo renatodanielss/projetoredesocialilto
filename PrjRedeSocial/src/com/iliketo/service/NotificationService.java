@@ -14,6 +14,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -21,7 +22,6 @@ import org.codehaus.jettison.json.JSONObject;
 import HardCore.DB;
 
 import com.iliketo.dao.MemberDAO;
-import com.iliketo.dao.MessageInboxDAO;
 import com.iliketo.dao.NotificationDAO;
 import com.iliketo.model.Announce;
 import com.iliketo.model.Collection;
@@ -35,7 +35,6 @@ import com.iliketo.model.MessageInbox;
 import com.iliketo.model.Notification;
 import com.iliketo.model.Topic;
 import com.iliketo.model.Video;
-import com.iliketo.model.annotation.ColumnILiketo;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
 import com.iliketo.util.Str;
@@ -47,6 +46,8 @@ import com.iliketo.util.Str;
  */
 public class NotificationService {
 
+	static final Logger log = Logger.getLogger(NotificationService.class);
+	
 	/**
 	 * Metodo cria uma nova notificacao no grupo/categoria
 	 * @param db
@@ -67,7 +68,7 @@ public class NotificationService {
 		notific.setPostType(postType);
 		
 		String idCreated = dao.create(notific);
-		System.out.println("Log - Nova notificacao = id notific: " + idCreated + " / id publicacao: " + idContent + " - tipo conteudo: " + contentType);
+		log.info("Log - Nova notificacao gerada >> id notific: " + idCreated + " / id publicacao: " + idContent + " - tipo post: " + contentType);
 		
 	}
 	

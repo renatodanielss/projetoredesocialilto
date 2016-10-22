@@ -36,7 +36,7 @@ public class LogUtilsILiketoo {
 	}
 	
 	
-	private static String stackTrace(StackTraceElement[] stackTraceElements) {
+	public static String stackTrace(StackTraceElement[] stackTraceElements) {
 	    if (stackTraceElements == null){
 	        return "";
 	    }	    

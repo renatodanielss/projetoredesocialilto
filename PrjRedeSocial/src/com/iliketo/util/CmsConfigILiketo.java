@@ -715,9 +715,9 @@ public class CmsConfigILiketo {
 		        while (items.hasNext()){
 		        	FileItem item = (FileItem) items.next();
 		            if (item.isFormField()) {
-		            	String inputName = item.getFieldName();
-		            	String value = item.getString();
-		            	map.put(inputName, value);
+		            	map.put(item.getFieldName(), item.getString());
+		            }else{
+		            	map.put(item.getFieldName(), item.getName());
 		            }
 		        }
 			}catch(FileUploadException e){
