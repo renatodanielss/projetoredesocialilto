@@ -576,11 +576,18 @@ float: left; width:55%; }
 <%
 	Map<String, String> countries = new HashMap<>();
 	for (String iso : Locale.getISOCountries()) {
-    	Locale l = new Locale("", iso);
+    	Locale l = new Locale("en_US", iso);
     	countries.put(l.getDisplayCountry(), iso);
 	}
 
 	HashMap result = (HashMap) request.getAttribute("result");
+	
+	final Logger logger = Logger.getLogger("review.jsp");
+	
+	logger.info("HashMap result vindo do PAYPAL");
+	for(Object key : result.keySet()){
+		logger.info("Parametro nome: " + (String)key + " - valor: " + (String)result.get(key));
+	}
 	
 	MemberDAO memberDao = new MemberDAO(db, request);
 	Member member = new Member();
@@ -598,32 +605,45 @@ float: left; width:55%; }
 		log.info("Payment Country to Update Vazio: " + l.getDisplayCountry());
 		member.setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(l.getDisplayCountry());
 		memberDao.update(member, false);
-		if (!result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").equals(countries.get(member.getCountry()))){
+	
+		//if 1
+		if (!result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString().equals(countries.get(member.getCountry()))){
+			log.info("if 1: " + result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString() + " = " + countries.get(member.getCountry()));
+			//if 2
 			if (member.getCountry().equals("Brazil")){
+				log.info("if 2: " + member.getCountry() + " = Brazil");
 				//redirect United States
-				request.getRequestDispatcher("/page.jsp?id=1149&paymentRedirect=1").forward(request, response);
-			} else if (result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").equals("BR")){
+				response.sendRedirect("/page.jsp?id=1149&paymentRedirect=1");
+				//if 3
+			} else if (result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString().equals("BR")){
+				log.info("if 3: " + result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString() + " = BR");
 				//redirect Brazil
-				request.getRequestDispatcher("/page.jsp?id=1149&paymentRedirect=1").forward(request, response);
+				response.sendRedirect("/page.jsp?id=1149&paymentRedirect=1");
 			}
 		}
 	}
-	else if (!result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").equals(countries.get(member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE()))){
-		if (result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").equals("BR")){
+	//if 4
+	else if (!result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString().equals(countries.get(member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE()))){
+		log.info("if 4: " + result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString() + " = " + countries.get(member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE()));
+		//if 5
+		if (result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString().equals("BR")){
+			log.info("if 5: " + result.get("PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE").toString() + " = BR");
+			log.info("Payment Country to Update Não Vazio: " + l.getDisplayCountry());
+			
+			member.setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(l.getDisplayCountry());
+			memberDao.update(member, false);
 			// redirect Brazil
-			log.info("Payment Country to Update Não Vazio: " + l.getDisplayCountry());
-			
-			member.setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(l.getDisplayCountry());
-			memberDao.update(member, false);
-			request.getRequestDispatcher("/page.jsp?id=1149&paymentRedirect=1").forward(request, response);
+			response.sendRedirect("/page.jsp?id=1149&paymentRedirect=1");
 		}
+		//if 6
 		else if (member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")){
-			//redirect United States
+			log.info("if 6: " + member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE() + " = Brazil");
 			log.info("Payment Country to Update Não Vazio: " + l.getDisplayCountry());
 			
 			member.setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(l.getDisplayCountry());
 			memberDao.update(member, false);
-			request.getRequestDispatcher("/page.jsp?id=1149&paymentRedirect=1").forward(request, response);
+			//redirect United States
+			response.sendRedirect("/page.jsp?id=1149&paymentRedirect=1");
 		}
 	}
 %>

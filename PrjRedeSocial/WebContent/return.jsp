@@ -3,6 +3,8 @@
 <%@ page import="com.iliketo.control.EmailController" %>
 <%@ page import="com.iliketo.dao.GenericDAO" %>
 <%@ page import="java.util.HashMap"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Calendar"%>
 <%@ page import="com.iliketo.dao.*" %>
 <%@ page import="com.iliketo.model.*" %>
 <%@ page import="org.apache.log4j.Logger" %>
@@ -886,19 +888,88 @@ float: left; width:55%; }
 				log.info("mysession.get(username): " + mysession.get("username"));
 				log.info("Username:" + member.getUsername());
 				
-				if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Prata - 1 GB")){
-					member.setTotalSpace("1073741824");
+				SimpleDateFormat dueDate = new SimpleDateFormat("yyyy-MM-dd");
+				Calendar c = Calendar.getInstance();
+				c.setTime(new java.util.Date());
+				
+				if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("250 GB por Seis Meses") || result.get("L_PAYMENTREQUEST_0_NAME0").equals("250 GB for Six Months")){
+					member.setTotalSpace("268435456000");
 					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+					
+					c.add(Calendar.MONTH, 6);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
 					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
 				}
-				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Ouro - 10 GB")){
-					member.setTotalSpace("10737418240");
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("500 GB por Seis Meses") || result.get("L_PAYMENTREQUEST_0_NAME0").equals("500 GB for Six Months")){
+					member.setTotalSpace("536870912000");
 					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+					
+					c.add(Calendar.MONTH, 6);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
 					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
 				}
-				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("Conta Platina - Ilimitada")){
-					member.setTotalSpace("0");
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("750 GB por Seis Meses") || result.get("L_PAYMENTREQUEST_0_NAME0").equals("750 GB for Six Months")){
+					member.setTotalSpace("805306368000");
 					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+
+					c.add(Calendar.MONTH, 6);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+				}
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("1 TB por Seis Meses") || result.get("L_PAYMENTREQUEST_0_NAME0").equals("1 TB for Six Months")){
+					member.setTotalSpace("1099511627776");
+					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+
+					c.add(Calendar.MONTH, 6);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+				}
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("250 GB por Um Ano") || result.get("L_PAYMENTREQUEST_0_NAME0").equals("250 GB for One Year")){
+					member.setTotalSpace("268435456000");
+					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+					
+					c.add(Calendar.MONTH, 12);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+				}
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("500 GB por Um Ano") || result.get("L_PAYMENTREQUEST_0_NAME0").equals("500 GB for One Year")){
+					member.setTotalSpace("536870912000");
+					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+
+					c.add(Calendar.MONTH, 12);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+				}
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("750 GB por Um Ano") || result.get("L_PAYMENTREQUEST_0_NAME0").equals("750 GB for One Year")){
+					member.setTotalSpace("805306368000");
+					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+					
+					c.add(Calendar.MONTH, 12);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
+				}
+				else if (result.get("L_PAYMENTREQUEST_0_NAME0").equals("1 TB por Um Ano") || result.get("L_PAYMENTREQUEST_0_NAME0").equals("1 TB for One Year")){
+					member.setTotalSpace("1099511627776");
+					member.setStorageType(result.get("L_PAYMENTREQUEST_0_NAME0"));
+
+					c.add(Calendar.MONTH, 12);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
 					log.info("Entrou " + result.get("L_PAYMENTREQUEST_0_NAME0"));
 				}
 			}

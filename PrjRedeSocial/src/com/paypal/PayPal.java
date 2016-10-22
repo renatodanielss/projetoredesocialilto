@@ -65,15 +65,19 @@ public class PayPal  {
 				if (member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("")){
 					if (member.getCountry().equals("Brazil")){
 						filename = "config/config.properties";
+						log.info("Email de Compra: contato.iliketo-facilitator@gmail.com");
 					} else {
 						filename = "config/config_us.properties";
+						log.info("Email de Compra: payment.us-facilitator@iliketoo.com");
 					}
 				}
 				else{
 					if (member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")){
 						filename = "config/config.properties";
+						log.info("Email de Compra: contato.iliketo-facilitator@gmail.com");
 					} else {
 						filename = "config/config_us.properties";
+						log.info("Email de Compra: payment.us-facilitator@iliketoo.com");
 					}
 				}
 			}

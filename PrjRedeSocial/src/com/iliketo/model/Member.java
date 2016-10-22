@@ -117,6 +117,9 @@ public class Member extends ContentILiketo{
 	@ColumnILiketo(name = "PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE")
 	private String PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE;
 	
+	@ColumnILiketo(name = "due_date")
+	private String dueDate;
+	
 	public Member(){
 		
 	}
@@ -384,5 +387,13 @@ public class Member extends ContentILiketo{
 	public void setPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE(
 			String pAYMENTREQUEST_0_SHIPTOCOUNTRYCODE) {
 		PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE = pAYMENTREQUEST_0_SHIPTOCOUNTRYCODE;
+	}
+
+	public String getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
 	}
 }

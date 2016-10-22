@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -168,7 +170,7 @@ public class PagamentosController {
 		if (address_country.equals("Brazil"))
 			EMAIL_PAYPAL_ILIKETOO = "contato.iliketo-facilitator@gmail.com";
 		else
-			EMAIL_PAYPAL_ILIKETOO = "payment.us-facilitator@iliketoo.com";
+			EMAIL_PAYPAL_ILIKETOO = "payment.us-seller@iliketoo.com";
 		
 		String receiver_email= request.getParameter("receiver_email");
 		String invoice= request.getParameter("invoice");
@@ -269,7 +271,15 @@ public class PagamentosController {
 						if(member != null){
 							member.setPaymentStatus(payment_status);
 							dao.update(member, false);
-							//enviar email sobre andamento status do pagamento			
+							
+							HashMap<String, String> result = new HashMap<String, String>();
+							result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
+							result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
+							result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+							
+							//enviar email sobre andamento status do pagamento
+							EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO); //mudar o tipo de email
+							email.enviaEmailPagamentoStorage(member, result, httpRequest.getLocale().toString(), httpRequest, false);
 						}else{
 							log.info("Notificacao IPN - Nao achou membro no banco de dados, id=" + item_number);
 						}
@@ -297,19 +307,88 @@ public class PagamentosController {
 				log.info("Antes do if:");
 				log.info("Username:" + member.getUsername());
 				
-				if (item_name.equals("Conta Prata - 1 GB")){
-					member.setTotalSpace("1073741824");
+				SimpleDateFormat dueDate = new SimpleDateFormat("yyyy-MM-dd");
+				Calendar c = Calendar.getInstance();
+				c.setTime(new java.util.Date());
+				
+				if (item_name.equals("250 GB por Seis Meses") || item_name.equals("250 GB for Six Months")){
+					member.setTotalSpace("268435456000");
 					member.setStorageType(item_name);
+					
+					c.add(Calendar.MONTH, 6);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
 					log.info("Entrou " + item_name);
 				}
-				else if (item_name.equals("Conta Ouro - 10 GB")){
-					member.setTotalSpace("10737418240");
+				else if (item_name.equals("500 GB por Seis Meses") || item_name.equals("500 GB for Six Months")){
+					member.setTotalSpace("536870912000");
 					member.setStorageType(item_name);
+
+					c.add(Calendar.MONTH, 6);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
 					log.info("Entrou " + item_name);
 				}
-				else if (item_name.equals("Conta Platina - Ilimitada")){
-					member.setTotalSpace("0");
+				else if (item_name.equals("750 GB por Seis Meses") || item_name.equals("750 GB for Six Months")){
+					member.setTotalSpace("805306368000");
 					member.setStorageType(item_name);
+
+					c.add(Calendar.MONTH, 6);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + item_name);
+				}
+				else if (item_name.equals("1 TB por Seis Meses") || item_name.equals("1 TB for Six Months")){
+					member.setTotalSpace("1099511627776");
+					member.setStorageType(item_name);
+
+					c.add(Calendar.MONTH, 6);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + item_name);
+				}
+				else if (item_name.equals("250 GB por Um Ano") || item_name.equals("250 GB for One Year")){
+					member.setTotalSpace("268435456000");
+					member.setStorageType(item_name);
+					
+					c.add(Calendar.MONTH, 12);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + item_name);
+				}
+				else if (item_name.equals("500 GB por Um Ano") || item_name.equals("500 GB for One Year")){
+					member.setTotalSpace("536870912000");
+					member.setStorageType(item_name);
+
+					c.add(Calendar.MONTH, 12);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + item_name);
+				}
+				else if (item_name.equals("750 GB por Um Ano") || item_name.equals("750 GB for One Year")){
+					member.setTotalSpace("805306368000");
+					member.setStorageType(item_name);
+
+					c.add(Calendar.MONTH, 12);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
+					log.info("Entrou " + item_name);
+				}
+				else if (item_name.equals("1 TB por Um Ano") || item_name.equals("1 TB for One Year")){
+					member.setTotalSpace("1099511627776");
+					member.setStorageType(item_name);
+
+					c.add(Calendar.MONTH, 12);  // number of days to add
+					member.setDueDate(dueDate.format(c.getTime()));
+					
+					log.info("Due Date: " + dueDate.format(c.getTime()));
 					log.info("Entrou " + item_name);
 				}
 			}
@@ -325,7 +404,7 @@ public class PagamentosController {
 			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
 			
 			//enviar email sobre status do pagamento completo aqui
-			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO); //mudar o tipo de email
 			email.enviaEmailPagamentoStorage(member, result, httpRequest.getLocale().toString(), httpRequest, false);
 			
 		}else{
