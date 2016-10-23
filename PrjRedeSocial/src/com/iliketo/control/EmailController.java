@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import HardCore.DB;
+import HardCore.Request;
 
 import com.iliketo.dao.MemberDAO;
 import com.iliketo.model.Announce;
@@ -195,6 +196,34 @@ public class EmailController {
 		sendEmail(member, assunto, htmlConteudo, msgTexto, msgConteudo);
 	}
 	
+	public void reenviaEmailAtivacao(Member member, String language, Request request){
+		HashMap<String, String> subjectLanguage = new HashMap<String, String>();
+		subjectLanguage.put("pt_BR", "Confirmação de Registro de Usuário");
+		subjectLanguage.put("en_US", "User Registration Confirmation");
+		
+		HashMap<String, String> msgTextoLanguage = new HashMap<String, String>();
+		msgTextoLanguage.put("pt_BR", "Email de Confirmação de Conta");
+		msgTextoLanguage.put("en_US", "Account Confirmation Email");
+		
+		String assunto = subjectLanguage.get(language);
+		String htmlConteudo = "";
+		String msgTexto = msgTextoLanguage.get(language);
+		String msgConteudo = null;
+		
+		CmsConfigILiketo cms = new CmsConfigILiketo(request.getRequest(), null);
+		
+		String emailPaymentStoragePage = cms.getPageListEntry("329");
+		
+		htmlConteudo = cms.parseBindingModelBean(emailPaymentStoragePage, member).toString();
+		
+		htmlConteudo = htmlConteudo.replaceAll("@@@email@@@", member.getEmail());
+		htmlConteudo = htmlConteudo.replaceAll("@@@validationlink@@@", request.getProtocol() + request.getServerName() + request.getServerPort() + "/activation.jsp?user=" + member.getUsername() + "&activationkey=" + member.getActivated());
+		//htmlConteudo = htmlConteudo.replaceAll("@@@validationlink@@@", "https://www.iliketoo.com/activation.jsp?user=" + member.getUsername() + "&activationkey=" + member.getActivated());
+		log.info("http://" + request.getServerName() + request.getServerPort() + "/activation.jsp?user=" + member.getUsername() + "&activationkey=" + member.getActivated());
+		
+		sendEmail(member, assunto, htmlConteudo, msgTexto, msgConteudo);
+	}
+	
 	private void sendEmailDefault(ArrayList<Member> listaEmails, String assuntoPT, String assuntoEN, 
 			String htmlConteudoPT, String htmlConteudoEN, String msgTextoPT, String msgTextoEN, String msgConteudo){		
 		try {			
@@ -254,13 +283,14 @@ public class EmailController {
 			email.setTLS(true);
 			
 			//destinatário
+			email.setCharset("utf-8");
 			email.addTo(emailTo.getEmail(), emailTo.getNickname());
 			email.setSubject(assunto);
 			String htmlResponse = htmlConteudo.replaceAll("nickname", emailTo.getNickname());	//define usuario ex: Hello alguem
 			email.setHtmlMsg(htmlResponse); //mensagem para o formato HTML				
-			email.setTextMsg(msgTexto);		//mensagem alternativa caso  não suporte HTML				
+			email.setTextMsg(msgTexto);		//mensagem alternativa caso  não suporte HTML
 			//email.setMsg(msgConteudo); 	//conteudo do e-mail
-
+			
 			email.send();
 			log.info("Email [assunto: " +assunto+ " ] enviado ok para: " + emailTo.getEmail());
 			
