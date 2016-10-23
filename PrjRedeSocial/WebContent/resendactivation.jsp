@@ -15,16 +15,26 @@
 	log.info("Membro Activated:" + member.getActivated());
 	log.info("Locale:" + myrequest.getLocale().toString());
 	
-	if (member != null && !member.getActivated().equals("0")){
-		//enviar email sobre status do pagamento completo aqui
-		EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO); //mudar o tipo de email
-		email.reenviaEmailAtivacao(member, myrequest.getLocale().toString(), myrequest);
-		%>
-		<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
-		<jsp:forward page="/page.jsp?id=1170">
-			<jsp:param value="1" name="resendEmail"/>
-		</jsp:forward>
-		<%
+	if (member != null && member.getActivated() != null){
+		if (!member.getActivated().equals("0")){
+			//enviar email sobre status do pagamento completo aqui
+			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO); //mudar o tipo de email
+			email.reenviaEmailAtivacao(member, myrequest.getLocale().toString(), myrequest);
+			%>
+			<!-- TAG para redirecionar para pagina passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
+			<jsp:forward page="/page.jsp?id=1170">
+				<jsp:param value="<%=member.getEmail()%>" name="resendemail"/>
+			</jsp:forward>
+			<%
+		}
+		else{
+			%>
+			<!-- TAG para redirecionar para pagina logout.jsp passando mais um parametro com o valor da página retorno realizado pelo Asbru -->
+			<jsp:forward page="/logout.jsp">
+				<jsp:param value="/page.jsp?id=1174" name="redirect"/>
+			</jsp:forward>
+			<%
+		}
 	}
 	else{
 		%>
