@@ -31,11 +31,13 @@ public class EmailController {
 	
 	static final Logger log = Logger.getLogger(EmailController.class);
 	
-	public enum tipoEmail { 
-		EMAIL_STORAGE("SENHA_STORAGE"), EMAIL_ANUNCIO("SENHA_ANUNCIO"), EMAIL_DENUNCIA("SENHA_DENUNCIA");		
-		public final String valor;		
-		tipoEmail(String valo){
-			valor = valo;
+	public enum tipoEmail {
+		EMAIL_STORAGE("SENHA_STORAGE"), EMAIL_FINANCEIRO("SENHA_FINANCEIRO"), EMAIL_SUPORTE("SENHA_SUPORTE"),
+		EMAIL_ANUNCIO("SENHA_ANUNCIO"), EMAIL_REPORT("SENHA_REPORT"), EMAIL_RECOVERY("SENHA_RECOVERY"),
+		EMAIL_ACTIVATION("SENHA_ACTIVATION");
+		public final String valor;
+		tipoEmail(String valor){
+			this.valor = valor;
 		}
 	}
 	
