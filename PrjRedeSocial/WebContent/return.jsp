@@ -999,6 +999,9 @@ float: left; width:55%; }
 				anuncioDAO.update(anuncio, false);
 				session.removeAttribute("anuncioCheckout");
 				log.info("Comprovante operacao pagamento Pay Pal - Anuncio atualizado id: " + anuncio.getIdAnnounce());
+				Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", anuncio.getIdMember(), Member.class);
+				EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+				email.enviaEmailSobreStatusPagamento(member, result, "Ad", request, true);
 			}
 	   	}
    	}else if (validarCheckoutProdutoEvento){
@@ -1014,6 +1017,9 @@ float: left; width:55%; }
 				eventoDAO.update(evento, false);
 				session.removeAttribute("eventoCheckout");
 				log.info("Comprovante operacao pagamento Pay Pal - Produto Anuncio de Evento atualizado id: " + evento.getIdEvent());
+				Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", evento.getIdMember(), Member.class);
+				EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+				email.enviaEmailSobreStatusPagamento(member, result, "Event", request, true);
 			}
 	   	}
    	}else if(validarCheckoutProdutoDestaque){
@@ -1031,6 +1037,9 @@ float: left; width:55%; }
 				new AnnounceDAO(db, request).update(anuncio, false);
 				session.removeAttribute("anuncioDestaqueCheckout");
 				log.info("Comprovante operacao pagamento Pay Pal - Compra de Destaque de Anuncio atualizado id: " + anuncio.getIdAnnounce());
+				Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", anuncio.getIdMember(), Member.class);
+				EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+				email.enviaEmailSobreStatusPagamento(member, result, "Featured", request, true);
 			}
 	   	}
    	}

@@ -161,6 +161,45 @@ public class EmailController {
 		}	
 	}
 	
+	public void enviaEmailSobreStatusPagamento(Member member, HashMap<String, String> paymentInfo, String custom, HttpServletRequest request, boolean returnPage){
+		HashMap<String, String> subjectLanguage = new HashMap<String, String>();
+		subjectLanguage.put("pt_BR-Ad", "Notificação - compra de Anúncio");
+		subjectLanguage.put("en_US-Ad", "Notification - Buy of ad");
+		subjectLanguage.put("pt_BR-Featured", "Notificação - compra de Destaque");
+		subjectLanguage.put("en_US-Featured", "Notification - Buy of featured");
+		subjectLanguage.put("pt_BR-Event", "Notificação - compra de Evento");
+		subjectLanguage.put("en_US-Event", "Notification - Buy of event");
+		
+		HashMap<String, String> msgTextoLanguage = new HashMap<String, String>();
+		msgTextoLanguage.put("pt_BR", "I LIKE TOO TEM BOAS NOVA PARA VOCÊ!");
+		msgTextoLanguage.put("en_US", "I LIKE TOO HAVE GOOD NEWS FOR YOU!");
+		
+		String assunto = subjectLanguage.get(request.getLocale().toString()+"-"+custom);
+		String htmlConteudo = "";
+		String msgTexto = msgTextoLanguage.get(request.getLocale().toString());
+		String msgConteudo = null;
+		
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
+		
+		String emailPaymentStoragePage;
+		if (returnPage)
+			emailPaymentStoragePage = cms.getPageListEntry("1158");
+		else
+			emailPaymentStoragePage = cms.getPageListEntry("1160");
+		
+		htmlConteudo = cms.parseBindingModelBean(emailPaymentStoragePage, member).toString();
+		
+		htmlConteudo = htmlConteudo.replaceAll("@@@nickname@@@", member.getNickname());
+		htmlConteudo = htmlConteudo.replaceAll("@@@product@@@", paymentInfo.get("L_PAYMENTREQUEST_0_NAME0"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@productDescription@@@", paymentInfo.get("L_PAYMENTREQUEST_0_DESC0"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@amount@@@", paymentInfo.get("PAYMENTINFO_0_AMT"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@currency@@@", paymentInfo.get("PAYMENTINFO_0_CURRENCYCODE"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@paymentStatus@@@", paymentInfo.get("PAYMENTINFO_0_PAYMENTSTATUS"));
+		htmlConteudo = htmlConteudo.replaceAll("@@@transactionId@@@", paymentInfo.get("PAYMENTINFO_0_TRANSACTIONID"));
+		
+		sendEmail(member, assunto, htmlConteudo, msgTexto, msgConteudo);
+	}
+	
 	public void enviaEmailPagamentoStorage(Member member, HashMap<String, String> paymentInfo, String language, HttpServletRequest request, boolean returnPage){
 		HashMap<String, String> subjectLanguage = new HashMap<String, String>();
 		subjectLanguage.put("pt_BR", "Email de Compra de Armazenamento");

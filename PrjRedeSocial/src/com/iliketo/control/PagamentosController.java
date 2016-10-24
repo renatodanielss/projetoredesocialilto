@@ -220,11 +220,11 @@ public class PagamentosController {
 					log.info("Notificacao IPN - Pagamento foi aprovado - PAYMENT_STATUS="+payment_status + " - CUSTOM="+custom + " - ITEM_NUMBER="+item_number);
 					//transacao ok, o pagamento foi aprovado e completado
 					if(custom.equals("Ad")){
-						this.processaMensagemCompleted_IPNAnuncio(db, payment_status, item_number);
+						this.processaMensagemCompleted_IPNAnuncio(db, payment_status, item_number, item_name);
 					}else if(custom.equals("Featured")){
-						this.processaMensagemCompleted_IPNDestaque(db, payment_status, item_number);
+						this.processaMensagemCompleted_IPNDestaque(db, payment_status, item_number, item_name);
 					}else if(custom.equals("Event")){
-						this.processaMensagemCompleted_IPNEvento(db, payment_status, item_number);
+						this.processaMensagemCompleted_IPNEvento(db, payment_status, item_number, item_name);
 					}else if(custom.equals("Storage")){
 						this.processaMensagemCompleted_IPNStorage(db, payment_status, item_number, item_name);
 					}
@@ -278,7 +278,7 @@ public class PagamentosController {
 							result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
 							
 							//enviar email sobre andamento status do pagamento
-							EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO); //mudar o tipo de email
+							EmailController email = new EmailController(tipoEmail.EMAIL_STORAGE);
 							email.enviaEmailPagamentoStorage(member, result, httpRequest.getLocale().toString(), httpRequest, false);
 						}else{
 							log.info("Notificacao IPN - Nao achou membro no banco de dados, id=" + item_number);
@@ -404,7 +404,7 @@ public class PagamentosController {
 			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
 			
 			//enviar email sobre status do pagamento completo aqui
-			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO); //mudar o tipo de email
+			EmailController email = new EmailController(tipoEmail.EMAIL_STORAGE);
 			email.enviaEmailPagamentoStorage(member, result, httpRequest.getLocale().toString(), httpRequest, false);
 			
 		}else{
@@ -415,7 +415,7 @@ public class PagamentosController {
 	/**
 	 * Metodo trata mensagem IPN status Completed para "Anuncio"
 	 */
-	private void processaMensagemCompleted_IPNAnuncio(DB db, String payment_status, String item_number){
+	private void processaMensagemCompleted_IPNAnuncio(DB db, String payment_status, String item_number, String item_name){
 		AnnounceDAO dao = new AnnounceDAO(db, null);
 		Announce anuncio = (Announce) dao.readById(item_number, Announce.class);
 		if(anuncio != null){
@@ -429,11 +429,17 @@ public class PagamentosController {
 			String idCategory = anuncio.getIdCategory();
 			if(idCategory != null && !idCategory.equals("")){							
 				NotificationService.createNotification(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.INCLUDED, myUserid);
-			}
-			//enviar email sobre status do pagamento completo aqui
+			}			
+			HashMap<String, String> result = new HashMap<String, String>();
+			result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
+			result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
+			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+			Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", anuncio.getIdMember(), Member.class);
 			
+			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);			
+			//enviar email sobre status do pagamento completo aqui
+			email.enviaEmailSobreStatusPagamento(member, result, httpRequest.getParameter("custom"), httpRequest, false);			
 			//envia email para todos usuarios que participam do grupo/categoria(Colecionador, interessado, hobby) do novo anuncio que foi criado
-			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
 			email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, this.httpRequest, null);							
 		}else{
 			log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + item_number);
@@ -443,14 +449,22 @@ public class PagamentosController {
 	/**
 	 * Metodo trata mensagem IPN status Completed para "Destaque"
 	 */
-	private void processaMensagemCompleted_IPNDestaque(DB db, String payment_status, String item_number){
+	private void processaMensagemCompleted_IPNDestaque(DB db, String payment_status, String item_number, String item_name){
 		AnnounceDAO dao = new AnnounceDAO(db, null);
 		Announce anuncio = (Announce) dao.readById(item_number, Announce.class);
 		if(anuncio != null){
 			anuncio.setFeatured("yes");
 			dao.update(anuncio, false);
 			log.info("Notificacao IPN - PAGAMENTO CONCLUIDO COM SUCESSO, DESTAQUE ANUNCIO ATUALIZADO - ID ANUNCIO=" + item_number+" - ID MEMBRO=" + anuncio.getIdMember());
+
+			HashMap<String, String> result = new HashMap<String, String>();
+			result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
+			result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
+			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+			Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", anuncio.getIdMember(), Member.class);			
+			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);			
 			//enviar email sobre status do pagamento completo
+			email.enviaEmailSobreStatusPagamento(member, result, httpRequest.getParameter("custom"), httpRequest, false);
 			
 		}else{
 			log.info("Notificacao IPN - Nao achou anuncio para destaque no banco de dados, id=" + item_number);
@@ -460,7 +474,7 @@ public class PagamentosController {
 	/**
 	 * Metodo trata mensagem IPN status Completed para "Evento"
 	 */
-	private void processaMensagemCompleted_IPNEvento(DB db, String payment_status, String item_number){
+	private void processaMensagemCompleted_IPNEvento(DB db, String payment_status, String item_number, String item_name){
 		EventDAO dao = new EventDAO(db, null);
 		Event evento = (Event) dao.readById(item_number, Event.class);
 		if(evento != null){
@@ -473,7 +487,14 @@ public class PagamentosController {
 			if(idCategory != null && !idCategory.equals("")){
 				NotificationService.createNotification(db, idCategory, "event", item_number, Str.INCLUDED, evento.getIdMember());
 			}
+			HashMap<String, String> result = new HashMap<String, String>();
+			result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
+			result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
+			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+			Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", evento.getIdMember(), Member.class);			
+			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);			
 			//enviar email sobre status do pagamento completo
+			email.enviaEmailSobreStatusPagamento(member, result, httpRequest.getParameter("custom"), httpRequest, false);
 			
 		}else{
 			log.info("Notificacao IPN - Nao achou evento no banco de dados, id=" + item_number);
