@@ -163,7 +163,7 @@ public class EmailController {
 		}	
 	}
 	
-	public void enviaEmailSobreStatusPagamento(Member member, HashMap<String, String> paymentInfo, String custom, HttpServletRequest request, boolean returnPage){
+	public void enviaEmailSobreStatusPagamento(Member member, HashMap<String, String> paymentInfo, String language, String custom, HttpServletRequest request, boolean returnPage){
 		HashMap<String, String> subjectLanguage = new HashMap<String, String>();
 		subjectLanguage.put("pt_BR-Ad", "Notificação - compra de Anúncio");
 		subjectLanguage.put("en_US-Ad", "Notification - Buy of ad");
@@ -176,9 +176,9 @@ public class EmailController {
 		msgTextoLanguage.put("pt_BR", "I LIKE TOO TEM BOAS NOVA PARA VOCÊ!");
 		msgTextoLanguage.put("en_US", "I LIKE TOO HAVE GOOD NEWS FOR YOU!");
 		
-		String assunto = subjectLanguage.get(request.getLocale().toString()+"-"+custom);
+		String assunto = subjectLanguage.get(language+"-"+custom);
 		String htmlConteudo = "";
-		String msgTexto = msgTextoLanguage.get(request.getLocale().toString());
+		String msgTexto = msgTextoLanguage.get(language);
 		String msgConteudo = null;
 		
 		CmsConfigILiketo cms = new CmsConfigILiketo(request, null);

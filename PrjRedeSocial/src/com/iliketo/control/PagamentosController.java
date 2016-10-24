@@ -238,7 +238,18 @@ public class PagamentosController {
 						Announce anuncio = (Announce) dao.readById(item_number, Announce.class);
 						if(anuncio != null){
 							anuncio.setPaymentStatus(payment_status);
-							//enviar email sobre andamento status do pagamento			
+							dao.update(anuncio, false);
+							
+							HashMap<String, String> result = new HashMap<String, String>();
+							result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
+							result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
+							result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+							Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", anuncio.getIdMember(), Member.class);
+							String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
+							
+							//enviar email sobre andamento status do pagamento
+							EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);		
+							email.enviaEmailSobreStatusPagamento(member, result, localeStr, httpRequest.getParameter("custom"), httpRequest, false);
 						}else{
 							log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + item_number);
 						}
@@ -249,7 +260,17 @@ public class PagamentosController {
 						if(anuncio != null){
 							anuncio.setPaymentStatusDestaque(payment_status);
 							dao.update(anuncio, false);
-							//enviar email sobre andamento status do pagamento					
+							
+							HashMap<String, String> result = new HashMap<String, String>();
+							result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
+							result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
+							result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+							Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", anuncio.getIdMember(), Member.class);
+							String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
+							
+							//enviar email sobre andamento status do pagamento
+							EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);		
+							email.enviaEmailSobreStatusPagamento(member, result, localeStr, httpRequest.getParameter("custom"), httpRequest, false);
 						}else{
 							log.info("Notificacao IPN - Nao achou anuncio para destaque no banco de dados, id=" + item_number);
 						}
@@ -260,7 +281,17 @@ public class PagamentosController {
 						if(evento != null){
 							evento.setPaymentStatus(payment_status);
 							dao.update(evento, false);
-							//enviar email sobre andamento status do pagamento						
+							
+							HashMap<String, String> result = new HashMap<String, String>();
+							result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
+							result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
+							result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+							Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", evento.getIdMember(), Member.class);
+							String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
+							
+							//enviar email sobre andamento status do pagamento
+							EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);		
+							email.enviaEmailSobreStatusPagamento(member, result, localeStr, httpRequest.getParameter("custom"), httpRequest, false);
 						}else{
 							log.info("Notificacao IPN - Nao achou evento no banco de dados, id=" + item_number);
 						}
@@ -276,10 +307,11 @@ public class PagamentosController {
 							result.put("L_PAYMENTREQUEST_0_NAME0", item_name);
 							result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
 							result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
+							String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
 							
 							//enviar email sobre andamento status do pagamento
-							EmailController email = new EmailController(tipoEmail.EMAIL_STORAGE);
-							email.enviaEmailPagamentoStorage(member, result, httpRequest.getLocale().toString(), httpRequest, false);
+							EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);
+							email.enviaEmailPagamentoStorage(member, result, localeStr, httpRequest, false);
 						}else{
 							log.info("Notificacao IPN - Nao achou membro no banco de dados, id=" + item_number);
 						}
@@ -406,7 +438,7 @@ public class PagamentosController {
 			String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
 			
 			//enviar email sobre status do pagamento completo aqui
-			EmailController email = new EmailController(tipoEmail.EMAIL_STORAGE);
+			EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);
 			email.enviaEmailPagamentoStorage(member, result, localeStr, httpRequest, false);
 			
 		}else{
@@ -437,11 +469,14 @@ public class PagamentosController {
 			result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
 			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
 			Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", anuncio.getIdMember(), Member.class);
+			String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
 			
-			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);			
-			//enviar email sobre status do pagamento completo aqui
-			email.enviaEmailSobreStatusPagamento(member, result, httpRequest.getParameter("custom"), httpRequest, false);			
+			//enviar email sobre status do pagamento completo
+			EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);		
+			email.enviaEmailSobreStatusPagamento(member, result, localeStr, httpRequest.getParameter("custom"), httpRequest, false);			
+			
 			//envia email para todos usuarios que participam do grupo/categoria(Colecionador, interessado, hobby) do novo anuncio que foi criado
+			email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
 			email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, this.httpRequest, null);							
 		}else{
 			log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + item_number);
@@ -464,9 +499,11 @@ public class PagamentosController {
 			result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
 			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
 			Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", anuncio.getIdMember(), Member.class);			
-			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);			
+			String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
+
 			//enviar email sobre status do pagamento completo
-			email.enviaEmailSobreStatusPagamento(member, result, httpRequest.getParameter("custom"), httpRequest, false);
+			EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);			
+			email.enviaEmailSobreStatusPagamento(member, result, localeStr, httpRequest.getParameter("custom"), httpRequest, false);
 			
 		}else{
 			log.info("Notificacao IPN - Nao achou anuncio para destaque no banco de dados, id=" + item_number);
@@ -494,9 +531,11 @@ public class PagamentosController {
 			result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
 			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
 			Member member = (Member) new MemberDAO(db, null).readByColumn("id_member", evento.getIdMember(), Member.class);			
-			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);			
+			String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
+			
 			//enviar email sobre status do pagamento completo
-			email.enviaEmailSobreStatusPagamento(member, result, httpRequest.getParameter("custom"), httpRequest, false);
+			EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);			
+			email.enviaEmailSobreStatusPagamento(member, result, localeStr, httpRequest.getParameter("custom"), httpRequest, false);
 			
 		}else{
 			log.info("Notificacao IPN - Nao achou evento no banco de dados, id=" + item_number);
