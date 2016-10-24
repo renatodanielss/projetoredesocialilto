@@ -403,9 +403,11 @@ public class PagamentosController {
 			result.put("PAYMENTINFO_0_PAYMENTSTATUS", payment_status);
 			result.put("PAYMENTINFO_0_TRANSACTIONID", httpRequest.getParameter("txn_id"));
 			
+			String localeStr = member.getPAYMENTREQUEST_0_SHIPTOCOUNTRYCODE().equals("Brazil")?"pt_BR":"en_US";
+			
 			//enviar email sobre status do pagamento completo aqui
 			EmailController email = new EmailController(tipoEmail.EMAIL_STORAGE);
-			email.enviaEmailPagamentoStorage(member, result, httpRequest.getLocale().toString(), httpRequest, false);
+			email.enviaEmailPagamentoStorage(member, result, localeStr, httpRequest, false);
 			
 		}else{
 			log.info("Notificacao IPN - Nao achou membro no banco de dados, id=" + item_number);
