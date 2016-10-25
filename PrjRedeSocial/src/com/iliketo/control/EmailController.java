@@ -277,11 +277,12 @@ public class EmailController {
 				
 				/** Parâmetros de conexão com servidor Gmail */
 				HtmlEmail email = new HtmlEmail(); 
-				email.setHostName("smtp.gmail.com"); 		//servidor SMTP para envio do e-mail
-				email.setFrom(this.email, "I Like Too"); 	// remetente				
+				//email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
+				email.setHostName("ns736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
+				email.setFrom(this.email, "I Like Too"); 		// remetente				
 				//email.setAuthentication(usuario, senha);
-				//email.setSmtpPort(587);
-				email.setSmtpPort(465);  
+				email.setSmtpPort(587);
+				//email.setSmtpPort(465);
 		        email.setAuthenticator(new DefaultAuthenticator(this.email, this.senha));  
 		        email.setSSLOnConnect(true);	        
 				email.setSSL(true);
@@ -313,13 +314,14 @@ public class EmailController {
 			
 			/** Parâmetros de conexão com servidor Gmail */
 			HtmlEmail email = new HtmlEmail(); 
-			email.setHostName("smtp.gmail.com"); 		//servidor SMTP para envio do e-mail
-			email.setFrom(this.email, "I Like Too"); 	// remetente				
+			//email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
+			email.setHostName("ns736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
+			email.setFrom(this.email, "I Like Too"); 		// remetente				
 			//email.setAuthentication(usuario, senha);
-			//email.setSmtpPort(587);
-			email.setSmtpPort(465);  
+			email.setSmtpPort(587);
+			//email.setSmtpPort(465);
 	        email.setAuthenticator(new DefaultAuthenticator(this.email, this.senha));  
-	        email.setSSLOnConnect(true);	        
+	        email.setSSLOnConnect(true);
 			email.setSSL(true);
 			email.setTLS(true);
 			
