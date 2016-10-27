@@ -18,7 +18,7 @@
 	if (member != null && member.getActivated() != null){
 		if (!member.getActivated().equals("0")){
 			//enviar email sobre status do pagamento completo aqui
-			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO); //mudar o tipo de email
+			EmailController email = new EmailController(tipoEmail.EMAIL_ACTIVATION); //mudar o tipo de email
 			email.reenviaEmailAtivacao(member, myrequest.getLocale().toString(), myrequest);
 			%>
 			<!-- TAG para redirecionar para pagina passando mais um parametro com o valor da página retorno realizado pelo Asbru -->

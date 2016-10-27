@@ -979,7 +979,7 @@ float: left; width:55%; }
 			memberDao.update(member, false);
 			log.info("Update Concluído");
 			
-			EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+			EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);
 			email.enviaEmailPagamentoStorage(member, result, request.getLocale().toString(), request, true);
 		}
     }else if (validarCheckoutProdutoAnuncio){
