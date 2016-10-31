@@ -80,16 +80,16 @@ if(!listTimeline.isEmpty()){
 			s = s.replaceAll("@@@id_collection@@@", collectionJB.getIdCollection());
 			s = s.replaceAll("@@@name_collection@@@", collectionJB.getNameCollection());
 			
-			String description = collectionJB.getDescription();
+			/*String description = collectionJB.getDescription();
 			if (description.length() > 400){
 				s = s.replaceAll("@@@sub_description_collection@@@", description.substring(0, 400));
 				s = s.replaceAll("@@@more_button@@@", "visible");
 			}else{
 				s = s.replaceAll("@@@sub_description_collection@@@", description);
 				s = s.replaceAll("@@@more_button@@@", "hidden");
-			}
+			}*/
 			
-			s = s.replaceAll("@@@description_collection@@@", description);
+			s = s.replaceAll("@@@description_collection@@@", collectionJB.getDescription());
 			s = s.replaceAll("@@@name_category@@@", collectionJB.getCategory());
 			s = s.replaceAll("@@@path_photo_collection@@@", collectionJB.getPathPhoto());
 			s = s.replaceAll("@@@date_created@@@", collectionJB.getDateCreated());

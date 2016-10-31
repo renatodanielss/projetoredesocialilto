@@ -15,8 +15,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> 
- 
- 
+<link rel="shortcut icon" href="/image/logo_aba.png">
+
 <style type="text/css">
 <!--
 body{
