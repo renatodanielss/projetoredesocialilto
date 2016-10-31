@@ -477,7 +477,7 @@ public class PagamentosController {
 			
 			//envia email para todos usuarios que participam do grupo/categoria(Colecionador, interessado, hobby) do novo anuncio que foi criado
 			email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
-			email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, this.httpRequest, null);							
+			email.enviaEmailNovoAnuncioGenericoParaColecionadorLoja(anuncio, idCategory, myUserid, db, this.httpRequest, null, "anuncio");							
 		}else{
 			log.info("Notificacao IPN - Nao achou anuncio no banco de dados, id=" + item_number);
 		}
@@ -537,6 +537,9 @@ public class PagamentosController {
 			EmailController email = new EmailController(tipoEmail.EMAIL_FINANCEIRO);			
 			email.enviaEmailSobreStatusPagamento(member, result, localeStr, httpRequest.getParameter("custom"), httpRequest, false);
 			
+			//envia email marketing para membros do grupo do anuncio de evento
+			email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+			email.enviaEmailNovoAnuncioGenericoParaColecionadorLoja(evento, idCategory, evento.getIdMember(), db, this.httpRequest, null, "evento");
 		}else{
 			log.info("Notificacao IPN - Nao achou evento no banco de dados, id=" + item_number);
 		}

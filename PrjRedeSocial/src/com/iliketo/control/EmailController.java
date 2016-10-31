@@ -21,6 +21,8 @@ import HardCore.Request;
 
 import com.iliketo.dao.MemberDAO;
 import com.iliketo.model.Announce;
+import com.iliketo.model.ContentILiketo;
+import com.iliketo.model.Event;
 import com.iliketo.model.Member;
 import com.iliketo.util.CmsConfigILiketo;
 import com.iliketo.util.ColumnsSingleton;
@@ -69,23 +71,23 @@ public class EmailController {
 		String pageError = "/page.jsp?id=902";
 		LogUtilsILiketoo.mostrarLogStackException(ex, log, req, res, pageError);
 	}
-
-	public void enviaEmailNovoAnuncioColecionadorLoja(Announce anuncio, String idCategory, String myUserid, 
-			DB db, HttpServletRequest request, Map<String, String> mapPages){
+	
+	public void enviaEmailNovoAnuncioGenericoParaColecionadorLoja(ContentILiketo objeto, String idCategory, String myUserid, 
+			DB db, HttpServletRequest request, Map<String, String> mapPages, String tipo){
 
 		//coleta todos usuarios que participam do grupo/categoria do anuncio criado
-		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);			
+		ColumnsSingleton CS = ColumnsSingleton.getInstance(db);
 		String SQL = 
 				"select t1.id_member as id_member, t1.nickname as nickname, t1.email as email, t1.country as country "
 				+ "from dbmembers as t1 "
-				+ "where exists (select t2.fk_user_id from dbcollection t2 where t1.id_member != '" +myUserid+ "' and t1.id_member = t2.fk_user_id and t2.fk_category_id = '" +idCategory+ "') "
-				+ "or exists (select t3.fk_user_id from dbinterest t3 where t1.id_member != '" +myUserid+ "' and t1.id_member = t3.fk_user_id and t3.fk_category_id = '" +idCategory+ "') "
-				+ "or exists (select t4.fk_user_id from dbhobby t4 where t1.id_member != '" +myUserid+ "' and t1.id_member = t4.fk_user_id and t4.fk_category_id = '" +idCategory+ "') "
+				+ "where exists (select t2.fk_user_id from dbcollection t2 where t1.id_member != '" +myUserid+ "' and t1.id_member = t2.fk_user_id and t2.fk_category_id = '" +idCategory+ "' and t1.col19 = 'Yes') "
+				+ "or exists (select t3.fk_user_id from dbinterest t3 where t1.id_member != '" +myUserid+ "' and t1.id_member = t3.fk_user_id and t3.fk_category_id = '" +idCategory+ "' and t1.col19 = 'Yes') "
+				+ "or exists (select t4.fk_user_id from dbhobby t4 where t1.id_member != '" +myUserid+ "' and t1.id_member = t4.fk_user_id and t4.fk_category_id = '" +idCategory+ "' and t1.col19 = 'Yes') "
 				+ ";";
 				
 		String[][] aliasSQL = { {"dbmembers", "t1"}, {"dbcollection", "t2"}, {"dbinterest", "t3"}, {"dbhobby", "t4"} };
 		SQL = CS.transformSQLReal(SQL, aliasSQL);
-		log.info("SQL emails: " + SQL);
+		//log.info("SQL emails: " + SQL);
 		LinkedHashMap<String,HashMap<String,String>> registros = db.query_records(SQL);
 		
 		//lista de usuarios para enviar email
@@ -99,68 +101,93 @@ public class EmailController {
 			log.info("Membro: " + m.getNickname() + "- email: " + m.getEmail());
 			lista.add(m);
 		}
-		
-		//dados email
-		//<img src=\"cid:"+cid+"\">
-		String assuntoPT = "Boas notícias para você - " + anuncio.getTitle();
-		String assuntoEN = "Good news for you - " + anuncio.getTitle();
-		String htmlConteudoPT = "";
-		String htmlConteudoEN = "";
-		String msgTextoEN = "I LIKE TOO HAVE GOOD NEWS FOR YOU!";
-		String msgTextoPT = "I LIKE TOO TEM NOVAS NOTÍCIAS PARA VOCÊ!";
-		String msgConteudo = null;
-		//valida vendedor do anuncio
+
 		Member vendedorDoAnuncio = (Member) new MemberDAO(db, null).readByColumn("id_member", myUserid, Member.class);
 		if(vendedorDoAnuncio == null){
 			return;
 		}
 		
 		if(!lista.isEmpty()){
-			CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
-			String listEntryPT;
-			String listEntryEN;
-			if(mapPages != null){
-				listEntryPT = mapPages.get("1162");
-				listEntryEN = mapPages.get("1092");
+			if(tipo.equals("anuncio")){		
+				this.construirLayoutNewsAnuncios(lista, (Announce)objeto, vendedorDoAnuncio, request, mapPages);
 			}else{
-				listEntryPT = cms.getPageListEntry("1162");
-				listEntryEN = cms.getPageListEntry("1092");
-			}
-			htmlConteudoPT = cms.parseBindingModelBean(listEntryPT, anuncio).toString();
-			htmlConteudoEN = cms.parseBindingModelBean(listEntryEN, anuncio).toString();
-			
-			//verifica tipo anuncio
-			if(anuncio.getTypeAnnounce().contains("Sell")){
-				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Preço: R$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getPriceFixed());
-				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Price: US$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getPriceFixed());
-				
-			}else if(anuncio.getTypeAnnounce().equals("Exchange")){
-				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Detalhes: ".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getDetails().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Details: ".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getDetails().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				
-			}else if(anuncio.getTypeAnnounce().equals("Purchase")){
-				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Preço oferecido: R$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
-				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Offered price: US$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
-				htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
-			}
-			
-			//informacoes generica do vendedor do anuncio
-			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info3@@@", vendedorDoAnuncio.getNickname());
-			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info4@@@", vendedorDoAnuncio.getEmail());
-			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info3@@@", vendedorDoAnuncio.getNickname());
-			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info4@@@", vendedorDoAnuncio.getEmail());
-			
-			//envia emails
-			log.info("ENVIA EMAILS PARA OS MEMBROS DA CATEGORIA: " + idCategory + " - Total de membros na categoria: " + lista.size());
-			sendEmailDefault(lista, assuntoPT, assuntoEN, htmlConteudoPT, htmlConteudoEN, msgTextoPT, msgTextoEN, msgConteudo);			
+				this.construirLayoutNewsEventos(lista, (Event)objeto, vendedorDoAnuncio, request, mapPages);
+			}			
 		}else{
 			log.info("NAO ENVIOU EMAILS, LISTA MEMBROS VAZIA DA CATEGORIA: " + idCategory);
 		}	
+	}
+	
+	private void construirLayoutNewsAnuncios(ArrayList<Member> lista, Announce anuncio, Member vendedorDoAnuncio, 
+			HttpServletRequest request, Map<String, String> mapPages){
+		String assuntoPT = "Boas notícias para você - " + anuncio.getTitle();
+		String assuntoEN = "Good news for you - " + anuncio.getTitle();
+		String htmlConteudoPT = "";
+		String htmlConteudoEN = "";
+		String msgTextoEN = "I LIKE TOO HAVE GOOD NEWS FOR YOU!";
+		String msgTextoPT = "I LIKE TOO TEM NOVAS NOTÍCIAS PARA VOCÊ!";
+		
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
+		String listEntryPT;
+		String listEntryEN;
+		
+		if(mapPages != null){				
+			listEntryPT = mapPages.get("1162");
+			listEntryEN = mapPages.get("1092");			
+		}else{
+			listEntryPT = cms.getPageListEntry("1162");
+			listEntryEN = cms.getPageListEntry("1092");
+		}
+		htmlConteudoPT = cms.parseBindingModelBean(listEntryPT, anuncio).toString();
+		htmlConteudoEN = cms.parseBindingModelBean(listEntryEN, anuncio).toString();
+		
+		if(anuncio.getTypeAnnounce().contains("Sell")){
+			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Preço: R$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getPriceFixed());
+			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Price: US$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getPriceFixed());
+			
+		}else if(anuncio.getTypeAnnounce().equals("Exchange")){
+			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Detalhes: ".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getDetails().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Details: ".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getDetails().replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+			
+		}else if(anuncio.getTypeAnnounce().equals("Purchase")){
+			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", "Preço oferecido: R$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+			htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
+			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info1@@@", "Offered price: US$".replaceAll("\\\\", "\\\\\\\\").replaceAll("\\$", "\\\\\\$"));
+			htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info2@@@", anuncio.getOfferedPrice());
+		}		
+		htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info3@@@", vendedorDoAnuncio.getNickname());
+		htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info4@@@", vendedorDoAnuncio.getEmail());
+		htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info3@@@", vendedorDoAnuncio.getNickname());
+		htmlConteudoEN = htmlConteudoEN.replaceAll("@@@info4@@@", vendedorDoAnuncio.getEmail());
+		
+		log.info("ENVIA EMAILS DE ANUNCIOS PARA OS MEMBROS DA CATEGORIA: " + anuncio.getIdCategory() + " - Total de membros na categoria: " + lista.size());
+		sendEmailDefault(lista, assuntoPT, assuntoEN, htmlConteudoPT, htmlConteudoEN, msgTextoPT, msgTextoEN, null);
+	}
+	
+	private void construirLayoutNewsEventos(ArrayList<Member> lista, Event evento, Member vendedorDoAnuncio, 
+			HttpServletRequest request, Map<String, String> mapPages){
+		String assuntoPT = "Boas notícias para você - " + evento.getNameEvent();
+		String assuntoEN = "Good news for you - " + evento.getNameEvent();
+		String htmlConteudoPT = "";
+		String htmlConteudoEN = "";
+		String msgTextoEN = "I LIKE TOO HAVE GOOD NEWS FOR YOU!";
+		String msgTextoPT = "I LIKE TOO TEM NOVAS NOTÍCIAS PARA VOCÊ!";
+		
+		CmsConfigILiketo cms = new CmsConfigILiketo(request, null);
+		String listEntryPT = cms.getPageListEntry("1178");
+		String listEntryEN = cms.getPageListEntry("1179");
+		
+		htmlConteudoPT = cms.parseBindingModelBean(listEntryPT, evento).toString();
+		htmlConteudoEN = cms.parseBindingModelBean(listEntryEN, evento).toString();
+		htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info1@@@", vendedorDoAnuncio.getNickname());
+		htmlConteudoPT = htmlConteudoPT.replaceAll("@@@info2@@@", vendedorDoAnuncio.getEmail());
+		
+		log.info("ENVIA EMAILS DE EVENTOS PARA OS MEMBROS DA CATEGORIA: " + evento.getIdCategory() + " - Total de membros na categoria: " + lista.size());
+		sendEmailDefault(lista, assuntoPT, assuntoEN, htmlConteudoPT, htmlConteudoEN, msgTextoPT, msgTextoEN, null);
 	}
 	
 	public void enviaEmailSobreStatusPagamento(Member member, HashMap<String, String> paymentInfo, String language, String custom, HttpServletRequest request, boolean returnPage){
@@ -279,7 +306,7 @@ public class EmailController {
 				HtmlEmail email = new HtmlEmail(); 
 				//email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
 				email.setHostName("ns736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
-				email.setFrom(this.email, "I Like Too"); 		// remetente				
+				email.setFrom(this.email, "I Like Too"); 		// remetente
 				//email.setAuthentication(usuario, senha);
 				email.setSmtpPort(587);
 				//email.setSmtpPort(465);

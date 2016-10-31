@@ -27,6 +27,7 @@ import com.iliketo.control.EmailController.tipoEmail;
 import com.iliketo.dao.AnnounceDAO;
 import com.iliketo.dao.AuctionBidDAO;
 import com.iliketo.dao.CollectionDAO;
+import com.iliketo.dao.EventDAO;
 import com.iliketo.dao.HobbyDAO;
 import com.iliketo.dao.ItemDAO;
 import com.iliketo.exception.ImageILiketoException;
@@ -34,6 +35,7 @@ import com.iliketo.exception.StorageILiketoException;
 import com.iliketo.model.Announce;
 import com.iliketo.model.AuctionBid;
 import com.iliketo.model.Collection;
+import com.iliketo.model.Event;
 import com.iliketo.model.Hobby;
 import com.iliketo.model.Item;
 import com.iliketo.service.NotificationService;
@@ -181,7 +183,7 @@ public class AnnounceCollectorController {
 					NotificationService.createNotification(db, idCategory, "announce", anuncio.getIdAnnounce(), Str.INCLUDED, anuncio.getIdMember());
 				}
 				EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
-				email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, idCategory, myUserid, db, request, mapPages);
+				email.enviaEmailNovoAnuncioGenericoParaColecionadorLoja(anuncio, idCategory, myUserid, db, request, mapPages, "anuncio");
 			}
 		});
 		run.start();
@@ -528,6 +530,20 @@ public class AnnounceCollectorController {
 		String id = request.getParameter("id");
 		Announce anuncio = (Announce) dao.readById(id, Announce.class);
 		EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
-		email.enviaEmailNovoAnuncioColecionadorLoja(anuncio, anuncio.getIdCategory(), myUserid, db, request, null);
+		email.enviaEmailNovoAnuncioGenericoParaColecionadorLoja(anuncio, anuncio.getIdCategory(), myUserid, db, request, null, "anuncio");
+	}
+	
+	@RequestMapping(value={"/testeEnviaEmailAnuncioEventoCategorias"})
+	public void testeEnviaEmailAnuncioEventoCategorias(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		
+		log.info(request.getRequestURL());
+		DB db = (DB) request.getAttribute(Str.CONNECTION_DB);
+		EventDAO dao = new EventDAO(db, request);
+		String myUserid = (String) request.getSession().getAttribute("userid");
+				
+		String id = request.getParameter("id");
+		Event evento = (Event) dao.readById(id, Event.class);
+		EmailController email = new EmailController(tipoEmail.EMAIL_ANUNCIO);
+		email.enviaEmailNovoAnuncioGenericoParaColecionadorLoja(evento, evento.getIdCategory(), myUserid, db, request, null, "evento");
 	}
 }
