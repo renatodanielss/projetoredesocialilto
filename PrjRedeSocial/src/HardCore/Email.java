@@ -169,18 +169,18 @@ public class Email {
 		if ((myconfig != null) && (! myconfig.get(db, "contact_form_mailserver").equals(""))) {
 			String[] mailserver = myconfig.get(db, "contact_form_mailserver").split(":");
 			if (mailserver.length >= 2) {
-				properties.setProperty("mail.smtp.host", "ns736.hostgator.com.br");
+				properties.setProperty("mail.smtp.host", "br736.hostgator.com.br");
 				properties.setProperty("mail.smtp.port", "587");
 			} else {
-				properties.setProperty("mail.smtp.host", "ns736.hostgator.com.br");
+				properties.setProperty("mail.smtp.host", "br736.hostgator.com.br");
 			}
 		} else {
-			properties.setProperty("mail.smtp.host", "ns736.hostgator.com.br");
+			properties.setProperty("mail.smtp.host", "br736.hostgator.com.br");
 		}
 		
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.ssl.trust", "ns736.hostgator.com.br");
+		properties.put("mail.smtp.ssl.trust", "br736.hostgator.com.br");
 
 
 		

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import HardCore.DB;
 import HardCore.Request;
+import HardCore.User;
 
 import com.iliketo.dao.MemberDAO;
 import com.iliketo.model.Announce;
@@ -292,6 +293,34 @@ public class EmailController {
 		sendEmail(member, assunto, htmlConteudo, msgTexto, msgConteudo);
 	}
 	
+	public void enviaEmailRecuperacaoSenha(Member member, User user, String language, Request request, String uuid){
+		HashMap<String, String> subjectLanguage = new HashMap<String, String>();
+		subjectLanguage.put("pt_BR", "Seu Usuário e Senha");
+		subjectLanguage.put("en_US", "Your Username and Password");
+		
+		HashMap<String, String> msgTextoLanguage = new HashMap<String, String>();
+		msgTextoLanguage.put("pt_BR", "Email de Recuperação de Senha");
+		msgTextoLanguage.put("en_US", "Retrieve Password Email");
+		
+		String assunto = subjectLanguage.get(language);
+		String htmlConteudo = "";
+		String msgTexto = msgTextoLanguage.get(language);
+		String msgConteudo = null;
+		
+		CmsConfigILiketo cms = new CmsConfigILiketo(request.getRequest(), null);
+		
+		String emailPaymentStoragePage = cms.getPageListEntry("363");
+		
+		htmlConteudo = cms.parseBindingModelBean(emailPaymentStoragePage, member).toString();
+		
+		htmlConteudo = htmlConteudo.replaceAll("@@@email@@@", member.getEmail());
+		htmlConteudo = htmlConteudo.replaceAll("@@@resetpasswordlink@@@", request.getProtocol() + request.getServerName() + request.getServerPort() + "/resetpassword.jsp?user=" + user.getUsername() + "&resetkey=" + uuid);
+		//htmlConteudo = htmlConteudo.replaceAll("@@@validationlink@@@", "https://www.iliketoo.com/activation.jsp?user=" + member.getUsername() + "&activationkey=" + member.getActivated());
+		//log.info("http://" + request.getServerName() + request.getServerPort() + "/activation.jsp?user=" + member.getUsername() + "&activationkey=" + member.getActivated());
+		
+		sendEmail(member, assunto, htmlConteudo, msgTexto, msgConteudo);
+	}
+	
 	private void sendEmailDefault(ArrayList<Member> listaEmails, String assuntoPT, String assuntoEN, 
 			String htmlConteudoPT, String htmlConteudoEN, String msgTextoPT, String msgTextoEN, String msgConteudo){		
 		try {			
@@ -305,7 +334,7 @@ public class EmailController {
 				/** Parâmetros de conexão com servidor Gmail */
 				HtmlEmail email = new HtmlEmail(); 
 				//email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
-				email.setHostName("ns736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
+				email.setHostName("br736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
 				email.setFrom(this.email, "I Like Too"); 		// remetente
 				//email.setAuthentication(usuario, senha);
 				email.setSmtpPort(587);
@@ -342,7 +371,7 @@ public class EmailController {
 			/** Parâmetros de conexão com servidor Gmail */
 			HtmlEmail email = new HtmlEmail(); 
 			//email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
-			email.setHostName("ns736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
+			email.setHostName("br736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
 			email.setFrom(this.email, "I Like Too"); 		// remetente				
 			//email.setAuthentication(usuario, senha);
 			email.setSmtpPort(587);
