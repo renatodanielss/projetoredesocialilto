@@ -1601,7 +1601,7 @@ if (DEBUG) System.out.println("HardCore/DB.connectionDriverManager:"+context_fac
 					} else {
 						ps.setString(p++, "" + data.get(attribute));
 					}
-				}				//osvald casting, forcar cast de String para int quando a coluna for 'id'				if(id.equalsIgnoreCase("id")){
+				}				//osvald casting, forcar cast de String para int quando a coluna for 'id'				if(id.equalsIgnoreCase("id") || id.equalsIgnoreCase("content_id")){
 					//tenta executar casting do valor id em String para Inteiro					ps.setInt(p++, Integer.parseInt(value));				}else{					ps.setString(p++, "" + value);				}								ps.executeUpdate();
 				ps.close();
 			} else {
@@ -1630,7 +1630,7 @@ if (DEBUG) System.out.println("HardCore/DB.connectionDriverManager:"+context_fac
 			SQL = "update " + Common.SQL_clean(table) + " set " + SQLupdate + " where " + Common.SQL_clean(id) + "=?";
 			if (DEBUG) System.out.println("HardCore/DB.updateSet:"+SQL);
 			ps = prepareStatement(SQL);
-			int p = 1;			//osvald casting, forcar cast de String para int quando a coluna for 'id'			if(id.equalsIgnoreCase("id")){				//tenta executar casting do valor id em String para Inteiro				ps.setInt(p++, Integer.parseInt(value));			}else{				ps.setString(p++, "" + value);			}
+			int p = 1;			//osvald casting, forcar cast de String para int quando a coluna for 'id'			if(id.equalsIgnoreCase("id") || id.equalsIgnoreCase("content_id")){				//tenta executar casting do valor id em String para Inteiro				ps.setInt(p++, Integer.parseInt(value));			}else{				ps.setString(p++, "" + value);			}
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception e) {
@@ -1723,7 +1723,7 @@ if (DEBUG) System.out.println("HardCore/DB.connectionDriverManager:"+context_fac
 			SQL = "delete from " + Common.SQL_clean(table) + " where " + Common.SQL_clean(id) + "=?";
 			if (DEBUG) System.out.println("HardCore/DB.delete:"+SQL);
 			ps = prepareStatement(SQL);
-			int p = 1;			//osvald casting, forcar cast de String para int quando a coluna for 'id'			if(id.equalsIgnoreCase("id")){				//tenta executar casting do valor id em String para Inteiro				ps.setInt(p++, Integer.parseInt(value));			}else{				ps.setString(p++, "" + value);			}
+			int p = 1;			//osvald casting, forcar cast de String para int quando a coluna for 'id'			if(id.equalsIgnoreCase("id") || id.equalsIgnoreCase("content_id")){				//tenta executar casting do valor id em String para Inteiro				ps.setInt(p++, Integer.parseInt(value));			}else{				ps.setString(p++, "" + value);			}
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception e) {
