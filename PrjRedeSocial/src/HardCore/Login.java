@@ -333,8 +333,15 @@ public class Login {
 				// ignore
 			} else if (require_ssl.equals("yes")) {
 				if (db != null) db.close();
-//				myresponse.sendRedirect("https://" + myrequest.getServerName() + defaultLoginURL + "?url=" + URLEncoder.encode(Common.crlf_clean(url)));
-				myresponse.sendRedirect(myresponse.encodeRedirectURL("https://" + myrequest.getServerName() + defaultLoginURL + "?url=" + URLEncoder.encode(Common.crlf_clean(url))));
+//				myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + defaultLoginURL + "?url=" + URLEncoder.encode(Common.crlf_clean(url)));
+				if(username.isEmpty()){
+					myresponse.sendRedirect(myresponse.encodeRedirectURL("https://" + myrequest.getServerName() + myrequest.getServerPort() + defaultLoginURL + "?url=" + URLEncoder.encode(Common.crlf_clean(url))));
+				}else{
+					//username ou password invalido
+					
+					myresponse.sendRedirect(myresponse.encodeRedirectURL("https://" + myrequest.getServerName() + myrequest.getServerPort() + defaultLoginURL + "?url=" + URLEncoder.encode(Common.crlf_clean(url)) + "&error=login"));
+				}
+				
 			} else {
 				if (db != null) db.close();
 //				myresponse.sendRedirect(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + defaultLoginURL + "?url=" + URLEncoder.encode(Common.crlf_clean(url)));
@@ -342,6 +349,7 @@ public class Login {
 					myresponse.sendRedirect(myresponse.encodeRedirectURL(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + defaultLoginURL + "?url=" + URLEncoder.encode(Common.crlf_clean(url))));
 				}else{
 					//username ou password invalido
+					
 					myresponse.sendRedirect(myresponse.encodeRedirectURL(myrequest.getProtocol() + myrequest.getServerName() + myrequest.getServerPort() + defaultLoginURL + "?url=" + URLEncoder.encode(Common.crlf_clean(url)) + "&error=login"));
 				}
 			}
