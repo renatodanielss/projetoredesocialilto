@@ -161,10 +161,10 @@ public class PerfilMembroController {
 		Member membro = new Member();		
 		Member original = (Member) request.getSession().getAttribute("member");
 		//remove foto do perfil
-		if(original.getGender().equalsIgnoreCase("M")){
-			membro.setPathPhoto("avatar_male.png");
-		}else{
+		if(original.getGender().equalsIgnoreCase("F")){
 			membro.setPathPhoto("avatar_female.png");
+		}else{
+			membro.setPathPhoto("avatar_male.png");
 		}
 		membro.setId(original.getId());
 		membro.setIdMember(original.getIdMember());
