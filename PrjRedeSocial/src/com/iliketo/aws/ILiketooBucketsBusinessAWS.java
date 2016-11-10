@@ -56,7 +56,7 @@ public class ILiketooBucketsBusinessAWS {
 	public static final String LINK_BUCKET_DEV = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia-piloto";
 	
 	public static final String LINK_BUCKET_PRODUCAO_2 = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia";
-	public static final String LINK_BUCKET_DEV_2 = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia-piloto";
+	public static final String LINK_BUCKET_DEV_2 = "https://d2zkppemcf2512.cloudfront.net";
 	
 	public static final String AWS_PRODUCAO = "AWS-producao";
 	public static final String AWS_DEV = "AWS-dev";
