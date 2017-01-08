@@ -27,6 +27,9 @@
 			uuid = member.getRetrievePassword();
 		}
 		
+		Logger log = Logger.getLogger(EmailController.class);
+		log.info("Email de envio resetpasswordrequest.jsp");
+		
 		EmailController email = new EmailController(tipoEmail.EMAIL_RECOVERY); //mudar o tipo de email
 		email.enviaEmailRecuperacaoSenha(member, user, myrequest.getLocale().toString(), myrequest, uuid);
 		

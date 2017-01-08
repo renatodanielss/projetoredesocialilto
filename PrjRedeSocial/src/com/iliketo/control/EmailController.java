@@ -333,8 +333,10 @@ public class EmailController {
 				
 				/** Parâmetros de conexão com servidor Gmail */
 				HtmlEmail email = new HtmlEmail(); 
-				//email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
-				email.setHostName("br736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
+				
+				//DNS
+				email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
+				//email.setHostName("br736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
 				email.setFrom(this.email, "I Like Too"); 		// remetente
 				//email.setAuthentication(usuario, senha);
 				email.setSmtpPort(587);
@@ -370,8 +372,10 @@ public class EmailController {
 			
 			/** Parâmetros de conexão com servidor Gmail */
 			HtmlEmail email = new HtmlEmail(); 
-			//email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
-			email.setHostName("br736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
+			
+			//DNS
+			email.setHostName("smtp.gmail.com"); 			//servidor SMTP para envio do e-mail
+			//email.setHostName("br736.hostgator.com.br"); 	//servidor SMTP para envio do e-mail ou ns737.hostgator.com.br
 			email.setFrom(this.email, "I Like Too"); 		// remetente				
 			//email.setAuthentication(usuario, senha);
 			email.setSmtpPort(587);

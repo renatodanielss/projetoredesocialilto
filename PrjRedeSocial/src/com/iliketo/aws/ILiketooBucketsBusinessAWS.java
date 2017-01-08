@@ -48,12 +48,12 @@ public class ILiketooBucketsBusinessAWS {
 	
 	private static String bucketName = "";
 	private final static String usuario = "dev@iliketoo.com.br";
-	private final static String access_key_id = "AKIAJRT64JUHTJSPWZEQ";
-	private final static String secret_access_key = "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";
+	private final static String access_key_id = "AKIAIBFI5KYHYSQP5SPA";
+	private final static String secret_access_key = "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";
 	private final static String endpoint = "s3-us-west-2.amazonaws.com";
 	
 	public static final String LINK_BUCKET_PRODUCAO = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia";
-	public static final String LINK_BUCKET_DEV = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia-piloto";
+	public static final String LINK_BUCKET_DEV = "https://d2zkppemcf2512.cloudfront.net/iliketoo.aws.midia-piloto";
 	
 	public static final String LINK_BUCKET_PRODUCAO_2 = "https://s3-us-west-2.amazonaws.com/iliketoo.aws.midia";
 	public static final String LINK_BUCKET_DEV_2 = "https://d2zkppemcf2512.cloudfront.net";

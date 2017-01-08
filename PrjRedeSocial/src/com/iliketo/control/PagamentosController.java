@@ -161,16 +161,17 @@ public class PagamentosController {
 		
 		final String EMAIL_PAYPAL_ILIKETOO;
  
-		 /* if (address_country.equals("Brazil"))
-		 * 	EMAIL_PAYPAL_ILIKETOO = ""payment@iliketoo.com";";
-		 * else
-		 * 	EMAIL_PAYPAL_ILIKETOO = "payment.us@iliketoo.com";
-		 */
-		
+		//Produção
 		if (address_country.equals("Brazil"))
+			EMAIL_PAYPAL_ILIKETOO = "payment@iliketoo.com";
+		else
+			EMAIL_PAYPAL_ILIKETOO = "payment.us@iliketoo.com";
+		
+		//Desenvolvimento
+		/*if (address_country.equals("Brazil"))
 			EMAIL_PAYPAL_ILIKETOO = "contato.iliketo-facilitator@gmail.com";
 		else
-			EMAIL_PAYPAL_ILIKETOO = "payment.us-seller@iliketoo.com";
+			EMAIL_PAYPAL_ILIKETOO = "payment.us-seller@iliketoo.com";*/
 		
 		String receiver_email= request.getParameter("receiver_email");
 		String invoice= request.getParameter("invoice");
